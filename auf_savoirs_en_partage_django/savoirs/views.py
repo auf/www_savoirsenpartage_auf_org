@@ -20,7 +20,7 @@ def recherche (request):
     q = request.GET.get("q", "")
     page = int(request.GET.get("page", 0))
 
-    r = cherche (configuration['engin_recherche'], page, q)
+    r = cherche (page, q)
 
     return render_to_response ("recherche.html", \
             Context ({'q': q,

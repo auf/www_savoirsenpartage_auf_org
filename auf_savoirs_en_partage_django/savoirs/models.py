@@ -20,7 +20,7 @@ class Actualite(models.Model):
     logo = models.CharField(max_length=765, db_column='logo_actualite')
     date = models.DateField(db_column='date_actualite')
     visible = models.CharField(max_length=3, db_column='visible_actualite')
-    ancienid = models.IntegerField(db_column='ancienId_actualite') # Field name made lowercase.
+    ancienid = models.IntegerField(db_column='ancienId_actualite')
 
     def __unicode__ (self):
         return "Actualite %d: %s" % (self.id, self.titre)

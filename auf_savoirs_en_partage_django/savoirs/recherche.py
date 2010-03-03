@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import urllib, httplib, time, simplejson, pprint, math, re
+from django.conf import settings
 from auf_savoirs_en_partage_backend.sep.io import SEP
 from savoirs import configuration
 
@@ -8,8 +9,12 @@ def google_search (page, q, data):
               'rsz': 'large',
               'v': '1.0',
               'start': page * configuration['resultats_par_page'],
-              #'cref': "http://savoirsenpartage.auf.org/recherche.xml?%s" % int(time.time())
               }
+    if not settings.DEBUG:
+        #TODO: corriger ts
+        params['cref'] = "http://savoirsenpartage.auf.org/recherche.xml?%s" \
+                % int(time.time())
+
     url = "/ajax/services/search/web?" + \
             urllib.urlencode (params)
     handle = httplib.HTTPConnection ('ajax.googleapis.com')
@@ -75,16 +80,15 @@ def sep_search (page, q, data):
         if len (uri) == 0:
             uri = r.get ("uri")
         title = r.get ("title", "")
-        tmp = r.get ("description", "")
-        content = sep_build_content (regexp, tmp)
+        content = sep_build_content (regexp, r.get ("description", ""))
 
         data['results'].append ({'uri': uri, 'title': title, 'content': content})
 
-    #data['results'] = s.get (matches[f:t])
 
-def cherche (engin, page, q):
+def cherche (page, q):
     rc = {'results': [], 'last_page': 0, 'more_link': ''}
-    lastp = 0
+
+    engin = configuration['engin_recherche']
 
     if engin == 'google':
         google_search (page, q, rc)

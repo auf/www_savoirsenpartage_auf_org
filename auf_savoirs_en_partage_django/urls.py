@@ -9,6 +9,7 @@ urlpatterns = patterns(
     '',
     (r'^admin/(.*)', admin.site.root),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+
     (r'^$', 'savoirs.views.index'),
     (r'^conseils$', 'savoirs.views.conseils'),
     (r'^a-propos$', 'savoirs.views.a_propos'),

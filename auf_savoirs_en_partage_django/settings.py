@@ -44,6 +44,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.admin',
+    'django_roa',
+    'auf_roa_authentification_backend',
     'savoirs',
 )
 
@@ -56,4 +58,18 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
+AUTHENTICATION_BACKENDS = (
+    'auf_roa_authentification_backend.backends.CascadeBackend',
+)
+AUTH_PASSWORD_REQUIRED=True
+ROA_MODELS = True   # set to False if you'd like to develop/test locally
+ROA_FORMAT = 'django'
+ROA_HEADERS = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+}
+ROA_DJANGO_ERRORS = True # useful to ease debugging if you use test server
 
+ROA_BASE_URL = 'https://authentification.auf.org/auth/'
+SERIALIZATION_MODULES = {
+    'django' : 'auf_roa_authentification_backend.serializers',
+}

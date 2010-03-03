@@ -1,0 +1,136 @@
+  /*===========================================*/
+ /* --  Feuille de styles - GLOBAL            */
+/*-- Par Erick chez http://www.ixmedia.com    /
+-- Date de creation: 2009-05-11              /
+Modification: 2009-05-14 [Erick]            /
+========================================== /
+
+  /*============================ /
+ /  --       COULEURS       --  /
+/ ============================ /
+TXT -----------> #3a3125 et #000
+LINK ----------> #97012c
+LIGNES grises -> #e0e0e0 et #d5d5d5 */
+
+  /*============================*/
+ /* --         RESET        -- */
+/*============================*/
+@import url("reset.css");
+
+  /*============================*/
+ /* --        GENERAL       -- */
+/*============================*/
+html {height:100%;}
+body{ height:100%; font-size: 62.5%; /* <- 1em equivaut 10px */ line-height:1.4; color:#3a3125; background:#fff url(../img/background-body.jpg) repeat-y 50% 0; font-family: Verdana, Arial, Sans-Serif; text-align: center;}
+a, a:active {text-decoration:underline;color:#97012c;}
+a:visited{color:#97012c;}
+a:hover{color:#97012c;}
+a img{border: none;}
+abbr, acronym{border-bottom:.1em dotted;cursor:help;}
+h1{font-size:1em;margin:0 0 1em 0;}
+h2{font-size:1em;margin:0 0 1em 0;}
+h3{font-size:1em;margin:0 0 1em 0;}
+h4{font-size:1em;margin:0 0 1em 0;}
+h5{font-size:1em;margin:0 0 1em 0;}
+h6{font-size:1em;margin:0 0 1em 0;}
+em{font-style:italic;}
+strong{font-weight:bold;}
+p{margin:0 0 1em 0;}
+ul, ol{margin:0 0 1em 33px;list-style:none;}
+dt{margin:0.5em 0 0;}
+dd{margin:0.25em 0 0.5em 2.5em;}
+sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
+
+#fond {padding:0; margin:0; display:block; position:relative; width:100%; height:auto !important; height:100%; min-height:100%; background: url(../img/background-fond.jpg) no-repeat 50% 0; text-align:left;}
+#enrobage {padding:0; margin:0 auto; display:block; position:relative; width:960px; height:auto !important; height:100%; min-height:100%;}
+
+h1 { float:left; width:144px; height:110px; margin-top:25px; margin-left:20px; display:inline;}
+h1 a { display:block; width:144px; height:110px; text-indent:-99999px; background:url(../img/logo-agence-universitaire-de-la-francophonie.gif) no-repeat 0 0;border:none; text-decoration:none;}
+#sous-menu { padding-top:1px; margin-right:0; color:#fff; display:inline; height:24px; width:350px; float:right;}
+#sous-menu a { display:block; height:19px; padding:5px 10px 1px 10px; color:#fff; font-size:1.1em; text-decoration:none; float:right; white-space:nowrap; background-color:#4c4030;}
+#sous-menu a:hover { text-decoration:underline;}
+#sous-menu a.bout-gauche { background:#4c4030 url(../img/sous-menu-top-coin-gauche.gif) no-repeat 0 0; padding-right:5px;}
+#sous-menu a.bout-droit {  background:#4c4030 url(../img/sous-menu-top-coin-droit.gif) no-repeat 100% 0; padding-left:5px;}
+#sous-menu span { display:block; height:19px;float:right;padding:6px 2px 0 2px; background-color:#4c4030;}
+h2.slogan { position:absolute; top:33px; left:240px; display:block; font-size:3.4em; color:#3a3125; padding:0;font-family:"Myriad Pro", "Lucida Grande", sans-serif; font-weight:normal; letter-spacing:-1px; line-height:0.8em; z-index:1000; }
+h2.slogan span { display:block; margin: .7em 0 0; font-size:0.55em; color:#97012c; letter-spacing:normal; line-height: 1.1;}
+div.boite-recherche { z-index:1000; display:block; position:absolute; top:130px; left:240px; width:390px; height:90px; background: url(../img/recherche-background.gif) no-repeat 0 5px;}
+div.boite-recherche input { position:absolute; top:26px; left:10px; height:16px; margin-top:10px; width:300px; background:none; font-size:1.3em; border:none;}
+div.boite-recherche button { position:absolute; top:22px; right:17px; height:45px; width:45px; background:url(../img/recherche-button.gif) no-repeat 0 0; color:#97012c; border:none;}
+div.boite-recherche button:hover { background:url(../img/recherche-button-over.gif) no-repeat 0 0; cursor:pointer;}
+div.boite-recherche h3 { font-size:2em; font-weight:normal; letter-spacing:-1px; margin: 0;}
+div.boite-recherche h3 span { font-size:.6em; font-weight:normal; letter-spacing: normal;}
+div.boite-recherche a { position:absolute; bottom:13px; left: 0; color:#3a3125;}
+div.boite-recherche a:hover { color:#97012c; text-decoration:none;}
+
+#contenu { width:744px; margin:0; padding:0; margin-top:100px; margin-bottom:50px; margin-left:0;  display:inline; float:left;background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
+#contenu h4 {padding: 0 25px; margin-bottom:1.2em; font-size:2.2em; font-weight:normal; letter-spacing:-1px;}
+#contenu .zone-texte {padding: 0 25px; font-size: 1.2em; min-height: 375px;}
+#contenu .zone-texte ul li {list-style: disc; margin: 0 0 .25em;}
+#contenu .zone-texte ol li {list-style: decimal; margin: 0 0 .25em;}
+#contenu .zone-texte ul ul, #contenu .zone-texte ol ol {margin-top: .25em; margin-bottom: .25em;}
+#contenu .zone-texte h2 {font-size: 1.2em;}
+#contenu .zone-texte h3 {font-size: 1.1em;}
+#contenu .zone-texte blockquote {margin: 0 2em 1em; font-style: italic;}
+
+
+
+#contenu img.top, .resultats img.top { height:10px; position:relative; top:-10px; left:0;}
+#contenu img.bottom, .resultats img.bottom{ height:10px; position:relative; bottom:-10px; left:0;}
+#contenu a.liste-complete { font-size: 1.2em; float:right; margin-right:2em; text-decoration:none; font-weight: bold;}
+#contenu a:hover.liste-complete { text-decoration:underline;}
+#contenu .demi-gauche { width:361px; margin-left:12px; background-color:#f5f5f5; float:left;}
+#contenu .demi-gauche img.top { height:9px; position:relative; top:-9px;}
+#contenu .demi-gauche img.bottom { height:9px;  position:relative; bottom:-9px;}
+#contenu .demi-droite { width:358px; margin-top:8px; margin-right:12px;float:right;}
+
+ul.liste-de-l-accueil { padding:0 2.5em 0 0;}
+ul.liste-de-l-accueil li { margin:1em 0; padding-bottom:1.1em;border-bottom:2px solid #d5d5d5;}
+ul.liste-de-l-accueil a:hover { text-decoration:underline;}
+ul.liste-de-l-accueil img { float: left; margin: 0 1em 5px 0; max-width: 75px;}
+ul.liste-de-l-accueil span { display:block;}
+ul.liste-de-l-accueil .la-date {font-size:1.1em;}
+ul.liste-de-l-accueil .le-titre {display: block; font-size:1.2em; font-weight:bold; margin: .25em 0;}
+ul.liste-de-l-accueil .le-resume {font-size:1.1em;}
+ul.liste-de-l-accueil .le-resume a { display:inline;}
+
+.resultats { width:744px; display:inline; margin:0; padding:0; float:left; margin-top:100px; margin-bottom:50px; margin-left:0; background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
+.resultats a:hover{text-decoration:none;}
+.resultatRecherche {  padding: 0 25px 1.5em;}
+.resultats .typeDocument { text-transform:uppercase;}
+.resultats .le-titre { font-size:1.2em; font-weight:bold; text-decoration:underline;}
+.resultats .resultatResume { font-size:1.1em; color:#000;}
+.resultats a.ligne-url { font-size:1.1em; text-decoration:none; }
+.resultats a:hover.ligne-url { text-decoration:underline;}
+
+.resultatPages { padding:0;margin-top:1.5em; text-align:center; font-size:1.2em;}
+.resultatPages span { padding:0; margin:0 auto;}
+.resultatPages span a { text-decoration:underline; color:#3a3125; }
+.resultatPages span span { text-decoration:none; font-weight:bold; color:#3a3125;}
+.resultatPages span a span { text-decoration:none; font-weight:normal; color:#3a3125;}
+.resultatPages span a:hover { text-decoration:none;}
+.resultatPages span a:hover span { text-decoration:none;}
+.resultatPages span a span.lien-texte { color:#97012c; text-decoration:underline; font-weight:bold;}
+.resultatPages span a span.lien-texte span { color:#97012c; text-decoration: none; font-weight: normal;}
+.resultatPages span a:hover span.lien-texte { text-decoration:none;}
+
+#col-droite { clear:right; float:right; display:inline; width:190px; margin-right:0; margin-bottom:50px; background: url(../img/col-droite-background.png) repeat-x top center; }
+#col-droite img.bottom { margin-bottom:-7px; }
+#col-droite ul { margin-top:30px; margin-left:20px; line-height:1.2; }
+#col-droite ul li { margin:2px 0; padding:0; }
+#col-droite ul li a { margin:0; padding:0; font-size:1.2em; color:#3a3125; text-decoration:none; }
+#col-droite ul li a:hover { cursor:pointer; text-decoration:underline; }
+#col-droite ul li.actif a { color:#97012c; font-weight:bold; }
+
+  /*============================*/
+ /* --      D I V E R S     -- */
+/*============================*/
+.clear { clear:both!important; display:block!important; width:0!important; height:0!important; margin:0!important; padding:0!important; visibility:hidden!important;}
+.clear-droite { clear:right!important; display:block!important; width:0!important; height:0!important; margin:0!important; padding:0!important; visibility:hidden!important;}
+  /*============================*/
+ /*     --   Clearfix   --     */
+/*============================*/
+.clearfix {display: inline-block; }
+.clearfix:after, .container:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }

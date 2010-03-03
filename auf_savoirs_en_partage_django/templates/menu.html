@@ -1,0 +1,6 @@
+<ul>
+    {% for d in disciplines %}
+    <li><a href="{% url savoirs.views.recherche %}?q={{ d.nom }}">{{ d.nom }}</a></li>
+    {% endfor %}
+</ul>
+

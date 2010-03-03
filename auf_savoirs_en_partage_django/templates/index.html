@@ -1,0 +1,19 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>Actualités</h4>
+
+<ul class="liste-de-l-accueil">
+    <!-- dans la vue, cloner avoirListeActualitesAccueil -->
+    {% for article in articles %}
+    <li class="clearfix">
+    {% if article.logo %}
+    <a href="{{ article.url }}"><img src="{{ article.logo }}" alt="{{ article.titre }}" /></a>
+    {% endif %}
+    <span class="la-date">{{ article.date|date:"d F Y" }}</span>
+    <a href="{{ article.url }}" class="le-titre">{{ article.titre }}</a>
+    <span class="le-resume">{{ article.texte }} -&nbsp;<a href="{{ article.url }}">Lire</a></span>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

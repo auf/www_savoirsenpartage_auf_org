@@ -4,12 +4,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Savoirs en partage - Agence universitaire de la Francophonie</title>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/jquery.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/jquery-ui.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/tabber.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/pagination.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/jquery.datepicker.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/global.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/formulaire.js"></script>
-
         <link href="{{ MEDIA_URL }}css/jquery/jquery.datepicker.css" rel="stylesheet" type="text/css" />
         <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
+        <link href="{{ MEDIA_URL }}css/tabber.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}js/jquery/css/smoothness/jquery-ui-1.8rc3.custom.css" type="text/css" media="all" />
 
         <!--[if lt IE 7]>
         <link href="/css/ie6.css" rel="stylesheet" type="text/css" media="screen" />
@@ -62,7 +64,7 @@
                         </form>
 
                         <p>
-                        <a href="#">Recherche avancée</a> | 
+                        <a href="{% url savoirs.views.avancee %}">Recherche avancée</a> | 
                         <a href="{% url savoirs.views.conseils %}">Conseils</a>
                         </p>
                     </div>

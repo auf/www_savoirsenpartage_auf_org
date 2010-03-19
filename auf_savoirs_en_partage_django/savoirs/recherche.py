@@ -25,17 +25,18 @@ def google_search (page, q, data):
     #print pprint.pformat (response)
     handle.close ()
 
-    for i in response['responseData']['cursor']['pages']:
-        p = int (i['label']) - 1
-        if p > data['last_page']:
-            data['last_page'] = p
+    if len (response['responseData']['results']) > 0:
+        for i in response['responseData']['cursor']['pages']:
+            p = int (i['label']) - 1
+            if p > data['last_page']:
+                data['last_page'] = p
 
-    for r in response['responseData']['results']:
-        data['results'].append( {'uri': r['url'],
-                    'content': r['content'],
-                    'title': r['title']} )
+        for r in response['responseData']['results']:
+            data['results'].append( {'uri': r['url'],
+                        'content': r['content'],
+                        'title': r['title']} )
 
-    data['more_link'] = response['responseData']['cursor']['moreResultsUrl']
+        data['more_link'] = response['responseData']['cursor']['moreResultsUrl']
 
 
 def sep_build_content (regexp, description):
@@ -88,10 +89,11 @@ def sep_search (page, q, data):
         data['results'].append ({'uri': uri, 'id': r.get("uri"), 'title': title, 'content': content})
 
 
-def cherche (page, q):
+def cherche (page, q, engin=None):
     rc = {'results': [], 'last_page': 0, 'more_link': ''}
 
-    engin = configuration['engin_recherche']
+    if engin is None:
+        engin = configuration['engin_recherche']
 
     if engin == 'google':
         google_search (page, q, rc)

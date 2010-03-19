@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from models import Actualite
 from savoirs import configuration
-from recherche import cherche
+from recherche import cherche, google_search
 from auf_savoirs_en_partage_backend.sep.io import SEP
 
 def index (request):
@@ -19,7 +19,6 @@ def index (request):
             context_instance = RequestContext(request))
 
 def recherche (request):
-    results = None
     q = request.GET.get("q", "")
     page = int(request.GET.get("page", 0))
 
@@ -29,6 +28,22 @@ def recherche (request):
             Context ({'q': q,
                       'page': page,
                       'data': r}), \
+            context_instance = RequestContext(request))
+
+def avancee (request):
+    type = request.GET.get("type", "")
+    page = int(request.GET.get("page", 0))
+
+    q = request.GET.get("google-q", "")
+
+    if type == 'google':
+        r = cherche (page, q, type)
+
+    return render_to_response ("savoirs/avancee.html", \
+            Context ({'type': type,
+                      'page': page,
+                      'data': r,
+                      'q': q}), 
             context_instance = RequestContext(request))
 
 def conseils (request):

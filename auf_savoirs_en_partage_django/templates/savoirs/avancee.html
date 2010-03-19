@@ -1,0 +1,80 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<style>
+  div.boite-recherche { display: none !important; }
+  div#contenu { margin-top: 20px !important; }
+  div#results { margin-top: 15px; }
+</style>
+<script>
+  function setup () {
+    var type = '{{ type|default:"" }}';
+
+    if (type == 'google') 
+      $("#tabs-2").addClass ('tabbertabdefault');
+    else if (type == '')
+      $("#results").css ({display: 'none'});
+  }
+
+  {% if user.is_authenticated %}
+  function showEditModal (uri) {
+    $('#jsonsource').load ('{% url savoirs.views.json_get %}?uri='+uri, 
+    function() {
+      __jf = new JSONForm ('schema', 'mainform', 'jsonsource');
+      __jf.setup ();
+      $('#edit-form').dialog({height: 400, width: 650, modal: true});
+    });
+  }
+  {% endif %}
+
+  $(document).ready(function(){
+    setup ();
+    makePageLinks ({{ page|default:0 }}, {{ data.last_page|default:0 }}, 
+                   '{{ data.more_link }}');
+  });
+</script>
+
+<div id="tabs" class="tabber">
+  <div id="tabs-1" class="tabbertab">
+    <h2>Recherche détaillée</h2>
+    <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+  </div>
+  <div id="tabs-2" class="tabbertab">
+    <h2>Recherche google</h2>
+    <form method="get">
+      <input type="hidden" name="type" value="google" />
+      <p style="margin-top: 10px;"><input type="text" name="google-q" value="{{ q|default:""}}" /><input type="submit" name="" value="Chercher" /></p>
+    </form>
+  </div>
+</div>
+
+<div id="results">
+  <h4>Résultats de recherche pour « {{ q }} » :</h4>
+
+  <div class="zone-texte">
+    {% for r in data.results %}
+    <div class="resultatRecherche">
+      <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
+      <div class="resultatResume">{{ r.content|safe }}</div>
+      <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
+      {% if user.is_authenticated %}
+      <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
+      {% endif %}
+    </div>
+    {% empty %}
+    <div class="resultatRecherche">
+      <h2>Aucun résultat trouvé</h2>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="resultatPages">
+    <span id="pageLinks">
+    </span>
+  </div>
+
+  {% if user.is_authenticated %}
+  {% include "savoirs/editor.html" %}
+  {% endif %}
+
+  {% endblock %}
+</div>

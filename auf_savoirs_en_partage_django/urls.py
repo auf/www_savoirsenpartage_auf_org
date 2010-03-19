@@ -17,6 +17,7 @@ urlpatterns = patterns(
     (r'^a-propos$', 'savoirs.views.a_propos'),
     (r'^nous-contacter$', 'savoirs.views.nous_contacter'),
     (r'^recherche$', 'savoirs.views.recherche'),
+    (r'^recherche/avancee$', 'savoirs.views.avancee'),
     (r'^json/get$', 'savoirs.views.json_get'),
     (r'^json/set$', 'savoirs.views.json_set'),
 )

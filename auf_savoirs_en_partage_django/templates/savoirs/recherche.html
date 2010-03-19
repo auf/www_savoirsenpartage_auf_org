@@ -2,96 +2,50 @@
 
 {% block contenu %}
 <script>
-    function urlencode(str) {
-        return escape(str).replace(/\+/g,'%2B').replace(
-                    /%20/g, '+').replace(/\*/g, '%2A').replace(
-                    /\//g, '%2F').replace(/@/g, '%40');
-    }
-    function makeLink (page) {
-        return "?page=" + page +
-                "&q=" + urlencode ("{{ q }}");
-    }
+  $(document).ready(function(){
+    makePageLinks ({{ page|default:0 }}, {{ data.last_page|default:0 }}, 
+                   '{{ data.more_link }}');
+  });
 
-    $(document).ready(function(){
-        var currentPage = {{ page }};
-        var lastPage = {{ data.last_page }};
-        var more = '{{ data.more_link }}';
-
-        var span = $("#pageLinks");
-        // Premiere page
-        if (currentPage == 0)
-            span.append ('<span class="lien-texte">&lt;&lt;</span>&nbsp;&nbsp;');
-        else
-            span.append ('<a href="' + makeLink(0) + 
-                         '"><span class="lien-texte">&lt;&lt;</span></a>&nbsp;&nbsp;');
-
-        // Boucle
-        var f = currentPage - 4;
-        var t = 0;
-        if (f < 0) { t = -f; f = 0; }
-        t += currentPage + 4;
-        if (t > lastPage) t = lastPage;
-
-        for (var i = f; i <= t; i++) {
-            var display = i + 1;
-            if (i == currentPage)
-                span.append ("<span>" + display + "</span>&nbsp;&nbsp;");
-            else
-                span.append ('<a href="' + makeLink(i) + '"><span>' + 
-                             display + '</span></a>&nbsp;&nbsp;');
-        }
-
-        // Derniere page
-        if (currentPage == lastPage)
-            span.append ('<span class="lien-texte">&gt;&gt;</span>');
-        else
-            span.append ('<a href="' + makeLink(lastPage) + 
-                         '"><span class="lien-texte">&gt;&gt;</span></a>');
-
-        if (more.length > 0)
-            span.append ('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 
-                '<a href="'+more+'"><span class="lien-texte">Plus de résultats</span></a>');
+  {% if user.is_authenticated %}
+  function showEditModal (uri) {
+    $('#jsonsource').load ('{% url savoirs.views.json_get %}?uri='+uri, 
+    function() {
+      __jf = new JSONForm ('schema', 'mainform', 'jsonsource');
+      __jf.setup ();
+      $('#edit-form').dialog({height: 400, width: 650, modal: true});
     });
+  }
+  {% endif %}
 
+
+</script>
+
+<h4>Résultats de recherche pour « {{ q }} » :</h4>
+
+<div class="zone-texte">
+  {% for r in data.results %}
+  <div class="resultatRecherche">
+    <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
+    <div class="resultatResume">{{ r.content|safe }}</div>
+    <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
     {% if user.is_authenticated %}
-    function showEditModal (uri) {
-      $('#jsonsource').load ('{% url savoirs.views.json_get %}?uri='+uri, 
-      function() {
-        __jf = new JSONForm ('schema', 'mainform', 'jsonsource');
-        __jf.setup ();
-        $('#edit-form').dialog({height: 400, width: 650, modal: true});
-        });
-    }
+    <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
     {% endif %}
+  </div>
+  {% empty %}
+  <div class="resultatRecherche">
+    <h2>Aucun résultat trouvé</h2>
+  </div>
+  {% endfor %}
+</div>
+<div class="resultatPages">
+  <span id="pageLinks">
+  </span>
+</div>
 
+{% if user.is_authenticated %}
+{% include "savoirs/editor.html" %}
+{% endif %}
 
-    </script>
-
-    <h4>Résultats de recherche pour « {{ q }} » :</h4>
-
-    <div class="zone-texte">
-        {% for r in data.results %}
-        <div class="resultatRecherche">
-            <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
-            <div class="resultatResume">{{ r.content|safe }}</div>
-            <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
-            {% if user.is_authenticated %}
-              <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
-            {% endif %}
-        </div>
-        {% empty %}
-        <div class="resultatRecherche">
-          <h2>Aucun résultat trouvé</h2>
-        </div>
-        {% endfor %}
-    </div>
-    <div class="resultatPages">
-        <span id="pageLinks">
-        </span>
-    </div>
-
-    {% if user.is_authenticated %}
-    {% include "savoirs/editor.html" %}
-    {% endif %}
-
-    {% endblock %}
+{% endblock %}

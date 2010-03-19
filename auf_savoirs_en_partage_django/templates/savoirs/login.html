@@ -1,0 +1,28 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+
+{% if form.errors %}
+<p>Login ou mot de passe invalide.</p>
+{% endif %}
+
+  <div class="zone-texte">
+    <form method="post" action="{% url django.contrib.auth.views.login %}">
+      <table>
+        <tr>
+          <td>{{ form.username.label_tag }}</td>
+          <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.password.label_tag }}</td>
+          <td>{{ form.password }}</td>
+        </tr>
+      </table>
+
+      <input type="submit" value="Connexion" />
+      <input type="hidden" name="next" value="/" />
+    </form>
+  </div>
+
+{% endblock %}
+

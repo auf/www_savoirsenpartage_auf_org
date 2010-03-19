@@ -51,8 +51,18 @@
         if (more.length > 0)
             span.append ('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 
                 '<a href="'+more+'"><span class="lien-texte">Plus de résultats</span></a>');
-            
     });
+
+    {% if user.is_authenticated %}
+    function showEditModal (uri) {
+      $('#jsonsource').load ('{% url savoirs.views.json_get %}?uri='+uri, 
+      function() {
+        __jf = new JSONForm ('schema', 'mainform', 'jsonsource');
+        __jf.setup ();
+        $('#edit-form').dialog({height: 400, width: 650, modal: true});
+        });
+    }
+    {% endif %}
 
 
     </script>
@@ -65,6 +75,13 @@
             <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
             <div class="resultatResume">{{ r.content|safe }}</div>
             <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
+            {% if user.is_authenticated %}
+              <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="resultatRecherche">
+          <h2>Aucun résultat trouvé</h2>
         </div>
         {% endfor %}
     </div>
@@ -72,5 +89,9 @@
         <span id="pageLinks">
         </span>
     </div>
+
+    {% if user.is_authenticated %}
+    {% include "savoirs/editor.html" %}
+    {% endif %}
 
     {% endblock %}

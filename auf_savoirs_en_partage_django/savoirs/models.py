@@ -28,4 +28,3 @@ class Actualite(models.Model):
     class Meta:
         db_table = u'actualite'
         ordering = ["-date",]
-

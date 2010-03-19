@@ -1,0 +1,25 @@
+{
+  "type": "map",
+  "mapping":
+  {
+    "title": {"type": "text", "title": "Titre", "required": true },
+    "alt_title": {"type": "text", "title": "Titre alternatif" },
+    "creator": {"type": "str", "title": "Auteur"},
+    "contributor": {"type": "seq", "title": "Collaborateurs", "sequence": [{"type": "str"}]},
+    "description": {"type": "text", "title": "Description"},
+    "abstract": {"type": "text", "title": "Résumé"},
+    "subject": {"type": "seq", "title": "Sujets", "sequence": [{"type": "str"}]},
+    "publisher": {"type": "seq", "title": "Publishers", "sequence": [{"type": "str"}]},
+    "creation": {"type": "str", "title": "Date de création"},
+    "issued": {"type": "str", "title": "Date de publication"},
+    "modified": {"type": "str", "title": "Date de modification"},
+    "type": {"type": "seq", "title": "Types", "sequence": [{"type": "str"}]},
+    "format": {"type": "seq", "title": "Formats", "sequence": [{"type": "str"}]},
+    "identifier": {"type": "str", "title": "Identifiant", "hidden": true},
+    "isbn": {"type": "str", "title": "ISBN"},
+    "uri": {"type": "str", "title": "URL", "hidden": true},
+    "source": {"type": "str", "title": "Source"},
+    "language": {"type": "seq", "title": "Langues", "sequence": [{"type": "str"}]},
+    "orig_lang": {"type": "seq", "title": "Langues originales", "sequence": [{"type": "str"}]}
+  }
+}

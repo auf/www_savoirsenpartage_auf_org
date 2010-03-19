@@ -5,4 +5,3 @@ from models import Actualite, Discipline
 admin.site.register (Actualite)
 admin.site.register (Discipline)
 
-

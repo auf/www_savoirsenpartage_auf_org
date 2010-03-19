@@ -1,0 +1,29 @@
+<script src="{{ MEDIA_URL }}js/jquery/jquery-ui.js"></script> 
+<script src="{{ MEDIA_URL }}js/form.js"></script> 
+<!--script src="{{ MEDIA_URL }}js/json2.js"></script-->
+<link rel="stylesheet" href="{{ MEDIA_URL }}js/jquery/css/smoothness/jquery-ui-1.8rc3.custom.css" type="text/css" media="all" />
+
+<script type="text/javascript" language="javascript">
+var __jf = new JSONForm ('schema', 'mainform', 'jsonsource');
+
+function saveThis() {
+    __jf.serialize();
+    var data = $("#jsonsource").html ();
+    if (data.length > 0) {
+        $.post('{% url savoirs.views.json_set %}', {'data': data},
+               function () { $('#edit-form').dialog('close') });
+    }
+}
+</script>
+
+<div id="edit-form" style="display: none">
+  <div id="schema" style="display: none">
+    {% include "savoirs/recordmodel.json" %}
+  </div>
+  <div id="mainform" style="text-background: white">
+  </div>
+  <p>
+    <textarea id="jsonsource" style="display: none;"></textarea>
+    <input type="button" value="OK" onclick='saveThis();' style="width: 80px;"/>
+  </p>
+</div>

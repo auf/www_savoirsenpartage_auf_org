@@ -21,8 +21,8 @@ def google_search (page, q, data):
     handle.request ("GET", url)
     r = handle.getresponse ()
     response = simplejson.loads(r.read ())
-    print pprint.pformat (params)
-    print pprint.pformat (response)
+    #print pprint.pformat (params)
+    #print pprint.pformat (response)
     handle.close ()
 
     for i in response['responseData']['cursor']['pages']:
@@ -76,6 +76,7 @@ def sep_search (page, q, data):
     data['last_page'] = math.ceil (float(len (matches)) / \
             float(configuration['resultats_par_page'])) - 1
     set = s.get (matches[f:t])
+    print set
     regexp = re.compile (r'(%s)' % q, re.IGNORECASE)
     for r in set:
         uri = r.get ("source", "")
@@ -84,7 +85,7 @@ def sep_search (page, q, data):
         title = regexp.sub (r'<b>\1</b>', r.get ("title", ""))
         content = sep_build_content (regexp, r.get ("description", ""))
 
-        data['results'].append ({'uri': uri, 'title': title, 'content': content})
+        data['results'].append ({'uri': uri, 'id': r.get("uri"), 'title': title, 'content': content})
 
 
 def cherche (page, q):

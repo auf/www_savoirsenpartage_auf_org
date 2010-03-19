@@ -34,6 +34,9 @@ def avancee (request):
     type = request.GET.get("type", "")
     page = int(request.GET.get("page", 0))
 
+    ##TEMP
+    r = {'results': [], 'last_page': 0, 'more_link': ''}
+
     q = request.GET.get("google-q", "")
 
     if type == 'google':

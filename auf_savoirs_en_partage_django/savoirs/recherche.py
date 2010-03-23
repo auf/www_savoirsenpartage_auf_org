@@ -43,28 +43,31 @@ def sep_build_content (regexp, description):
     maxlen = 200
     content = description
     if len (description) > maxlen:
+        start = 0
         loc = regexp.search (description)
         if loc:
-            f = loc.start () - (maxlen / 2)
-            t = 0
-            if f < 0:
-                t = -f
-                f = 0
-            t += loc.start () + (maxlen / 2)
+            start = loc.start ()
+
+        f = start - (maxlen / 2)
+        t = 0
+        if f < 0:
+            t = -f
+            f = 0
+        t += start + (maxlen / 2)
+        if f > 0:
+            while description[f] != '.' and f > 0:
+                f -= 1
             if f > 0:
-                while description[f] != '.' and f > 0:
-                    f -= 1
-                if f > 0:
-                    f += 1
-            if t < len (description):
-                while t < len (description) and description[t] != '.':
-                    t += 1
+                f += 1
+        if t < len (description):
+            while t < len (description) and description[t] != '.':
                 t += 1
-            content = description[f:t]
-            if f > 0:
-                content = "(...) " + content
-            if t < (len (description) - 1):
-                content = content + " (...)"
+            t += 1
+        content = description[f:t]
+        if f > 0:
+            content = "(...) " + content
+        if t < (len (description) - 1):
+            content = content + " (...)"
     content = regexp.sub (r'<b>\1</b>', content)
     return content
 
@@ -73,11 +76,10 @@ def sep_search (page, q, data):
     f = page * configuration['resultats_par_page']
     t = f + 8
     s = SEP ()
-    matches = s.search ({'q': q.encode ('utf-8')})
+    matches = s.search (q)
     data['last_page'] = math.ceil (float(len (matches)) / \
             float(configuration['resultats_par_page'])) - 1
     set = s.get (matches[f:t])
-    print set
     regexp = re.compile (r'(%s)' % q, re.IGNORECASE)
     for r in set:
         uri = r.get ("source", "")
@@ -99,6 +101,9 @@ def cherche (page, q, engin=None):
         google_search (page, q, rc)
 
     elif engin == 'sep':
+        sep_search (page, {'q': q.encode ('utf-8')}, rc)
+
+    elif engin == 'avancee':
         sep_search (page, q, rc)
     
     return rc

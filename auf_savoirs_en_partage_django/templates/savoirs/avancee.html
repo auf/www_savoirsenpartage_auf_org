@@ -5,6 +5,9 @@
   div.boite-recherche { display: none !important; }
   div#contenu { margin-top: 20px !important; }
   div#results { margin-top: 15px; }
+  div.tabber { display: none; }
+  th { font-weight: normal; padding-right: 10px;}
+  input[type=text] { width: 250px; }
 </style>
 <script>
   function setup () {
@@ -37,19 +40,27 @@
 <div id="tabs" class="tabber">
   <div id="tabs-1" class="tabbertab">
     <h2>Recherche détaillée</h2>
-    <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+    <form method="get">
+      <table>
+        {{ form }}
+        <tr>
+          <th></th>
+          <td><input type="submit" name="" value="Chercher" /></td>
+        </tr>
+      </table>
+    </form>
   </div>
   <div id="tabs-2" class="tabbertab">
     <h2>Recherche google</h2>
     <form method="get">
       <input type="hidden" name="type" value="google" />
-      <p style="margin-top: 10px;"><input type="text" name="google-q" value="{{ q|default:""}}" /><input type="submit" name="" value="Chercher" /></p>
+      <p style="margin-top: 10px;"><input type="text" name="google-q" value="{{ q.q|default:""}}" /><input type="submit" name="" value="Chercher" /></p>
     </form>
   </div>
 </div>
 
 <div id="results">
-  <h4>Résultats de recherche pour « {{ q }} » :</h4>
+  <h4>Résultats de recherche:</h4>
 
   <div class="zone-texte">
     {% for r in data.results %}

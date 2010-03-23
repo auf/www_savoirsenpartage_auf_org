@@ -8,6 +8,7 @@ from models import Actualite
 from savoirs import configuration
 from recherche import cherche, google_search
 from auf_savoirs_en_partage_backend.sep.io import SEP
+from forms import RechercheAvancee
 
 def index (request):
     delta = datetime.timedelta (days = 90)
@@ -34,18 +35,33 @@ def avancee (request):
     type = request.GET.get("type", "")
     page = int(request.GET.get("page", 0))
 
-    ##TEMP
     r = {'results': [], 'last_page': 0, 'more_link': ''}
 
     q = request.GET.get("google-q", "")
+    f = RechercheAvancee ()
 
     if type == 'google':
         r = cherche (page, q, type)
+        q = {'q': q}
+    elif type == 'avancee':
+        f = RechercheAvancee (request.GET)
+        if f.is_valid():
+            q = {}
+            for k in ['creator', 'title', 'description', 'subject']:
+                tmp = f.cleaned_data[k].strip()
+                if len (tmp) > 0:
+                    q[k] = tmp
+            q['operator'] = '|'
+            if f.cleaned_data['operator'] == 'and':
+                q['operator'] = "&"
+
+            r = cherche (page, q, type)
 
     return render_to_response ("savoirs/avancee.html", \
             Context ({'type': type,
                       'page': page,
                       'data': r,
+                      'form': f,
                       'q': q}), 
             context_instance = RequestContext(request))
 

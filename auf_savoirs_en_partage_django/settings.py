@@ -70,6 +70,8 @@ ROA_HEADERS = {
 ROA_DJANGO_ERRORS = True # useful to ease debugging if you use test server
 
 ROA_BASE_URL = 'https://authentification.auf.org/auth/'
+ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
+
 SERIALIZATION_MODULES = {
     'django' : 'auf_roa_authentification_backend.serializers',
 }

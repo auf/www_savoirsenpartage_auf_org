@@ -1,0 +1,23 @@
+<div class="resultatRecherche">
+  <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
+  {% if r.creator %}
+  <div><span class="lbl">Auteur:</span> {{ r.creator|safe }}</div>
+  {% endif %}
+  {% if r.contributors %}
+  <div><span class="lbl">Contributeurs:</span> {{ r.contributors|safe }}</div>
+  {% endif %}
+  {% if r.subject %}
+  <div><span class="lbl">Sujets:</span> {{ r.subject|safe }}</div>
+  {% endif %}
+  {% if r.modified %}
+  <div><span class="lbl">Date de modification:</span> {{ r.modified }}</div>
+  {% endif %}
+  <div class="resultatResume"><span class="lbl">Description:</span> {{ r.content|safe }}</div>
+  {% if r.isbn %}
+  <div><span class="lbl">ISBN:</span> {{ r.isbn|safe }}</div>
+  {% endif %}
+  <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
+  {% if user.is_authenticated %}
+  <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
+  {% endif %}
+</div>

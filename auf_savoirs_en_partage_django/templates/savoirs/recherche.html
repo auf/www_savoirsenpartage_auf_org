@@ -25,14 +25,7 @@
 
 <div class="zone-texte">
   {% for r in data.results %}
-  <div class="resultatRecherche">
-    <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
-    <div class="resultatResume">{{ r.content|safe }}</div>
-    <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
-    {% if user.is_authenticated %}
-    <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
-    {% endif %}
-  </div>
+    {% include "savoirs/resultat.html" %} 
   {% empty %}
   <div class="resultatRecherche">
     <h2>Aucun résultat trouvé</h2>

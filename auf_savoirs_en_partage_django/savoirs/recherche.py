@@ -2,7 +2,9 @@
 import urllib, httplib, time, simplejson, pprint, math, re
 from django.conf import settings
 from auf_savoirs_en_partage_backend.sep.io import SEP
+from auf_savoirs_en_partage_backend.sep.utils import smart_str
 from savoirs import configuration
+
 
 def google_search (page, q, data):
     params = {'q': q,
@@ -72,6 +74,22 @@ def sep_build_content (regexp, description):
     return content
 
 
+def make_regexp (q):
+    words = []
+    w = re.compile (r'\W+', re.U)
+    for k in q.keys ():
+        if k != 'operator':
+            words.extend(w.split (q[k]))
+    patt = "|".join (words)
+    patt = "(" + patt + ")"
+    return re.compile (patt, re.I)
+
+def hl (r, string):
+    if string is not None:
+        return r.sub (r'<b>\1</b>', string)
+    return None
+
+
 def sep_search (page, q, data):
     f = page * configuration['resultats_par_page']
     t = f + 8
@@ -80,15 +98,35 @@ def sep_search (page, q, data):
     data['last_page'] = math.ceil (float(len (matches)) / \
             float(configuration['resultats_par_page'])) - 1
     set = s.get (matches[f:t])
-    regexp = re.compile (r'(%s)' % q, re.IGNORECASE)
+    regexp = make_regexp (q)
+
     for r in set:
         uri = r.get ("source", "")
         if len (uri) == 0:
             uri = r.get ("uri")
+
         title = regexp.sub (r'<b>\1</b>', r.get ("title", ""))
+
         content = sep_build_content (regexp, r.get ("description", ""))
 
-        data['results'].append ({'uri': uri, 'id': r.get("uri"), 'title': title, 'content': content})
+        contributeurs = r.get('contributor')
+        if contributeurs is not None:
+            contributeurs = "; ".join (contributeurs)
+
+        subject = r.get ('subject')
+        if subject is not None:
+            subject = ", ".join (subject)
+
+        data['results'].append ({'uri': uri, 
+                'id': r.get("uri"), \
+                'title': hl(regexp, title), 
+                'content': hl(regexp, content), \
+                'creator': hl(regexp, r.get('creator')),
+                'contributors': hl(regexp, contributeurs),
+                'subject': hl(regexp, subject),
+                'modified': r.get('modified'),
+                'isbn': r.get('isbn'),
+                })
 
 
 def cherche (page, q, engin=None):

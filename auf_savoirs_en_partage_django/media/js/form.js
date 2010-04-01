@@ -85,8 +85,6 @@ JSONForm.serialize = function () {
             else if (field.type == 'seq')
                 value = this.readList ($("#field_"+k));
 
-            if (k == 'title')
-              alert (value);
             if (value.length > 0)
               root[k] = value;
             else

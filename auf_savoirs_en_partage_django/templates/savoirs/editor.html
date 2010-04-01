@@ -8,7 +8,7 @@ function saveThis() {
     var data = $("#jsonsource").html ();
     if (data.length > 0) {
         $.post('{% url savoirs.views.json_set %}', {'data': data},
-               function () { $('#edit-form').dialog('close') });
+               function () { $('#edit-form').dialog('close'); window.location.reload(); });
     }
 }
 </script>

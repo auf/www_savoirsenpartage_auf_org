@@ -79,10 +79,13 @@ def make_regexp (q):
     w = re.compile (r'\W+', re.U)
     for k in q.keys ():
         if k != 'operator':
-            words.extend(w.split (q[k]))
+            words.extend(w.split (smart_str(q[k]).decode("utf-8")))
+    words = filter (lambda x: len(x)>2, words)
+    words.sort (lambda x,y: len(y)-len(x))
+
     patt = "|".join (words)
     patt = "(" + patt + ")"
-    return re.compile (patt, re.I)
+    return re.compile (patt, re.I|re.U)
 
 def hl (r, string):
     if string is not None:

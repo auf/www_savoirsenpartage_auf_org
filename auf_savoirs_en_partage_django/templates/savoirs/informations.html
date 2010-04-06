@@ -1,0 +1,53 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>Sources de données</h4>
+	
+		<div class="zone-texte"><!--
+		@page { margin: 2cm }
+		P { margin-bottom: 0.21cm }
+-->
+
+{% for site, details in r.items %}
+<p style="margin-top: 15px; margin-bottom: 0px;">
+<span style="color: #bf153e;">
+  <strong>{{ site }}</strong>
+</span>
+<table width="100%">
+  <tr><th width="135px">Type</th><td>{{ details.type }}</td></tr>
+  {% ifequal details.type "lodel" %}
+    {% ifequal details.acces "html" %}
+    <tr><th>URL</th><td><a href="http://{{ details.server }}{{ details.base_url }}">
+          http://{{ details.server }}{{ details.base_url }}</a></td></tr>
+    {% endifequal %}
+  {% endifequal %}
+  {% ifequal details.type "oai" %}
+    {% ifequal details.acces "generic" %}
+    <tr><th>URL</th><td><a href="http://{{ details.server }}{{ details.base_url }}">
+          http://{{ details.server }}{{ details.base_url }}</a></td></tr>
+    {% endifequal %}
+  {% endifequal %}
+  {% ifequal details.type "pmb" %}
+    {% ifequal details.acces "export" %}
+    <tr><th>URL</th><td><a href="http://{{ details.host }}{{ details.base_url }}">
+          http://{{ details.host }}{{ details.base_url }}</a></td></tr>
+    <tr><th>Utilisateur</th><td>{{ details.username }}</td></tr>
+    <tr><th>Base de données</th><td>{{ details.db }}</td></tr>
+    {% endifequal %}
+  {% endifequal %}
+</table>
+</table>
+</table>
+</p>
+{% empty %}
+<p style="margin-bottom: 0cm;">
+<span style="color: #bf153e;">
+  <strong>
+    <em>Une erreur s'est produite.</em>
+  </strong>
+</span>
+</p>
+{% endfor %}
+
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@ from savoirs import configuration
 from recherche import cherche, google_search
 from auf_savoirs_en_partage_backend.sep.io import SEP
 from forms import RechercheAvancee
+from auf_savoirs_en_partage_backend.conf import RESOURCES
 
 def index (request):
     delta = datetime.timedelta (days = 90)
@@ -72,7 +73,12 @@ def conseils (request):
 
 def a_propos (request):
     return render_to_response ("savoirs/a-propos.html", \
-            Context (), \
+            Context ({'count': len(RESOURCES)}), \
+            context_instance = RequestContext(request))
+
+def informations (request):
+    return render_to_response ("savoirs/informations.html", \
+            Context ({'r': RESOURCES}), \
             context_instance = RequestContext(request))
 
 def nous_contacter (request):

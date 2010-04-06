@@ -15,6 +15,7 @@ urlpatterns = patterns(
     (r'^$', 'savoirs.views.index'),
     (r'^conseils$', 'savoirs.views.conseils'),
     (r'^a-propos$', 'savoirs.views.a_propos'),
+    (r'^informations$', 'savoirs.views.informations'),
     (r'^nous-contacter$', 'savoirs.views.nous_contacter'),
     (r'^recherche$', 'savoirs.views.recherche'),
     (r'^recherche/avancee$', 'savoirs.views.avancee'),

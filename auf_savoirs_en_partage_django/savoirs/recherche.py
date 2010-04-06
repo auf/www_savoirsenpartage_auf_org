@@ -84,12 +84,12 @@ def make_regexp (q):
     words.sort (lambda x,y: len(y)-len(x))
 
     patt = "|".join (words)
-    patt = "(" + patt + ")"
+    patt = "([\W]{1})(" + patt + ")([\W]{1})"
     return re.compile (patt, re.I|re.U)
 
 def hl (r, string):
     if string is not None:
-        return r.sub (r'<b>\1</b>', string)
+        return r.sub (r'\1<b>\2</b>\3', string)
     return None
 
 

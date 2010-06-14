@@ -1,0 +1,35 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>{{ event.summary.value }}</h4>
+
+<div class="zone-texte">
+  <table width="100%">
+    <tr>
+      <th width="120px">Début</th>
+      <td>{{ event.dtstart.value|date:"Y-m-d H:i" }} (UTC)</td>
+    </tr>
+    <tr>
+      <th>Fin</th>
+      <td>{{ event.dtend.value|date:"Y-m-d H:i" }} (UTC)</td>
+    </tr>
+    <tr>
+      <th>Déscription</th>
+      <td>{{ event.description.value|linebreaksbr }}</td>
+    </tr>
+    <tr>
+      <th>Contact</th>
+      <td>{{ event.contact.value|linebreaksbr }}</td>
+    </tr>
+    <tr>
+      <th>Emplacement</th>
+      <td>{{ event.location.value|linebreaksbr }}</td>
+    </tr>
+    <tr>
+      <th>URL</th>
+      <td><a href="{{ event.url.value }}">{{ event.url.value }}</a></td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

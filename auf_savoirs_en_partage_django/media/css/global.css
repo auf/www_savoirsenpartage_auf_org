@@ -80,12 +80,13 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 
 #contenu img.top, .resultats img.top { height:10px; position:relative; top:-10px; left:0;}
 #contenu img.bottom, .resultats img.bottom{ height:10px; position:relative; bottom:-10px; left:0;}
-#contenu a.liste-complete { font-size: 1.2em; float:right; margin-right:2em; text-decoration:none; font-weight: bold;}
-#contenu a:hover.liste-complete { text-decoration:underline;}
 #contenu .demi-gauche { width:361px; margin-left:12px; background-color:#f5f5f5; float:left;}
 #contenu .demi-gauche img.top { height:9px; position:relative; top:-9px;}
 #contenu .demi-gauche img.bottom { height:9px;  position:relative; bottom:-9px;}
 #contenu .demi-droite { width:358px; margin-top:8px; margin-right:12px;float:right;}
+
+#calendar-links { padding: 0 25px; }
+#calendar-links p { margin: 0px; }
 
 ul.liste-de-l-accueil { padding:0 2.5em 0 0;}
 ul.liste-de-l-accueil li { margin:1em 0; padding-bottom:1.1em;border-bottom:2px solid #d5d5d5;}
@@ -147,3 +148,13 @@ ul.liste-de-l-accueil .le-resume a { display:inline;}
 #edit-form tr { border-top: 1px black solid; }
 #edit-form tr:first-child { border-top: none; }
 
+.form td { vertical-align: top; }
+.form th { font-weight: bold; }
+.form td:first-child { width: 150px; text-align: left; }
+.form table { width: 100%; }
+.form input[type=text], .form textarea, .form select { width: 80%; }
+.form textarea { height: 100px; }
+.form p { margin-bottom: 2px; }
+.form tr:first-child { border-top: none; }
+
+.odd { background: #f0f0f0; }

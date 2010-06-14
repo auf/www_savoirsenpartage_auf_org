@@ -13,14 +13,21 @@ urlpatterns = patterns(
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'savoirs/logout.html'}),
 
     (r'^$', 'savoirs.views.index'),
-    (r'^conseils$', 'savoirs.views.conseils'),
-    (r'^a-propos$', 'savoirs.views.a_propos'),
-    (r'^informations$', 'savoirs.views.informations'),
-    (r'^nous-contacter$', 'savoirs.views.nous_contacter'),
-    (r'^recherche$', 'savoirs.views.recherche'),
-    (r'^recherche/avancee$', 'savoirs.views.avancee'),
-    (r'^json/get$', 'savoirs.views.json_get'),
-    (r'^json/set$', 'savoirs.views.json_set'),
+    (r'^conseils/$', 'savoirs.views.conseils'),
+    (r'^a-propos/$', 'savoirs.views.a_propos'),
+    (r'^informations/$', 'savoirs.views.informations'),
+    (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
+    (r'^recherche/$', 'savoirs.views.recherche'),
+    (r'^recherche/avancee/$', 'savoirs.views.avancee'),
+
+    (r'^evenements/creer/$', 'savoirs.views.evenement_ajout'),
+    (r'^evenements/moderer/$', 'savoirs.views.evenement_moderation'),
+    (r'^evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
+    (r'^evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
+    (r'^evenements/(.+)/$', 'savoirs.views.evenement'),
+
+    (r'^json/get/$', 'savoirs.views.json_get'),
+    (r'^json/set/$', 'savoirs.views.json_set'),
 )
 
 if settings.DEBUG:

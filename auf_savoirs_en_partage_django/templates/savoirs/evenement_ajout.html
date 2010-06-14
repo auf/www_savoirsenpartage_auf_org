@@ -1,0 +1,33 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+
+<style>
+  div.boite-recherche { display: none !important; }
+  div#contenu { margin-top: 20px !important; }
+  div#results { margin-top: 15px; }
+  div.tabber { display: none; }
+  th { font-weight: normal; padding-right: 10px;}
+  input[type=text] { width: 250px; }
+</style>
+
+<script>
+  $(function () {
+      $("#id_debut").datetime({ userLang: 'fr' });
+      $("#id_fin").datetime({ userLang: 'fr' });
+      });
+</script>
+
+<div class="clearfix">
+  <h4>Soumettre un événement</h4>
+  <div class="zone-texte">
+    <form method="POST">
+      <table class="form">
+        {{ form }}
+        <tr><td></td><td><input type="submit" value="Ajouter" /></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

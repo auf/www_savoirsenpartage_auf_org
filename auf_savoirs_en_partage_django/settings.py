@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'django_roa',
+    'timezones',
     'auf_roa_authentification_backend',
     'savoirs',
 )

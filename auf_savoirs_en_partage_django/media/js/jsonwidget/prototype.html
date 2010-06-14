@@ -1,0 +1,62 @@
+<html>
+ 
+<head>
+ 
+<title>JSON widget prototype</title>
+<style type="text/css">
+.rmx {
+text-align: right; font-size: x-small; cursor: pointer; vertical-align: super;
+}
+</style>
+<script type="text/javascript" language="javascript">
+
+function loadJsonAreaFromIFrame() {
+    var foo = document.getElementById("myiframe");
+    var bar = document.getElementById("je_sourcetextarea");
+
+    bar.value = foo.contentDocument.firstChild.lastChild.firstChild.textContent;
+}
+
+function sample_init() {
+    loadJsonAreaFromIFrame();
+    je=new jsonwidget.editor();
+    je.toggleToForm();
+
+    //uncomment if you want to change defaults
+    //je.htmlids.warningdiv = "je_warningdiv";
+    //je.htmlids.formdiv = "je_formdiv";
+    //je.htmlids.sourcetextarea": "je_sourcetextarea";
+}
+
+</script>
+
+<script src="json.js"></script> 
+<script src="sampleschema.json"></script> 
+<script src="jsonedit.js"></script> 
+
+</head>
+ 
+<body onload="sample_init();">
+
+<div>
+<span id="formbutton" style="cursor: pointer" onclick='je.toggleToForm()'>[Edit w/Form]</span>
+<span id="sourcebutton" style="cursor: pointer" onclick='je.toggleToSource()'>[Edit Source]</span>
+</div>
+
+<div id="je_warningdiv">
+</div>
+
+<div id="je_formdiv">
+</div>
+
+<div>
+<textarea id="je_sourcetextarea" rows="30" cols="80" name="sourcearea">
+</textarea>
+</div>
+
+<div>
+<IFRAME style="display: none;" id='myiframe' src="sampledata-large.json" width="400" height="500" scrolling="auto" frameborder="1">
+</div>
+
+</body>
+</html>

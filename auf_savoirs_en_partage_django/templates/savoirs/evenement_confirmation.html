@@ -1,0 +1,22 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+
+<style>
+  div.boite-recherche { display: none !important; }
+  div#contenu { margin-top: 20px !important; }
+  div#results { margin-top: 15px; }
+  div.tabber { display: none; }
+  th { font-weight: normal; padding-right: 10px;}
+  input[type=text] { width: 250px; }
+</style>
+
+<div class="clearfix">
+  <h4>Soumettre un événement</h4>
+  <div class="zone-texte">
+    <p>Votre évenement a bien été pris en compte, il sera approuvé par notre 
+    équipe bientot.</p>
+  </div>
+</div>
+
+{% endblock %}

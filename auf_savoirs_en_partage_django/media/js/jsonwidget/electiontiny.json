@@ -1,0 +1,25 @@
+{
+  "candidates":
+  {
+    "Zadka":
+    {
+      "display_name":"Moshe Zadka"
+    },
+    "Garbee":
+    {
+      "display_name":"Bdale Garbee"
+    },
+    "Robinson":
+    {
+      "display_name":"Branden Robinson"
+    },
+    "Michlmayr":
+    {
+      "display_name":"Michael Michlmayr"
+    },
+    "NOTA":
+    {
+      "display_name":"None Of The Above"
+    }
+  }
+}

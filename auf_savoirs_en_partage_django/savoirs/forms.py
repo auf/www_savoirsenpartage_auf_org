@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django import forms
+from models import Evenement
 
 class RechercheAvancee (forms.Form):
     creator = forms.CharField (max_length=60, required=False, \
@@ -13,3 +14,7 @@ class RechercheAvancee (forms.Form):
     type = forms.CharField (initial='avancee', required=False, widget=forms.HiddenInput)
 
 
+class EvenementForm(forms.ModelForm):
+    class Meta:
+        model = Evenement
+        exclude = ('approuve', 'uid', 'actif')

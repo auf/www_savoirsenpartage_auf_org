@@ -1,0 +1,37 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+
+<div class="clearfix">
+  <h4>Évenements a modérer</h4>
+  <div class="zone-texte">
+    <table width="100%">
+      <tr><th>Évenement</th><th>Actions</th></tr>
+      {% for e in events %}
+      <tr valign="top" class="{% cycle '' 'odd' %}">
+        <td>
+          <ul>
+            <li>Titre: {{ e.titre }}</li>
+            <li>Discipline: {{ e.discipline.nom }}</li>
+            <li>Discipline secondaire: {{ e.discipline_secondaire.nom }}</li>
+            <li>Mots-clés: {{ e.mots_cles }}</li>
+            <li>Type: {{ e.type }}</li>
+            <li>Debut: {{ e.debut }}</li>
+            <li>Fin: {{ e.fin }}</li>
+            <li>Lieu: {{ e.lieu }}</li>
+            <li>Description: {{ e.description }}</li>
+            <li>Contact: {{ e.contact }}</li>
+            <li>Url: {{ e.url }}</li>
+          </ul>
+        </td>
+        <td>
+          <a href="{% url savoirs.views.evenement_accepter e.pk %}">Accepter</a><br />
+          <a href="{% url savoirs.views.evenement_refuser e.pk %}">Refuser</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock %}

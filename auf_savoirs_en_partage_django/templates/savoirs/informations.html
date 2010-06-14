@@ -14,7 +14,7 @@
   <strong>{{ site }}</strong>
 </span>
 <table width="100%">
-  <tr><th width="135px">Type</th><td>{{ details.type }}</td></tr>
+  <tr><th width="150px">Type</th><td>{{ details.type }}</td></tr>
   {% ifequal details.type "lodel" %}
     {% ifequal details.acces "html" %}
     <tr><th>URL</th><td><a href="http://{{ details.server }}{{ details.base_url }}">
@@ -34,9 +34,8 @@
     <tr><th>Utilisateur</th><td>{{ details.username }}</td></tr>
     <tr><th>Base de données</th><td>{{ details.db }}</td></tr>
     {% endifequal %}
-  {% endifequal %}
-</table>
-</table>
+    {% endifequal %}
+    <tr><th>Dernier moissonage</th><td>{{ details.logs.date }}, {{ details.logs.count }} articles</td></tr>
 </table>
 </p>
 {% empty %}

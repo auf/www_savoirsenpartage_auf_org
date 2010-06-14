@@ -1,9 +1,10 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>Actualités</h4>
+<div class="demi-gauche clearfix">
+  <h4>Actualités</h4>
 
-<ul class="liste-de-l-accueil">
+  <ul class="liste-de-l-accueil">
     <!-- dans la vue, cloner avoirListeActualitesAccueil -->
     {% for article in articles %}
     <li class="clearfix">
@@ -15,5 +16,29 @@
     <span class="le-resume">{{ article.texte }} -&nbsp;<a href="{{ article.url }}">Lire</a></span>
     </li>
     {% endfor %}
-</ul>
+  </ul>
+</div>
+
+
+<div class="demi-droite clearfix">
+  <h4>Agenda</h4>
+  <ul class="liste-de-l-accueil">
+    {% for event in events %}
+    <li>
+    <span class="la-date">{{ event.dtstart.value|date:"Y-m-d" }} 
+      {{ event.dtstart.value|date:"H:i" }}</span>
+    <a href="{% url savoirs.views.evenement event.uid.value %}" 
+      class="le-titre">{{ event.summary.value }}</a>
+    <span class="le-resume">{{ event.description.value }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  <div id="calendar-links">
+    <p>- <a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></p>
+    <p>- <a href="{{ caldav_url }}">S'abonner</a></p>
+    {% if user.is_authenticated %}
+    <p>- <a href="{% url savoirs.views.evenement_moderation %}">Modération</a></p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

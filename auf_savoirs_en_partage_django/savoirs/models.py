@@ -15,6 +15,10 @@ class Discipline(models.Model):
         db_table = u'discipline'
         ordering = ["nom",]
 
+class SourceActualite(models.Model):
+    nom = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+
 class Actualite(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_actualite')
     titre = models.CharField(max_length=765, db_column='titre_actualite')

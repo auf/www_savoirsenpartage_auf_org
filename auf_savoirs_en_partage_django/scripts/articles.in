@@ -9,6 +9,8 @@ sys.path[0:0] = [
 os.environ['DJANGO_SETTINGS_MODULE'] = 'production'
 for d in glob.glob("%(directory)s/eggs/*"):
     sys.path[0:0] = [d,]
+for d in glob.glob("%(directory)s/parts/*"):
+    sys.path[0:0] = [d,]
 
 from django.conf import settings
 from savoirs.models import SourceActualite, Actualite

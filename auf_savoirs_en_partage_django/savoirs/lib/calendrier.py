@@ -35,5 +35,6 @@ def combine(when, tz):
                           when.hour, when.minute, tzinfo = pytz.timezone(tz))
     #r = r.replace(tzinfo = pytz.timezone("UTC"))
     t = r.utctimetuple()
-    r = datetime.datetime(*(t[0:6]), tzinfo = pytz.timezone("UTC"))
+    r = datetime.datetime(t[0],t[1],t[2],t[3],t[4],t[5], 
+                          tzinfo = pytz.timezone("UTC"))
     return r

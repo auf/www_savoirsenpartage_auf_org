@@ -7,7 +7,7 @@ def evenements():
 
     client = caldav.DAVClient(configuration['calendrier'])
     cal = caldav.Calendar(client, url = configuration['calendrier'])
-    start = datetime.datetime.now().strftime("%Y%m%dT%H%M%S%z")
+    start = datetime.datetime.now()
     events = cal.date_search(start)
 
     for e in events:

@@ -12,13 +12,10 @@ def google_search (page, q, data):
               'v': '1.0',
               'start': page * configuration['resultats_par_page'],
               }
-    if not settings.DEBUG:
-        #TODO: corriger ts
-        params['cref'] = "http://savoirsenpartage.auf.org/recherche.xml?%s" \
-                % int(time.time())
 
-    url = "/ajax/services/search/web?" + \
-            urllib.urlencode (params)
+    params['cref'] = configuration['google_xml'] % time.time()
+    url = "/ajax/services/search/web?" + urllib.urlencode (params)
+
     handle = httplib.HTTPConnection ('ajax.googleapis.com')
     handle.request ("GET", url)
     r = handle.getresponse ()

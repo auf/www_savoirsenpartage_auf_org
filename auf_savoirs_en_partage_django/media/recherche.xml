@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GoogleCustomizations>
+  <CustomSearchEngine>
+  <Title>Les savoirs en partage</Title>
+  <Description>Recherche dans tous les site de l&apos;AUF.</Description>
+  <Context>
+    <BackgroundLabels>
+      <Label name="inclure" mode="FILTER" />
+      <Label name="exclure" mode="ELIMINATE" />
+    </BackgroundLabels>
+  </Context>
+  </CustomSearchEngine>
+
+  <!-- Annotations label the sites to be used in the Search Engine or exclude -->
+<Annotations>
+  <Annotation about="biblio.critaoi.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="bibliotheque.mu.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.mr.refer.org/numweb/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="greenstone.refer.bf/cgi-bin/library/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.fonds-grandidier.mg/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ciruisef.com/SetF/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ifi.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="def.auf.org/WEB_APP/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.bibliotheque.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.infotheque.info/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ife.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ifgcar.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ifag.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ifmt.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.crufaoci.bf.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.3el.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.chercheurs.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.aperau.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.cidefa.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.theophraste.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.cifduf.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.cidmef.u-bordeaux2.fr/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="rifeff.scedu.umontreal.ca/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.cidegef.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.arts.uottawa.ca/afelsh/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.reseautd.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.mpv.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.gp3a.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.egces.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.edd.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.entrepreneuriat.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.demographie.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.bioveg.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.aed.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ifadem.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.coursenligne.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.resatice.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="foad.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="agir.transfer-tic.org/moodleauf/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.transfer-tic.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.gdc.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.edph.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ds.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.df.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.critaoi.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.lde.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.ltt.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.bdlf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.eff.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.dlf.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.dcam.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.aidenligne-francais-universite.auf.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.icrea.mg/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="c3ld.vn.refer.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.vn.refer.org/science-action/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.valofrase.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.histoire-afrique.org/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/l-auf/nos-programmes/langue-francaise.html" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/ocean-indien/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/moyen-orient/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/europe-ouest-maghreb/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/europe-centrale-orientale/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/caraibe/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/asie-pacifique/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/afrique-ouest/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/afrique-centrale/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/regions/ameriques/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  <Annotation about="www.auf.org/communication-information/agenda/*" score="1">
+    <Label name="inclure" />
+  </Annotation>
+  
+</Annotations>
+
+</GoogleCustomizations>

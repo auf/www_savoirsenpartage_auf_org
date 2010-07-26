@@ -81,7 +81,7 @@ def make_regexp (q):
     words.sort (lambda x,y: len(y)-len(x))
 
     patt = "|".join (words)
-    patt = "([\W]{1})(" + patt + ")([\W]{1})"
+    patt = "([\W|-]{1})(" + patt + ")([\W|-]{1})"
     return re.compile (patt, re.I|re.U)
 
 def hl (r, string):

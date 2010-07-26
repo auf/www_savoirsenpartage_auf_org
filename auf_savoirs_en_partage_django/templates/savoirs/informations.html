@@ -14,7 +14,7 @@
   <strong>{{ site }}</strong>
 </span>
 <table width="100%">
-  <tr><th width="150px">Type</th><td>{{ details.type }}</td></tr>
+  <tr><th width="150px">Type</th><td>{{ details.type|title }}</td></tr>
   {% ifequal details.type "lodel" %}
     {% ifequal details.acces "html" %}
     <tr><th>URL</th><td><a href="http://{{ details.server }}{{ details.base_url }}">
@@ -23,8 +23,8 @@
   {% endifequal %}
   {% ifequal details.type "oai" %}
     {% ifequal details.acces "generic" %}
-    <tr><th>URL</th><td><a href="http://{{ details.server }}{{ details.base_url }}">
-          http://{{ details.server }}{{ details.base_url }}</a></td></tr>
+    <tr><th>URL</th><td><a href="{{ details.url }}">
+          {{ details.url }}</a></td></tr>
     {% endifequal %}
   {% endifequal %}
   {% ifequal details.type "pmb" %}
@@ -35,7 +35,13 @@
     <tr><th>Base de données</th><td>{{ details.db }}</td></tr>
     {% endifequal %}
     {% endifequal %}
-    <tr><th>Dernier moissonage</th><td>{{ details.logs.date }}, {{ details.logs.count }} articles</td></tr>
+    <tr><th>Dernier moissonage</th>
+      {% if details.logs %}
+      <td>{{ details.logs.date }}, {{ details.logs.count }} articles.</td>
+      {% else %}
+      <td>Nouvelle source, moissonage sous peu.</td>
+      {% endif %}
+      </tr>
 </table>
 </p>
 {% empty %}

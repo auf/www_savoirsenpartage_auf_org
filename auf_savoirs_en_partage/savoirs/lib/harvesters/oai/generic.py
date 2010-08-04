@@ -63,7 +63,7 @@ def load_xml (url):
     content = content.replace ("\"http://www.openarchives.com/OAI/2.0\"",
                                "\"http://www.openarchives.org/OAI/2.0/\"")
 
-    pattern = re.compile(r"<([/:\w]+)>", re.I|re.U)
+    pattern = re.compile(r"<([/:\w]+)[>\s]", re.I|re.U)
     content = pattern.sub(lambda m: m.group(0).lower(), content)
 
     # Other crap

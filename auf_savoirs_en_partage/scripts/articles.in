@@ -4,7 +4,7 @@
 import sys, os, glob
 sys.path[0:0] = [
   "%(directory)s",
-  "%(directory)s/auf_savoirs_en_partage_django",
+  "%(directory)s/auf_savoirs_en_partage",
   ]
 os.environ['DJANGO_SETTINGS_MODULE'] = 'production'
 for d in glob.glob("%(directory)s/eggs/*"):

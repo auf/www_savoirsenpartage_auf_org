@@ -12,7 +12,16 @@ def import_all ():
     """
     sep = SEP ()
 
-    for name in RESOURCES.keys ():
+    resources = RESOURCES
+    if len(sys.argv) == 2:
+        name = sys.argv[1]
+        if RESOURCES.get(name) is not None:
+            resources = {name: RESOURCES.get(name)}
+        else:
+            print "Ressource %s non existante" % name
+            sys.exit(-1)
+
+    for name in resources.keys ():
         print "Import:", name
         options = RESOURCES[name]
         module = 'harvesters.%s.%s' \

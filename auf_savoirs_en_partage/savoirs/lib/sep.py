@@ -46,10 +46,9 @@ class SEP:
 
         Retourne l'id de la ressource créée ou mise à jour.
         """
-        #print metadata
         exists = self.search (q = {URI: metadata[URI]})
         if len (exists) > 0:
-            id = exists[0]
+            id = exists[0][0]
             return self.update (int(id), metadata)
         else:
             return self.backend.add (metadata)

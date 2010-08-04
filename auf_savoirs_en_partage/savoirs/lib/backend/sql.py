@@ -131,7 +131,8 @@ class Backend:
             elif q.get (URI) is not None:
                 s = []
                 try:
-                    s.append((Record.objects.get(uri__iexact = q).id, 1))
+                    s.append((Record.objects.get(uri__iexact = \
+                                                 "\"" + q.get(URI) + "\"").id, 1))
                     rc.append(s)
                 except: pass
             # Recherche avancée

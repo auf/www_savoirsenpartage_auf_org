@@ -1,0 +1,131 @@
+# -*- encoding: utf-8 -*-
+
+### Configuration de SEP
+
+# Configuration générale
+DB_URI = ''
+
+
+# Sources de données
+RESOURCES = {
+    'CRITAOI': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://biblio.critaoi.auf.org/'
+    },
+    'Archives ouvertes du Moyen-Orient': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://hal-confremo.archives-ouvertes.fr/'
+    },
+    'CECA': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://ceca.auf.org/',
+    },
+    'Bibliothèque Numérique de Ouagadougou': {
+        'type': 'oai',
+        'acces': 'generic',
+        'server': 'greenstone.refer.bf',
+        'port': 80,
+        'base_url': '/', # Finir par /
+    },
+    'Revue-signes': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.revue-signes.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'ERGI': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.revue-genie-industriel.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'e-Santé': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.revue-esante.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Radisma': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.radisma.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'RMNSci.net': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.rmnsci.net',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Urbamag': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.urbamag.net',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Afrique Science': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.afriquescience.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'e-Ti': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.revue-eti.net',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Taloha': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.taloha.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'TDR': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.revue-tice.info',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Exchorésis': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'exchoresis.refer.ga',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Annales des sciences agronomiques du Bénin': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.annales-fsa.bj.refer.org',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Bulletin des OSCB': {
+        'type': 'lodel',
+        'acces': 'html',
+        'server': 'www.osc.bj.refer.org',
+        'port': 80,
+        'base_url': '/',
+    },
+    'Bibliothèque Numérique de Ouagadougou': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://greenstone.bf.refer.org/'
+    },
+}
+
+

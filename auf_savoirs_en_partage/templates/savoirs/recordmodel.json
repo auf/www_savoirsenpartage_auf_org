@@ -4,7 +4,7 @@
   {
     "title": {"type": "text", "title": "Titre", "required": true },
     "alt_title": {"type": "text", "title": "Titre alternatif" },
-    "creator": {"type": "str", "title": "Auteur"},
+    "creator": {"type": "seq", "title": "Auteur", "sequence": [{"type": "str"}]},
     "contributor": {"type": "seq", "title": "Collaborateurs", "sequence": [{"type": "str"}]},
     "description": {"type": "text", "title": "Description"},
     "abstract": {"type": "text", "title": "Résumé"},

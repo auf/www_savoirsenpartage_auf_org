@@ -7,9 +7,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
-#import auf_savoirs_en_partage_backend as sep
 
 from lib.recherche import cherche, google_search
+from lib import sep
 from lib.calendrier import evenements, evenement_info, evenement_publie, combine
 from savoirs import configuration
 from forms import *
@@ -85,7 +85,7 @@ def a_propos (request):
             context_instance = RequestContext(request))
 
 def informations (request):
-    s = sep.sep.io.SEP()
+    s = sep.SEP()
     t = s.logs()
     resources = copy.deepcopy (sep.conf.RESOURCES)
     for k in t.keys ():
@@ -182,12 +182,11 @@ def evenement_refuser(request, pk):
 def json_get (request):
     uri = request.GET.get ("uri")
     if uri:
-        s = sep.sep.io.SEP ()
+        s = sep.SEP ()
         res = s.search ({'uri': uri.encode("utf-8")})
-        if len (res) > 0:
-            r = s.get (res[0])
+        r = s.get (res)
     
-        return HttpResponse(simplejson.dumps(r),
+        return HttpResponse(simplejson.dumps(r[0]),
             mimetype='application/json')
 
 @login_required
@@ -196,7 +195,7 @@ def json_set (request):
     if data:
         r = simplejson.loads(data)
         print r
-        s = sep.sep.io.SEP ()
+        s = sep.SEP ()
         s.add (r)
     return HttpResponse(simplejson.dumps("OK"),
             mimetype='application/json')

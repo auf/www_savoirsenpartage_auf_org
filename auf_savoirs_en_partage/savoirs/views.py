@@ -194,7 +194,6 @@ def json_set (request):
     data = request.POST.get("data")
     if data:
         r = simplejson.loads(data)
-        print r
         s = sep.SEP ()
         s.add (r)
     return HttpResponse(simplejson.dumps("OK"),

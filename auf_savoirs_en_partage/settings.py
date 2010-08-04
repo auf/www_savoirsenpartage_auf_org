@@ -30,7 +30,9 @@ ADMIN_MEDIA_PREFIX = '/admin_media/'
 SECRET_KEY = 'k5m_cyht&ipi!nbxng9-5zc!4_q84opflhsn#d3%^3=9gm44tt'
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
@@ -62,6 +64,8 @@ AUTHENTICATION_BACKENDS = (
     'auf_references_client.backends.CascadeBackend',
 )
 AUTH_PASSWORD_REQUIRED = True
+
+CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 from auf_references_client.settings import *

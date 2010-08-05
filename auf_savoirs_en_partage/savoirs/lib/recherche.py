@@ -3,7 +3,7 @@ import urllib, httplib, time, simplejson, pprint, math, re
 from django.conf import settings
 from sep import SEP
 from utils import smart_str
-from savoirs import configuration
+from savoirs.globals import configuration
 
 
 def google_search (page, q, data):

@@ -3,8 +3,8 @@ from exceptions import Exception
 import sys, time
 
 from auf_savoirs_en_partage.backend_config import RESOURCES
-from backend.globals import *
-from backend.sql import Backend
+from savoirs.globals import *
+from backend import Backend
 
 
 class SEP:

@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import caldav, datetime, time, pytz
-from savoirs import configuration
+from savoirs.globals import configuration
 
 def evenements():
     rc = []

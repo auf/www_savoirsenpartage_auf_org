@@ -3,8 +3,8 @@ from pmbclient import PmbClient
 from lxml import etree
 import sys, re
 
-from auf_savoirs_en_partage_backend.globals import *
-from auf_savoirs_en_partage_backend.sep.utils import print_structure, find_text, meta_set
+from auf_savoirs_en_partage.savoirs.globals import *
+from auf_savoirs_en_partage.savoirs.lib.utils import print_structure, find_text, meta_set
 
 
 def read_person (node):

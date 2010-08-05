@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from backend.globals import *
+from savoirs.globals import *
 
 # From django
 def smart_str(s, encoding='utf-8', strings_only=False, errors='strict'):

@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from lib.recherche import cherche, google_search
 from lib import sep
 from lib.calendrier import evenements, evenement_info, evenement_publie, combine
-from savoirs import configuration
+from savoirs.globals import configuration
 from forms import *
 from models import *
 

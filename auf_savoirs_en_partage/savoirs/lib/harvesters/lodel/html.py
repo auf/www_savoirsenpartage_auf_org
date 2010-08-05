@@ -3,7 +3,7 @@ from lxml import etree
 import sys, httplib, re, pprint, simplejson
 from urlparse import urlparse, urljoin
 
-from auf_savoirs_en_partage.savoirs.lib.backend.globals import *
+from auf_savoirs_en_partage.savoirs.globals import *
 from auf_savoirs_en_partage.savoirs.lib.utils \
         import safe_append, print_structure, meta_set, smart_str
 

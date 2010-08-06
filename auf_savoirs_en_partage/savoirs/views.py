@@ -12,6 +12,7 @@ from lib.recherche import cherche, google_search
 from lib import sep
 from lib.calendrier import evenements, evenement_info, evenement_publie, combine
 from savoirs.globals import configuration
+import backend_config
 from forms import *
 from models import *
 
@@ -81,15 +82,17 @@ def conseils (request):
 
 def a_propos (request):
     return render_to_response ("savoirs/a-propos.html", \
-            Context ({'count': len(sep.conf.RESOURCES)}), \
+            Context ({'count': len(backend_config.RESOURCES)}), \
             context_instance = RequestContext(request))
 
 def informations (request):
     s = sep.SEP()
     t = s.logs()
-    resources = copy.deepcopy (sep.conf.RESOURCES)
+    resources = copy.deepcopy (backend_config.RESOURCES)
     for k in t.keys ():
-        resources[k]['logs'] = { 'date': t[k][0], 'count': t[k][1] }
+        try:
+            resources[k]['logs'] = { 'date': t[k][0], 'count': t[k][1] }
+        except: pass
     return render_to_response ("savoirs/informations.html", \
             Context ({'r': resources}), \
             context_instance = RequestContext(request))

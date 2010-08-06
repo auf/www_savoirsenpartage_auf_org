@@ -35,7 +35,10 @@ class SEP:
         if isinstance (id, tuple) or isinstance (id, list):
             rc = []
             for i in id:
-                rc.append (self.backend.get (int(i[0])))
+                try:
+                    i = i[0]
+                except: pass
+                rc.append (self.backend.get (int(i)))
         else:
             rc = self.backend.get (int(id))
         return rc

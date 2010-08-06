@@ -17,8 +17,8 @@
   <tr><th width="150px">Type</th><td>{{ details.type|title }}</td></tr>
   {% ifequal details.type "lodel" %}
     {% ifequal details.acces "html" %}
-    <tr><th>URL</th><td><a href="http://{{ details.server }}{{ details.base_url }}">
-          http://{{ details.server }}{{ details.base_url }}</a></td></tr>
+    <tr><th>URL</th><td><a href="{{ details.url }}">
+          {{ details.url }}</a></td></tr>
     {% endifequal %}
   {% endifequal %}
   {% ifequal details.type "oai" %}

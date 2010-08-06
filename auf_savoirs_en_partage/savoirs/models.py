@@ -20,7 +20,7 @@ class SourceActualite(models.Model):
     url = models.CharField(max_length=255)
 
 class Actualite(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='id_actualite')
+    id = models.AutoField(primary_key=True, db_column='id_actualite')
     titre = models.CharField(max_length=765, db_column='titre_actualite')
     texte = models.TextField(db_column='texte_actualite')
     url = models.CharField(max_length=765, db_column='url_actualite')

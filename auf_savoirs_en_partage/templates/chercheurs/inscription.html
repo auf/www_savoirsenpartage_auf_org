@@ -1,0 +1,16 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<form method="post">
+    <h2>Informations g&eacute;n&eacute;rales</h2>
+    {% with personne_form as form %}
+      {% include "table_form.html" %}
+    {% endwith %}
+    {% with chercheur_form as form %}
+      {% include "table_form.html" %}
+    {% endwith %}
+    <p class="Nav">
+    <input type="submit" name="Submit" value="Inscription" class="bouton" />
+    </p>
+</form>
+{% endblock %}

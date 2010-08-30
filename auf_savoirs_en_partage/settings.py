@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'django_roa',
     'timezones',
     'savoirs',
+    'chercheurs',
 )
 
 TEMPLATE_LOADERS = (

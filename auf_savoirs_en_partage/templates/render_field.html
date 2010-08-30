@@ -1,0 +1,14 @@
+<tr>
+    {% if field.is_hidden %}
+    {{ field }}
+    {% else %}
+    <td{{ field.row_attrs }} class="required" style="width: 150px;">
+        {{ field.label_tag }}
+        {% if field.errors %}
+        {{ field.errors }}
+        {% endif %}
+        </td><td>
+        {{ field }}
+    </td>
+    {% endif %}
+</tr>

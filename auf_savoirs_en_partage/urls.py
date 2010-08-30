@@ -28,6 +28,8 @@ urlpatterns = patterns(
 
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
+    
+    (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
 )
 
 if settings.DEBUG:

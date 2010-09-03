@@ -29,6 +29,7 @@ urlpatterns = patterns(
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
     
+    (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve'),
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
     (r'^chercheurs/repertoire/$', 'chercheurs.views.repertoire'),
     (r'^espace/chercheur/(?P<id>\d+)/$', 'chercheurs.views.perso'),

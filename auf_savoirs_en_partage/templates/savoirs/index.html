@@ -31,7 +31,7 @@
         <ul class="liste-de-l-accueil">
         {% for chercheur in chercheurs %}
             <li class="clearfix">
-            <a href="" class="le-titre">{{ chercheur }}</a>
+            <a href="{% url chercheurs.views.retrieve chercheur.id %}" class="le-titre">{{ chercheur }}</a>
             <span class="la-date">Disciplines : {{ chercheur.discipline }}</span>
             </li>
         {% endfor %}

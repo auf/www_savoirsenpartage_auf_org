@@ -5,7 +5,7 @@
 
 <ul>
 {% for chercheur in chercheurs %}
-    <li><a href="">{{ chercheur }}</a></li>
+    <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></li>
 {% endfor %}
 </ul>
 

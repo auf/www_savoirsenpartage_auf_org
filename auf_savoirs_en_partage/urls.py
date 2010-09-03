@@ -30,6 +30,8 @@ urlpatterns = patterns(
     (r'^json/set/$', 'savoirs.views.json_set'),
     
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
+    (r'^chercheurs/repertoire/$', 'chercheurs.views.repertoire'),
+    (r'^espace/chercheur/(?P<id>\d+)/$', 'chercheurs.views.perso'),
 )
 
 if settings.DEBUG:

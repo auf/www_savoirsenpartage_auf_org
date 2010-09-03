@@ -1,38 +1,38 @@
-  /*===========================================*/
- /* --  Feuille de styles - GLOBAL            */
-/*-- Par Erick chez http://www.ixmedia.com    /
--- Date de creation: 2009-05-11              /
-Modification: 2009-05-14 [Erick]            /
-========================================== /
+/*
+Feuille de styles - GLOBAL
+Par Erick chez http://www.ixmedia.com
+Date de creation: 2009-05-11
+Modification: 2009-05-14 [Erick]
+*/
 
-  /*============================ /
- /  --       COULEURS       --  /
-/ ============================ /
+/* COULEURS
+
 TXT -----------> #3a3125 et #000
 LINK ----------> #97012c
-LIGNES grises -> #e0e0e0 et #d5d5d5 */
+LIGNES grises -> #e0e0e0 et #d5d5d5 
+*/
 
-  /*============================*/
- /* --         RESET        -- */
-/*============================*/
+/* RESET */
+
 @import url("reset.css");
 
-  /*============================*/
- /* --        GENERAL       -- */
-/*============================*/
+/* General */
+
 html {height:100%;}
-body{ height:100%; font-size: 62.5%; /* <- 1em equivaut 10px */ line-height:1.4; color:#3a3125; background:#fff url(../img/background-body.jpg) repeat-y 50% 0; font-family: Verdana, Arial, Sans-Serif; text-align: center;}
+body { height:100%; font-size: 62.5%; /* <- 1em equivaut 10px */ line-height:1.4; color:#3a3125; background:#fff url(../img/background-body.jpg) repeat-y 50% 0; font-family: Verdana, Arial, Sans-Serif; text-align: center;}
 a, a:active {text-decoration:underline;color:#97012c;}
-a:visited{color:#97012c;}
-a:hover{color:#97012c;}
-a img{border: none;}
-abbr, acronym{border-bottom:.1em dotted;cursor:help;}
+a:visited {color:#97012c;}
+a:hover {color:#97012c;}
+a img {border: none;}
+abbr, acronym {border-bottom:.1em dotted;cursor:help;}
+
 h1{font-size:1em;margin:0 0 1em 0;}
 h2{font-size:1em;margin:0 0 1em 0;}
 h3{font-size:1em;margin:0 0 1em 0;}
 h4{font-size:1em;margin:0 0 1em 0;}
 h5{font-size:1em;margin:0 0 1em 0;}
 h6{font-size:1em;margin:0 0 1em 0;}
+
 em{font-style:italic;}
 strong{font-weight:bold;}
 p{margin:0 0 1em 0;}
@@ -40,6 +40,8 @@ ul, ol{margin:0 0 1em 33px;list-style:none;}
 dt{margin:0.5em 0 0;}
 dd{margin:0.25em 0 0.5em 2.5em;}
 sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
+
+.box { padding:0 0 20px 0; }
 .lbl {color: #97012c; }
 
 #fond {padding:0; margin:0; display:block; position:relative; width:100%; height:auto !important; height:100%; min-height:100%; background: url(../img/background-fond.jpg) no-repeat 50% 0; text-align:left;}
@@ -65,9 +67,9 @@ div.boite-recherche p { position:absolute; bottom:13px; left: 0; color:#3a3125; 
 div.boite-recherche p a { color:#3a3125;}
 div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 
-#contenu { width:744px; margin:0; padding:0; margin-top:100px; margin-bottom:50px; margin-left:0;  display:inline; float:left;background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
+#contenu { width:744px; margin:100px 0px 50px 0px; padding:0; display:inline; float:left;background:url(../img/contenu-bkg-middle.png) repeat-y 0 0; }
 #tabs { margin-left: 8px; margin-right: 8px; }
-#contenu h4 {padding: 0 25px; margin-bottom:1.2em; font-size:2.2em; font-weight:normal; letter-spacing:-1px;}
+#contenu h4 { padding: 0 25px; margin-bottom:0.4em; font-size:2.2em; font-weight:normal; letter-spacing:-1px; }
 #contenu .zone-texte {padding: 0 25px; font-size: 1.2em; min-height: 375px;}
 #contenu .zone-texte ul li {list-style: disc; margin: 0 0 .25em;}
 #contenu .zone-texte ol li {list-style: decimal; margin: 0 0 .25em;}
@@ -76,27 +78,28 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 #contenu .zone-texte h3 {font-size: 1.1em;}
 #contenu .zone-texte blockquote {margin: 0 2em 1em; font-style: italic;}
 
-
-
 #contenu img.top, .resultats img.top { height:10px; position:relative; top:-10px; left:0;}
 #contenu img.bottom, .resultats img.bottom{ height:10px; position:relative; bottom:-10px; left:0;}
 #contenu .demi-gauche { width:361px; margin-left:12px; background-color:#f5f5f5; float:left;}
+#contenu .demi-droite { width:358px; margin-right:12px; float:right;}
 #contenu .demi-gauche img.top { height:9px; position:relative; top:-9px;}
 #contenu .demi-gauche img.bottom { height:9px;  position:relative; bottom:-9px;}
-#contenu .demi-droite { width:358px; margin-top:8px; margin-right:12px;float:right;}
 
 #calendar-links { padding: 0 25px; }
 #calendar-links p { margin: 0px; }
 
+ul a { text-decoration:none; }
+ul a:hover { text-decoration:underline; }
+
 ul.liste-de-l-accueil { padding:0 2.5em 0 0;}
-ul.liste-de-l-accueil li { margin:1em 0; padding-bottom:1.1em;border-bottom:2px solid #d5d5d5;}
-ul.liste-de-l-accueil a:hover { text-decoration:underline;}
+ul.liste-de-l-accueil li { margin:1em 0; padding-top:1.1em; border-top:2px solid #d5d5d5;}
 ul.liste-de-l-accueil img { float: left; margin: 0 1em 5px 0; max-width: 75px;}
 ul.liste-de-l-accueil span { display:block;}
 ul.liste-de-l-accueil .la-date {font-size:1.1em;}
 ul.liste-de-l-accueil .le-titre {display: block; font-size:1.2em; font-weight:bold; margin: .25em 0;}
 ul.liste-de-l-accueil .le-resume {font-size:1.1em;}
 ul.liste-de-l-accueil .le-resume a { display:inline;}
+ul.sous-menu li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
 
 .resultats { width:744px; display:inline; margin:0; padding:0; float:left; margin-top:100px; margin-bottom:50px; margin-left:0; background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
 .resultats a:hover{text-decoration:none;}
@@ -126,14 +129,13 @@ ul.liste-de-l-accueil .le-resume a { display:inline;}
 #col-droite ul li a:hover { cursor:pointer; text-decoration:underline; }
 #col-droite ul li.actif a { color:#97012c; font-weight:bold; }
 
-  /*============================*/
- /* --      D I V E R S     -- */
-/*============================*/
+/* Divers */
+
 .clear { clear:both!important; display:block!important; width:0!important; height:0!important; margin:0!important; padding:0!important; visibility:hidden!important;}
 .clear-droite { clear:right!important; display:block!important; width:0!important; height:0!important; margin:0!important; padding:0!important; visibility:hidden!important;}
-  /*============================*/
- /*     --   Clearfix   --     */
-/*============================*/
+
+/* Clearfix */
+
 .clearfix {display: inline-block; }
 .clearfix:after, .container:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
 * html .clearfix { height: 1%; }

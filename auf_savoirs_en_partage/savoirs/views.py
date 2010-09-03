@@ -15,6 +15,7 @@ from savoirs.globals import configuration
 import backend_config
 from forms import *
 from models import *
+from chercheurs.models import Chercheur
 
 
 def index (request):
@@ -23,10 +24,13 @@ def index (request):
     articles = Actualite.objects.filter (visible = '1', date__gt = oldest)
     articles = articles[0:configuration['accueil_actualite']]
     events = evenements()[0:configuration['accueil_evenement']]
+    chercheurs = Chercheur.objects.all().order_by('?')[:5]
     return render_to_response ("savoirs/index.html", \
             Context ({"articles": articles,
                       "events": events,
-                      "caldav_url": configuration['calendrier_publique']}), \
+                      "caldav_url": configuration['calendrier_publique'],
+                      "chercheurs":chercheurs,
+                      }), \
             context_instance = RequestContext(request))
 
 def recherche (request):

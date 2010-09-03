@@ -34,6 +34,9 @@ class Chercheur(models.Model):
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe')
     actif = models.BooleanField(editable = False)
     
+    def __unicode__(self):
+        return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom)
+    
 
 class Groupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')

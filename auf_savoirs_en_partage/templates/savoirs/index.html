@@ -2,43 +2,65 @@
 
 {% block contenu %}
 <div class="demi-gauche clearfix">
-  <h4>Actualités</h4>
+    <div class="box">
+        <h4>Actualités</h4>
 
-  <ul class="liste-de-l-accueil">
-    <!-- dans la vue, cloner avoirListeActualitesAccueil -->
-    {% for article in articles %}
-    <li class="clearfix">
-    {% if article.logo %}
-    <a href="{{ article.url }}"><img src="{{ article.logo }}" alt="{{ article.titre }}" /></a>
-    {% endif %}
-    <span class="la-date">{{ article.date|date:"d F Y" }}</span>
-    <a href="{{ article.url }}" class="le-titre">{{ article.titre }}</a>
-    <span class="le-resume">{{ article.texte }} -&nbsp;<a href="{{ article.url }}">Lire</a></span>
-    </li>
-    {% endfor %}
-  </ul>
+        <ul class="liste-de-l-accueil">
+        {% comment %}<!-- dans la vue, cloner avoirListeActualitesAccueil -->{% endcomment %}
+        {% for article in articles %}
+            <li class="clearfix">
+            {% if article.logo %}
+            <a href="{{ article.url }}"><img src="{{ article.logo }}" alt="{{ article.titre }}" /></a>
+            {% endif %}
+            <span class="la-date">{{ article.date|date:"d F Y" }}</span>
+            <a href="{{ article.url }}" class="le-titre">{{ article.titre }}</a>
+            {% comment %}
+            <span class="le-resume">{{ article.texte }} -&nbsp;<a href="{{ article.url }}">Lire</a></span>
+            {% endcomment %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="box">
+        <h4>Chercheurs</h4>
+        <ul class="sous-menu">
+            <li><a href="{% url chercheurs.views.repertoire %}">Répertoire</a></li>
+            <li><a href="{% url chercheurs.views.inscription %}">Inscription</a></li>
+            <li><a href="">Espace chercheur</a></li>
+        </ul>
+        <ul class="liste-de-l-accueil">
+        {% for chercheur in chercheurs %}
+            <li class="clearfix">
+            <a href="" class="le-titre">{{ chercheur }}</a>
+            <span class="la-date">Disciplines : {{ chercheur.discipline }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
 </div>
 
 
 <div class="demi-droite clearfix">
-  <h4>Agenda</h4>
-  <ul class="liste-de-l-accueil">
-    {% for event in events %}
-    <li>
-    <span class="la-date">{{ event.dtstart.value|date:"Y-m-d" }} 
-      {{ event.dtstart.value|date:"H:i" }}</span>
-    <a href="{% url savoirs.views.evenement event.uid.value %}" 
-      class="le-titre">{{ event.summary.value }}</a>
-    <span class="le-resume">{{ event.description.value }}</span>
-    </li>
-    {% endfor %}
-  </ul>
-  <div id="calendar-links">
-    <p>- <a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></p>
-    <p>- <a href="{{ caldav_url }}">S'abonner</a></p>
-    {% if user.is_authenticated %}
-    <p>- <a href="{% url savoirs.views.evenement_moderation %}">Modération</a></p>
-    {% endif %}
-  </div>
+    <div class="box">
+        <h4>Agenda</h4>
+        <ul class="sous-menu">
+            <li><a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></li>
+            <li><a href="{{ caldav_url }}">S'abonner</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url savoirs.views.evenement_moderation %}">Modération</a></li>
+            {% endif %}
+        </ul>
+        <ul class="liste-de-l-accueil">
+        {% for event in events %}
+            <li>
+            <span class="la-date">{{ event.dtstart.value|date:"Y-m-d" }} 
+              {{ event.dtstart.value|date:"H:i" }}</span>
+            <a href="{% url savoirs.views.evenement event.uid.value %}" 
+              class="le-titre">{{ event.summary.value }}</a>
+            <span class="le-resume">{{ event.description.value }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

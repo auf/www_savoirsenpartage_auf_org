@@ -1,0 +1,12 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>Chercheurs</h4>
+
+<ul>
+{% for chercheur in chercheurs %}
+    <li><a href="">{{ chercheur }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

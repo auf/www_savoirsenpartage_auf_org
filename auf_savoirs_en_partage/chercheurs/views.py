@@ -1,10 +1,19 @@
-# Create your views here.
+# -*- encoding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import Context, RequestContext
 from forms import *
 
 from auf_references_client.models import Discipline, TypeImplantation
 from models import Personne
+
+def repertoire(request):
+    """Mock up du répertoire"""
+    chercheurs = Chercheur.objects.all()
+    variables = { 'chercheurs': chercheurs,
+                }
+    return render_to_response ("chercheurs/repertoire.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
 
 def inscription(request):
     if request.method == 'POST':
@@ -25,5 +34,14 @@ def inscription(request):
                 }
     
     return render_to_response ("chercheurs/inscription.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+            
+def perso(request, ID):
+    """Mock up de l'espace perso"""
+    chercheur = None   #Chercheur.objects.get(id=id)
+    variables = { 'chercheur': chercheur,
+                }
+    return render_to_response ("chercheurs/perso.html", \
             Context (variables), 
             context_instance = RequestContext(request))

@@ -9,7 +9,9 @@ from models import Personne
 def repertoire(request):
     """Mock up du répertoire"""
     chercheurs = Chercheur.objects.all()
+    nb_chercheurs = chercheurs.count()
     variables = { 'chercheurs': chercheurs,
+                  'nb_chercheurs': nb_chercheurs,
                 }
     return render_to_response ("chercheurs/repertoire.html", \
             Context (variables), 

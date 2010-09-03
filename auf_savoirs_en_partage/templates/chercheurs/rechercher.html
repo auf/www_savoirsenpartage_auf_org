@@ -1,0 +1,22 @@
+{% load pagination_tags %}
+{% load sorting_tags %}
+
+{% autosort chercheurs %}
+{% autopaginate chercheurs 20 %}
+
+<h4>Chercheurs</h4>
+
+<div class="contenu-wrapper">
+{% paginate %}
+<table>
+    <tr>
+        <th>{% anchor personne__nom Nom %}</th>
+    </tr>
+{% for chercheur in chercheurs %}
+    <tr>
+        <td><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></td>
+    </tr>
+{% endfor %}
+</table>
+</div>
+{% paginate %}

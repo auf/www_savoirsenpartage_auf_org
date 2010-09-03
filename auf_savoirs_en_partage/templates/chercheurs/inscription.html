@@ -1,16 +1,26 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
+<h4>Inscription</h4>
+
+<div class="contenu-wrapper">
+<p>
+Pour vous inscrire au répertoire de chercheurs, vous devez avoir un compte AUF...
+</p>
+
 <form method="post">
-    <h2>Informations g&eacute;n&eacute;rales</h2>
+    <h5>Informations personnelles</h5>
     {% with personne_form as form %}
-      {% include "table_form.html" %}
+        {% include "table_form.html" %}
     {% endwith %}
+    
+    <h5>Informations académiques</h5>
     {% with chercheur_form as form %}
-      {% include "table_form.html" %}
+        {% include "table_form.html" %}
     {% endwith %}
-    <p class="Nav">
+    
+    <br />
     <input type="submit" name="Submit" value="Inscription" class="bouton" />
-    </p>
 </form>
+</div>
 {% endblock %}

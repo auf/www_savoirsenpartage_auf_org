@@ -37,11 +37,20 @@ def inscription(request):
             Context (variables), 
             context_instance = RequestContext(request))
             
-def perso(request, ID):
+def perso(request, id):
     """Mock up de l'espace perso"""
-    chercheur = None   #Chercheur.objects.get(id=id)
+    chercheur = Chercheur.objects.get(id=id)
     variables = { 'chercheur': chercheur,
                 }
     return render_to_response ("chercheurs/perso.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+            
+def retrieve(request, id):
+    """Fiche du chercheur"""
+    chercheur = Chercheur.objects.get(id=id)
+    variables = { 'chercheur': chercheur,
+                }
+    return render_to_response ("chercheurs/retrieve.html", \
             Context (variables), 
             context_instance = RequestContext(request))

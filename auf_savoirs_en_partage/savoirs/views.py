@@ -23,7 +23,10 @@ def index (request):
     oldest = datetime.date.today () - delta
     articles = Actualite.objects.filter (visible = '1', date__gt = oldest)
     articles = articles[0:configuration['accueil_actualite']]
-    events = evenements()[0:configuration['accueil_evenement']]
+    try:
+        events = evenements()[0:configuration['accueil_evenement']]
+    except:
+        events = []
     chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
     return render_to_response ("savoirs/index.html", \
             Context ({"articles": articles,

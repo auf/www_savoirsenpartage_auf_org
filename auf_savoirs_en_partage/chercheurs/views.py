@@ -21,18 +21,32 @@ def inscription(request):
     if request.method == 'POST':
         personne_form = PersonneForm (request.POST, prefix="personne")
         chercheur_form = ChercheurForm (request.POST, prefix="chercheur")
+        etablissement_form = EtablissementForm (request.POST, prefix="etablissement")
+        discipline_form = DisciplineForm (request.POST, prefix="discipline")  
+        
         if personne_form.is_valid():
             if chercheur_form.is_valid():
-                p = personne_form.save()
                 c = chercheur_form.save(commit=False)
-                c.personne = p
-                c.save()
+                
+                etablissement_form = EtablissementForm (request.POST, prefix="etablissement", instance=c)
+                discipline_form = DisciplineForm (request.POST, prefix="discipline", instance=c)
+                
+                if etablissement_form.is_valid() and discipline_form.is_valid():          
+                    etablissement_form.save(commit=False)         
+                    discipline_form.save(commit=False)
+                    p = personne_form.save()
+                    c.personne = p
+                    c.save()
     else:
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")
+        etablissement_form = EtablissementForm(prefix="etablissement")
+        discipline_form = DisciplineForm(prefix="discipline")
     
     variables = { 'personne_form': personne_form,
                   'chercheur_form': chercheur_form,
+                  'etablissement_form': etablissement_form,
+                  'discipline_form': discipline_form,
                 }
     
     return render_to_response ("chercheurs/inscription.html", \

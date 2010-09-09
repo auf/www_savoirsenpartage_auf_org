@@ -18,6 +18,17 @@ Pour vous inscrire au répertoire de chercheurs, vous devez avoir un compte AUF.
     {% with chercheur_form as form %}
         {% include "table_form.html" %}
     {% endwith %}
+ 
+    <h5>Etablissement de rattachement</h5>
+    {% with etablissement_form as form %}
+        {% include "table_form.html" %}
+    {% endwith %}
+    
+    <h5>Champ disciplinaire, thèmes de recherche & publications</h5>
+    {% with discipline_form as form %}
+        {% include "table_form.html" %}
+    {% endwith %}    
+    
     
     <br />
     <input type="submit" name="Submit" value="Inscription" class="bouton" />

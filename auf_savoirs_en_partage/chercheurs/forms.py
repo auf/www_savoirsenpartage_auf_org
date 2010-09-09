@@ -10,4 +10,14 @@ class PersonneForm(forms.ModelForm):
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('pays', 'discipline', 'groupes')
+        fields = ('pays', 'groupes')
+        
+class EtablissementForm(forms.ModelForm):
+    class Meta:
+        model = Chercheur
+        fields = ('etablissement',)
+
+class DisciplineForm(forms.ModelForm):
+    class Meta:
+        model = Chercheur
+        fields = ('discipline', 'expertise', 'url', 'publication1', 'publication2', 'publication3')

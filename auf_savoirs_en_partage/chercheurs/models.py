@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.db import models
-from auf_references_client.models import Discipline, Pays, Etablissement, Thematique
+from datamaster_modeles.models import *
 
 GENRE_CHOICES = (('H', 'Homme'), ('F', 'Femme'))
 class Personne(models.Model):
@@ -39,18 +39,19 @@ class Chercheur(models.Model):
     etablissement = models.ForeignKey(Etablissement, null=True, blank=True)
     
     #Domaine
-    thematique = models.ForeignKey(Thematique, null=True)
-
+    #thematique = models.ForeignKey(Thematique, null=True)
+    thematique = models.CharField(max_length=255, null=True)
                                         
     
     mots_cles = models.CharField(max_length=255, null=True, blank=True,
                                     verbose_name='Mots-clés')
     these = models.CharField(max_length=255, null=True, blank=True,
                                     verbose_name='Thèse')    
-                                    
-                                    
-    discipline = models.ForeignKey(Discipline, null=True, 
-                                        verbose_name='Champ disciplinaire')
+                           
+    #discipline = models.ForeignKey(Discipline, null=True, 
+    #                                    verbose_name='Champ disciplinaire')
+    discipline = models.CharField(max_length=255, null=True)
+    
     expertise = models.TextField(null=True, blank=True, verbose_name='Domaine d\'expertise et thèmes de recherche')                                    
     url = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Adresse site Internet personnel')
@@ -63,11 +64,7 @@ class Chercheur(models.Model):
                                  verbose_name = 'Publication 3')
     publication4 = models.CharField(max_length=255, null=True, blank=True, 
                                  verbose_name = 'Publication 4')
-    
-    
-    
-    
-    
+
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe')
     actif = models.BooleanField(editable = False)
     

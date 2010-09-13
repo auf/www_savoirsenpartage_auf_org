@@ -33,6 +33,8 @@ urlpatterns = patterns(
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
     (r'^chercheurs/repertoire/$', 'chercheurs.views.repertoire'),
     (r'^espace/chercheur/(?P<id>\d+)/$', 'chercheurs.views.perso'),
+    
+    (r'^sites/$', 'sites.views.index'),
 )
 
 if settings.DEBUG:

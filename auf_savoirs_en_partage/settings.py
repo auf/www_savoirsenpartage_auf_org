@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'timezones',
     'savoirs',
     'chercheurs',
+    'sites',
 )
 
 TEMPLATE_LOADERS = (

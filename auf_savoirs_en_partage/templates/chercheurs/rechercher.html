@@ -4,25 +4,38 @@
 {% autosort chercheurs %}
 {% autopaginate chercheurs 20 %}
 
-<h4>Chercheurs</h4>
+<h4>Répertoire des chercheurs</h4>
 
 <div class="contenu-wrapper">
-<strong>{{nb_chercheurs}} chercheurs</strong>
-{% paginate %}
-<table>
+
+<form method="get" action="">
+  <table id="repertoire_recherche">
+    {{repertoire_form.as_table}}
+    <tr>
+      <td colspan="2" class="Lib">
+        <input type="submit" class="bouton" value="Rechercher" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+
+<p><strong>{{nb_chercheurs}} chercheurs correspondant à votre recherche :</strong></p>
+<div class="centre">{% paginate %}</div>
+<table id="repertoire">
     <tr>
         <th>{% anchor personne__nom Nom %}</th>
         <th>{% anchor etablissement__nom Établissement %}</th>
         <th>{% anchor pays__nom Localisation %}</th>
     </tr>
 {% for chercheur in chercheurs %}
-    <tr>
+    <tr class="{% cycle 'odd' 'notodd' %}">
         <td><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></td>
         <td>{{ chercheur.etablissement }}</td>
         <td>{{ chercheur.pays }}</td>
     </tr>
 {% endfor %}
 </table>
-{% paginate %}
+<div class="centre">{% paginate %}</div>
 </div>
 

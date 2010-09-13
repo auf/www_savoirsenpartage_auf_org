@@ -6,12 +6,40 @@ from forms import *
 from auf_references_client.models import Discipline, TypeImplantation
 from models import Personne
 
+
+def chercheur_queryset (request):
+    list = Chercheur.objects.order_by("id")
+    pays = ""
+
+    simpleForm = RepertoireSearchForm (request.GET)
+    if simpleForm.is_valid ():
+        pays = simpleForm.cleaned_data["pays"]
+        if pays:
+            list = list.filter (pays = pays.pk)
+        fonction = simpleForm.cleaned_data["fonction"]
+        if fonction:
+            list = list.filter (fonction = fonction)
+        genre = simpleForm.cleaned_data["genre"]
+        if genre:
+            list = list.filter (personne__genre=genre)
+        discipline = simpleForm.cleaned_data["discipline"]
+        if discipline:
+            list = list.filter (discipline=discipline)
+        mots_cles = simpleForm.cleaned_data["mots_cles"]
+        if mots_cles:
+            list = list.filter (personne__nom__icontains=mots_cles)
+    return list
+    
 def repertoire(request):
     """Mock up du répertoire"""
-    chercheurs = Chercheur.objects.all()
+    
+    chercheurs = chercheur_queryset (request)
+    repertoire_form = RepertoireSearchForm (request.GET)
+
     nb_chercheurs = chercheurs.count()
     variables = { 'chercheurs': chercheurs,
                   'nb_chercheurs': nb_chercheurs,
+                  'repertoire_form': repertoire_form,
                 }
     return render_to_response ("chercheurs/repertoire.html", \
             Context (variables), 

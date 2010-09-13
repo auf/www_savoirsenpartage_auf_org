@@ -3,7 +3,7 @@ from django.db import models
 from datamaster_modeles.models import *
 from savoirs.models import Discipline
 
-GENRE_CHOICES = (('H', 'Homme'), ('F', 'Femme'))
+GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
 
     id = models.AutoField(primary_key=True)

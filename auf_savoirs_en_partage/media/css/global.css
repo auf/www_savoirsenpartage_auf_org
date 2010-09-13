@@ -44,6 +44,8 @@ sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
 .box { padding:0 0 20px 0; }
 .lbl {color: #97012c; }
 
+.centre { text-align:center }
+
 #fond {padding:0; margin:0; display:block; position:relative; width:100%; height:auto !important; height:100%; min-height:100%; background: url(../img/background-fond.jpg) no-repeat 50% 0; text-align:left;}
 #enrobage {padding:0; margin:0 auto; display:block; position:relative; width:960px; height:auto !important; height:100%; min-height:100%;}
 
@@ -160,4 +162,7 @@ ul.sous-menu li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
 .form p { margin-bottom: 2px; }
 .form tr:first-child { border-top: none; }
 
-.odd { background: #f0f0f0; }
+.odd { background: #ddd; }
+
+#repertoire { border:1px solid #bbb; padding:20px; margin: 10px; width:95% }
+#repertoire th, td { padding:5px }

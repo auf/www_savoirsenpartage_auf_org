@@ -20,4 +20,4 @@ class EtablissementForm(forms.ModelForm):
 class DisciplineForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('discipline', 'expertise', 'url', 'publication1', 'publication2', 'publication3')
+        fields = ('discipline', 'expertise', 'mots_cles', 'url', 'publication1', 'publication2', 'publication3')

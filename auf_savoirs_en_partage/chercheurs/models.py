@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.db import models
 from datamaster_modeles.models import *
+from savoirs.models import Discipline
 
 GENRE_CHOICES = (('H', 'Homme'), ('F', 'Femme'))
 class Personne(models.Model):
@@ -29,34 +30,25 @@ class Personne(models.Model):
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Doctorant', 'Doctorant'), ('Autre', 'Autre'))
 class Chercheur(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    personne = models.ForeignKey('Personne')
-    pays = models.ForeignKey(Pays, null = True, verbose_name = 'Nationalité')
+    personne = models.ForeignKey('Personne', db_column='personne')
+    pays = models.ForeignKey(Pays, null = True, db_column='pays', to_field='code', verbose_name = 'Nationalité')
     fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
     scolarite = models.CharField(max_length=255, null=True,
                                  verbose_name = 'Diplôme le plus élevé')
-    
-    
-    etablissement = models.ForeignKey(Etablissement, null=True, blank=True)
-    
+    etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
     #Domaine
-    #thematique = models.ForeignKey(Thematique, null=True)
-    thematique = models.CharField(max_length=255, null=True)
-                                        
-    
+    thematique = models.ForeignKey(Thematique, db_column='thematique', null=True)
+
     mots_cles = models.CharField(max_length=255, null=True, blank=True,
                                     verbose_name='Mots-clés')
     these = models.CharField(max_length=255, null=True, blank=True,
-                                    verbose_name='Thèse')    
-                           
-    #discipline = models.ForeignKey(Discipline, null=True, 
-    #                                    verbose_name='Champ disciplinaire')
-    discipline = models.CharField(max_length=255, null=True)
-    
+                                    verbose_name='Thèse')                          
+    discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, blank=True,
+                                        verbose_name='Champ disciplinaire')
     expertise = models.TextField(null=True, blank=True, verbose_name='Domaine d\'expertise et thèmes de recherche')                                    
     url = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Adresse site Internet personnel')
-    
-    publication1 = models.CharField(max_length=255, null=True,
+    publication1 = models.CharField(max_length=255, null=True, blank=True,
                                  verbose_name = 'Publication 1')
     publication2 = models.CharField(max_length=255, null=True, blank=True,
                                  verbose_name = 'Publication 2')
@@ -64,8 +56,7 @@ class Chercheur(models.Model):
                                  verbose_name = 'Publication 3')
     publication4 = models.CharField(max_length=255, null=True, blank=True, 
                                  verbose_name = 'Publication 4')
-
-    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe')
+    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name = 'Domaines de recherche')
     actif = models.BooleanField(editable = False)
     
     def __unicode__(self):
@@ -81,6 +72,7 @@ class Groupe(models.Model):
         return u"%s" % (self.nom)
     
 class ChercheurGroupe(models.Model):
-    chercheur = models.ForeignKey('Chercheur')
-    groupe = models.ForeignKey('Groupe')
+    id = models.AutoField(primary_key=True, db_column='id')
+    chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
+    groupe = models.ForeignKey('Groupe', db_column='groupe')
     date_inscription = models.DateField(auto_now=True)

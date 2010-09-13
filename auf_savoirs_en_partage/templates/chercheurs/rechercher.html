@@ -12,10 +12,14 @@
 <table>
     <tr>
         <th>{% anchor personne__nom Nom %}</th>
+        <th>{% anchor etablissement__nom Établissement %}</th>
+        <th>{% anchor pays__nom Localisation %}</th>
     </tr>
 {% for chercheur in chercheurs %}
     <tr>
         <td><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></td>
+        <td>{{ chercheur.etablissement }}</td>
+        <td>{{ chercheur.pays }}</td>
     </tr>
 {% endfor %}
 </table>

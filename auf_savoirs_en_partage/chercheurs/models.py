@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
 from django.db import models
 from datamaster_modeles.models import *
+from auf_references_modeles.models import Thematique
 from savoirs.models import Discipline
 
-GENRE_CHOICES = (('H', 'Homme'), ('F', 'Femme'))
+GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
 
     id = models.AutoField(primary_key=True)

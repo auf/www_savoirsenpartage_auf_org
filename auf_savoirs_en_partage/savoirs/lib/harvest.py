@@ -1,9 +1,7 @@
 # -*- encoding: utf-8 -*-
 import sys, os, time, traceback
-
 from auf_savoirs_en_partage.backend_config import RESOURCES
 from sep import SEP
-
 
 def import_all ():
     """Cette méthode effectue l'importation des données pour toutes les 
@@ -39,6 +37,7 @@ def import_all ():
         print "Ajout de", len(nodes), "references"
         print "S:", time.time ()
         for node in nodes:
+            node['server'] = name
             sep.add (node)
         sep.add_log (name, len(nodes))
         print "F:", time.time ()

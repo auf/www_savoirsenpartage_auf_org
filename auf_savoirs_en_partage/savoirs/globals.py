@@ -16,6 +16,7 @@ configuration = {
 
 #####
 # Meta fields
+SERVER          = 'server'
 TITLE           = 'title'
 ALT_TITLE       = 'alt_title'
 CREATOR         = 'creator'
@@ -37,7 +38,8 @@ LANGUAGE        = 'language'
 ORIG_LANG       = 'orig_lang'
 
 
-META = {TITLE: {'type': 'text', 'text_search': True},
+META = {SERVER: {'type': 'text'},
+        TITLE: {'type': 'text', 'text_search': True},
         ALT_TITLE: {'type': 'text', 'text_search': True},
         CREATOR: {'type': 'array', 'text_search': True},
         CONTRIBUTOR: {'type': 'array', 'text_search': True},

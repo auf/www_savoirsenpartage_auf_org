@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'django_sorting',
     'django_roa',
     'timezones',
+    'auf_references_modeles',
     'savoirs',
     'chercheurs',
     'sites',
@@ -91,3 +92,4 @@ CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 from auf_references_client.settings import *
+ROA_MODELS = False

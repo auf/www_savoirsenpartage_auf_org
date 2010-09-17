@@ -70,7 +70,7 @@ INSTALLED_APPS = (
     'datamaster_modeles',
     'savoirs',
     'chercheurs',
-    'sites',
+    'sitotheque',
 )
 
 TEMPLATE_LOADERS = (

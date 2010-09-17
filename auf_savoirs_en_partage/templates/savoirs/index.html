@@ -65,12 +65,12 @@
     <div class="box">
         <h4>Sites</h4>
         <ul class="sous-menu">
-            <li><a href="{% url sites.views.index %}">Sitothèque</a></li>
+            <li><a href="{% url sitotheque.views.index %}">Sitothèque</a></li>
         </ul>
         <ul class="liste-de-l-accueil">
         {% for site in sites %}
             <li class="clearfix">
-            <a href="{% url sites.views.retrieve site.id %}" class="le-titre">{{ site }}</a>
+            <a href="{% url sitotheque.views.retrieve site.id %}" class="le-titre">{{ site }}</a>
             <a href="{{ site.url }}" class="le-titre">{{ site.url }}</a>
             <span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>
             </li>

@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 
 import os
 from conf import *
@@ -88,5 +89,10 @@ AUTH_PASSWORD_REQUIRED = True
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
+
 from auf_references_client.settings import *
+
+print "-----------------------------------------------------------------------"
+print "!!! [%s] Pour importer les thématiques et les disciplines, le ROA a été désactivé " % __name__
+print "-----------------------------------------------------------------------"
 ROA_MODELS = False

@@ -7,3 +7,5 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 ROA_API_KEY = ''
 
 CALENDRIER_URL = 'http://davin:davin@cal.ro.auf.org/caldav.php/davin/test/'
+
+AUTH_PASSWORD_REQUIRED = True

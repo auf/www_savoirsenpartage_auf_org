@@ -82,7 +82,6 @@ TEMPLATE_DIRS = (
 AUTHENTICATION_BACKENDS = (
     'auf_references_client.backends.CascadeBackend',
 )
-AUTH_PASSWORD_REQUIRED = True
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 

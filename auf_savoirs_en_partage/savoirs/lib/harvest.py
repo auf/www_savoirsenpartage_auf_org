@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import sys, os, time, traceback
 from auf_savoirs_en_partage.backend_config import RESOURCES
+from savoirs.models import HarvestLog
 from sep import SEP
 
 def import_all ():
@@ -34,13 +35,22 @@ def import_all ():
             traceback.print_exc(file=sys.stdout)
             print '-'*60
             nodes = []
-        print "Ajout de", len(nodes), "references"
-        print "S:", time.time ()
+
+        added = updated = 0
         for node in nodes:
             node['server'] = name
-            sep.add (node)
-        sep.add_log (name, len(nodes))
-        print "F:", time.time ()
+            status = sep.add (node)
+            
+            if status['added']:
+                added += 1
+            if status['updated']:
+                updated += 1
+            message = status
+            message.update({'context':'record', 'name':name})
+            HarvestLog.add(message)
+
+        message = {'context':'moisson', 'name':name, 'added':added, 'updated':updated}
+        HarvestLog.add(message)
 
     del (sep)
 

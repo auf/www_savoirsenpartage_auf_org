@@ -17,6 +17,8 @@ configuration = {
 #####
 # Meta fields
 SERVER          = 'server'
+LAST_CHECKSUM   = 'last_checksum'
+LAST_UPDATE     = 'last_update'
 TITLE           = 'title'
 ALT_TITLE       = 'alt_title'
 CREATOR         = 'creator'

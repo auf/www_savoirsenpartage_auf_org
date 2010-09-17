@@ -4,7 +4,7 @@ import simplejson
 import uuid, datetime
 from timezones.fields import TimeZoneField
 from savoirs.globals import META
-from auf_references_modeles.models import Thematique, Discipline
+from datamaster_modeles.models import Thematique
 
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')

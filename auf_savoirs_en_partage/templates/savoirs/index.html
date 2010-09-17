@@ -71,7 +71,8 @@
         {% for site in sites %}
             <li class="clearfix">
             <a href="{% url sites.views.retrieve site.id %}" class="le-titre">{{ site }}</a>
-            <span class="la-date">Disciplines : {{ site.discipline }}</span>
+            <a href="{{ site.url }}" class="le-titre">{{ site.url }}</a>
+            <span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>
             </li>
         {% endfor %}
         </ul>

@@ -38,4 +38,4 @@ class Site(models.Model):
     date_maj = models.DateField(auto_now=True)
     
     def __unicode__(self):
-        return "%s" % (self.url)
+        return "%s" % (self.titre)

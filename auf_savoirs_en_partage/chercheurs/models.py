@@ -61,7 +61,7 @@ class Chercheur(models.Model):
     actif = models.BooleanField(editable = False)
     
     def __unicode__(self):
-        return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom)
+        return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
     
 
 class Groupe(models.Model):

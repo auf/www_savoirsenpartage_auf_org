@@ -16,6 +16,7 @@ import backend_config
 from forms import *
 from models import *
 from chercheurs.models import Chercheur
+from sites.models import Site
 
 
 def index (request):
@@ -28,11 +29,13 @@ def index (request):
     except:
         events = []
     chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
+    sites = Site.objects.all().order_by('?')[:configuration['accueil_sites']]
     return render_to_response ("savoirs/index.html", \
             Context ({"articles": articles,
                       "events": events,
                       "caldav_url": configuration['calendrier_publique'],
                       "chercheurs":chercheurs,
+                      "sites":sites,
                       }), \
             context_instance = RequestContext(request))
 

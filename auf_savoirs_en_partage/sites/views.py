@@ -11,3 +11,12 @@ def index(request):
     return render_to_response ("sites/index.html", \
             Context (variables), 
             context_instance = RequestContext(request))
+            
+def retrieve(request, id):
+    """Fiche du site"""
+    site = Site.objects.get(id=id)
+    variables = { 'site': site,
+                }
+    return render_to_response ("sites/retrieve.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))

@@ -36,3 +36,6 @@ class Site(models.Model):
     # meta
     actif = models.BooleanField()
     date_maj = models.DateField(auto_now=True)
+    
+    def __unicode__(self):
+        return "%s" % (self.url)

@@ -4,7 +4,8 @@
 configuration = {
     'max_actualite': 100,
     'accueil_actualite': 5,
-    'accueil_chercheur': 6,
+    'accueil_chercheur': 5,
+    'accueil_sites': 5,
     'nombre_par_page_actualite': 10,
     'resultats_par_page': 8, # pas changeable a cause de google
     'accueil_evenement': 10,

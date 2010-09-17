@@ -35,6 +35,7 @@ urlpatterns = patterns(
     (r'^espace/chercheur/(?P<id>\d+)/$', 'chercheurs.views.perso'),
     
     (r'^sites/$', 'sites.views.index'),
+    (r'^sites/(?P<id>\d+)/$', 'sites.views.retrieve'),
 )
 
 if settings.DEBUG:

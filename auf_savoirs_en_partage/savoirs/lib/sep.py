@@ -192,7 +192,7 @@ class SEP:
 
         if len (q) > 0:
             # Recherche "simple"
-            ww = q.get ("q", "").strip()[1:-1]
+            ww = q.get ("q", "").strip()
             if len (ww) > 0:
                 s = self._text_search (ww)
                 if len(s) > 0:
@@ -206,10 +206,10 @@ class SEP:
                 except: pass
             # Recherche avancée
             else:
-                creator = q.get ("creator", "")[1:-1]
-                title = q.get ("title", "")[1:-1]
-                description = q.get ("description", "")[1:-1]
-                subject = q.get ("subject", "")[1:-1]
+                creator = q.get ("creator", "")
+                title = q.get ("title", "")
+                description = q.get ("description", "")
+                subject = q.get ("subject", "")
 
                 if len (creator) > 0:
                     sets.append (self._text_search (creator, [CREATOR, CONTRIBUTOR]))

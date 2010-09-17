@@ -120,7 +120,7 @@ def sep_search (page, q, data):
                 'id': r.get("uri"), \
                 'title': hl(regexp, title), 
                 'content': content, \
-                'creator': '; '.join([hl(regexp, x) for x in r.get('creator')]),
+                'creator': '; '.join([hl(regexp, x) for x in r.get('creator', [])]),
                 'contributors': hl(regexp, contributeurs),
                 'subject': hl(regexp, subject),
                 'modified': r.get('modified'),

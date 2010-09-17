@@ -196,7 +196,7 @@ class SEP:
             if len (ww) > 0:
                 s = self._text_search (ww)
                 if len(s) > 0:
-                    rc.append (s)
+                    rc.extend(s)
             # Recherche URL
             elif q.get (URI) is not None:
                 s = []
@@ -227,5 +227,4 @@ class SEP:
 
         else:
             rc = self.ids()
-
         return rc

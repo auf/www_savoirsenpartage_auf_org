@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
 import caldav, datetime, time, pytz
 from savoirs.globals import configuration
+from settings import CALENDRIER_URL
 
 def evenements():
     rc = []
 
-    client = caldav.DAVClient(configuration['calendrier'])
-    cal = caldav.Calendar(client, url = configuration['calendrier'])
+    client = caldav.DAVClient(CALENDRIER_URL)
+    cal = caldav.Calendar(client, url = CALENDRIER_URL)
     start = datetime.datetime.now()
     events = cal.date_search(start)
 
@@ -21,13 +22,13 @@ def evenements():
 
 
 def evenement_info(uid):
-    client = caldav.DAVClient(configuration['calendrier'])
-    cal = caldav.Calendar(client, url = configuration['calendrier'])
+    client = caldav.DAVClient(CALENDRIER_URL)
+    cal = caldav.Calendar(client, url = CALENDRIER_URL)
     return cal.event(uid)
 
 def evenement_publie(event):
-    client = caldav.DAVClient(configuration['calendrier'])
-    cal = caldav.Calendar(client, url = configuration['calendrier'])
+    client = caldav.DAVClient(CALENDRIER_URL)
+    cal = caldav.Calendar(client, url = CALENDRIER_URL)
     e = caldav.Event(client, parent = cal, data = event.serialize()).save()
 
 def combine(when, tz):

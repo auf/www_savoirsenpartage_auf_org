@@ -74,6 +74,12 @@ class Evenement(models.Model):
 
     objects = ActiveManager()
 
+class ListSet(models.Model):
+    spec = models.CharField(primary_key = True, max_length = 255)
+    name = models.CharField(max_length = 255)
+    server = models.CharField(max_length = 255)
+    hidden = models.BooleanField(default = False)
+
 class Record(models.Model):
     
     #fonctionnement interne
@@ -97,6 +103,8 @@ class Record(models.Model):
     format = models.TextField(null = True, blank = True)
     language = models.TextField(null = True, blank = True)
 
+    listsets = models.ManyToManyField(ListSet)
+
     #SEP 2 (aucune données récoltées)
     alt_title = models.TextField(null = True, blank = True)
     abstract = models.TextField(null = True, blank = True)
@@ -108,6 +116,7 @@ class Record(models.Model):
     # Metadata AUF multivaluées
     disciplines = models.ManyToManyField(Discipline)
     thematiques = models.ManyToManyField(Thematique)
+
 
     def __unicode__(self):
         return "R[%s] %s" % (self.id, self.title)

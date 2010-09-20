@@ -23,6 +23,8 @@ def import_all ():
     for name in resources.keys ():
         print "Import:", name
         options = RESOURCES[name]
+        options['server'] = name
+
         module = 'harvesters.%s.%s' \
                 % (options['type'], options['acces'])
         __import__ (module)

@@ -2,7 +2,7 @@
 import re
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from models import SourceActualite, Actualite, Discipline, Evenement, Record, HarvestLog
+from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog
 from savoirs.globals import META
 from savoirs.lib.backend import Backend
 
@@ -29,9 +29,16 @@ class ReadOnlyWidget(forms.Widget):
         else:
             output = unicode(self.original_value)
 
+        # pour les relations
+        try:
+            output = ", ".join([ls.name for ls in self.original_value.get_query_set()])
+        except:
+            pass
+
         is_url = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', output)
         if is_url:
             output = "<a target='_blank' href='%s'>%s</a>" % (output, output)
+
         return mark_safe(output)
 
     def value_from_datadict(self, data, files, name):
@@ -70,6 +77,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         'type',
         'format',
         'language',
+        'listsets',
         'disciplines',
         'thematiques',
         ]
@@ -109,6 +117,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         et les champs en lecture seule uniquement."""
         self.search_fields = META.keys()
         self.readonly_fields = META.keys()
+        self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
     
     def _uri(self, obj):
@@ -125,6 +134,14 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
             return obj.description
 
 admin.site.register(Record, RecordAdmin)
+
+class ListSetAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
+    fields = ['spec', 'name', 'server', 'hidden' ]
+    list_display = fields
+    readonly_fields = ['spec', 'name', 'server',]
+    list_filter = ('server',)
+
+admin.site.register(ListSet, ListSetAdmin)
 
 class HarvestLogAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     fields = ['context', 'name', 'added', 'updated', 'record']

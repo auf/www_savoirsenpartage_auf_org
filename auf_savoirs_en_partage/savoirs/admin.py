@@ -77,15 +77,15 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         'type',
         'format',
         'language',
-        'listsets',
         'disciplines',
         'thematiques',
+        'validated',
         ]
 
     search_fields = []
     readonly_fields = []
 
-    list_filter = ('server',)
+    list_filter = ('server', 'validated')
     list_display = (
       #OAI et extra AUF
       'title',
@@ -110,6 +110,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
        #'issued',
        #'isbn',
        #'orig_lang',
+       'validated',
     )
 
     def __init__(self, *args, **kwargs):

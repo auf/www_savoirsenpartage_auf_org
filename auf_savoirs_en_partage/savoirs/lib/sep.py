@@ -61,8 +61,7 @@ class SEP:
         for set in  [ls for ls in ListSet.objects.all() if ls.spec in value]:
             record.listsets.add(set)
 
-    def _save (self, metadata):
-        r = Record ()
+    def _update_record(self, r, metadata):
         for k in metadata.keys ():
             if hasattr(self, k):
                 method = getattr(self, k)
@@ -73,6 +72,11 @@ class SEP:
         r.last_checksum = hashlib.md5(str(metadata)).hexdigest()
         r.last_update = datetime.datetime.today()
         r.save()
+
+
+    def _save (self, metadata):
+        r = Record ()
+        self._update_record(r, metadata)
         return r.id
 
     def _modify (self, id, metadata):
@@ -81,16 +85,9 @@ class SEP:
         # test si le fichier a été modifié
         if hashlib.md5(str(metadata)).hexdigest() == r.last_checksum:
             return False
-        
-        for k in metadata.keys ():
-            if hasattr(self, k):
-                method = getattr(self, k)
-                method(r, metadata[k])
-            else:
-                setattr (r, k, self.encoder.encode(k, metadata[k]))
 
-        r.last_update = datetime.datetime.today()
-        r.save()
+        self._update_record(r, metadata)
+
         return True
 
     def _combine (self, result_lists, op):

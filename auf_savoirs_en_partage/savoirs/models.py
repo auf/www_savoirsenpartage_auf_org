@@ -87,6 +87,7 @@ class Record(models.Model):
     server = models.CharField(max_length = 255)
     last_update = models.CharField(max_length = 255)
     last_checksum = models.CharField(max_length = 255)
+    validated = models.BooleanField(default = True)
 
     #OAI
     title = models.TextField(null = True, blank = True)
@@ -103,7 +104,7 @@ class Record(models.Model):
     format = models.TextField(null = True, blank = True)
     language = models.TextField(null = True, blank = True)
 
-    listsets = models.ManyToManyField(ListSet)
+    listsets = models.ManyToManyField(ListSet, null = True, blank = True)
 
     #SEP 2 (aucune données récoltées)
     alt_title = models.TextField(null = True, blank = True)

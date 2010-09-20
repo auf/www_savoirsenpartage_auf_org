@@ -66,8 +66,6 @@ INSTALLED_APPS = (
     'django_sorting',
     'django_roa',
     'timezones',
-    'auf_references_modeles',
-    'datamaster_modeles',
     'savoirs',
     'chercheurs',
     'sitotheque',

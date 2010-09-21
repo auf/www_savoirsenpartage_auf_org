@@ -132,7 +132,8 @@ class SEP:
         m = "+".join (matches)
 
         q = "SELECT id, (%s) AS score FROM savoirs_record \
-             WHERE (%s) HAVING score > 0 ORDER BY score DESC" % (m, m)
+             WHERE (%s) AND validated = 1 \
+             HAVING score > 0 ORDER BY score DESC" % (m, m)
 
         from django.db import connection, transaction
         cursor = connection.cursor()

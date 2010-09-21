@@ -97,12 +97,16 @@ def a_propos (request):
 
 def informations (request):
     s = sep.SEP()
-    t = s.logs()
     resources = copy.deepcopy (backend_config.RESOURCES)
-    for k in t.keys ():
+    for k in backend_config.RESOURCES.keys ():
         try:
             resources[k]['logs'] = { 'date': t[k][0], 'count': t[k][1] }
         except: pass
+
+    logs = HarvestLog.objects.filter(context = 'moisson').order_by('date')
+    for l in logs:
+        resources[l.name]['logs'] = {'date' : l.date, 'count': l.processed}
+
     return render_to_response ("savoirs/informations.html", \
             Context ({'r': resources}), \
             context_instance = RequestContext(request))

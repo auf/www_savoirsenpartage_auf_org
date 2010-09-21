@@ -1,0 +1,17 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>{{chercheur.personne.prenom}} {{chercheur.personne.nom}}</h4>
+
+<div class="contenu-wrapper">
+
+<form method="post">
+    <h5>Informations personnelles</h5>
+    {% with personne_form as form %}
+        {% include "table_form.html" %}
+    {% endwith %}
+
+    <input type="submit" name="Submit" value="Éditer" class="bouton" />
+</form>
+</div>
+{% endblock %}

@@ -5,14 +5,15 @@ from models import *
 
 class PersonneForm(forms.ModelForm):
     class Meta:
-        model = Personne
-        fields = ('nom', 'prenom', 'courriel', 'genre')
+        model = Utilisateur
+        fields = ('nom', 'prenom', 'courriel', 'password', 'genre')
 
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
         fields = ('pays', 'groupes')
         
+
 class EtablissementForm(forms.ModelForm):
     class Meta:
         model = Chercheur

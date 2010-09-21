@@ -29,7 +29,7 @@ class Personne(models.Model):
         ordering = ["prenom", "nom"]
 
 class Utilisateur(Personne):
-    password = models.CharField (max_length=35)
+    password = models.CharField (max_length=35, verbose_name = 'Mot de passe')
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Doctorant', 'Doctorant'), ('Autre', 'Autre'))
 class Chercheur(models.Model):

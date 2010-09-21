@@ -24,6 +24,11 @@ class DisciplineForm(forms.ModelForm):
         model = Chercheur
         fields = ('discipline', 'expertise', 'mots_cles', 'url', 'publication1', 'publication2', 'publication3')
         
+class PersonneEditForm(forms.ModelForm):
+    class Meta:
+        model = Personne
+        fields = ('nom', 'prenom', 'genre') 
+        
         
 class RepertoireSearchForm (forms.Form):
       mots_cles = forms.CharField (required = False, label="Mots-clés")

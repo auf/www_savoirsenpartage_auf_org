@@ -6,5 +6,8 @@
 <p>
 Bonjour {{ chercheur }}, vous êtes dans votre espace personnel.
 </p>
+<ul class="sous-menu">
+    <li><a href="{% url chercheurs.views.edit %}">Éditer profil</a></li>
+</ul>
 
 {% endblock %}

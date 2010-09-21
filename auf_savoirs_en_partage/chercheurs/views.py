@@ -4,7 +4,7 @@ from django.template import Context, RequestContext
 from forms import *
 
 from auf_references_client.models import Discipline, TypeImplantation
-from models import Personne
+from models import Personne, Utilisateur
 
 from django.contrib.auth.decorators import login_required
 
@@ -82,6 +82,25 @@ def inscription(request):
             Context (variables), 
             context_instance = RequestContext(request))
 
+
+def edit(request):
+    """Edition d'un chercheur"""
+    context_instance = RequestContext(request)
+    chercheur = context_instance['user_chercheur']    
+    if request.method == 'POST':
+        personne_form = PersonneEditForm(request.POST, prefix="personne", instance=chercheur.personne)  
+        personne_form.save()
+    else:
+        personne_form = PersonneEditForm(prefix="personne", instance=chercheur.personne)        
+        
+    variables = { 'chercheur': chercheur,
+                  'personne_form':personne_form,
+                }
+    return render_to_response ("chercheurs/edit.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+            
+            
 
 def perso(request):
     """Mock up de l'espace perso"""

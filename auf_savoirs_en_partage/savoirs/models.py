@@ -158,6 +158,7 @@ class HarvestLog(models.Model):
     date = models.DateTimeField(auto_now = True)
     added = models.IntegerField(null = True, blank = True)
     updated = models.IntegerField(null = True, blank = True)
+    processed = models.IntegerField(null = True, blank = True)
     record = models.ForeignKey(Record, null = True, blank = True)
 
     @staticmethod

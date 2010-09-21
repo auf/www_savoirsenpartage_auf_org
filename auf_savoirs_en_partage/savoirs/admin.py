@@ -145,7 +145,7 @@ class ListSetAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
 admin.site.register(ListSet, ListSetAdmin)
 
 class HarvestLogAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
-    fields = ['context', 'name', 'added', 'updated', 'record']
+    fields = ['context', 'name', 'added', 'updated', 'processed', 'record']
     list_display = fields + ['date']
     admin_order_fields = ['date']
     search_fields = fields

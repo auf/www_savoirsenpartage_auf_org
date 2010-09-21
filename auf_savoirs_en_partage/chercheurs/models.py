@@ -28,6 +28,9 @@ class Personne(models.Model):
     class Meta:
         ordering = ["prenom", "nom"]
 
+class Utilisateur(Personne):
+    password = models.CharField (max_length=35)
+
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Doctorant', 'Doctorant'), ('Autre', 'Autre'))
 class Chercheur(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')

@@ -6,6 +6,7 @@ from forms import *
 from auf_references_client.models import Discipline, TypeImplantation
 from models import Personne
 
+from django.contrib.auth.decorators import login_required
 
 def chercheur_queryset (request):
     list = Chercheur.objects.order_by("id")
@@ -80,10 +81,12 @@ def inscription(request):
     return render_to_response ("chercheurs/inscription.html", \
             Context (variables), 
             context_instance = RequestContext(request))
-            
-def perso(request, id):
+
+
+def perso(request):
     """Mock up de l'espace perso"""
-    chercheur = Chercheur.objects.get(id=id)
+    context_instance = RequestContext(request)
+    chercheur = context_instance['user_chercheur']
     variables = { 'chercheur': chercheur,
                 }
     return render_to_response ("chercheurs/perso.html", \

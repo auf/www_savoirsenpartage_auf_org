@@ -71,6 +71,16 @@ INSTALLED_APPS = (
     'sitotheque',
 )
 
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # default : http://docs.djangoproject.com/en/dev/ref/settings/?from=olddocs#template-context-processors
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "context_processors.user_chercheur",
+)
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
@@ -81,7 +91,7 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'auf_references_client.backends.CascadeBackend',
+    'authentification.CascadeBackend',
 )
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'

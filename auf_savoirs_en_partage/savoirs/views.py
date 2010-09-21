@@ -16,7 +16,7 @@ import backend_config
 from forms import *
 from models import *
 from chercheurs.models import Chercheur
-from sites.models import Site
+from sitotheque.models import Site
 
 
 def index (request):

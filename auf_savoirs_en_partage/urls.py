@@ -34,8 +34,8 @@ urlpatterns = patterns(
     (r'^chercheurs/repertoire/$', 'chercheurs.views.repertoire'),
     (r'^espace/chercheur/(?P<id>\d+)/$', 'chercheurs.views.perso'),
     
-    (r'^sites/$', 'sites.views.index'),
-    (r'^sites/(?P<id>\d+)/$', 'sites.views.retrieve'),
+    (r'^sites/$', 'sitotheque.views.index'),
+    (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
 )
 
 if settings.DEBUG:

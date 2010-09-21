@@ -137,7 +137,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
 admin.site.register(Record, RecordAdmin)
 
 class ListSetAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
-    fields = ['spec', 'name', 'server', 'hidden' ]
+    fields = ['spec', 'name', 'server', 'validated' ]
     list_display = fields
     readonly_fields = ['spec', 'name', 'server',]
     list_filter = ('server',)

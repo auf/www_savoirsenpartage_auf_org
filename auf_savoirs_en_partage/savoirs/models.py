@@ -78,7 +78,7 @@ class ListSet(models.Model):
     spec = models.CharField(primary_key = True, max_length = 255)
     name = models.CharField(max_length = 255)
     server = models.CharField(max_length = 255)
-    hidden = models.BooleanField(default = False)
+    validated = models.BooleanField(default = True)
 
 class Record(models.Model):
     

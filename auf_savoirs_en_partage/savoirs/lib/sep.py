@@ -131,8 +131,10 @@ class SEP:
             matches.append ("MATCH(`%s`) AGAINST ('%s'%s)" % (k, " ".join(words), suffix))
         m = "+".join (matches)
 
-        q = "SELECT id, (%s) AS score FROM savoirs_record \
-             WHERE (%s) AND validated = 1 \
+        q = "SELECT r.id, (%s) AS score FROM savoirs_record AS r \
+             LEFT JOIN savoirs_record_listsets AS rl ON r.id = rl.record_id \
+             JOIN savoirs_listset AS l ON rl.listset_id = l.spec \
+             WHERE (%s) AND r.validated = 1 AND l.validated = 1 \
              HAVING score > 0 ORDER BY score DESC" % (m, m)
 
         from django.db import connection, transaction

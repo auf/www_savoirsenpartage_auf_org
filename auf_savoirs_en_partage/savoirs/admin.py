@@ -1,7 +1,10 @@
 # -*- encoding: utf-8 -*-
 import re
+
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from django.http import HttpResponseRedirect
+
 from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog
 from savoirs.globals import META
 from savoirs.lib.backend import Backend
@@ -79,13 +82,15 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         'language',
         'disciplines',
         'thematiques',
+        'pays',
+        'regions',
         'validated',
         ]
 
     search_fields = []
     readonly_fields = []
 
-    list_filter = ('server', 'validated')
+    list_filter = ('server', 'validated', 'pays', 'regions')
     list_display = (
       #OAI et extra AUF
       'title',
@@ -112,7 +117,12 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
        #'orig_lang',
        'validated',
     )
+    actions = ['assigner_pays',
+               'assigner_regions',
+               'assigner_disciplines',
+               'assigner_thematiques']
 
+    # fonctions pour présenter l'information
     def __init__(self, *args, **kwargs):
         """Surcharge l'initialisation pour définir les champs de recherche dynamiquement,
         et les champs en lecture seule uniquement."""
@@ -133,6 +143,23 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
             return "%s..." % obj.description[:max]
         else:
             return obj.description
+
+    # actions
+    def assigner_pays(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('pays', ",".join(selected)))
+
+    def assigner_regions(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('regions', ",".join(selected)))
+
+    def assigner_thematiques(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('thematiques', ",".join(selected)))
+
+    def assigner_disciplines(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('disciplines', ",".join(selected)))
 
 admin.site.register(Record, RecordAdmin)
 

@@ -6,8 +6,7 @@ from django.template import Context, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-
-
+from django import forms
 from lib.recherche import cherche, google_search
 from lib import sep
 from lib.calendrier import evenements, evenement_info, evenement_publie, combine

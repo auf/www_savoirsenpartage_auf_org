@@ -4,7 +4,7 @@ import simplejson
 import uuid, datetime
 from timezones.fields import TimeZoneField
 from savoirs.globals import META
-from datamaster_modeles.models import Thematique
+from datamaster_modeles.models import Thematique, Pays, Region
 
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')
@@ -117,6 +117,8 @@ class Record(models.Model):
     # Metadata AUF multivaluées
     disciplines = models.ManyToManyField(Discipline)
     thematiques = models.ManyToManyField(Thematique)
+    pays = models.ManyToManyField(Pays)
+    regions = models.ManyToManyField(Region)
 
 
     def __unicode__(self):

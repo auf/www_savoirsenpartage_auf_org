@@ -8,7 +8,12 @@ handler500 # Pyflakes
 
 urlpatterns = patterns(
     '',
+    (r'^admin/assigner_pays', 'savoirs.admin_views.assigner_pays'),
+    (r'^admin/assigner_regions', 'savoirs.admin_views.assigner_regions'),
+    (r'^admin/assigner_thematiques', 'savoirs.admin_views.assigner_thematiques'),
+    (r'^admin/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
+
     (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'savoirs/login.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'savoirs/logout.html'}),
 

@@ -23,6 +23,8 @@ def import_all ():
     for name in resources.keys ():
         print "Import:", name
         options = RESOURCES[name]
+        options['server'] = name
+
         module = 'harvesters.%s.%s' \
                 % (options['type'], options['acces'])
         __import__ (module)
@@ -39,17 +41,23 @@ def import_all ():
         added = updated = 0
         for node in nodes:
             node['server'] = name
-            status = sep.add (node)
-            
+
+            try:
+                status = sep.add (node)
+            except:
+                message.update({'context':'error', 'name':name, 'processed':0})
+                HarvestLog.add(message)
+                continue
+
             if status['added']:
                 added += 1
             if status['updated']:
                 updated += 1
             message = status
-            message.update({'context':'record', 'name':name})
+            message.update({'context':'record', 'name':name, 'processed':1})
             HarvestLog.add(message)
 
-        message = {'context':'moisson', 'name':name, 'added':added, 'updated':updated}
+        message = {'context':'moisson', 'name':name, 'added':added, 'updated':updated, 'processed':len(nodes)}
         HarvestLog.add(message)
 
     del (sep)

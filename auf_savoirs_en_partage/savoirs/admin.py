@@ -1,8 +1,11 @@
 # -*- encoding: utf-8 -*-
 import re
+
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from models import SourceActualite, Actualite, Discipline, Evenement, Record, HarvestLog
+from django.http import HttpResponseRedirect
+
+from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog
 from savoirs.globals import META
 from savoirs.lib.backend import Backend
 
@@ -29,9 +32,16 @@ class ReadOnlyWidget(forms.Widget):
         else:
             output = unicode(self.original_value)
 
+        # pour les relations
+        try:
+            output = ", ".join([ls.name for ls in self.original_value.get_query_set()])
+        except:
+            pass
+
         is_url = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', output)
         if is_url:
             output = "<a target='_blank' href='%s'>%s</a>" % (output, output)
+
         return mark_safe(output)
 
     def value_from_datadict(self, data, files, name):
@@ -72,12 +82,15 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         'language',
         'disciplines',
         'thematiques',
+        'pays',
+        'regions',
+        'validated',
         ]
 
     search_fields = []
     readonly_fields = []
 
-    list_filter = ('server',)
+    list_filter = ('server', 'validated', 'pays', 'regions')
     list_display = (
       #OAI et extra AUF
       'title',
@@ -102,13 +115,20 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
        #'issued',
        #'isbn',
        #'orig_lang',
+       'validated',
     )
+    actions = ['assigner_pays',
+               'assigner_regions',
+               'assigner_disciplines',
+               'assigner_thematiques']
 
+    # fonctions pour présenter l'information
     def __init__(self, *args, **kwargs):
         """Surcharge l'initialisation pour définir les champs de recherche dynamiquement,
         et les champs en lecture seule uniquement."""
         self.search_fields = META.keys()
         self.readonly_fields = META.keys()
+        self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
     
     def _uri(self, obj):
@@ -124,10 +144,35 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         else:
             return obj.description
 
+    # actions
+    def assigner_pays(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('pays', ",".join(selected)))
+
+    def assigner_regions(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('regions', ",".join(selected)))
+
+    def assigner_thematiques(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('thematiques', ",".join(selected)))
+
+    def assigner_disciplines(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('disciplines', ",".join(selected)))
+
 admin.site.register(Record, RecordAdmin)
 
+class ListSetAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
+    fields = ['spec', 'name', 'server', 'validated' ]
+    list_display = fields
+    readonly_fields = ['spec', 'name', 'server',]
+    list_filter = ('server',)
+
+admin.site.register(ListSet, ListSetAdmin)
+
 class HarvestLogAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
-    fields = ['context', 'name', 'added', 'updated', 'record']
+    fields = ['context', 'name', 'added', 'updated', 'processed', 'record']
     list_display = fields + ['date']
     admin_order_fields = ['date']
     search_fields = fields

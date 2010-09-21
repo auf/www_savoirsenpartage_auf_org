@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import simplejson, re, datetime, operator, hashlib
 from savoirs.globals import *
-from savoirs.models import Record
+from savoirs.models import Record, ListSet
 
 class SEPEncoder:
     """
@@ -53,13 +53,30 @@ class SEP:
                     meta[k] = self.encoder.decode(k, v)
         return meta
 
-    def _save (self, metadata):
-        r = Record ()
+    # traitement spécial pour certaines clef de la structure
+    def listsets(self, record, value):
+        
+        # doit avoir un id pour créer les relations multivaluées
+        record.save()
+        for set in  [ls for ls in ListSet.objects.all() if ls.spec in value]:
+            record.listsets.add(set)
+
+    def _update_record(self, r, metadata):
         for k in metadata.keys ():
-            setattr (r, k, self.encoder.encode(k, metadata[k]))
+            if hasattr(self, k):
+                method = getattr(self, k)
+                method(r, metadata[k])
+            else:
+                setattr (r, k, self.encoder.encode(k, metadata[k]))
+
         r.last_checksum = hashlib.md5(str(metadata)).hexdigest()
         r.last_update = datetime.datetime.today()
         r.save()
+
+
+    def _save (self, metadata):
+        r = Record ()
+        self._update_record(r, metadata)
         return r.id
 
     def _modify (self, id, metadata):
@@ -68,12 +85,9 @@ class SEP:
         # test si le fichier a été modifié
         if hashlib.md5(str(metadata)).hexdigest() == r.last_checksum:
             return False
-        
-        for k in metadata.keys ():
-            setattr (r, k, self.encoder.encode(k, metadata[k]))
 
-        r.last_update = datetime.datetime.today()
-        r.save()
+        self._update_record(r, metadata)
+
         return True
 
     def _combine (self, result_lists, op):
@@ -117,8 +131,11 @@ class SEP:
             matches.append ("MATCH(`%s`) AGAINST ('%s'%s)" % (k, " ".join(words), suffix))
         m = "+".join (matches)
 
-        q = "SELECT id, (" + m + ") AS score FROM savoirs_record WHERE (" \
-                + m + ") HAVING score > 0 ORDER BY score DESC"
+        q = "SELECT r.id, (%s) AS score FROM savoirs_record AS r \
+             LEFT JOIN savoirs_record_listsets AS rl ON r.id = rl.record_id \
+             JOIN savoirs_listset AS l ON rl.listset_id = l.spec \
+             WHERE (%s) AND r.validated = 1 AND l.validated = 1 \
+             HAVING score > 0 ORDER BY score DESC" % (m, m)
 
         from django.db import connection, transaction
         cursor = connection.cursor()

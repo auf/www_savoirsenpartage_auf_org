@@ -4,7 +4,7 @@ import simplejson
 import uuid, datetime
 from timezones.fields import TimeZoneField
 from savoirs.globals import META
-from datamaster_modeles.models import Thematique
+from datamaster_modeles.models import Thematique, Pays, Region
 
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')
@@ -74,6 +74,12 @@ class Evenement(models.Model):
 
     objects = ActiveManager()
 
+class ListSet(models.Model):
+    spec = models.CharField(primary_key = True, max_length = 255)
+    name = models.CharField(max_length = 255)
+    server = models.CharField(max_length = 255)
+    validated = models.BooleanField(default = True)
+
 class Record(models.Model):
     
     #fonctionnement interne
@@ -81,6 +87,7 @@ class Record(models.Model):
     server = models.CharField(max_length = 255)
     last_update = models.CharField(max_length = 255)
     last_checksum = models.CharField(max_length = 255)
+    validated = models.BooleanField(default = True)
 
     #OAI
     title = models.TextField(null = True, blank = True)
@@ -97,6 +104,8 @@ class Record(models.Model):
     format = models.TextField(null = True, blank = True)
     language = models.TextField(null = True, blank = True)
 
+    listsets = models.ManyToManyField(ListSet, null = True, blank = True)
+
     #SEP 2 (aucune données récoltées)
     alt_title = models.TextField(null = True, blank = True)
     abstract = models.TextField(null = True, blank = True)
@@ -108,6 +117,9 @@ class Record(models.Model):
     # Metadata AUF multivaluées
     disciplines = models.ManyToManyField(Discipline)
     thematiques = models.ManyToManyField(Thematique)
+    pays = models.ManyToManyField(Pays)
+    regions = models.ManyToManyField(Region)
+
 
     def __unicode__(self):
         return "R[%s] %s" % (self.id, self.title)
@@ -148,6 +160,7 @@ class HarvestLog(models.Model):
     date = models.DateTimeField(auto_now = True)
     added = models.IntegerField(null = True, blank = True)
     updated = models.IntegerField(null = True, blank = True)
+    processed = models.IntegerField(null = True, blank = True)
     record = models.ForeignKey(Record, null = True, blank = True)
 
     @staticmethod

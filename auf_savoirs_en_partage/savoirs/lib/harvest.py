@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
 import sys, os, time, traceback
 from auf_savoirs_en_partage.backend_config import RESOURCES
-from savoirs.models import HarvestLog
+from savoirs.models import HarvestLog, Record
 from sep import SEP
 
 class HarvestStats:
 
-    libelles = {'site':50, 'url':50, 'type':10, 'acces':10, 'ref_importees':20, 'date':20, 'obs':10}
+    libelles = {'site':50, 'url':50, 'type':10, 'acces':10, 'ref_importees':20, 'date':30, 'obs':10}
+    separateur = " "
 
     def dernier_logs_moisson(self, site):
         return HarvestLog.objects.filter(name=site, context='moisson').order_by('-date')
@@ -19,13 +20,11 @@ class HarvestStats:
             return "pas d'import"
 
     def ref_importees(self, site):
-        logs = self.dernier_logs_moisson(site)
-        if len(logs) > 0:
-            return str(logs[0].processed)
-        else:
-            return "pas d'import"
+        records = Record.objects.filter(server=site)
+        return str(len(records))
 
-    def wiki(self,):
+    def stats(self,):
+        stats = []
         tableau = []
         for site, options in RESOURCES.items():
             options['site'] = site
@@ -35,8 +34,8 @@ class HarvestStats:
         libelles_formates = []
         for l, largeur in self.libelles.items():
             l = "*%s*" % l
-            libelles_formates.append(l.ljust(largeur))
-        print "|%s|" % "|".join(libelles_formates)
+            libelles_formates.append(l.ljust(largeur, self.separateur))
+        stats.append(libelles_formates)
         
         # lignes
         for ligne in tableau:
@@ -49,9 +48,14 @@ class HarvestStats:
                     value = ligne[l]
                 else:
                     value = ""
-                value = value.ljust(largeur)
+                value = value.ljust(largeur, self.separateur)
                 ligne_ordonnee.append(value)
-            print "|%s|" % "|".join(ligne_ordonnee)
+            stats.append(ligne_ordonnee)
+        return stats
+
+    def wiki(self,):
+        for s in self.stats():
+            print "|%s|" % "|".join(s)
 
 def import_all ():
     """Cette méthode effectue l'importation des données pour toutes les 

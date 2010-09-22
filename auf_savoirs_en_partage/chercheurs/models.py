@@ -11,7 +11,7 @@ class Personne(models.Model):
     salutation = models.CharField(max_length=128, null = True, blank = True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name = 'Prénom')
-    courriel = models.CharField(max_length=128, blank = True)
+    courriel = models.CharField(max_length=128)
     fonction = models.CharField(max_length=128, null = True, blank = True)
     sousfonction = models.CharField(max_length=128, null = True, blank = True,
                                     verbose_name = 'Sous-fonction')
@@ -27,6 +27,9 @@ class Personne(models.Model):
 
     class Meta:
         ordering = ["prenom", "nom"]
+
+class Utilisateur(Personne):
+    password = models.CharField (max_length=35, verbose_name = 'Mot de passe')
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Doctorant', 'Doctorant'), ('Autre', 'Autre'))
 class Chercheur(models.Model):

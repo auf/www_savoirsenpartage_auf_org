@@ -4,9 +4,51 @@
 <h4>{{ chercheur }}</h4>
 
 <div class="contenu-wrapper">
-<p>
-Voici la fiche chercheur de {{ chercheur }}.
-</p>
+<p>{{chercheur.personne.courriel}}</p>
+<h5>Information générales</h5>
+<table>
+    <tr>
+        <td>Nationalité</td>
+        <td>{{chercheur.pays.nom}}</td>
+    </tr>
+    <tr>
+        <td>Fonction :</td>
+        <td>{{chercheur.fonction}}</td>
+    </tr>
+    <tr>
+        <td>Diplôme :</td>
+        <td>{{chercheur.scolarite}}</td>
+    </tr>
+</table>
+
+<h5>Établissement de rattachement</h5>
+<table>
+    <tr>
+        <td>Localisation</td>
+        <td>{{chercheur.etablissement.pays}}</td>
+    </tr>
+    <tr>
+        <td>Établissement</td>
+        <td>{{chercheur.etablissement.nom}}</td>
+    </tr>
+</table>
+
+<h5>Champ disciplinaire, thèmes de recherche et publications</h5>
+<table>
+    <tr>
+        <td>Publication 1</td>
+        <td>{{chercheur.publication1}}</td>
+    </tr>
+    <tr>
+        <td>Publication 2</td>
+        <td>{{chercheur.publication2}}</td>
+    </tr>
+    <tr>
+        <td>Publication 3</td>
+        <td>{{chercheur.publication3}}</td>
+    </tr>
+</table>
+
 </div>
 
 {% endblock %}

@@ -37,8 +37,9 @@ urlpatterns = patterns(
     (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve'),
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
     (r'^chercheurs/repertoire/$', 'chercheurs.views.repertoire'),
-    (r'^espace/chercheur/(?P<id>\d+)/$', 'chercheurs.views.perso'),
-    
+    (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
+    (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
+
     (r'^sites/$', 'sitotheque.views.index'),
     (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
 )

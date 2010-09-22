@@ -90,7 +90,14 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     search_fields = []
     readonly_fields = []
 
-    list_filter = ('server', 'validated', 'pays', 'regions')
+    list_filter = (
+      'server',
+      'validated',
+      'pays',
+      'regions',
+      'disciplines',
+      'thematiques',
+      )
     list_display = (
       #OAI et extra AUF
       'title',

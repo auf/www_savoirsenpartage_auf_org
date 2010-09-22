@@ -4,6 +4,55 @@ from auf_savoirs_en_partage.backend_config import RESOURCES
 from savoirs.models import HarvestLog
 from sep import SEP
 
+class HarvestStats:
+
+    libelles = {'site':50, 'url':50, 'type':10, 'acces':10, 'ref_importees':20, 'date':20, 'obs':10}
+
+    def dernier_logs_moisson(self, site):
+        return HarvestLog.objects.filter(name=site, context='moisson').order_by('-date')
+
+    def date(self, site):
+        logs = self.dernier_logs_moisson(site)
+        if len(logs) > 0:
+            return str(logs[0].date)
+        else:
+            return "pas d'import"
+
+    def ref_importees(self, site):
+        logs = self.dernier_logs_moisson(site)
+        if len(logs) > 0:
+            return str(logs[0].processed)
+        else:
+            return "pas d'import"
+
+    def wiki(self,):
+        tableau = []
+        for site, options in RESOURCES.items():
+            options['site'] = site
+            tableau.append(options)
+        
+        # libelles
+        libelles_formates = []
+        for l, largeur in self.libelles.items():
+            l = "*%s*" % l
+            libelles_formates.append(l.ljust(largeur))
+        print "|%s|" % "|".join(libelles_formates)
+        
+        # lignes
+        for ligne in tableau:
+            ligne_ordonnee = []
+            for l,largeur in self.libelles.items():
+                method = getattr(self, l, None)
+                if method is not None:
+                    value = method(ligne['site'])
+                elif ligne.has_key(l):
+                    value = ligne[l]
+                else:
+                    value = ""
+                value = value.ljust(largeur)
+                ligne_ordonnee.append(value)
+            print "|%s|" % "|".join(ligne_ordonnee)
+
 def import_all ():
     """Cette méthode effectue l'importation des données pour toutes les 
     sources définies dans `conf.py`, et les ajoute dans le système de stockage 
@@ -14,6 +63,12 @@ def import_all ():
     resources = RESOURCES
     if len(sys.argv) == 2:
         name = sys.argv[1]
+
+        if name == 'stats':
+            stats = HarvestStats()
+            stats.wiki()
+            sys.exit(1)
+
         if RESOURCES.get(name) is not None:
             resources = {name: RESOURCES.get(name)}
         else:

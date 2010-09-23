@@ -9,27 +9,36 @@ class SEPEncoder:
     """
     separator = ", "
 
+    def propre(self, str):
+        """Retoune une chaîne de caractère propre utf-8
+        Elle permet de corrgier les problèmes d'encodage."""
+        if str is None:
+            return u""
+        else:
+            return str.replace(u"\x92", u"´")
+
     def encode(self, field, data):
+        """Encode la structure de donnée moissonnée pour la BD"""
         if field in META.keys() and META[field]['type'] == 'array': 
             return self.separator.join(data)
         else:
             return data
 
     def decode(self, field, data):
+        """Décode la structure provenant de la BD"""
         if field in META.keys() and META[field]['type'] == 'array': 
             return data.split(self.separator)
         else:
             return data
     
-    #def migrate(self,):
-    #    for r in Record.objects.all():
-    #        for f in META.keys():
-    #            json = getattr(r, f)
-    #            if json is not None:
-    #                normal = simplejson.loads(json)
-    #                new = self.encode(f, normal)
-    #                setattr(r, f, new)
-    #        r.save()
+    def menage(self,):
+        """Applique sur tous les records, la fonction de corrections
+        de string sur les données moissonnées"""
+        for r in Record.objects.all():
+            for k in META.keys ():
+                v = getattr (r, k)
+                setattr (r, k, self.propre(v))
+            r.save()
 
 class SEP:
     """
@@ -60,7 +69,7 @@ class SEP:
         record.save()
         for set in  [ls for ls in ListSet.objects.all() if ls.spec in value]:
             record.listsets.add(set)
-
+    
     def _update_record(self, r, metadata):
         for k in metadata.keys ():
             if hasattr(self, k):
@@ -71,6 +80,13 @@ class SEP:
 
         r.last_checksum = hashlib.md5(str(metadata)).hexdigest()
         r.last_update = datetime.datetime.today()
+
+        # stocke des chaînes de caractères propre en BD en provenance
+        # des données moissonnées
+        for k in META.keys ():
+            v = getattr (r, k)
+            setattr (r, k, self.encoder.propre(v))
+
         r.save()
 
 

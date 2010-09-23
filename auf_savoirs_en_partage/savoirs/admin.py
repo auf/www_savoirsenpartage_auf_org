@@ -81,6 +81,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         'language',
         'disciplines',
         'thematiques',
+        'listsets',
         'pays',
         'regions',
         'validated',
@@ -90,8 +91,8 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     readonly_fields = []
 
     list_filter = (
-      'server',
       'validated',
+      'server',
       'pays',
       'regions',
       'disciplines',

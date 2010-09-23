@@ -138,7 +138,7 @@ def cherche (page, q, engin=None):
         google_search (page, q, rc)
 
     elif engin == 'sep':
-        sep_search (page, {'q': q.encode ('utf-8')}, rc)
+        sep_search (page, {'q': q}, rc)
 
     elif engin == 'avancee':
         sep_search (page, q, rc)

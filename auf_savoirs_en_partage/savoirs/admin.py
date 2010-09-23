@@ -7,7 +7,6 @@ from django.http import HttpResponseRedirect
 
 from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog
 from savoirs.globals import META
-from savoirs.lib.backend import Backend
 
 admin.site.register(Actualite)
 admin.site.register(SourceActualite)

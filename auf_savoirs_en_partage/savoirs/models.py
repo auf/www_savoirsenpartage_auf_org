@@ -80,6 +80,9 @@ class ListSet(models.Model):
     server = models.CharField(max_length = 255)
     validated = models.BooleanField(default = True)
 
+    def __unicode__(self,):
+        return self.name
+
 class Record(models.Model):
     
     #fonctionnement interne

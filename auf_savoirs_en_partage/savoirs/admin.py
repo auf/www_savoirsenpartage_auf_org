@@ -1,8 +1,12 @@
 # -*- encoding: utf-8 -*-
 import re
 
+from django.db import models
 from django.contrib import admin
+from django.contrib.admin.filterspecs import RelatedFilterSpec, FilterSpec
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
+from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
 
 from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog
@@ -12,6 +16,24 @@ admin.site.register(Actualite)
 admin.site.register(SourceActualite)
 admin.site.register(Discipline)
 admin.site.register(Evenement)
+
+class ListSetFilterSpec(RelatedFilterSpec):
+    """
+    Filtre custom automatiquement lié à un field nommé 'listsets'. Il a pour but de s'afficher
+    lorsqu'un server a déjà été présélectionné. Dans ce cas, il affiche une liste qui contient les
+    listsets de ce server.
+    """
+    def __init__(self, f, request, params, model, model_admin):
+        super(ListSetFilterSpec, self).__init__(f, request, params, model, model_admin)
+        self.server_name = request.GET.get('server', None)
+
+    def has_output(self):
+        return self.server_name is not None
+
+    def title(self):
+        return self.lookup_title
+
+FilterSpec.filter_specs.insert(0, (lambda f: f.name == 'listsets', ListSetFilterSpec))
 
 # Ces deux classes permettent d'implémenter la possibilité d'avoir un champs readonly_fields
 # dans l.administration.
@@ -93,6 +115,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     list_filter = (
       'validated',
       'server',
+      'listsets',
       'pays',
       'regions',
       'disciplines',

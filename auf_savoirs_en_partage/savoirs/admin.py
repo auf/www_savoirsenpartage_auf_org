@@ -3,13 +3,15 @@ import re
 
 from django.db import models
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from django.contrib.admin.filterspecs import RelatedFilterSpec, FilterSpec
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
 
-from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog
+from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog, Profile
 from savoirs.globals import META
 
 admin.site.register(Actualite)
@@ -29,9 +31,6 @@ class ListSetFilterSpec(RelatedFilterSpec):
 
     def has_output(self):
         return self.server_name is not None
-
-    def title(self):
-        return self.lookup_title
 
 FilterSpec.filter_specs.insert(0, (lambda f: f.name == 'listsets', ListSetFilterSpec))
 
@@ -103,7 +102,6 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         'language',
         'disciplines',
         'thematiques',
-        'listsets',
         'pays',
         'regions',
         'validated',
@@ -138,14 +136,15 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
       'format',
       'type',
     
-       #SEP 2 (aucune données récoltées)
-       #'alt_title',
-       #'abstract',
-       #'creation',
-       #'issued',
-       #'isbn',
-       #'orig_lang',
-       'validated',
+      #SEP 2 (aucune données récoltées)
+      #'alt_title',
+      #'abstract',
+      #'creation',
+      #'issued',
+      #'isbn',
+      #'orig_lang',
+      'est_complet',
+      'validated',
     )
     actions = ['assigner_pays',
                'assigner_regions',
@@ -160,6 +159,12 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         self.readonly_fields = META.keys()
         self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
+
+    def est_complet(self, obj):
+        """ """
+        v = obj.est_complet()
+        return '<img src="/admin_media/img/admin/icon-%s.gif" alt="%d"/>' % (('no','yes')[v], v)
+    est_complet.allow_tags = True
     
     def _uri(self, obj):
         """ """
@@ -210,3 +215,15 @@ class HarvestLogAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     list_filter = ('context',)
 
 admin.site.register(HarvestLog, HarvestLogAdmin)
+
+class ProfileInline(admin.TabularInline):
+    model = Profile
+    fk_name = 'user'
+    max_num = 1
+
+class UserProfileAdmin(UserAdmin):
+    inlines = [ProfileInline, ]
+
+admin.site.unregister(User)
+admin.site.register(User, UserProfileAdmin)
+

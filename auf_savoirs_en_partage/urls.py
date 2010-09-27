@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, include, handler500
+from django.conf.urls.defaults import patterns, include, handler500, url
 from django.conf import settings
 from django.contrib import admin
 
@@ -8,6 +8,8 @@ handler500 # Pyflakes
 
 urlpatterns = patterns(
     '',
+    url(r'^admin_tools/', include('admin_tools.urls')),
+    (r'^admin/', include(admin.site.urls)),
     (r'^admin/assigner_pays', 'savoirs.admin_views.assigner_pays'),
     (r'^admin/assigner_regions', 'savoirs.admin_views.assigner_regions'),
     (r'^admin/assigner_thematiques', 'savoirs.admin_views.assigner_thematiques'),

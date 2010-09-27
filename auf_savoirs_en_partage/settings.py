@@ -58,6 +58,10 @@ ROOT_URLCONF = 'auf_savoirs_en_partage.urls'
 
 
 INSTALLED_APPS = (
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -97,5 +101,9 @@ AUTHENTICATION_BACKENDS = (
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
+
+ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashboard'
+
+AUTH_PROFILE_MODULE = 'savoirs.Profile'
 
 from auf_references_client.settings import *

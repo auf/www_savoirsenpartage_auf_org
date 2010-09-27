@@ -1,8 +1,11 @@
 # -*- encoding: utf-8 -*-
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
 import simplejson
 import uuid, datetime
 from timezones.fields import TimeZoneField
+from auf_savoirs_en_partage.backend_config import RESOURCES
 from savoirs.globals import META
 from datamaster_modeles.models import Thematique, Pays, Region
 
@@ -123,6 +126,13 @@ class Record(models.Model):
     pays = models.ManyToManyField(Pays)
     regions = models.ManyToManyField(Region)
 
+    def est_complet(self,):
+        """teste si le record à toutes les données obligatoires"""
+        return self.disciplines.count() > 0 and \
+           self.thematiques.count() > 0 and \
+           self.pays.count() > 0 and \
+           self.regions.count() > 0
+
 
     def __unicode__(self):
         return "R[%s] %s" % (self.id, self.title)
@@ -156,6 +166,21 @@ class Record(models.Model):
 #
 #models.signals.post_init.connect(decode_json, Record)
 
+class Serveur(models.Model):
+    nom = models.CharField(primary_key = True, max_length = 255)
+
+    def __unicode__(self,):
+        return self.nom
+
+    def conf_2_db(self,):
+        for k in RESOURCES.keys():
+            s, created = Serveur.objects.get_or_create(nom=k)
+            s.nom = k
+            s.save()
+
+class Profile(models.Model):
+    user = models.ForeignKey(User, unique=True)
+    serveurs = models.ManyToManyField(Serveur, null = True, blank = True)
 
 class HarvestLog(models.Model):
     context = models.CharField(max_length = 255)

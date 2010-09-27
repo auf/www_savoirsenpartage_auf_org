@@ -1,12 +1,59 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
 from datamaster_modeles.models import Thematique, Pays, Region
 from savoirs.models import Record, Discipline
+
+# Dashboard
+class RecordDashboard:
+    """Cette classe permet d'afficher une liste de tâche à faire en fonction de l'usagé"""
+    context = None
+
+    def __init__(self, context):
+        """Récupère le context"""
+        self.context = context
+
+    def get_fitre_serveurs(self,):
+        """Retourner la liste des serveurs sélectionnés.
+        S'il n'y en a pas, tous les serveurs sont retournés."""
+        try:
+            user = self.context.get('user')
+            profile = user.get_profile()
+            serveurs =  profile.serveurs.all()
+        except:
+            serveurs = Serveur.objects.all()
+        return [s.nom for s in serveurs]
+
+
+    def total_a_faire(self,):
+        """Retourne le total des références à traiter"""
+        return len(self.tout_mes_records())
+
+    def tout_mes_records(self,):
+        """Retourne la liste des références à traiter en fonction du filtre"""
+        filtre = self.get_fitre_serveurs()
+        return [r for r in Record.objects.filter(server__in=filtre) if not r.est_complet()]
+    
+    def mes_records(self,):
+        """Retourne la liste des références à traiter en fonction du filtre"""
+        return self.tout_mes_records()
+
+    def ref_apercu(self, record):
+        return "[%s] %s" % (record.server, record.title)
+
+    def change_url(self, object):
+        """Retourne l'url pour éditer le record"""
+        return reverse('admin:%s_%s_change' %(object._meta.app_label, object._meta.module_name), args=[object.id])
+
+    def a_traiter(self, ):
+        """Retourne la structure de données nécessaire pour le widget de django-admin-tool"""
+        records = self.mes_records()
+        return [{'title':self.ref_apercu(r), 'url':self.change_url(r), 'external': False} for r in records]
 
 # Admin views pour les associations par lots
 

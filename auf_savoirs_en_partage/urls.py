@@ -10,6 +10,7 @@ urlpatterns = patterns(
     '',
     url(r'^admin_tools/', include('admin_tools.urls')),
     (r'^admin/', include(admin.site.urls)),
+    (r'^admin/confirmation/(.*)', 'savoirs.admin_views.confirmation'),
     (r'^admin/assigner_pays', 'savoirs.admin_views.assigner_pays'),
     (r'^admin/assigner_regions', 'savoirs.admin_views.assigner_regions'),
     (r'^admin/assigner_thematiques', 'savoirs.admin_views.assigner_thematiques'),

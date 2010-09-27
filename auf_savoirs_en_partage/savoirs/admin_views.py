@@ -29,7 +29,6 @@ class RecordDashboard:
             serveurs = Serveur.objects.all()
         return [s.nom for s in serveurs]
 
-
     def total_a_faire(self,):
         """Retourne le total des références à traiter"""
         return len(self.tout_mes_records())
@@ -72,7 +71,9 @@ class ThematiquesForm(forms.Form):
 class DisciplinesForm(forms.Form):
     values = [(t.id, t.nom) for t in Discipline.objects.all()]
     disciplines = forms.MultipleChoiceField(choices=values)
- 
+
+class ConfirmationForm(forms.Form):
+    pass
 
 @login_required
 def assigner_pays(request):
@@ -215,5 +216,45 @@ def assigner_thematiques(request):
                       'form': thematiques_form,
                       'titre': u"Assignation de thématiques par lots",
                       'description': u"Sélectionner les thématiques qui seront associées aux références suivantes :" ,
+                      }),
+                     context_instance = RequestContext(request))
+
+@login_required
+def confirmation(request, action):
+    ids = request.GET.get("ids").split(",")
+
+    # determination du contexte de validation
+    if action == u'valider':
+        records = [r for r in Record.objects.in_bulk(ids).values() if r.est_complet()]
+        desc = u'validées'
+        validated = True
+    elif action == u'invalider':
+        records = Record.objects.in_bulk(ids).values()
+        desc = u'invalidées'
+        validated = False
+    else:
+       raise Exception("action invalide %s " % action)
+
+    if request.method == 'POST':
+        confirmation_form = ConfirmationForm(request.POST)
+
+        if confirmation_form.is_valid():
+            for r in records:
+                r.validated = validated
+                r.save()
+
+            succes = u""u"Les références ont été %s" % desc
+            request.user.message_set.create(message=succes)
+            return HttpResponseRedirect('/admin/savoirs/record')
+    else:
+        confirmation_form = ConfirmationForm()
+
+
+    return render_to_response ("savoirs/confirmation.html",
+            Context ({'records': records,
+                      'action': action,
+                      'form': confirmation_form,
+                      'titre': u"Validation par lots",
+                      'description': u"Les références suivantes vont être %s:" % desc ,
                       }),
                      context_instance = RequestContext(request))

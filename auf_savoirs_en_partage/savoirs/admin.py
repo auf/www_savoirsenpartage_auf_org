@@ -146,7 +146,9 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
       'est_complet',
       'validated',
     )
-    actions = ['assigner_pays',
+    actions = ['valider_references',
+               'invalider_references',
+               'assigner_pays',
                'assigner_regions',
                'assigner_disciplines',
                'assigner_thematiques']
@@ -180,6 +182,14 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
             return obj.description
 
     # actions
+    def valider_references(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/confirmation/%s?ids=%s" % ('valider', ",".join(selected)))
+
+    def invalider_references(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/confirmation/%s?ids=%s" % ('invalider', ",".join(selected)))
+
     def assigner_pays(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('pays', ",".join(selected)))

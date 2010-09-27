@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}{{titre}}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{description}}</h1>
+<ul>
+{% for r in records %}
+<li>[{{r.server}}] {{r.title}}</li>
+{% endfor %}
+</ul>
+</div>
+<form action="" method="post">
+    {{form.as_p}}
+    <input type="submit" value="Oui, j'en suis certain" />
+</form>
+{% endblock %}

@@ -16,7 +16,6 @@ from savoirs.globals import META
 
 admin.site.register(Actualite)
 admin.site.register(SourceActualite)
-admin.site.register(Discipline)
 admin.site.register(Evenement)
 
 class ListSetFilterSpec(RelatedFilterSpec):

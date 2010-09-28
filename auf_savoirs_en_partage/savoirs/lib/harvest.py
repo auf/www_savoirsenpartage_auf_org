@@ -100,13 +100,7 @@ def import_all ():
         added = updated = 0
         for node in nodes:
             node['server'] = name
-
-            try:
-                status = sep.add (node)
-            except:
-                message.update({'context':'error', 'name':name, 'processed':0})
-                HarvestLog.add(message)
-                continue
+            status = sep.add (node)
 
             if status['added']:
                 added += 1

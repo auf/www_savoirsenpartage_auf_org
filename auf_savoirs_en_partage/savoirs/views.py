@@ -97,12 +97,8 @@ def a_propos (request):
 def informations (request):
     s = sep.SEP()
     resources = copy.deepcopy (backend_config.RESOURCES)
-    for k in backend_config.RESOURCES.keys ():
-        try:
-            resources[k]['logs'] = { 'date': t[k][0], 'count': t[k][1] }
-        except: pass
 
-    logs = HarvestLog.objects.filter(context = 'moisson').order_by('date')
+    logs = [l for l in HarvestLog.objects.filter(context = 'moisson').order_by('date') if l.name in resources.keys()]
     for l in logs:
         resources[l.name]['logs'] = {'date' : l.date, 'count': l.processed}
 

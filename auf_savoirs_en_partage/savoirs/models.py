@@ -77,6 +77,9 @@ class Evenement(models.Model):
 
     objects = ActiveManager()
 
+    def __unicode__(self,):
+        return "[%s] %s" % (self.uid, self.titre)
+
 class ListSet(models.Model):
     spec = models.CharField(primary_key = True, max_length = 255)
     name = models.CharField(max_length = 255)

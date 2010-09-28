@@ -162,6 +162,11 @@ def harvest (options):
             if meta.get("uri") is None and meta.get("source") is not None:
                 meta['uri'] = meta['source']
 
+            #un identifier doit être présent, s'il ne commence pas par http, prendre l'uri
+            #(i.e : aide-en-ligne fournit un identifier sous forme de titre)
+            if meta.get("identifier") is None:
+                meta['identifier'] = meta['uri']
+
             # récupère les listsets associés
             listsets = record.findall (".//%sheader/%ssetspec" % (oai2ns, oai2ns))
             meta['listsets'] = [l.text for l in listsets]

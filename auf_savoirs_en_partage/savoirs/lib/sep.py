@@ -14,8 +14,11 @@ class SEPEncoder:
         Elle permet de corrgier les problèmes d'encodage."""
         if str is None:
             return u""
-        else:
-            return str.replace(u"\x92", u"´")
+        
+        if str.__class__.__name__ == 'str':
+            str = str.decode('utf-8')
+        
+        return str.replace(u"\x92", u"´")
 
     def encode(self, field, data):
         """Encode la structure de donnée moissonnée pour la BD"""
@@ -67,6 +70,7 @@ class SEP:
         
         # doit avoir un id pour créer les relations multivaluées
         record.save()
+
         for set in  [ls for ls in ListSet.objects.all() if ls.spec in value]:
             record.listsets.add(set)
     
@@ -86,9 +90,8 @@ class SEP:
         for k in META.keys ():
             v = getattr (r, k)
             setattr (r, k, self.encoder.propre(v))
-
+        
         r.save()
-
 
     def _save (self, metadata):
         r = Record ()

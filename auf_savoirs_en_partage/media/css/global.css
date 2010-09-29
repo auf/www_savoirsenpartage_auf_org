@@ -166,3 +166,6 @@ ul.sous-menu li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
 
 #repertoire { border:1px solid #bbb; padding:20px; margin: 10px; width:95% }
 #repertoire th, td { padding:5px }
+
+#actualites {position: relative;}
+#rss-actualites {position: absolute; right: 26px; top: 10px;}

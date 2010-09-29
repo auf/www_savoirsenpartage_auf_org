@@ -57,7 +57,7 @@ class SEP:
     def _load (self, id):
         """Recupérer la structure de métadonnées pour un record selon un `id`."""
         r = Record.objects.get(id = id)
-        meta = {}
+        meta = {'id' : id}
         for k in META.keys ():
             if hasattr (r, k):
                 v = getattr (r, k)

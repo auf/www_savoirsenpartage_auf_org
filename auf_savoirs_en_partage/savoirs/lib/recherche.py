@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import urllib, httplib, time, simplejson, pprint, math, re
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from sep import SEP
 from utils import smart_str
@@ -94,6 +95,7 @@ def sep_search (page, q, data):
     f = page * configuration['resultats_par_page']
     t = f + 8
     s = SEP ()
+
     matches = s.search (q)
     data['last_page'] = math.ceil (float(len (matches)) / \
             float(configuration['resultats_par_page'])) - 1
@@ -101,9 +103,14 @@ def sep_search (page, q, data):
     regexp = make_regexp (q)
 
     for r in set:
-        uri = r.get ("source", "")
+        uri = r.get ("uri", "")
         if len (uri) == 0:
-            uri = r.get ("uri")
+            uri = r.get ("source")
+        
+        # Récupère la source si ce n'est pas une URL
+        source = r.get("source", None)
+        if source is not None and source.startswith('http'):
+            source = None
 
         title = r.get ("title", "")
         content = sep_build_content (regexp, r.get ("description", ""))
@@ -116,8 +123,10 @@ def sep_search (page, q, data):
         if subject is not None:
             subject = ", ".join (subject)
 
-        data['results'].append ({'uri': uri, 
-                'id': r.get("uri"), \
+        data['results'].append ({
+                'uri': uri,
+                'source' : source,
+                'id': r.get("id"), \
                 'title': hl(regexp, title), 
                 'content': content, \
                 'creator': '; '.join([hl(regexp, x) for x in r.get('creator', [])]),
@@ -125,6 +134,7 @@ def sep_search (page, q, data):
                 'subject': hl(regexp, subject),
                 'modified': r.get('modified'),
                 'isbn': r.get('isbn'),
+                'admin_url': reverse('admin:savoirs_record_change', args=[r.get('id')])
                 })
 
 

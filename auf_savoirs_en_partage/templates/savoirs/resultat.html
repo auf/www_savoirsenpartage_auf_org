@@ -9,6 +9,9 @@
   {% if r.subject %}
   <div><span class="lbl">Sujets:</span> {{ r.subject|safe }}</div>
   {% endif %}
+  {% if r.source %}
+  <div><span class="lbl">Source:</span> {{ r.source|safe }}</div>
+  {% endif %}
   {% if r.modified %}
   <div><span class="lbl">Date de modification:</span> {{ r.modified }}</div>
   {% endif %}
@@ -16,8 +19,7 @@
   {% if r.isbn %}
   <div><span class="lbl">ISBN:</span> {{ r.isbn|safe }}</div>
   {% endif %}
-  <a class="ligne-url" href="{{ r.uri }}">{{ r.uri }}</a>
   {% if user.is_authenticated %}
-  <a href="#" onclick="showEditModal('{{ r.id }}'); return false;">EDIT</a>
+  <a href="{{ r.admin_url}}" target="_blank">Modifier</a>
   {% endif %}
 </div>

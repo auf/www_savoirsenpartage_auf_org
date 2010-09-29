@@ -30,11 +30,11 @@ class Actualite(models.Model):
     texte = models.TextField(db_column='texte_actualite')
     url = models.CharField(max_length=765, db_column='url_actualite')
     date = models.DateField(db_column='date_actualite')
-    visible = models.BooleanField(db_column='visible_actualite')
+    visible = models.BooleanField(db_column='visible_actualite', default = False)
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
 
     def __unicode__ (self):
-        return "Actualite %d: %s" % (self.id, self.titre)
+        return "%s" % (self.titre)
 
     class Meta:
         db_table = u'actualite'
@@ -137,7 +137,7 @@ class Record(models.Model):
 
 
     def __unicode__(self):
-        return "R[%s] %s" % (self.id, self.title)
+        return "[%s] %s" % (self.server, self.title)
 
 # Ces fonctions sont utilisées pour travailler directement sur les données JSON enregistrées tel quel
 # sur la base de données. Lorsque le modèle est initialisé, les fields sont décodés, et lorsque l'objet

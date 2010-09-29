@@ -14,7 +14,6 @@ from django.http import HttpResponseRedirect
 from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog, Profile
 from savoirs.globals import META
 
-admin.site.register(Actualite)
 admin.site.register(SourceActualite)
 admin.site.register(Evenement)
 
@@ -183,11 +182,11 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     # actions
     def valider_references(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/confirmation/%s?ids=%s" % ('valider', ",".join(selected)))
+        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('record', 'valider', ",".join(selected)))
 
     def invalider_references(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/confirmation/%s?ids=%s" % ('invalider', ",".join(selected)))
+        return HttpResponseRedirect("/admin/confirmation/%s/%s/?ids=%s" % ('record', 'invalider', ",".join(selected)))
 
     def assigner_pays(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -236,3 +235,18 @@ class UserProfileAdmin(UserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserProfileAdmin)
 
+class ActualiteAdmin(admin.ModelAdmin):
+    list_filter = ('visible',)
+    list_display = ('titre', 'date', 'visible')
+    actions = ['rendre_visible', 'rendre_invisible']
+
+    # actions
+    def rendre_visible(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'visible', ",".join(selected)))
+
+    def rendre_invisible(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'invisible', ",".join(selected)))
+
+admin.site.register(Actualite, ActualiteAdmin)

@@ -7,7 +7,7 @@ from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
 from datamaster_modeles.models import Thematique, Pays, Region
-from savoirs.models import Record, Discipline
+from savoirs.models import Record, Discipline, Actualite
 
 # Dashboard
 class RecordDashboard:
@@ -222,16 +222,33 @@ def assigner_thematiques(request):
 @login_required
 def confirmation(request, action):
     ids = request.GET.get("ids").split(",")
+    type, action  = action.split('/')[0:2]
 
     # determination du contexte de validation
     if action == u'valider':
-        records = [r for r in Record.objects.in_bulk(ids).values() if r.est_complet()]
+        objects = [r for r in Record.objects.in_bulk(ids).values() if r.est_complet()]
+        action = ('validated', True)
         desc = u'validées'
-        validated = True
+        model = u'références'
+
     elif action == u'invalider':
-        records = Record.objects.in_bulk(ids).values()
+        objects = Record.objects.in_bulk(ids).values()
+        action = ('validated', False)
         desc = u'invalidées'
-        validated = False
+        model = u'références'
+    
+    elif action == u'visible':
+        objects = Actualite.objects.in_bulk(ids).values()
+        action = ('visible', True)
+        desc = u'visibles'
+        model = u'actualités'
+    
+    elif action == u'invisible':
+        objects = Actualite.objects.in_bulk(ids).values()
+        action = ('visible', False)
+        desc = u'invisibles'
+        model = u'actualités'
+
     else:
        raise Exception("action invalide %s " % action)
 
@@ -239,22 +256,22 @@ def confirmation(request, action):
         confirmation_form = ConfirmationForm(request.POST)
 
         if confirmation_form.is_valid():
-            for r in records:
-                r.validated = validated
-                r.save()
+            for o in objects:
+                setattr(o, action[0], action[1])
+                o.save()
 
             succes = u""u"Les références ont été %s" % desc
             request.user.message_set.create(message=succes)
-            return HttpResponseRedirect('/admin/savoirs/record')
+            return HttpResponseRedirect('/admin/savoirs/%s' % type)
     else:
         confirmation_form = ConfirmationForm()
 
 
     return render_to_response ("savoirs/confirmation.html",
-            Context ({'records': records,
+            Context ({'objects': objects,
                       'action': action,
                       'form': confirmation_form,
                       'titre': u"Validation par lots",
-                      'description': u"Les références suivantes vont être %s:" % desc ,
+                      'description': u"Les %s suivantes vont être %s:" % (model, desc) ,
                       }),
                      context_instance = RequestContext(request))

@@ -29,6 +29,6 @@ for url in sources:
                           texte = entry.summary_detail.value,
                           url = entry.link,
                           date = date,
-                          visible = '0',
+                          visible = False,
                           ancienid = 0)
             print a.save()

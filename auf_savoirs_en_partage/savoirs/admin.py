@@ -237,7 +237,7 @@ admin.site.register(User, UserProfileAdmin)
 
 class ActualiteAdmin(admin.ModelAdmin):
     list_filter = ('visible',)
-    list_display = ('titre', 'date', 'visible')
+    list_display = ('titre', 'source', 'date', 'visible')
     actions = ['rendre_visible', 'rendre_invisible']
 
     # actions

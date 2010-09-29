@@ -23,6 +23,9 @@ class Discipline(models.Model):
 class SourceActualite(models.Model):
     nom = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
+    
+    def __unicode__(self,):
+        return u"%s" % self.nom
 
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
@@ -32,6 +35,7 @@ class Actualite(models.Model):
     date = models.DateField(db_column='date_actualite')
     visible = models.BooleanField(db_column='visible_actualite', default = False)
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
+    source = models.ForeignKey(SourceActualite, blank = True, null = True)
 
     def __unicode__ (self):
         return "%s" % (self.titre)

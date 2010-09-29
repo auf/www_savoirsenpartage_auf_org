@@ -28,7 +28,6 @@ for url in sources:
             a = Actualite(titre = entry.title, 
                           texte = entry.summary_detail.value,
                           url = entry.link,
-                          logo = '',
                           date = date,
                           visible = '0',
                           ancienid = 0)

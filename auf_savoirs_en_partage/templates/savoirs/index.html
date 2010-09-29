@@ -9,9 +9,6 @@
         {% comment %}<!-- dans la vue, cloner avoirListeActualitesAccueil -->{% endcomment %}
         {% for article in articles %}
             <li class="clearfix">
-            {% if article.logo %}
-            <a href="{{ article.url }}"><img src="{{ article.logo }}" alt="{{ article.titre }}" /></a>
-            {% endif %}
             <span class="la-date">{{ article.date|date:"d F Y" }}</span>
             <a href="{{ article.url }}" class="le-titre">{{ article.titre }}</a>
             {% comment %}

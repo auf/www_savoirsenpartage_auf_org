@@ -29,10 +29,9 @@ class Actualite(models.Model):
     titre = models.CharField(max_length=765, db_column='titre_actualite')
     texte = models.TextField(db_column='texte_actualite')
     url = models.CharField(max_length=765, db_column='url_actualite')
-    logo = models.CharField(max_length=765, db_column='logo_actualite')
     date = models.DateField(db_column='date_actualite')
-    visible = models.CharField(max_length=3, db_column='visible_actualite')
-    ancienid = models.IntegerField(db_column='ancienId_actualite')
+    visible = models.BooleanField(db_column='visible_actualite')
+    ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
 
     def __unicode__ (self):
         return "Actualite %d: %s" % (self.id, self.titre)

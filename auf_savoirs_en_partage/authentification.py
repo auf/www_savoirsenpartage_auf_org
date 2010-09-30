@@ -18,7 +18,7 @@ class CascadeBackend(ModelBackend):
         remoteUser = localUser = None
         try:
             if settings.AUTH_PASSWORD_REQUIRED:
-                remoteUser = RemoteUser.objects.get (courriel=email, password=password)
+                remoteUser = RemoteUser.objects.get (courriel=email, password=md5pass)
             else:
                 remoteUser = RemoteUser.objects.get (courriel=email)
         except:

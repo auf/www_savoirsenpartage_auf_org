@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
+import hashlib
 from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
 from django.template import Context, RequestContext
+from django.core.urlresolvers import reverse
 from forms import *
 
 from auf_references_client.models import Discipline, TypeImplantation
@@ -81,9 +84,13 @@ def inscription(request):
                     etablissement_form.save(commit=False)
                     etablissement_autre_form.save(commit=False)
                     discipline_form.save(commit=False)
+                    #encodage du mot de passe de l'utilisateur (refactorer car c'est pas clean
+                    #et c'est pas la bonne place pour faire ca - AJ
+                    personne_form.cleaned_data['password'] = hashlib.md5(personne_form.cleaned_data['password']).hexdigest()
                     p = personne_form.save()
                     c.personne = p
                     c.save()
+                    return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(p.id,)))
     else:
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")

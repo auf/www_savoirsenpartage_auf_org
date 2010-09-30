@@ -64,7 +64,6 @@ class Chercheur(models.Model):
                                     verbose_name='Linkedin')                                                                 
                                     
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name = 'Domaines de recherche')
-    actif = models.BooleanField(editable = False)
     
     #Refactoring, mettre les publications comme etant des many2many;
     publication1 = models.ForeignKey('Publication', db_column='publication1', null=True, blank=True, related_name='publication1', verbose_name = 'Publication 1')
@@ -73,6 +72,7 @@ class Chercheur(models.Model):
     publication4 = models.ForeignKey('Publication', db_column='publication4', null=True, blank=True, related_name='publication4', verbose_name = 'Publication 4')
     
     these = models.ForeignKey('Publication', db_column='these', null=True, blank=True, related_name='These')
+    
     #communication_annee
     #communication_titre
     #communication_nom_manifestation_scientifique
@@ -85,6 +85,7 @@ class Chercheur(models.Model):
     #laboratoire_url=
     
     #meta
+    actif = models.BooleanField(editable = False)
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
     date_modification = models.DateField(auto_now=True, db_column='date_modification')
     
@@ -100,6 +101,7 @@ class Publication(models.Model):
     lieu_edition = models.CharField(max_length=255, db_column='lieu_edition', null=True, blank=True, verbose_name = 'Lieu d\'édition')
     nb_pages = models.CharField(max_length=255, db_column='nb_pages', null=True, blank=True, verbose_name = 'Nombre de pages')
     url = models.CharField(max_length=255, db_column='url', null=True, blank=True, verbose_name = 'Lien vers la publication')
+    actif = models.BooleanField(editable = False, db_column='actif')
 
 class Groupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
@@ -121,3 +123,4 @@ class ChercheurGroupe(models.Model):
     groupe = models.ForeignKey('Groupe', db_column='groupe')
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
+    actif = models.BooleanField(editable = False, db_column='actif')

@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 
 from datamaster_modeles.models import Thematique, Pays, Region
 from savoirs.models import Record, Discipline, Actualite, Serveur
+from savoirs.forms import PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
 
 # Dashboard
 class RecordDashboard:
@@ -53,27 +54,6 @@ class RecordDashboard:
         """Retourne la structure de données nécessaire pour le widget de django-admin-tool"""
         records = self.mes_records()
         return [{'title':self.ref_apercu(r), 'url':self.change_url(r), 'external': False} for r in records]
-
-# Admin views pour les associations par lots
-
-class PaysForm(forms.Form):
-    values = [(p.id, p.nom) for p in Pays.objects.all()]
-    pays = forms.MultipleChoiceField(choices=values)
-
-class RegionsForm(forms.Form):
-    values = [(r.id, r.nom) for r in Region.objects.all()]
-    regions = forms.MultipleChoiceField(choices=values)
-
-class ThematiquesForm(forms.Form):
-    values = [(t.id, t.nom) for t in Thematique.objects.all()]
-    thematiques = forms.MultipleChoiceField(choices=values)
-
-class DisciplinesForm(forms.Form):
-    values = [(t.id, t.nom) for t in Discipline.objects.all()]
-    disciplines = forms.MultipleChoiceField(choices=values)
-
-class ConfirmationForm(forms.Form):
-    pass
 
 @login_required
 def assigner_pays(request):

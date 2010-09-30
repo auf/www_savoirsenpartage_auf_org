@@ -1,10 +1,14 @@
 from django.conf.urls.defaults import patterns, include, handler500, url
 from django.conf import settings
 from django.contrib import admin
+from savoirs.rss import FilActualite
 
 admin.autodiscover()
 
 handler500 # Pyflakes
+
+site_feeds = {'actualites': FilActualite }
+
 
 urlpatterns = patterns(
     '',
@@ -45,6 +49,9 @@ urlpatterns = patterns(
 
     (r'^sites/$', 'sitotheque.views.index'),
     (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
+
+    (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),
+
 )
 
 if settings.DEBUG:

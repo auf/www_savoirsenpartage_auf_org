@@ -2,8 +2,9 @@
 
 {% block contenu %}
 <div class="demi-gauche clearfix">
-    <div class="box">
+    <div id="actualites" class="box">
         <h4>Actualités</h4>
+        <a id="rss-actualites" href="/rss/actualites"><img src="/media/img/feed.png" /></a>
 
         <ul class="liste-de-l-accueil">
         {% comment %}<!-- dans la vue, cloner avoirListeActualitesAccueil -->{% endcomment %}
@@ -11,6 +12,9 @@
             <li class="clearfix">
             <span class="la-date">{{ article.date|date:"d F Y" }}</span>
             <a href="{{ article.url }}" class="le-titre">{{ article.titre }}</a>
+            {% if article.source %}
+            <span class="la-date">source: {{ article.source.nom }}</span>
+            {% endif %}
             {% comment %}
             <span class="le-resume">{{ article.texte }} -&nbsp;<a href="{{ article.url }}">Lire</a></span>
             {% endcomment %}

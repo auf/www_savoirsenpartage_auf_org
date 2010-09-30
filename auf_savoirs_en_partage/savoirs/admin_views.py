@@ -7,7 +7,7 @@ from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
 from datamaster_modeles.models import Thematique, Pays, Region
-from savoirs.models import Record, Discipline, Actualite
+from savoirs.models import Record, Discipline, Actualite, Serveur
 
 # Dashboard
 class RecordDashboard:

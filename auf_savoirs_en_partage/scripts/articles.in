@@ -16,9 +16,9 @@ from django.conf import settings
 from savoirs.models import SourceActualite, Actualite
 import feedparser, datetime
 
-sources = [x.url for x in SourceActualite.objects.all()]
-for url in sources:
-    d = feedparser.parse(url)
+sources = SourceActualite.objects.all()
+for src in sources:
+    d = feedparser.parse(src.url)
     for entry in d.entries:
         if len(Actualite.objects.filter(url = entry.link)) == 0:
             print entry.updated_parsed
@@ -30,5 +30,6 @@ for url in sources:
                           url = entry.link,
                           date = date,
                           visible = False,
+                          source = src,
                           ancienid = 0)
             print a.save()

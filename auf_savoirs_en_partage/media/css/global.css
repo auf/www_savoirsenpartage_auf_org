@@ -166,3 +166,8 @@ ul.sous-menu li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
 
 #repertoire { border:1px solid #bbb; padding:20px; margin: 10px; width:95% }
 #repertoire th, td { padding:5px }
+
+.errorlist {color:red}
+select     { width:100%; overflow:hidden }
+
+.publications_autre {border:1px solid #CCC; background:#FAFAFA; margin:10px; padding:10px; display:none;}

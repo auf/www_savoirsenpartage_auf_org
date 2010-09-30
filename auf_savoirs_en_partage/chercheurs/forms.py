@@ -11,18 +11,26 @@ class PersonneForm(forms.ModelForm):
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('pays', 'groupes')
+        fields = ('nationalite', 'groupes')
         
+class PublicationForm(forms.ModelForm):
+    class Meta:
+        model = Publication
 
 class EtablissementForm(forms.ModelForm):
     class Meta:
         model = Chercheur
         fields = ('etablissement',)
 
+class EtablissementAutreForm(forms.ModelForm):
+    class Meta:
+        model = Chercheur
+        fields = ('etablissement_autre_nom', 'etablissement_autre_pays', )
+
 class DisciplineForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('discipline', 'expertise', 'mots_cles', 'url', 'publication1', 'publication2', 'publication3')
+        fields = ('discipline', 'expertise', 'mots_cles', 'url')
         
 class PersonneEditForm(forms.ModelForm):
     class Meta:

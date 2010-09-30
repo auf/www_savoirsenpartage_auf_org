@@ -6,9 +6,13 @@ from savoirs.models import Discipline
 TYPE_SITE_CHOICES = (
     ('RV', 'Revue en ligne'), 
     ('BB', 'Bibliothèque en ligne'),
-    ('FD', 'Fonds patrimonial'),
+    ('FD', 'Fonds documentaire'),
     ('AR', 'Archive ouverte'),
     ('CO', 'Cours en ligne'),
+    ('RE', 'Repertoire de ressource'),
+    ('SA', 'Site associatif'),
+    ('SC', 'Site culturel'),
+    ('SI', 'Site d\'information'),
     ('AU', 'Autre type de site'),
     )
 

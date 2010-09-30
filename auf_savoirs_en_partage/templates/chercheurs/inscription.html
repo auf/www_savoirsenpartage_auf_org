@@ -4,9 +4,6 @@
 <h4>Inscription</h4>
 
 <div class="contenu-wrapper">
-<p>
-Pour vous inscrire au répertoire de chercheurs, vous devez avoir un compte AUF...
-</p>
 
 <form method="post">
     <h5>Informations personnelles</h5>
@@ -23,13 +20,37 @@ Pour vous inscrire au répertoire de chercheurs, vous devez avoir un compte AUF.
     {% with etablissement_form as form %}
         {% include "table_form.html" %}
     {% endwith %}
+    <p>Si l'établissement n'existe pas ci-dessus</p>
+    {% with etablissement_autre_form as form %}
+        {% include "table_form.html" %}
+    {% endwith %}
     
-    <h5>Champ disciplinaire, thèmes de recherche & publications</h5>
+    <h5>Champ disciplinaire, thèmes de recherche</h5>
     {% with discipline_form as form %}
+        {% include "table_form.html" %}
+    {% endwith %}
+
+    <h5>Publications</h5>
+    {% with publication1_form as form %}
         {% include "table_form.html" %}
     {% endwith %}    
     
+    <p id="show_publications">Autres publications</p>
     
+    <div class="publications_autre">
+        <h6>Publication 2</h6>
+        {% with publication2_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %} 
+        <h6>Publication 3</h6>
+        {% with publication3_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}     
+        <h6>Publication 4</h6>
+        {% with publication4_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}
+    </div>
     <br />
     <input type="submit" name="Submit" value="Inscription" class="bouton" />
 </form>

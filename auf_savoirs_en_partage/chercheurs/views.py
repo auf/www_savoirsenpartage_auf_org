@@ -51,7 +51,12 @@ def inscription(request):
         personne_form = PersonneForm (request.POST, prefix="personne")
         chercheur_form = ChercheurForm (request.POST, prefix="chercheur")
         etablissement_form = EtablissementForm (request.POST, prefix="etablissement")
+        etablissement_autre_form = EtablissementAutreForm(request.POST, prefix="etablissement_autre")
         discipline_form = DisciplineForm (request.POST, prefix="discipline")  
+        publication1_form = PublicationForm (request.POST, prefix="publication1")
+        publication2_form = PublicationForm (request.POST, prefix="publication2") 
+        publication3_form = PublicationForm (request.POST, prefix="publication3") 
+        publication4_form = PublicationForm (request.POST, prefix="publication4") 
         
         if personne_form.is_valid():
             if chercheur_form.is_valid():
@@ -60,8 +65,21 @@ def inscription(request):
                 etablissement_form = EtablissementForm (request.POST, prefix="etablissement", instance=c)
                 discipline_form = DisciplineForm (request.POST, prefix="discipline", instance=c)
                 
-                if etablissement_form.is_valid() and discipline_form.is_valid():          
-                    etablissement_form.save(commit=False)         
+                if etablissement_form.is_valid() and discipline_form.is_valid():       
+                    if publication1_form.is_valid():
+                       pub = publication1_form.save()
+                       c.publication1 = pub
+                    if publication2_form.is_valid():
+                       pub = publication2_form.save()
+                       c.publication2 = pub   
+                    if publication3_form.is_valid():
+                       pub = publication3_form.save()
+                       c.publication3 = pub    
+                    if publication4_form.is_valid():
+                       pub = publication4_form.save()
+                       c.publication4 = pub    
+                    etablissement_form.save(commit=False)
+                    etablissement_autre_form.save(commit=False)
                     discipline_form.save(commit=False)
                     p = personne_form.save()
                     c.personne = p
@@ -70,12 +88,22 @@ def inscription(request):
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")
         etablissement_form = EtablissementForm(prefix="etablissement")
+        etablissement_autre_form = EtablissementAutreForm(prefix="etablissement_autre")
         discipline_form = DisciplineForm(prefix="discipline")
+        publication1_form = PublicationForm(prefix="publication1")
+        publication2_form = PublicationForm(prefix="publication2") 
+        publication3_form = PublicationForm(prefix="publication3") 
+        publication4_form = PublicationForm(prefix="publication4") 
     
     variables = { 'personne_form': personne_form,
                   'chercheur_form': chercheur_form,
                   'etablissement_form': etablissement_form,
                   'discipline_form': discipline_form,
+                  'etablissement_autre_form': etablissement_autre_form,
+                  'publication1_form': publication1_form,
+                  'publication2_form': publication2_form,
+                  'publication3_form': publication3_form,
+                  'publication4_form': publication4_form,
                 }
     
     return render_to_response ("chercheurs/inscription.html", \

@@ -2,7 +2,6 @@
 from django.contrib.syndication.feeds import Feed
 from savoirs.models import Actualite
 from datetime import datetime, time
-from BeautifulSoup import BeautifulStoneSoup 
 
 class FilActualite(Feed):
     title = "Dernières actualités du portail des ressources scientifiques et pédagogiques de l'AUF"

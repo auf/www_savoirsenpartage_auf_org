@@ -29,9 +29,9 @@ def chercheur_queryset (request):
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
             list = list.filter (discipline=discipline)
-        mots_cles = simpleForm.cleaned_data["mots_cles"]
-        if mots_cles:
-            list = list.filter (personne__nom__icontains=mots_cles)
+        #mots_cles = simpleForm.cleaned_data["mots_cles"]
+        #if mots_cles:
+        #    list = list.filter (personne__nom__icontains=mots_cles)
     return list
     
 def repertoire(request):

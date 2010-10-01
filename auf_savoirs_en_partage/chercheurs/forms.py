@@ -42,7 +42,7 @@ class PersonneEditForm(forms.ModelForm):
         
         
 class RepertoireSearchForm (forms.Form):
-      mots_cles = forms.CharField (required = False, label="Mots-clés")
+      #mots_cles = forms.CharField (required = False, label="Mots-clés")
       discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Champ disciplinaire", empty_label="Tous")
       fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
       pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")

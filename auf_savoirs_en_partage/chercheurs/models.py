@@ -101,6 +101,9 @@ class Publication(models.Model):
     lieu_edition = models.CharField(max_length=255, db_column='lieu_edition', null=True, blank=True, verbose_name = 'Lieu d\'édition')
     nb_pages = models.CharField(max_length=255, db_column='nb_pages', null=True, blank=True, verbose_name = 'Nombre de pages')
     url = models.CharField(max_length=255, db_column='url', null=True, blank=True, verbose_name = 'Lien vers la publication')
+    #Migration des publications depuis l'ancien repertoire de chercheurs
+    publication_affichage = models.TextField(verbose_name = 'Publication', null = True, 
+                                   blank = True)
     actif = models.BooleanField(editable = False, db_column='actif')
 
 class Groupe(models.Model):

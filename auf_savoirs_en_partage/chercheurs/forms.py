@@ -13,11 +13,12 @@ class PersonneForm(forms.ModelForm):
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('nationalite', 'groupes')
+        fields = ('groupes',)
         
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
+        fields = ('titre', 'annee', 'revue', 'editeur', 'lieu_edition', 'nb_pages', 'url')
 
 class EtablissementForm(forms.ModelForm):
     class Meta:

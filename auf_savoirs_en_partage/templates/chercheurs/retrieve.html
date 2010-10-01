@@ -7,23 +7,23 @@
 <p>{{chercheur.personne.courriel}}</p>
 <h5>Information générales</h5>
 <table>
-    <tr>
+    <tr class="odd">
         <td>Nationalité</td>
-        <td>{{chercheur.pays.nom}}</td>
+        <td>{{chercheur.nationalite.nom}}</td>
     </tr>
     <tr>
         <td>Fonction :</td>
         <td>{{chercheur.fonction}}</td>
     </tr>
-    <tr>
+    <tr class="odd">
         <td>Diplôme :</td>
-        <td>{{chercheur.scolarite}}</td>
+        <td>{{chercheur.diplome}}</td>
     </tr>
 </table>
 
 <h5>Établissement de rattachement</h5>
 <table>
-    <tr>
+    <tr class="odd">
         <td>Localisation</td>
         <td>{{chercheur.etablissement.pays}}</td>
     </tr>
@@ -35,19 +35,35 @@
 
 <h5>Champ disciplinaire, thèmes de recherche et publications</h5>
 <table>
+    <tr class="odd">
+        <td>Thèmes de recherche et domaine d'expertise</td>
+        <td>{{chercheur.expertise}}</td>
+    </tr>
     <tr>
+        <td>Adresse site Internet personnel</td>
+        <td>{%if chercheur.url_site_web %}<a href="{{chercheur.url_site_web}}">{{chercheur.url_site_web}}</a>{% endif %}</td>
+    </tr>    
+    <tr class="odd">
         <td>Publication 1</td>
-        <td>{{chercheur.publication1}}</td>
+        <td>{{chercheur.publication1.publication_affichage}}</td>
     </tr>
     <tr>
         <td>Publication 2</td>
-        <td>{{chercheur.publication2}}</td>
+        <td>{{chercheur.publication2.publication_affichage}}</td>
     </tr>
-    <tr>
+    <tr class="odd">
         <td>Publication 3</td>
-        <td>{{chercheur.publication3}}</td>
+        <td>{{chercheur.publication3.publication_affichage}}</td>
     </tr>
 </table>
+
+<h5>Domaines de recherche</h5>
+<p>Adhésion active</p>
+<ul>
+{% for g in chercheur.chercheurgroupe_set.all %}
+<li>{{g.groupe.nom}}</li>
+{% endfor %}
+</ul>
 
 </div>
 

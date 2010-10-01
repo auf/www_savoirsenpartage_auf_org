@@ -175,3 +175,44 @@ select     { width:100%; overflow:hidden }
 
 #actualites {position: relative;}
 #rss-actualites {position: absolute; right: 26px; top: 10px;}
+
+form {padding-right:20px}
+
+form fieldset {
+  clear: both;
+  font-size: 100%;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  border-style: solid none none none;
+  padding: 10px;
+  margin: 0 0 0 0;
+}
+
+form fieldset legend {
+  font-size: 150%;
+  font-weight: bold;
+  color: #000000;
+  margin: 0 0 0 0;
+  padding: 0 5px;
+}
+
+label {
+  font-size: 12px;
+}
+td
+{
+vertical-align:middle;
+}
+
+.infotip
+{
+width:300px;
+margin-top:5px;
+border:1px solid #CCC;
+background:#EEE;
+float:right;
+}
+.publication
+{
+
+}

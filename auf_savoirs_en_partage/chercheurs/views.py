@@ -19,7 +19,7 @@ def chercheur_queryset (request):
     if simpleForm.is_valid ():
         pays = simpleForm.cleaned_data["pays"]
         if pays:
-            list = list.filter (pays = pays.pk)
+            list = list.filter (nationalite = pays.pk)
         fonction = simpleForm.cleaned_data["fonction"]
         if fonction:
             list = list.filter (fonction = fonction)
@@ -69,16 +69,16 @@ def inscription(request):
                 discipline_form = DisciplineForm (request.POST, prefix="discipline", instance=c)
                 
                 if etablissement_form.is_valid() and discipline_form.is_valid():       
-                    if publication1_form.is_valid():
+                    if publication1_form.is_valid() and publication1_form.cleaned_data['titre']:
                        pub = publication1_form.save()
                        c.publication1 = pub
-                    if publication2_form.is_valid():
+                    if publication2_form.is_valid() and publication2_form.cleaned_data['titre']:
                        pub = publication2_form.save()
                        c.publication2 = pub   
-                    if publication3_form.is_valid():
+                    if publication3_form.is_valid() and publication3_form.cleaned_data['titre']:
                        pub = publication3_form.save()
                        c.publication3 = pub    
-                    if publication4_form.is_valid():
+                    if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
                        pub = publication4_form.save()
                        c.publication4 = pub    
                     etablissement_form.save(commit=False)

@@ -257,6 +257,7 @@ class EvenementAdmin(admin.ModelAdmin):
     fields = ['titre',
               'discipline',
               'discipline_secondaire',
+              'mots_cles',
               'type',
               'fuseau',
               'debut',

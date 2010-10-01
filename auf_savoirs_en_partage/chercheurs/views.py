@@ -123,13 +123,47 @@ def edit(request):
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']    
     if request.method == 'POST':
-        personne_form = PersonneEditForm(request.POST, prefix="personne", instance=chercheur.personne)  
-        personne_form.save()
+        personne_form = PersonneEditForm(request.POST, prefix="personne", instance=chercheur.personne)
+        chercheur_form = ChercheurForm (request.POST, prefix="chercheur", instance=chercheur)
+        etablissement_form = EtablissementForm(request.POST, prefix="etablissement", instance=chercheur)
+        etablissement_autre_form = EtablissementAutreForm(request.POST, prefix="etablissement_autre", instance=chercheur)
+        discipline_form = DisciplineForm(request.POST, prefix="discipline", instance=chercheur)
+        publication1_form = PublicationForm(request.POST, prefix="publication1", instance=chercheur.publication1)
+        publication2_form = PublicationForm(request.POST, prefix="publication2", instance=chercheur.publication2) 
+        publication3_form = PublicationForm(request.POST, prefix="publication3", instance=chercheur.publication3) 
+        publication4_form = PublicationForm(request.POST, prefix="publication4", instance=chercheur.publication4)
+        
+
+        if( personne_form.is_valid() and discipline_form.is_valid() and publication1_form.is_valid() and publication2_form.is_valid() and publication3_form.is_valid() and publication4_form.is_valid() and chercheur_form.is_valid() ):
+            personne_form.save()
+            chercheur_form.save()
+            discipline_form.save()
+            publication1_form.save()
+            publication2_form.save()
+            publication3_form.save()
+            publication4_form.save()
     else:
-        personne_form = PersonneEditForm(prefix="personne", instance=chercheur.personne)        
+        personne_form = PersonneEditForm(prefix="personne", instance=chercheur.personne) 
+        chercheur_form = ChercheurForm (prefix="chercheur", instance=chercheur)
+        etablissement_form = EtablissementForm(prefix="etablissement", instance=chercheur)
+        etablissement_autre_form = EtablissementAutreForm(prefix="etablissement_autre", instance=chercheur)
+        discipline_form = DisciplineForm(prefix="discipline", instance=chercheur)
+        publication1_form = PublicationForm(prefix="publication1", instance=chercheur.publication1)
+        publication2_form = PublicationForm(prefix="publication2", instance=chercheur.publication2) 
+        publication3_form = PublicationForm(prefix="publication3", instance=chercheur.publication3) 
+        publication4_form = PublicationForm(prefix="publication4", instance=chercheur.publication4)    
+    #import pdb; pdb.set_trace()    
         
     variables = { 'chercheur': chercheur,
                   'personne_form':personne_form,
+                  'chercheur_form': chercheur_form,
+                  'etablissement_form': etablissement_form,
+                  'discipline_form': discipline_form,
+                  'etablissement_autre_form': etablissement_autre_form,
+                  'publication1_form': publication1_form,
+                  'publication2_form': publication2_form,
+                  'publication3_form': publication3_form,
+                  'publication4_form': publication4_form,
                 }
     return render_to_response ("chercheurs/edit.html", \
             Context (variables), 

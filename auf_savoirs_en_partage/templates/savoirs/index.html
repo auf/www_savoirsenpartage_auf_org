@@ -35,7 +35,7 @@
         {% for chercheur in chercheurs %}
             <li class="clearfix">
             <a href="{% url chercheurs.views.retrieve chercheur.id %}" class="le-titre">{{ chercheur }}</a>
-            <span class="la-date">Disciplines : {{ chercheur.discipline }}</span>
+            {% if chercheurs.disciplines %}<span class="la-date">Disciplines : {{ chercheur.discipline }}</span>{% endif %}
             </li>
         {% endfor %}
         </ul>
@@ -75,7 +75,7 @@
             <li class="clearfix">
             <a href="{% url sitotheque.views.retrieve site.id %}" class="le-titre">{{ site }}</a>
             <a href="{{ site.url }}" class="le-titre">{{ site.url }}</a>
-            <span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>
+            {% if site.discipline.all.count %}<span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>{% endif %}
             </li>
         {% endfor %}
         </ul>

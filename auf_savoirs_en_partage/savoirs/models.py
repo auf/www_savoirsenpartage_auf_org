@@ -116,7 +116,7 @@ class Evenement(models.Model):
         if len(kw) > 0:
             if len(self.description) > 0:
                 description += "\n"
-            description += u"Mots-cles: " + ", ".join(kw)
+            description += u"Mots-clés: " + ", ".join(kw)
 
         cal.vevent.add('dtstart').value = combine(self.debut, self.fuseau)
         cal.vevent.add('dtend').value = combine(self.fin, self.fuseau)

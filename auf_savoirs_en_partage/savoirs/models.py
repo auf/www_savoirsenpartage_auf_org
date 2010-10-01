@@ -1,13 +1,15 @@
 # -*- encoding: utf-8 -*-
+import simplejson, uuid, datetime, caldav, vobject, uuid
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-import simplejson
-import uuid, datetime
+from django.db.models.signals import pre_delete
 from timezones.fields import TimeZoneField
 from auf_savoirs_en_partage.backend_config import RESOURCES
 from savoirs.globals import META
+from settings import CALENDRIER_URL
 from datamaster_modeles.models import Thematique, Pays, Region
+from lib.calendrier import combine
+from caldav.lib import error
 
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')
@@ -44,13 +46,7 @@ class Actualite(models.Model):
         db_table = u'actualite'
         ordering = ["-date",]
 
-
-class ActiveManager(models.Manager):
-    def get_query_set(self):
-        return super(ActiveManager, self).get_query_set().filter(actif=True)
-
 class Evenement(models.Model):
-    actif = models.BooleanField(default = True)
     uid = models.CharField(max_length = 255, default = uuid.uuid1)
     approuve = models.BooleanField(default = False)
     titre = models.CharField(max_length=255)
@@ -78,10 +74,98 @@ class Evenement(models.Model):
     contact = models.TextField(blank = True, null = True)
     url = models.CharField(max_length=255, blank = True, null = True)
 
-    objects = ActiveManager()
-
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)
+
+    def save(self, *args, **kwargs):
+        """Sauvegarde l'objet dans django et le synchronise avec caldav s'il a été
+        approuvé"""
+        self.update_vevent()
+        super(Evenement, self).save(*args, **kwargs)
+
+    # methodes de commnunications avec CALDAV
+    def as_ical(self,):
+        """Retourne l'evenement django sous forme d'objet icalendar"""
+        cal = vobject.iCalendar()
+        cal.add('vevent')
+
+        # fournit son propre uid
+        if self.uid is None:
+            self.uid = str(uuid.uuid1())
+
+        cal.vevent.add('uid').value = self.uid
+        
+        cal.vevent.add('summary').value = self.titre
+        
+        if self.mots_cles is None:
+            kw = []
+        else:
+            kw = self.mots_cles.split(",")
+
+        try:
+            kw.append(self.discipline.nom)
+            kw.append(self.discipline_secondaire.nom)
+            kw.append(self.type)
+        except: pass
+
+        kw = [x.strip() for x in kw if len(x.strip()) > 0]
+        for k in kw:
+            cal.vevent.add('x-auf-keywords').value = k
+
+        description = self.description
+        if len(kw) > 0:
+            if len(self.description) > 0:
+                description += "\n"
+            description += u"Mots-cles: " + ", ".join(kw)
+
+        cal.vevent.add('dtstart').value = combine(self.debut, self.fuseau)
+        cal.vevent.add('dtend').value = combine(self.fin, self.fuseau)
+        cal.vevent.add('created').value = combine(datetime.datetime.now(), "UTC")
+        cal.vevent.add('dtstamp').value = combine(datetime.datetime.now(), "UTC")
+        if len(self.description) > 0:
+            cal.vevent.add('description').value = description
+        if len(self.contact) > 0:
+            cal.vevent.add('contact').value = self.contact
+        if len(self.url) > 0:
+            cal.vevent.add('url').value = self.url
+        if len(self.lieu) > 0:
+            cal.vevent.add('location').value = self.lieu
+        return cal
+
+    def update_vevent(self,):
+        """Essaie de créer l'évènement sur le serveur ical.
+        En cas de succès, l'évènement local devient donc inactif et approuvé"""
+        try:
+            if self.approuve:
+                event = self.as_ical()
+                client = caldav.DAVClient(CALENDRIER_URL)
+                cal = caldav.Calendar(client, url = CALENDRIER_URL)
+                e = caldav.Event(client, parent = cal, data = event.serialize(), id=self.uid)
+                e.save()
+        except:
+            self.approuve = False
+
+    def delete_vevent(self,):
+        """Supprime l'evenement sur le serveur caldav"""
+        try:
+            if self.approuve:
+                event = self.as_ical()
+                client = caldav.DAVClient(CALENDRIER_URL)
+                cal = caldav.Calendar(client, url = CALENDRIER_URL)
+                e = cal.event(self.uid)
+                e.delete()
+        except error.NotFoundError:
+            pass
+
+
+# Surcharge du comportement de suppression
+# La méthode de connexion par signals est préférable à surcharger la méthode delete()
+# car dans le cas de la suppression par lots, cell-ci n'est pas invoquée
+def delete_vevent(sender, instance, *args, **kwargs):
+    instance.delete_vevent()
+
+pre_delete.connect(delete_vevent, sender = Evenement) 
+
 
 class ListSet(models.Model):
     spec = models.CharField(primary_key = True, max_length = 255)
@@ -139,40 +223,11 @@ class Record(models.Model):
            self.pays.count() > 0 and \
            self.regions.count() > 0
 
-
     def __unicode__(self):
         return "[%s] %s" % (self.server, self.title)
 
-# Ces fonctions sont utilisées pour travailler directement sur les données JSON enregistrées tel quel
-# sur la base de données. Lorsque le modèle est initialisé, les fields sont décodés, et lorsque l'objet
-# est sauvegardé, on s'assure de remettre les données encodées en  JSON.
-# TODO : a terme, les données ne seront plus stockées au format JSON dans la BD et ces fonctions seront
-# donc obsolètes.
-#
-#    def save(self, *args, **kwargs):
-#        
-#        for field_name in [f for f in self._meta.get_all_field_names() if f in META.keys()]:
-#            v = getattr (self, field_name, None)
-#            setattr(self, field_name, simplejson.dumps(v))
-#
-#        super(Record, self).save(*args, **kwargs)
-#
-#def decode_json(instance, **kwargs):
-#  for field_name in [f for f in instance._meta.get_all_field_names() if f in META.keys()]:
-#      json = getattr(instance, field_name)
-#      data = "-"
-#      v = getattr (instance, field_name, None)
-#      if v is not None:
-#          data = simplejson.loads(v)
-#      if not isinstance(data, basestring):
-#        decoded_value =  u",".join(data)
-#      else:
-#        decoded_value = data
-#      setattr(instance, field_name, decoded_value)
-#
-#models.signals.post_init.connect(decode_json, Record)
-
 class Serveur(models.Model):
+    """Identification d'un serveur d'ou proviennent les références"""
     nom = models.CharField(primary_key = True, max_length = 255)
 
     def __unicode__(self,):

@@ -18,7 +18,7 @@ class RechercheAvancee (forms.Form):
 class EvenementForm(forms.ModelForm):
     class Meta:
         model = Evenement
-        exclude = ('approuve', 'uid', 'actif')
+        exclude = ('approuve', 'uid')
 
 # Admin views pour les associations par lots
 

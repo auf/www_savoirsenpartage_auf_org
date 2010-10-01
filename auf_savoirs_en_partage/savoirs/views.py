@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django import forms
 from lib.recherche import cherche, google_search
 from lib import sep
-from lib.calendrier import evenements, evenement_info, evenement_publie, combine
+from lib.calendrier import evenements, evenement_info, combine
 from savoirs.globals import configuration
 import backend_config
 from forms import *
@@ -141,45 +141,7 @@ def evenement_moderation(request):
 @login_required
 def evenement_accepter(request, pk):
     e = Evenement.objects.get(pk = pk)
-
-    cal = vobject.iCalendar()
-    cal.add('vevent')
-    cal.vevent.add('summary').value = e.titre
-    
-    kw = e.mots_cles.split(",")
-    try:
-        kw.append(e.discipline.nom)
-        kw.append(e.discipline_secondaire.nom)
-        kw.append(e.type)
-    except: pass
-
-    kw = [x.strip() for x in kw if len(x.strip()) > 0]
-    for k in kw:
-        cal.vevent.add('x-auf-keywords').value = k
-
-    if len(kw) > 0:
-        if len(e.description) > 0:
-            e.description += "\n"
-        e.description += u"Mots-cles: " + ", ".join(kw)
-
-    cal.vevent.add('dtstart').value = combine(e.debut, e.fuseau)
-    cal.vevent.add('dtend').value = combine(e.fin, e.fuseau)
-    cal.vevent.add('created').value = combine(datetime.datetime.now(), "UTC")
-    cal.vevent.add('dtstamp').value = combine(datetime.datetime.now(), "UTC")
-    if len(e.description) > 0:
-        cal.vevent.add('description').value = e.description
-    if len(e.contact) > 0:
-        cal.vevent.add('contact').value = e.contact
-    if len(e.url) > 0:
-        cal.vevent.add('url').value = e.url
-    if len(e.lieu) > 0:
-        cal.vevent.add('location').value = e.lieu
-
-    evenement_publie(cal)
-
-    e.actif = False
     e.save()
-
     return HttpResponseRedirect(reverse('savoirs.views.evenement_moderation'))
 
 @login_required

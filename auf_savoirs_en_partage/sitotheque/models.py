@@ -20,22 +20,22 @@ class Site(models.Model):
     """Fiche d'info d'un site web"""
     url = models.URLField(verify_exists=True)   # dc:identifier (dc:source?)
     titre = models.CharField(max_length=255, verbose_name='Titre')   # dc.title
-    description = models.TextField()
-    editeur = models.CharField(max_length=255, verbose_name='Éditeur')    # dc.publisher : organisation resp
-    auteur = models.CharField(max_length=255, verbose_name='Auteur')  # dc.creator : nom, prénom
+    description = models.TextField(null=True, blank=True)
+    editeur = models.CharField(max_length=255, null=True, blank=True, verbose_name='Éditeur')    # dc.publisher : organisation resp
+    auteur = models.CharField(max_length=255, null=True, blank=True, verbose_name='Auteur')  # dc.creator : nom, prénom
     
     #auf_partenaire = models.BooleanField()    # dc.contributor
     
-    date_publication = models.DateField()      # dc.date : date de publication
-    type = models.CharField(max_length=2, null=False, blank=False, choices=TYPE_SITE_CHOICES,
+    date_publication = models.DateField(null=True, blank=True)      # dc.date : date de publication
+    type = models.CharField(max_length=2, null=True, blank=True, choices=TYPE_SITE_CHOICES,
                               verbose_name = 'Type de site')    # dc.type
     discipline = models.ManyToManyField(Discipline, blank=True)
     thematique = models.ManyToManyField(Thematique, blank=True)
     
-    mots_cles =  models.TextField(verbose_name='Mots-clés')    # dc:subject    # indexation libre
+    mots_cles =  models.TextField(verbose_name='Mots-clés', null=True, blank=True)    # dc:subject    # indexation libre
 
     # source    # dc:source (dc:relation?)
-    pays = models.ForeignKey(Pays, null = True, db_column='pays', to_field='code', verbose_name = 'Pays')
+    pays = models.ForeignKey(Pays, null = True, blank=True, db_column='pays', to_field='code', verbose_name = 'Pays')
     
     # meta
     actif = models.BooleanField()

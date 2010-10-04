@@ -90,7 +90,7 @@ class Evenement(models.Model):
         cal.add('vevent')
 
         # fournit son propre uid
-        if self.uid is None:
+        if self.uid in [None, ""]:
             self.uid = str(uuid.uuid1())
 
         cal.vevent.add('uid').value = self.uid

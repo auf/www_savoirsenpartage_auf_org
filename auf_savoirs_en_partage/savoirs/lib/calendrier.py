@@ -19,21 +19,15 @@ def evenements():
 
     return rc
 
-
-
 def evenement_info(uid):
     client = caldav.DAVClient(CALENDRIER_URL)
     cal = caldav.Calendar(client, url = CALENDRIER_URL)
     return cal.event(uid)
 
-def evenement_publie(event):
-    client = caldav.DAVClient(CALENDRIER_URL)
-    cal = caldav.Calendar(client, url = CALENDRIER_URL)
-    e = caldav.Event(client, parent = cal, data = event.serialize()).save()
 
 def combine(when, tz):
     r = datetime.datetime(when.year, when.month, when.day, 
-                          when.hour, when.minute, tzinfo = pytz.timezone(tz))
+                          when.hour, when.minute, tzinfo = pytz.timezone(unicode(tz)))
     #r = r.replace(tzinfo = pytz.timezone("UTC"))
     t = r.utctimetuple()
     r = datetime.datetime(t[0],t[1],t[2],t[3],t[4],t[5], 

@@ -11,7 +11,7 @@ configuration = {
     'accueil_evenement': 10,
     'engin_recherche': 'sep',
     'google_xml': "http://www.savoirsenpartage.auf.org/recherche.xml?%s",
-    'calendrier_publique': 'http://cal.ro.auf.org/caldav.php/davin/test/',
+    'calendrier_publique': 'https://sep-caldav.auf.org/caldav.php/sep/home',
 }
 
 #####

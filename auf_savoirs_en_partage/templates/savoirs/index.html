@@ -49,9 +49,6 @@
         <ul class="sous-menu">
             <li><a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></li>
             <li><a href="{{ caldav_url }}">S'abonner</a></li>
-            {% if user.is_authenticated %}
-            <li><a href="{% url savoirs.views.evenement_moderation %}">Modération</a></li>
-            {% endif %}
         </ul>
         <ul class="liste-de-l-accueil">
         {% for event in events %}

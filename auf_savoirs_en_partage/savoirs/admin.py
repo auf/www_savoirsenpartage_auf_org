@@ -15,7 +15,6 @@ from models import SourceActualite, Actualite, Discipline, Evenement, Record, Li
 from savoirs.globals import META
 
 admin.site.register(SourceActualite)
-admin.site.register(Evenement)
 
 class ListSetFilterSpec(RelatedFilterSpec):
     """
@@ -250,3 +249,26 @@ class ActualiteAdmin(admin.ModelAdmin):
         return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'invisible', ",".join(selected)))
 
 admin.site.register(Actualite, ActualiteAdmin)
+
+
+class EvenementAdmin(admin.ModelAdmin):
+    list_filter = ('approuve',)
+    list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
+    fields = ['titre',
+              'discipline',
+              'discipline_secondaire',
+              'mots_cles',
+              'type',
+              'fuseau',
+              'debut',
+              'fin',
+              'lieu',
+              'description',
+              'contact',
+              'url',
+              'approuve']
+
+admin.site.register(Evenement, EvenementAdmin)
+
+
+

@@ -1,13 +1,14 @@
 from django.conf.urls.defaults import patterns, include, handler500, url
 from django.conf import settings
 from django.contrib import admin
-from savoirs.rss import FilActualite
+from savoirs.rss import FilActualite, FilEvenement
 
 admin.autodiscover()
 
 handler500 # Pyflakes
 
-site_feeds = {'actualites': FilActualite }
+site_feeds = {'actualites': FilActualite,
+              'agenda': FilEvenement }
 
 
 urlpatterns = patterns(

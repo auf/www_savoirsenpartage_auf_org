@@ -31,8 +31,8 @@
 {% for chercheur in chercheurs %}
     <tr class="{% cycle 'odd' 'notodd' %}">
         <td><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></td>
-        <td>{{ chercheur.etablissement }}</td>
-        <td>{{ chercheur.pays }}</td>
+        <td>{% firstof chercheur.etablissement chercheur.etablissement_autre_nom %}</td>
+        <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays %}</td>
     </tr>
 {% endfor %}
 </table>

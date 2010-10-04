@@ -1,56 +1,69 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>Inscription</h4>
+<h4>Inscription au répertoire de chercheurs</h4>
 
 <div class="contenu-wrapper">
 
 <form method="post">
-    <h5>Informations personnelles</h5>
-    {% with personne_form as form %}
-        {% include "table_form.html" %}
-    {% endwith %}
-    
-    <h5>Informations académiques</h5>
-    {% with chercheur_form as form %}
-        {% include "table_form.html" %}
-    {% endwith %}
- 
-    <h5>Etablissement de rattachement</h5>
-    {% with etablissement_form as form %}
-        {% include "table_form.html" %}
-    {% endwith %}
-    <p>Si l'établissement n'existe pas ci-dessus</p>
-    {% with etablissement_autre_form as form %}
-        {% include "table_form.html" %}
-    {% endwith %}
-    
-    <h5>Champ disciplinaire, thèmes de recherche</h5>
-    {% with discipline_form as form %}
-        {% include "table_form.html" %}
-    {% endwith %}
-
-    <h5>Publications</h5>
-    {% with publication1_form as form %}
-        {% include "table_form.html" %}
-    {% endwith %}    
-    
-    <p id="show_publications">Autres publications</p>
-    
-    <div class="publications_autre">
-        <h6>Publication 2</h6>
-        {% with publication2_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %} 
-        <h6>Publication 3</h6>
-        {% with publication3_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}     
-        <h6>Publication 4</h6>
-        {% with publication4_form as form %}
+    <fieldset>
+        <legend>Informations personnelles</legend>
+        {% with personne_form as form %}
             {% include "table_form.html" %}
         {% endwith %}
-    </div>
+    </fieldset>
+    
+    <fieldset>
+        <legend>Informations académiques</legend>
+        {% with chercheur_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}
+    </fieldset>
+    
+    <fieldset>
+        <legend>Etablissement de rattachement</legend>
+        {% with etablissement_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}
+        <p>Si l'établissement n'existe pas ci-dessus</p>
+        {% with etablissement_autre_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}
+    </fieldset>
+    
+    <fieldset>
+        <legend>Champ disciplinaire, thèmes de recherche</legend>
+        {% with discipline_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}
+    </fieldset>
+
+    <fieldset>
+        <legend>Publications</legend>
+        <div>
+            <div class="publication">
+              {% with publication1_form as form %}
+                  {% include "table_form.html" %}
+              {% endwith %}
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <p id="show_publications">+ Autres publications</p>
+        <div class="publications_autre">
+            <h6>- Publication 2</h6>
+            {% with publication2_form as form %}
+                {% include "table_form.html" %}
+            {% endwith %} 
+            <h6>- Publication 3</h6>
+            {% with publication3_form as form %}
+                {% include "table_form.html" %}
+            {% endwith %}     
+            <h6>- Publication 4</h6>
+            {% with publication4_form as form %}
+                {% include "table_form.html" %}
+            {% endwith %}
+        </div>
+    </fieldset>
     <br />
     <input type="submit" name="Submit" value="Inscription" class="bouton" />
 </form>

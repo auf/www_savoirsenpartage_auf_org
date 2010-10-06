@@ -156,7 +156,6 @@ class SEP:
              WHERE (%s) AND r.validated = 1 AND l.validated = 1 \
              GROUP BY r.id \
              HAVING score > 0 ORDER BY score DESC" % (m, m)
-        print q
         from django.db import connection, transaction
         cursor = connection.cursor()
         cursor.execute(q)

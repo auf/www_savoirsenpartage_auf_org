@@ -1,6 +1,35 @@
+{% comment %}
+<h4><a href="">Chercheurs</a></h4>
+<ul>
+    <li><a href="">Répertoire</a></li>
+    <li><a href="">Inscription</a></li>
+    <li><a href="">Espace chercheur</a></li>
+</ul>
+
+<h4><a href="">Ressources documentaires</a></h4>
+<ul>
+    <li><a href="">Rechercher un contenu scientifique</a></li>
+</ul>
+
+<h4><a href="">Sites</a></h4>
+<ul>
+    <li><a href="">Sitothèque</a></li>
+    <li><a href="">Cours en ligne</a></li>
+    <li><a href="">Bibliothèques</a></li>
+    <li><a href="">Revues</a></li>
+</ul>
+
+<h4><a href="">Agenda</a></h4>
+<ul>
+    <li><a href="">Colloques</a></li>
+    <li><a href="">Conférences</a></li>
+    <li><a href="">Appels à contribution</a></li>
+</ul>
+{% endcomment %}
+
+<h4><a href="">Disciplines</a></h4>
 <ul>
     {% for d in disciplines %}
     <li><a href="{% url savoirs.views.avancee %}?type=avancee&operator=or&subject={{ d.nom }}">{{ d.nom }}</a></li>
     {% endfor %}
 </ul>
-

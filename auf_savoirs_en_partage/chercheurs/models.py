@@ -11,7 +11,7 @@ class Personne(models.Model):
     salutation = models.CharField(max_length=128, null = True, blank = True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name = 'Prénom')
-    courriel = models.CharField(max_length=128)
+    courriel = models.EmailField(max_length=128, unique=True)
     fonction = models.CharField(max_length=128, null = True, blank = True)
     sousfonction = models.CharField(max_length=128, null = True, blank = True,
                                     verbose_name = 'Sous-fonction')

@@ -1,12 +1,21 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>Sites</h4>
+<h4>Sitothèque</h4>
 
 <div class="contenu-wrapper">
-<p>
-Voici les sites répertoriés.
-</p>
+<table id="repertoire">
+    <tr>
+        <th>Nom</th>
+        <th></th>
+    </tr>
+{% for s in sites %}
+    <tr class="{% cycle 'odd' 'notodd' %}">
+        <td><a href="{% url sitotheque.views.retrieve s.id %}">{{ s }}</a></td>
+        <td><a href="{{s.url}}"><img src="/media/img/page_white_link.png" /></a></td>
+    </tr>
+{% endfor %}
+</table>
 </div>
 
 {% endblock %}

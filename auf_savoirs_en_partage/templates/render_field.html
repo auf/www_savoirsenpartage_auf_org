@@ -8,6 +8,8 @@
                 {{ field.errors }}
             {% endif %}
         </td>
-        <td>{{ field }}</td>
+        <td>{{ field }} {% if field.field.required %}*{% endif %}
+        {% if field.field.help_text %}<p class="help">{{ field.field.help_text|safe }}</p>{% endif %}
+        </td>
     {% endif %}
 </tr>

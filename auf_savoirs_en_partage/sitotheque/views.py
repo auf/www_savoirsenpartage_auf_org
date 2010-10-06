@@ -5,7 +5,7 @@ from django.template import Context, RequestContext
 from models import Site
 
 def index(request):
-    sites = Site.objects.all()
+    sites = Site.objects.all().order_by('titre')
     variables = { 'sites': sites,
                 }
     return render_to_response ("sites/index.html", \

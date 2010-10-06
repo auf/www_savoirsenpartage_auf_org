@@ -47,7 +47,7 @@ class Actualite(models.Model):
         ordering = ["-date",]
 
 class Evenement(models.Model):
-    uid = models.CharField(max_length = 255, default = None)
+    uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
     approuve = models.BooleanField(default = False)
     titre = models.CharField(max_length=255)
     discipline = models.ForeignKey('Discipline', related_name = "discipline", 

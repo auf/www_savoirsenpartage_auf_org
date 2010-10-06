@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.contrib.syndication.feeds import Feed
 from savoirs.models import Actualite
+from savoirs.lib.calendrier import evenements
 from datetime import datetime, time
 
 class FilActualite(Feed):
@@ -9,14 +11,11 @@ class FilActualite(Feed):
     description = "Agrégateur de ressources scientifiques et pédagogiques de l'AUF"
     limitation = 10
 
+    title_template = "savoirs/rss_actualite_titre.html"
+    description_template = "savoirs/rss_actualite_description.html"
+
     def items(self):
         return Actualite.objects.filter(visible=True).order_by('-date')[:self.limitation]
-
-    def item_title(self, item):
-        return item.titre
-
-    def item_description(self, item):
-        return item.url
 
     def item_link(self, item):
         return item.url
@@ -24,8 +23,26 @@ class FilActualite(Feed):
     def item_pubdate(self,item):
         return  datetime.combine(item.date, time())
 
-
     def item_author_name(self,item):
         if item.source:
             return item.source.nom
 
+class FilEvenement(Feed):
+    title = "Calendrier des ressources scientifiques et pédagogiques de l'AUF"
+    link = '/'
+    description = "Evènements connexes aux ressources scientifiques et pédagogiques de l'AUF"
+
+    title_template = "savoirs/rss_evenement_titre.html"
+    description_template = "savoirs/rss_evenement_description.html"
+
+    def items(self):
+        return evenements()
+
+    def item_link(self, item):
+        return reverse('savoirs.views.evenement', args=[item.uid.value])
+
+    def item_pubdate(self,item):
+        return item.dtstart.value
+
+    def item_author_name(self,item):
+        return ""

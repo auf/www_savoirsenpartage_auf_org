@@ -90,7 +90,7 @@ class Evenement(models.Model):
         cal.add('vevent')
 
         # fournit son propre uid
-        if self.uid is None:
+        if self.uid in [None, ""]:
             self.uid = str(uuid.uuid1())
 
         cal.vevent.add('uid').value = self.uid
@@ -108,7 +108,7 @@ class Evenement(models.Model):
             kw.append(self.type)
         except: pass
 
-        kw = [x.strip() for x in kw if len(x.strip()) > 0]
+        kw = [x.strip() for x in kw if len(x.strip()) > 0 and x is not None]
         for k in kw:
             cal.vevent.add('x-auf-keywords').value = k
 
@@ -122,7 +122,7 @@ class Evenement(models.Model):
         cal.vevent.add('dtend').value = combine(self.fin, self.fuseau)
         cal.vevent.add('created').value = combine(datetime.datetime.now(), "UTC")
         cal.vevent.add('dtstamp').value = combine(datetime.datetime.now(), "UTC")
-        if len(self.description) > 0:
+        if len(description) > 0:
             cal.vevent.add('description').value = description
         if len(self.contact) > 0:
             cal.vevent.add('contact').value = self.contact

@@ -173,8 +173,8 @@ select     { width:100%; overflow:hidden }
 
 .publications_autre {border:1px solid #CCC; background:#FAFAFA; margin:10px; padding:10px; display:none;}
 
-#actualites {position: relative;}
-#rss-actualites {position: absolute; right: 26px; top: 10px;}
+#agenda, #actualites {position: relative;}
+#rss-agenda, #rss-actualites {position: absolute; right: 26px; top: 10px;}
 
 form {padding-right:20px}
 

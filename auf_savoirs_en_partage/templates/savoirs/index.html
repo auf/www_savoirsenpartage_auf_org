@@ -13,7 +13,7 @@
         {% for actualite in actualites %}
             <li class="clearfix">
             <span class="la-date">{{ actualite.date|date:"d F Y" }}</span>
-            <a href="{{ actualite.url }}" class="le-titre">{{ actualite.titre }}</a>
+            <a href="{{ actualite.url }}" class="le-titre">{{ actualite.titre|truncatewords:20 }}</a>
             {% if actualite.source %}
             <span class="la-date">source: {{ actualite.source.nom }}</span>
             {% endif %}
@@ -49,8 +49,9 @@
         {% if not erreur_caldav %}
             <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
             <ul class="sous-menu">
+                <li><a href="{% url savoirs.views.evenement_index %}">Tous les événements</a></li>
                 <li><a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></li>
-                <li><a href="{{ caldav_url }}">S'abonner</a></li>
+                {% comment %}<li><a href="{{ caldav_url }}">S'abonner</a></li>{% endcomment %}
             </ul>
             <ul class="liste-de-l-accueil">
             {% for event in events %}
@@ -58,8 +59,8 @@
                 <span class="la-date">{{ event.dtstart.value|date:"d F Y" }} 
                   {{ event.dtstart.value|date:"H:i" }}</span>
                 <a href="{% url savoirs.views.evenement event.uid.value %}" 
-                  class="le-titre">{{ event.summary.value }}</a>
-                <span class="le-resume">{{ event.description.value }}</span>
+                  class="le-titre">{{ event.summary.value|truncatewords:20 }}</a>
+                <span class="le-resume">{{ event.description.value|truncatewords:20 }}</span>
                 </li>
             {% endfor %}
             </ul>

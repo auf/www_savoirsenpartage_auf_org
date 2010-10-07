@@ -29,15 +29,15 @@
         <div id="fond">
             <div id="enrobage" class="clearfix">
                 <div class="clearfix sous-menu gauche">
-                    <a href="" class="bout-droit">Actualités</a>
+                    <a href="{% url savoirs.views.actualite_index %}" class="bout-droit">Actualités</a>
                     <span>|</span>
-                    <a href="">Agenda</a>
+                    <a href="{% url savoirs.views.evenement_index %}">Agenda</a>
                     <span>|</span>
-                    <a href="">Sites</a>
+                    <a href="{% url sitotheque.views.index %}">Sites</a>
                     <span>|</span>
-                    <a href="">Ressources</a>
+                    <a href="{% url savoirs.views.ressource_index %}">Ressources</a>
                     <span>|</span>
-                    <a href="">Chercheurs</a>
+                    <a href="{% url chercheurs.views.index %}">Chercheurs</a>
                     <span>|</span>
                     <a href="{% url savoirs.views.index %}" class="bout-gauche">Accueil</a>
                 </div>

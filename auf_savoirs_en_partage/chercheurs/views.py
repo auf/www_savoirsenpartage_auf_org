@@ -34,8 +34,8 @@ def chercheur_queryset (request):
         #    list = list.filter (personne__nom__icontains=mots_cles)
     return list
     
-def repertoire(request):
-    """Mock up du répertoire"""
+def index(request):
+    """Répertoire des chercheurs"""
     
     chercheurs = chercheur_queryset (request)
     repertoire_form = RepertoireSearchForm (request.GET)

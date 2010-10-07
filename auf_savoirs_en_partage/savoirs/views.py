@@ -17,8 +17,9 @@ from models import *
 from chercheurs.models import Chercheur
 from sitotheque.models import Site
 
-
+# sous-menu gauche
 def index (request):
+    """Page d'accueil"""
     delta = datetime.timedelta (days = 90)
     oldest = datetime.date.today () - delta
     articles = Actualite.objects.filter (visible = '1', date__gt = oldest)
@@ -41,6 +42,18 @@ def index (request):
                       }), \
             context_instance = RequestContext(request))
 
+# sous-menu droite
+def a_propos (request):
+    return render_to_response ("savoirs/a-propos.html", \
+            Context ({'count': len(backend_config.RESOURCES)}), \
+            context_instance = RequestContext(request))
+
+def nous_contacter (request):
+    return render_to_response ("savoirs/contact.html", \
+            Context (), \
+            context_instance = RequestContext(request))
+
+# recherche
 def recherche (request):
     q = request.GET.get("q", "")
     page = int(request.GET.get("page", 0))
@@ -92,11 +105,12 @@ def conseils (request):
             Context (), \
             context_instance = RequestContext(request))
 
-def a_propos (request):
-    return render_to_response ("savoirs/a-propos.html", \
-            Context ({'count': len(backend_config.RESOURCES)}), \
+# ressources
+def ressource_index(request):
+    return render_to_response ("savoirs/ressource_index.html", \
+            Context (), \
             context_instance = RequestContext(request))
-
+            
 def informations (request):
     s = sep.SEP()
     resources = copy.deepcopy (backend_config.RESOURCES)
@@ -109,11 +123,17 @@ def informations (request):
             Context ({'r': resources}), \
             context_instance = RequestContext(request))
 
-def nous_contacter (request):
-    return render_to_response ("savoirs/contact.html", \
+# actualités
+def actualite_index(request):
+    return render_to_response ("savoirs/actualite_index.html", \
             Context (), \
             context_instance = RequestContext(request))
 
+# agenda
+def evenement_index(request):
+    return render_to_response ("savoirs/evenement_index.html", \
+            Context (), \
+            context_instance = RequestContext(request))
 
 def evenement(request, id):
     event = evenement_info(id)

@@ -1,6 +1,20 @@
 {% extends "container_base.html" %}
 
+
 {% block contenu %}
 <h4>Agenda</h4>
+
+<div class="contenu-wrapper">
+<table id="repertoire">
+    <tr>
+        <th>Nom</th>
+    </tr>
+{% for e in evenements %}
+    <tr class="{% cycle 'odd' 'notodd' %}">
+        <td>{{ e.summary.value|truncatewords:12 }}</td>
+    </tr>
+{% endfor %}
+</table>
+</div>
 
 {% endblock %}

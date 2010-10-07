@@ -97,14 +97,11 @@
         <h5>Discipline</h5>
         <table>
             <tr>
-                <td class="label">Adhésion(s) active(s):</td>
-                <td>
-                {% for g in chercheur.chercheurgroupe_set.all %}
-                    {{g.groupe.nom}}<br />
-                {% endfor %}
-                </td>
+                <td class="label">Discipline:</td>
+                <td>{{chercheur.discipline}}</td>
             </tr>
-        </table>        
+        </table>
+        {% endif %}        
         
         
 

@@ -109,8 +109,9 @@ def conseils (request):
 
 # ressources
 def ressource_index(request):
+    ressources = Record.objects.all().order_by('?')
     return render_to_response ("savoirs/ressource_index.html", \
-            Context (), \
+            Context ({'ressources':ressources}), \
             context_instance = RequestContext(request))
        
 def ressource_retrieve(request, id):
@@ -145,8 +146,14 @@ def actualite_index(request):
 
 # agenda
 def evenement_index(request):
+    try:
+        erreur_caldav = False
+        events = evenements()
+    except:
+        erreur_caldav = u"Problème de connexion à l'agenda"
+        events = []
     return render_to_response ("savoirs/evenement_index.html", \
-            Context (), \
+            Context ({'evenements':evenements}), \
             context_instance = RequestContext(request))
 
 def evenement(request, id):

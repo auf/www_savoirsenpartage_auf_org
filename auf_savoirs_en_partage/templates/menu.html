@@ -27,6 +27,13 @@
 </ul>
 {% endcomment %}
 
+<h4><a href="">Régions</a></h4>
+<ul>
+    {% for r in regions %}
+    <li><a href="{% url savoirs.views.avancee %}?type=avancee&operator=or&subject={{ r.nom }}">{{ r.nom }}</a></li>
+    {% endfor %}
+</ul>
+
 <h4><a href="">Disciplines</a></h4>
 <ul>
     {% for d in disciplines %}

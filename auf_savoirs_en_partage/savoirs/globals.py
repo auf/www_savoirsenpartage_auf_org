@@ -4,9 +4,10 @@
 configuration = {
     'max_actualite': 100,
     'accueil_actualite': 4,
-    'accueil_chercheur': 5,
+    'accueil_chercheur': 10,
     'accueil_evenement': 4,
-    'accueil_sites': 5,
+    'accueil_ressource': 4,
+    'accueil_sites': 4,
     'nombre_par_page_actualite': 10,
     'resultats_par_page': 8, # pas changeable a cause de google
     'engin_recherche': 'sep',

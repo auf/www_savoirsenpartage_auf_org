@@ -180,9 +180,11 @@ def edit(request):
             
 
 def perso(request):
-    """Mock up de l'espace perso"""
+    """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']
+    if not chercheur:
+        return HttpResponseRedirect(reverse('django.contrib.auth.views.login'))
     variables = { 'chercheur': chercheur,
                 }
     return render_to_response ("chercheurs/perso.html", \

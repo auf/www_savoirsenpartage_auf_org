@@ -79,10 +79,17 @@
         <ul class="liste-de-l-accueil">
         {% for ressource in ressources %}
             <li>
-            <a href="{% url savoirs.views.ressource_retrieve ressource.id %}" class="le-titre">{{ ressource.title|truncatewords:20 }}</a>
-            url : {{ ressource.uri|urlizetrunc:40 }}<br />
-            source : {{ ressource.server }}
-            {% if ressource.disciplines.all.count %}<span class="la-date">Disciplines : {{ ressource.disciplines.all|join:", " }}</span>{% endif %}
+            <a href="{% url savoirs.views.ressource_retrieve ressource.id %}" class="le-titre">{{ ressource.title|safe|truncatewords:20 }}</a>
+            {% if resssource.creator %}
+                Auteur : {{ ressource.creator }}<br />
+            {% endif %}
+                url : {{ ressource.uri|urlizetrunc:40 }}
+            {% comment %}
+                <br />source : {{ ressource.server }}
+            {% endcomment %}
+            {% if ressource.disciplines.all.count %}
+                <br />Disciplines : {{ ressource.disciplines.all|join:", " }}
+            {% endif %}
             </li>
         {% endfor %}
         </ul>

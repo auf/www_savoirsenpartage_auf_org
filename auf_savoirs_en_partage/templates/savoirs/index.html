@@ -3,27 +3,29 @@
 {% block contenu %}
 <div class="demi-gauche clearfix">
     <div id="actualites" class="box">
-        <h4>Actualités</h4>
+        <h4><a href="{% url savoirs.views.actualite_index %}">Actualités</a></h4>
         <a id="rss-actualites" href="/rss/actualites"><img src="/media/img/feed.png" /></a>
+        <ul class="sous-menu">
+            <li><a href="{% url savoirs.views.actualite_index %}">Toutes les actualités</a></li>
+        </ul>
 
         <ul class="liste-de-l-accueil">
-        {% comment %}<!-- dans la vue, cloner avoirListeActualitesAccueil -->{% endcomment %}
-        {% for article in articles %}
+        {% for actualite in actualites %}
             <li class="clearfix">
-            <span class="la-date">{{ article.date|date:"d F Y" }}</span>
-            <a href="{{ article.url }}" class="le-titre">{{ article.titre }}</a>
-            {% if article.source %}
-            <span class="la-date">source: {{ article.source.nom }}</span>
+            <span class="la-date">{{ actualite.date|date:"d F Y" }}</span>
+            <a href="{{ actualite.url }}" class="le-titre">{{ actualite.titre }}</a>
+            {% if actualite.source %}
+            <span class="la-date">source: {{ actualite.source.nom }}</span>
             {% endif %}
             {% comment %}
-            <span class="le-resume">{{ article.texte }} -&nbsp;<a href="{{ article.url }}">Lire</a></span>
+            <span class="le-resume">{{ actualite.texte }} -&nbsp;<a href="{{ actualite.url }}">Lire</a></span>
             {% endcomment %}
             </li>
         {% endfor %}
         </ul>
     </div>
-    <div class="box">
-        <h4>Chercheurs</h4>
+    <div id="chercheurs" class="box">
+        <h4><a href="{% url chercheurs.views.index %}">Chercheurs</a></h4>
         <ul class="sous-menu">
             <li><a href="{% url chercheurs.views.index %}">Répertoire</a></li>
             <li><a href="{% url chercheurs.views.inscription %}">Inscription</a></li>
@@ -41,35 +43,32 @@
         </ul>
     </div>
 </div>
-
-
 <div class="demi-droite clearfix">
     <div id="agenda" class="box">
-        <h4>Agenda</h4>
+        <h4><a href="{% url savoirs.views.evenement_index %}">Agenda</a></h4>
         {% if not erreur_caldav %}
-        <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
-        <ul class="sous-menu">
-            <li><a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></li>
-            <li><a href="{{ caldav_url }}">S'abonner</a></li>
-        </ul>
-        <ul class="liste-de-l-accueil">
-        {% for event in events %}
-            <li>
-            <span class="la-date">{{ event.dtstart.value|date:"Y-m-d" }} 
-              {{ event.dtstart.value|date:"H:i" }}</span>
-            <a href="{% url savoirs.views.evenement event.uid.value %}" 
-              class="le-titre">{{ event.summary.value }}</a>
-            <span class="le-resume">{{ event.description.value }}</span>
-            </li>
-        {% endfor %}
-        </ul>
+            <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
+            <ul class="sous-menu">
+                <li><a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></li>
+                <li><a href="{{ caldav_url }}">S'abonner</a></li>
+            </ul>
+            <ul class="liste-de-l-accueil">
+            {% for event in events %}
+                <li>
+                <span class="la-date">{{ event.dtstart.value|date:"d F Y" }} 
+                  {{ event.dtstart.value|date:"H:i" }}</span>
+                <a href="{% url savoirs.views.evenement event.uid.value %}" 
+                  class="le-titre">{{ event.summary.value }}</a>
+                <span class="le-resume">{{ event.description.value }}</span>
+                </li>
+            {% endfor %}
+            </ul>
         {% else %}
             <ul><li>{{ erreur_caldav }}</li></ul>
         {% endif %}
-
     </div>
-    <div class="box">
-        <h4>Sites</h4>
+    <div  id="sites" class="box">
+        <h4><a href="{% url sitotheque.views.index %}">Sites</a></h4>
         <ul class="sous-menu">
             <li><a href="{% url sitotheque.views.index %}">Sitothèque</a></li>
         </ul>

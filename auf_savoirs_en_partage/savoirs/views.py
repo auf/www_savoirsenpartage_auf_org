@@ -22,8 +22,8 @@ def index (request):
     """Page d'accueil"""
     delta = datetime.timedelta (days = 90)
     oldest = datetime.date.today () - delta
-    articles = Actualite.objects.filter (visible = '1', date__gt = oldest)
-    articles = articles[0:configuration['accueil_actualite']]
+    actualites = Actualite.objects.filter (visible = '1', date__gt = oldest)
+    actualites = actualites[0:configuration['accueil_actualite']]
     try:
         erreur_caldav = False
         events = evenements()[0:configuration['accueil_evenement']]
@@ -33,7 +33,7 @@ def index (request):
     chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
     sites = Site.objects.all().order_by('?')[:configuration['accueil_sites']]
     return render_to_response ("savoirs/index.html", \
-            Context ({"articles": articles,
+            Context ({"actualites": actualites,
                       "events": events,
                       "erreur_caldav": erreur_caldav,
                       "caldav_url": configuration['calendrier_publique'],

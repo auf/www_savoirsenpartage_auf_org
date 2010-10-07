@@ -112,7 +112,8 @@ ul.liste-de-l-accueil { padding:0 2.5em 0 0;}
 ul.liste-de-l-accueil li { margin:1em 0; padding-top:1.1em; border-top:2px solid #d5d5d5;}
 ul.liste-de-l-accueil img { float: left; margin: 0 1em 5px 0; max-width: 75px;}
 ul.liste-de-l-accueil span { display:block;}
-ul.liste-de-l-accueil .la-date {font-size:1.1em;}
+ul.liste-de-l-accueil .la-date { font-size:1.1em; }
+ul.liste-de-l-accueil a.la-date { color:black; }
 ul.liste-de-l-accueil .le-titre {display: block; font-size:1.2em; font-weight:bold; margin: .25em 0;}
 ul.liste-de-l-accueil .le-resume {font-size:1.1em;}
 ul.liste-de-l-accueil .le-resume a { display:inline;}

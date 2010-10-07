@@ -30,6 +30,7 @@ def index (request):
     except:
         erreur_caldav = u"Problème de connexion à l'agenda"
         events = []
+    ressources = Record.objects.all().order_by('?')[:configuration['accueil_ressource']]
     chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
     sites = Site.objects.all().order_by('?')[:configuration['accueil_sites']]
     return render_to_response ("savoirs/index.html", \
@@ -37,6 +38,7 @@ def index (request):
                       "events": events,
                       "erreur_caldav": erreur_caldav,
                       "caldav_url": configuration['calendrier_publique'],
+                      "ressources":ressources,
                       "chercheurs":chercheurs,
                       "sites":sites,
                       }), \
@@ -109,6 +111,15 @@ def conseils (request):
 def ressource_index(request):
     return render_to_response ("savoirs/ressource_index.html", \
             Context (), \
+            context_instance = RequestContext(request))
+       
+def ressource_retrieve(request, id):
+    """Notice OAI de la ressource"""
+    ressource = Record.objects.get(id=id)
+    variables = { 'ressource': ressource,
+                }
+    return render_to_response ("savoirs/ressource_retrieve.html", \
+            Context (variables), 
             context_instance = RequestContext(request))
             
 def informations (request):

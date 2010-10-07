@@ -69,6 +69,24 @@
             <ul><li>{{ erreur_caldav }}</li></ul>
         {% endif %}
     </div>
+    <div  id="ressources" class="box">
+        <h4><a href="{% url savoirs.views.ressource_index %}">Ressources</a></h4>
+        
+        <ul class="sous-menu">
+            <li><a href="{% url savoirs.views.ressource_index %}">Toutes les ressources</a></li>
+        </ul>
+        
+        <ul class="liste-de-l-accueil">
+        {% for ressource in ressources %}
+            <li>
+            <a href="{% url savoirs.views.ressource_retrieve ressource.id %}" class="le-titre">{{ ressource.title|truncatewords:20 }}</a>
+            url : {{ ressource.uri|urlizetrunc:40 }}<br />
+            source : {{ ressource.server }}
+            {% if ressource.disciplines.all.count %}<span class="la-date">Disciplines : {{ ressource.disciplines.all|join:", " }}</span>{% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
     <div  id="sites" class="box">
         <h4><a href="{% url sitotheque.views.index %}">Sites</a></h4>
         
@@ -79,8 +97,8 @@
         <ul class="liste-de-l-accueil">
         {% for site in sites %}
             <li>
-            <a href="{% url sitotheque.views.retrieve site.id %}" class="le-titre">{{ site }}</a>
-            <a href="{{ site.url }}" class="le-titre">{{ site.url }}</a>
+            <a href="{% url sitotheque.views.retrieve site.id %}" class="le-titre">{{ site|truncatewords:20 }}</a>
+            <a href="{{ site.url }}" class="la-date">{{ site.url }}</a>
             {% if site.discipline.all.count %}<span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>{% endif %}
             </li>
         {% endfor %}

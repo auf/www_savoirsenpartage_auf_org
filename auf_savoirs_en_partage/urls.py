@@ -40,6 +40,7 @@ urlpatterns = patterns(
     
     # ressources
     (r'^ressources/$', 'savoirs.views.ressource_index'),
+    (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve'),
     (r'^informations/$', 'savoirs.views.informations'),
     
     # actualités

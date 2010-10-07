@@ -1,6 +1,31 @@
 {% extends "container_base.html" %}
 
+{% load pagination_tags %}
+{% load sorting_tags %}
+
+
+{% autosort actualites %}
+{% autopaginate actualites 10 %}
+
+
 {% block contenu %}
 <h4>Actualités</h4>
+
+<div class="contenu-wrapper">
+<div class="centre">{% paginate %}</div>
+<table id="repertoire">
+    <tr>
+        <th>Nom</th>
+        <th>Source</th>
+    </tr>
+{% for actualite in actualites %}
+    <tr class="{% cycle 'odd' 'notodd' %}">
+        <td><a href="{{ actualite.url }}" class="le-titre">{{ actualite.titre|truncatewords:20 }}</a></td>
+        <td>{{ actualite.source.nom }}</td>
+    </tr>
+{% endfor %}
+</table>
+<div class="centre">{% paginate %}</div>
+</div>
 
 {% endblock %}

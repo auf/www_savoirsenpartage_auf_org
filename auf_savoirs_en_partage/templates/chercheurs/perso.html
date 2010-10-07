@@ -1,13 +1,29 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>Espace chercheur</h4>
+<h4>{{ chercheur }}</h4>
 
-<p>
-Bonjour {{ chercheur }}, vous êtes dans votre espace personnel.
-</p>
-<ul class="sous-menu">
-    <li><a href="{% url chercheurs.views.edit %}">Éditer profil</a></li>
-</ul>
+<div class="contenu-wrapper">
+    <div id="fiche_chercheur">
+        <p>{{chercheur.personne.courriel}}</p>
+        <p>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom "-" %}, {% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays "-" %}</p>
+        
+        <table>
+            <tr>
+                <td class="label">Nationalité:</td>
+                <td>{{chercheur.nationalite.nom}}</td>
+            </tr>
+            <tr>
+                <td class="label">Fonction:</td>
+                <td>{{chercheur.fonction}}</td>
+            </tr>
+            <tr>
+                <td class="label">Diplôme:</td>
+                <td>{{chercheur.diplome}}</td>
+            </tr>
+        </table>
+    
+    </div>
+</div>
 
 {% endblock %}

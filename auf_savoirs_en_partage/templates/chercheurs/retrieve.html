@@ -92,6 +92,21 @@
                 </td>
             </tr>
         </table>
+        
+        {% if chercheur.discipline %}
+        <h5>Discipline</h5>
+        <table>
+            <tr>
+                <td class="label">Adhésion(s) active(s):</td>
+                <td>
+                {% for g in chercheur.chercheurgroupe_set.all %}
+                    {{g.groupe.nom}}<br />
+                {% endfor %}
+                </td>
+            </tr>
+        </table>        
+        
+        
 
 
     </div>

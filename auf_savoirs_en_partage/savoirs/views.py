@@ -136,8 +136,11 @@ def informations (request):
 
 # actualités
 def actualite_index(request):
+    delta = datetime.timedelta (days = 90)
+    oldest = datetime.date.today () - delta
+    actualites = Actualite.objects.filter (visible = '1', date__gt = oldest)
     return render_to_response ("savoirs/actualite_index.html", \
-            Context (), \
+            Context ({'actualites': actualites}), \
             context_instance = RequestContext(request))
 
 # agenda

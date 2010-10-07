@@ -243,7 +243,7 @@ font-weight:bold;
 width:150px;
 }
 
-#fiche_chercheur #publications tr
+#fiche_chercheur .souligne
 {
   border-bottom:1px solid #DDD;
 }

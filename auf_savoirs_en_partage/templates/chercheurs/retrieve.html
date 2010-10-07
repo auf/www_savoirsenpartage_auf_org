@@ -1,13 +1,15 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
+<h4>Chercheurs</h4>
+
 <h4>{{ chercheur }}</h4>
 
 <div class="contenu-wrapper">
     <div id="fiche_chercheur">
         <p>{{chercheur.personne.courriel}}</p>
+        <p>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom "-" %}, {% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays "-" %}</p>
         
-        <h5>Information générales</h5>
         <table>
             <tr>
                 <td class="label">Nationalité:</td>
@@ -22,46 +24,60 @@
                 <td>{{chercheur.diplome}}</td>
             </tr>
         </table>
-
-        <h5>Établissement de rattachement</h5>
         <table>
+            {% if chercheur.url_site_web %}
             <tr>
-                <td class="label">Localisation:</td>
-                <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays "-" %}</td>
+                <td class="label">Url site web:</td>
+                <td><a href="{{chercheur.url_site_web}}">{{chercheur.url_site_web}}</a></td>
             </tr>
+            {% endif %}
+            {% if chercheur.url_blog %}
             <tr>
-                <td class="label">Établissement:</td>
-                <td>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom "-" %}</td>
+                <td class="label">Blog:</td>
+                <td><a href="{{chercheur.url_blog}}">{{chercheur.url_blog}}</a></td>
             </tr>
+            {% endif %}
+            {% if chercheur.url_facebook %}
+            <tr>
+                <td class="label">Facebook:</td>
+                <td><a href="{{chercheur.url_facebook}}">{{chercheur.url_facebook}}</a></td>
+            </tr>
+            {% endif %}
+            {% if chercheur.url_linkedin %}
+            <tr>
+                <td class="label">Linkedin:</td>
+                <td><a href="{{chercheur.url_linkedin}}">{{chercheur.url_linkedin}}</a></td>
+            </tr>
+            {% endif %}
         </table>
 
         <h5>Thèmes de recherche et publications</h5>
         <table id="publications">
-            <tr>
+            <tr class="souligne">
                 <td class="label">Thèmes de recherche et domaine d'expertise:</td>
                 <td>{{chercheur.expertise}}</td>
             </tr>
-            <tr>
+            {% if chercheur.these %}
+            <tr class="souligne">
                 <td class="label">Thèse:</td>
                 <td>{{chercheur.these.publication_affichage}}</td>
             </tr>
+            {% endif %}
             <tr>
-                <td class="label">Publication 1:</td>
-                <td>
-                    {% with chercheur.publication1 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
-                </td>
+                <td class="label">Publications:</td>
+                {% with chercheur.publication1 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
             </tr>
             <tr>
-                <td class="label">Publication 2:</td>
-                <td>{{chercheur.publication2.publication_affichage}}</td>
+                <td class="label"></td>
+                {% with chercheur.publication2 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
             </tr>
             <tr>
-                <td class="label">Publication 3:</td>
-                <td>{{chercheur.publication3.publication_affichage}}</td>
+                <td class="label"></td>
+                {% with chercheur.publication3 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
             </tr>
             <tr>
-                <td class="label">Publication 4:</td>
-                <td>{{chercheur.publication4.publication_affichage}}</td>
+                <td class="label"></td>
+                {% with chercheur.publication4 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
             </tr>
         </table>
 
@@ -70,34 +86,14 @@
             <tr>
                 <td class="label">Adhésion(s) active(s):</td>
                 <td>
-                <ul>
-                    {% for g in chercheur.chercheurgroupe_set.all %}
-                    <li>{{g.groupe.nom}}</li>
-                    {% endfor %}
-                    </ul>
+                {% for g in chercheur.chercheurgroupe_set.all %}
+                    {{g.groupe.nom}}<br />
+                {% endfor %}
                 </td>
             </tr>
         </table>
 
-        <h5>Site web personnel</h5>
-        <table>
-            <tr>
-                <td class="label">Url site web:</td>
-                <td>{% firstof chercheur.url_site_web "" %}</td>
-            </tr>
-            <tr>
-                <td class="label">Blog:</td>
-                <td>{% firstof chercheur.url_blog "" %}</td>
-            </tr>
-            <tr>
-                <td class="label">Facebook:</td>
-                <td>{% firstof chercheur.url_facebook "" %}</td>
-            </tr>
-            <tr>
-                <td class="label">Linkedin:</td>
-                <td>{% firstof chercheur.url_linkedin "" %}</td>
-            </tr>
-        </table>
+
     </div>
 
 </div>

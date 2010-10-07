@@ -45,7 +45,7 @@ def index(request):
                   'nb_chercheurs': nb_chercheurs,
                   'repertoire_form': repertoire_form,
                 }
-    return render_to_response ("chercheurs/repertoire.html", \
+    return render_to_response ("chercheurs/index.html", \
             Context (variables), 
             context_instance = RequestContext(request))
 

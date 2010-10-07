@@ -61,6 +61,7 @@ div.droite {  }
 
 #logo { float:left; width:144px; height:110px; margin-top:45px; margin-left:20px; }
 h1 a { display:block; width:144px; height:110px; text-indent:-99999px; background:url(../img/logo-agence-universitaire-de-la-francophonie.gif) no-repeat 0 0;border:none; text-decoration:none;}
+h5 a { text-decoration:none; }
 
 #sep-recherche {  }
 h2.slogan { position:absolute; top:53px; left:240px; font-size:3.4em; color:#3a3125; padding:0;font-family:"Myriad Pro", "Lucida Grande", sans-serif; font-weight:normal; letter-spacing:-1px; line-height:0.8em; z-index:1000; }

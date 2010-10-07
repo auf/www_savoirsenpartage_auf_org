@@ -3,53 +3,40 @@
 {% block contenu %}
 <h4>À propos de</h4>
 	
-		<div class="zone-texte"><!--
-		@page { margin: 2cm }
-		P { margin-bottom: 0.21cm }
--->
-
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">Le portail
-"Savoirs en partage" est une initiative de l'AUF pour
-<span style="color: #993300;"><span style="color: #bf153e;"><strong>valoriser les activités scientifiques</strong></span> </span>(toutes disciplines et
-thématiques confondues) de la communauté universitaire, à partir
-du moment où elles sont conduites en partenariat avec l'Agence.</span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">&nbsp;</span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">Le champ couvert
-  par ce site recouvre actuellement <span style="color: #bf153e;"><strong><a href="{% url savoirs.views.informations %}">{{ count }} sites et bases de données accessibles</a></strong></span> séparément à travers les serveurs
-que l'AUF a déployé , notamment grâce à son réseau de campus
-numériques francophones.</span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">&nbsp;</span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">Le portail "Savoirs en partage"
-a pour objectifs : 
-</span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #f8ffff;"><br /></span></p>
-
-<p style="margin-bottom: 0cm;"><span style="color: #bf153e;"><strong><em>pour la partie RESSOURCES</em>
-</strong></span>
+<div class="zone-texte">
+<p>
+« Savoirs en partage » est un portail qui propose à la communauté universitaire 
+de nouveaux services et des outils destinés à faciliter le travail en commun. 
+Ce portail permet également l'accès unifié vers un ensemble de ressources et documents produits en partenariat avec nos universités membres.  
 </p>
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">- soutenir et développer la production
-et la valorisation des ressources pédagogiques et scientifiques en
-français liées aux programmes de l'AUF, au bénéfice de l'ensemble
-du public universitaire. Ainsi, ce site pemet l'accès aux revues
-scientifiques, bibliothèques en lignes ou répertoires de chercheurs
-de l'AUF. 
-</span></p>
-<p style="margin-bottom: 0cm;">
-<span style="color: #000000;"><span style="color: #000000;"><em>Le site doit se doter à terme <span style="color: #000000;">d'un</span><span style="color: #000000;">
-</span>moteur de recherche fédérée qui permettra une recherche fine dans
-les différentes bases de contenus mis en ligne par l'AUF, ses
-implantations et ses <span style="color: #000000;">partenaires</span><span style="color: #000000;">.</span></em></span></span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #bf153e;"><em><br /></em></span></p>
-<p style="margin-bottom: 0cm;"><span style="color: #bf153e;"><strong><em>pour la partie ACTUALITES
-et AGENDA</em></strong></span></p>
+<p>
+Ainsi, vous pourrez accéder depuis ce portail à : 
+</p>
+<h5><a href="{% url chercheurs.views.index %}">...un répertoire des chercheurs</a></h5>
+<p>
+Le répertoire présente une base de données de plus de 7000   chercheurs, étudiants-chercheurs et enseignants-chercheurs  identifiés par domaines de recherche prioritaires. 
+</p>
 
-<p style="margin-bottom: 0cm;"><span style="color: #000000;">- d'offrir une vision d'ensemble des
-activités scientifiques menées en partenariat avec l'AUF. En outre,
-vous disposez d'un agenda  vous permettant d'enregistrer les
-manifestations scientifiques menées dans votre université ou
-institution, et ce afin de leur donner une plus grande visibilité
-internationale. 
-</span></p>
+<h5><a href="{% url savoirs.views.evenement_index %}">...un agenda scientifique</a></h5>
+<p> 
+La possibilité est offerte aux chercheurs d'annoncer sur ce portail un événement scientifique en l'inscrivant dans un agenda consultable par tous. 
+C'est aussi un outil de communication  et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
+</p>
+
+<h5><a href="{% url savoirs.views.ressource_index %}">...des ressources scientifiques</a></h5>
+<p>
+Le portail « Savoirs en partage » s'inscrit dans la continuité des différents projets de l'Agence universitaire de la Francophonie  visant la mise en ligne de nombreux contenus scientifiques produits par ses implantations, ses directions,ses réseaux de chercheurs, en collaboration avec ses établissements membres : ouvrages, revues, articles, cours en ligne, sites web, etc.  Ces contenus, dispersés, sont maintenant accessibles  par une porte d'entrée unique. 
+</p>
+
+<h5><a href="{% url sitotheque.views.index %}">... une sitothèque</a></h5>
+<p>
+Les sites retenus ici ont été créés en partenariat par l'AUF et des universités membres : cours en ligne, revues électroniques, fonds patrimoniaux, etc. constituent une source importante de ressources pédagogiques et scientifiques, à la disposition de tous. 
+</p>
+
+<h5><a href="{% url savoirs.views.actualite_index %}">... des actualités scientifiques</a></h5>
+<p>
+Les actualités scientifiques proposés sur différents sites de l'AUF sont reprises ici. 
+</p>
 
 </div>
 {% endblock %}

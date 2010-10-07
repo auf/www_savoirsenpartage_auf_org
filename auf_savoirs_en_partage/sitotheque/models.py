@@ -18,7 +18,7 @@ TYPE_SITE_CHOICES = (
 
 class Site(models.Model):
     """Fiche d'info d'un site web"""
-    url = models.URLField(verify_exists=True)   # dc:identifier (dc:source?)
+    url = models.URLField(verify_exists=False)   # dc:identifier (dc:source?)
     titre = models.CharField(max_length=255, verbose_name='Titre')   # dc.title
     description = models.TextField(null=True, blank=True)
     editeur = models.CharField(max_length=255, null=True, blank=True, verbose_name='Éditeur')    # dc.publisher : organisation resp

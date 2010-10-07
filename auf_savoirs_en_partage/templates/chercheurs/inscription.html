@@ -39,6 +39,18 @@
     </fieldset>
 
     <fieldset>
+        <legend>Thèse</legend>
+        <div>
+            <div class="publication">
+              {% with these_form as form %}
+                  {% include "table_form.html" %}
+              {% endwith %}
+            </div>
+            <div style="clear:both"></div>
+        </div>
+    </fieldset>
+        
+    <fieldset>
         <legend>Publications</legend>
         <div>
             <div class="publication">

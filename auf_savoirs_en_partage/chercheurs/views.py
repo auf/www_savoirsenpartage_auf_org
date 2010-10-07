@@ -11,6 +11,8 @@ from models import Personne, Utilisateur
 
 from django.contrib.auth.decorators import login_required
 
+from django.db.models import Q
+
 def chercheur_queryset (request):
     list = Chercheur.objects.order_by("id")
     pays = ""
@@ -29,9 +31,9 @@ def chercheur_queryset (request):
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
             list = list.filter (discipline=discipline)
-        #mots_cles = simpleForm.cleaned_data["mots_cles"]
-        #if mots_cles:
-        #    list = list.filter (personne__nom__icontains=mots_cles)
+        mots_cles = simpleForm.cleaned_data["mots_cles"]
+        if mots_cles:
+            list = list.filter (Q(personne__nom__icontains=mots_cles) | Q(personne__prenom__icontains=mots_cles))
     return list
     
 def index(request):

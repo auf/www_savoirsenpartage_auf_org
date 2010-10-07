@@ -1,0 +1,11 @@
+{% if publication.titre %}
+    {{publication.titre}}
+    {% if publication.annee %}{{publication.annee}}{% endif %}
+    {% if publication.revue %}<br />{{publication.revue}}{% endif %}
+    {% if publication.editeur %}<br />{{publication.editeur}}{% endif %}
+    {% if publication.lieu_edition %}<br />{{publication.lieu_edition}}{% endif %}
+    {% if publication.nb_pages %}<br />{{publication.nb_pages}}{% endif %}
+    {% if publication.url %}<br />{{publication.url}}{% endif %}
+{% else %}
+    {{publication.publication_affichage}}
+{% endif %}

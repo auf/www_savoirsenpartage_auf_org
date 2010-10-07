@@ -153,7 +153,7 @@ def evenement_index(request):
         erreur_caldav = u"Problème de connexion à l'agenda"
         events = []
     return render_to_response ("savoirs/evenement_index.html", \
-            Context ({'evenements':evenements}), \
+            Context ({'evenements':events}), \
             context_instance = RequestContext(request))
 
 def evenement(request, id):

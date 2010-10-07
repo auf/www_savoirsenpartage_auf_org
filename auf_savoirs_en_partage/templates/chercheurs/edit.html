@@ -53,12 +53,10 @@
     <fieldset>
         <legend>Publications</legend>
         <div>
-            {% ifnotequal publication1_form.instance.titre None %}
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication1_form.instance.publication_affichage}}</p>
+              <p>{{publication1_form.instance.publication_affichage|default:"-"}}</p>
             </div>
-            {% endifnotequal %}
             <div class="publication">
               {% with publication1_form as form %}
                   {% include "table_form.html" %}
@@ -69,12 +67,10 @@
         <p id="show_publications">+ Autres publications</p>
         <div class="publications_autre">
             <h6>- Publication 2</h6>
-            {% ifnotequal publication1_form.instance.titre None %}
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication2_form.instance.publication_affichage}}</p>
+              <p>{{publication2_form.instance.publication_affichage|default:"-"}}</p>
             </div>
-            {% endifnotequal %}
             <div class="publication">
                 {% with publication2_form as form %}
                     {% include "table_form.html" %}
@@ -82,12 +78,10 @@
             </div>
             <div style="clear:both"></div>
             <h6>- Publication 3</h6>
-            {% ifnotequal publication3_form.instance.titre None %}
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication3_form.instance.publication_affichage}}</p>
+              <p>{{publication3_form.instance.publication_affichage|default:"-"}}</p>
             </div>
-            {% endifnotequal %}
             <div class="publication">
                 {% with publication3_form as form %}
                     {% include "table_form.html" %}
@@ -95,12 +89,10 @@
             </div>
             <div style="clear:both"></div>     
             <h6>- Publication 4</h6>
-            {% ifnotequal publication4_form.instance.titre None %}
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication4_form.instance.publication_affichage}}</p>
+              <p>{{publication4_form.instance.publication_affichage|default:"-"}}</p>
             </div>
-            {% endifnotequal %}
             <div class="publication">
                 {% with publication4_form as form %}
                     {% include "table_form.html" %}

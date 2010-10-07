@@ -4,6 +4,7 @@
 <h4>{{ chercheur }}</h4>
 
 <div class="contenu-wrapper">
+    <div style="float:right; margin-right:40px;font-size:12px"><img src="/media/img/edit.png"> <a href="{% url chercheurs.views.edit %}">Éditer</a></div>
     <div id="fiche_chercheur">
         <p>{{chercheur.personne.courriel}}</p>
         <p>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom "-" %}, {% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays "-" %}</p>

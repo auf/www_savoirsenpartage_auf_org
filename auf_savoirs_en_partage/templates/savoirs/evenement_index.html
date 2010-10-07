@@ -11,7 +11,7 @@
     </tr>
 {% for e in evenements %}
     <tr class="{% cycle 'odd' 'notodd' %}">
-        <td>{{ e.summary.value|truncatewords:12 }}</td>
+        <td><a href="{% url savoirs.views.evenement e.uid.value %}" class="le-titre">{{ e.summary.value|truncatewords:20 }}</a></td>
     </tr>
 {% endfor %}
 </table>

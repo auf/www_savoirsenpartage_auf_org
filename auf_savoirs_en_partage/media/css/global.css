@@ -220,3 +220,28 @@ float:right;
 {
 
 }
+#fiche_chercheur
+{
+  font-size: 120%;
+}
+#fiche_chercheur h5
+{
+  font-size: 150%;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  border-style: solid none none none;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+#fiche_chercheur .label
+{
+color:grey;
+font-weight:bold;
+width:150px;
+}
+
+#fiche_chercheur #publications tr
+{
+  border-bottom:1px solid #DDD;
+}

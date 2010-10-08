@@ -60,7 +60,7 @@
             {% if chercheur.these %}
             <tr class="souligne">
                 <td class="label">Thèse:</td>
-                <td>{{chercheur.these.publication_affichage}}</td>
+                {% with chercheur.these as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
             </tr>
             {% endif %}
             <tr>

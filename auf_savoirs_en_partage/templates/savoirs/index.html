@@ -30,7 +30,9 @@
         
         <ul class="sous-menu">
             <li><a href="{% url chercheurs.views.index %}">Répertoire</a></li>
+            {% if not user_chercheur %}
             <li><a href="{% url chercheurs.views.inscription %}">Inscription</a></li>
+            {% endif %}
             <li><a href="{% url chercheurs.views.perso %}">Espace chercheur</a></li>
         </ul>
         

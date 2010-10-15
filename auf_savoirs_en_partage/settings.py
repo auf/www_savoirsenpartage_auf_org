@@ -4,7 +4,7 @@ import os
 from conf import *
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+    ('Équipe ARI-SI', 'developpeurs@ca.auf.org'),
 )
 
 MANAGERS = ADMINS

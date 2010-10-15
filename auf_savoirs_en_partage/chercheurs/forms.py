@@ -22,12 +22,10 @@ class PublicationForm(forms.ModelForm):
         fields = ('titre', 'annee', 'revue', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
 class TheseForm(PublicationForm):
-    titre = forms.CharField(required=True, label="Titre")  
-    #def clean_titre(self):
-    #    data = self.cleaned_data['titre']
-    #    if not data:
-    #        raise forms.ValidationError("Vous devez renseigner une thèse")
-    #    return data
+    titre = forms.CharField(required=True, label="Titre")
+    class Meta:
+        model = Publication
+        fields = ('titre', 'annee', 'revue', 'editeur', 'lieu_edition', 'nb_pages', 'url')
 
 class EtablissementForm(forms.ModelForm):
     class Meta:

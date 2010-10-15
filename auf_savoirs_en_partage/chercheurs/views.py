@@ -239,7 +239,7 @@ def perso(request):
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']
     if not chercheur:
-        return HttpResponseRedirect(reverse('django.contrib.auth.views.login'))
+        return HttpResponseRedirect(reverse('chercheurs.views.chercheur_login'))
     variables = { 'chercheur': chercheur,
                 }
     return render_to_response ("chercheurs/perso.html", \

@@ -4,10 +4,12 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template import Context, RequestContext
 from django.core.urlresolvers import reverse
+
 from forms import *
+from django.forms.models import inlineformset_factory
 
 from auf_references_client.models import Discipline, TypeImplantation
-from models import Personne, Utilisateur
+from models import Personne, Utilisateur, Groupe, ChercheurGroupe
 
 from django.contrib.auth.decorators import login_required
 
@@ -159,9 +161,11 @@ def edit(request):
     """Edition d'un chercheur"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']    
+    #GroupeFormset = inlineformset_factory(Chercheur, ChercheurGroupe)
+    
     if request.method == 'POST':
         personne_form = PersonneEditForm(request.POST, prefix="personne", instance=chercheur.personne)
-        #chercheur_form = ChercheurForm (request.POST, prefix="chercheur", instance=chercheur)
+        chercheur_form = ChercheurForm (request.POST, prefix="chercheur", instance=chercheur)
         etablissement_form = EtablissementForm(request.POST, prefix="etablissement", instance=chercheur)
         etablissement_autre_form = EtablissementAutreForm(request.POST, prefix="etablissement_autre", instance=chercheur)
         discipline_form = DisciplineForm(request.POST, prefix="discipline", instance=chercheur)
@@ -171,19 +175,36 @@ def edit(request):
         publication4_form = PublicationForm(request.POST, prefix="publication4", instance=chercheur.publication4)
         these_form = TheseForm(request.POST, prefix="these", instance=chercheur.these)
         
-
-        if( personne_form.is_valid() and discipline_form.is_valid() and publication1_form.is_valid() and publication2_form.is_valid() and publication3_form.is_valid() and publication4_form.is_valid() and these_form.is_valid() ):
+        #formset = GroupeFormset(request.POST, prefix="groupes", instance = chercheur)
+        
+        if( personne_form.is_valid() and discipline_form.is_valid() and these_form.is_valid() ):
             personne_form.save()
-            #chercheur_form.save()
             discipline_form.save()
-            publication1_form.save()
-            publication2_form.save()
-            publication3_form.save()
-            publication4_form.save()
-            these_form.save()
+            if publication1_form.is_valid() and publication1_form.cleaned_data['titre']:
+                chercheur.publication1 = publication1_form.save()
+            if publication2_form.is_valid() and publication2_form.cleaned_data['titre']:
+                chercheur.publication2 = publication2_form.save()
+            if publication3_form.is_valid() and publication3_form.cleaned_data['titre']:
+                chercheur.publication3 = publication3_form.save()              
+            if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
+                chercheur.publication4 = publication4_form.save()
+            chercheur.these = these_form.save()                  
+            chercheur.save()
+            #Gestion des groupes
+            groupes = request.POST.getlist('chercheur-groupes')
+            #On delete les chercheurs deselectionnés
+            ChercheurGroupe.objects.filter(chercheur=chercheur).exclude(groupe__in=groupes).delete()
+            #Sauvegarde des groupes...
+            for g in groupes:
+                g = Groupe.objects.get(pk=g)
+                ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=g, actif=1)
+
+            
+            #formset.save()
+            
     else:
         personne_form = PersonneEditForm(prefix="personne", instance=chercheur.personne) 
-        #chercheur_form = ChercheurForm (prefix="chercheur", instance=chercheur)
+        chercheur_form = ChercheurForm (prefix="chercheur", instance=chercheur)
         etablissement_form = EtablissementForm(prefix="etablissement", instance=chercheur)
         etablissement_autre_form = EtablissementAutreForm(prefix="etablissement_autre", instance=chercheur)
         discipline_form = DisciplineForm(prefix="discipline", instance=chercheur)
@@ -192,10 +213,11 @@ def edit(request):
         publication3_form = PublicationForm(prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(prefix="publication4", instance=chercheur.publication4) 
         these_form = TheseForm(prefix="these", instance=chercheur.these)
+        #formset = GroupeFormset(prefix="groupes", instance = chercheur)
         
     variables = { 'chercheur': chercheur,
                   'personne_form':personne_form,
-                  #'chercheur_form': chercheur_form,
+                  'chercheur_form': chercheur_form,
                   'etablissement_form': etablissement_form,
                   'discipline_form': discipline_form,
                   'etablissement_autre_form': etablissement_autre_form,
@@ -204,6 +226,7 @@ def edit(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  #'formset' : formset
                 }
     return render_to_response ("chercheurs/edit.html", \
             Context (variables), 

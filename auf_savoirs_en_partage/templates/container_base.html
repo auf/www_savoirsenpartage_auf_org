@@ -28,6 +28,13 @@
     <body>
         <div id="fond">
             <div id="enrobage" class="clearfix">
+                
+                <div id="logo">
+                    <h1>
+                        <a href="http://www.auf.org" title="Agence universitaire de la Francophonie">Agence universitaire de la Francophonie</a>
+                    </h1>
+                </div>
+                
                 <div class="clearfix sous-menu gauche">
                     <a href="{% url savoirs.views.actualite_index %}" class="bout-droit">Actualités</a>
                     <span>|</span>
@@ -53,11 +60,11 @@
                     <span>|</span>
                     <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos de</a>
                 </div>
-                
-                <div id="logo">
-                    <h1>
-                        <a href="http://www.auf.org" title="Agence universitaire de la Francophonie">Agence universitaire de la Francophonie</a>
-                    </h1>
+
+                <div id="col-menu">
+                    {% load sep_menu %}
+                    {% sep_menu %}
+                    <img src="{{ MEDIA_URL }}img/col-droite-background-bottom.png" width="190" height="8" alt="bottom" align="bottom" class="bottom" />
                 </div>
 
                 <div id="sep-recherche">
@@ -78,12 +85,6 @@
                         <a href="{% url savoirs.views.conseils %}">Conseils</a>
                         </p>
                     </div>
-                </div>
-
-                <div id="col-menu">
-                    {% load sep_menu %}
-                    {% sep_menu %}
-                    <img src="{{ MEDIA_URL }}img/col-droite-background-bottom.png" width="190" height="8" alt="bottom" align="bottom" class="bottom" />
                 </div>
                 
                 <div id="contenu" class="clearfix">

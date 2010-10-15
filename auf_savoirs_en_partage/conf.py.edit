@@ -6,6 +6,11 @@ DATABASE_HOST = ''             # Set to empty string for localhost. Not used wit
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 ROA_API_KEY = ''
 
+# Don't share this with anybody.
+SECRET_KEY = ''
+
 CALENDRIER_URL = 'http://davin:davin@cal.ro.auf.org/caldav.php/davin/test/'
+SITE_ROOT_URL = 'http://www.savoirsenpartage.auf.org'
 
 AUTH_PASSWORD_REQUIRED = True
+

@@ -56,8 +56,8 @@ div.sous-menu a.bout-gauche { background:#4c4030 url(../img/sous-menu-top-coin-g
 div.sous-menu a.bout-droit {  background:#4c4030 url(../img/sous-menu-top-coin-droit.gif) no-repeat 100% 0; padding-left:5px;}
 div.sous-menu span { display:block; height:19px;float:right;padding:6px 2px 0 2px; background-color:#4c4030;}
 
-div.gauche { float:left; }
-div.droite { float:right; }
+div.gauche { float:left; width:60%; }
+div.droite { float:right; width:40%; }
 
 #logo { float:left; width:144px; height:110px; margin-top:45px; margin-left:20px; }
 h1 a { display:block; width:144px; height:110px; text-indent:-99999px; background:url(../img/logo-agence-universitaire-de-la-francophonie.gif) no-repeat 0 0;border:none; text-decoration:none;}

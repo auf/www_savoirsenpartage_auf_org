@@ -46,7 +46,7 @@
                     {% if user.is_authenticated %}
                     <a href="{% url django.contrib.auth.views.logout %}" class="bout-droit">Déconnexion</a>
                     {% else %}
-                    <a href="{% url django.contrib.auth.views.login %}" class="bout-droit">Connexion</a>
+                    <a href="{% url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
                     {% endif %}
                     <span>|</span>
                     <a href="{% url savoirs.views.nous_contacter %}">Nous contacter</a>

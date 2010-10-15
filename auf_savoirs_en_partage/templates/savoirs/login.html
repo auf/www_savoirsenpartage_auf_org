@@ -7,7 +7,7 @@
 {% endif %}
 
   <div class="zone-texte">
-    <form method="post" action="{% url django.contrib.auth.views.login %}">
+    <form method="post" action="{% url chercheurs.views.chercheur_login %}">
       <table>
         <tr>
           <td>{{ form.username.label_tag }}</td>

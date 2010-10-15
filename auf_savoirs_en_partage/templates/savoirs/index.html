@@ -33,7 +33,9 @@
             {% if not user_chercheur %}
             <li><a href="{% url chercheurs.views.inscription %}">Inscription</a></li>
             {% endif %}
+            {% if user_chercheur %}
             <li><a href="{% url chercheurs.views.perso %}">Espace chercheur</a></li>
+            {% endif %}
         </ul>
         
         <ul class="liste-de-l-accueil">

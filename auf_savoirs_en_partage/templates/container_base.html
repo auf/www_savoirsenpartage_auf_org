@@ -29,12 +29,6 @@
         <div id="fond">
             <div id="enrobage" class="clearfix">
                 
-                <div id="logo">
-                    <h1>
-                        <a href="http://www.auf.org" title="Agence universitaire de la Francophonie">Agence universitaire de la Francophonie</a>
-                    </h1>
-                </div>
-                
                 <div class="sous-menu droite">
                     {% if user.is_authenticated %}
                     <a href="{% url django.contrib.auth.views.logout %}" class="bout-droit">Déconnexion</a>
@@ -59,6 +53,12 @@
                     <a href="{% url chercheurs.views.index %}">Chercheurs</a>
                     <span>|</span>
                     <a href="{% url savoirs.views.index %}" class="bout-gauche">Accueil</a>
+                </div>
+                
+                <div id="logo">
+                    <h1>
+                        <a href="http://www.auf.org" title="Agence universitaire de la Francophonie">Agence universitaire de la Francophonie</a>
+                    </h1>
                 </div>
 
                 <div id="col-menu">

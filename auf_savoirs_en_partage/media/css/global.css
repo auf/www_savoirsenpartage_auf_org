@@ -49,14 +49,14 @@ sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
 #fond {padding:0; margin:0; display:block; position:relative; width:100%; height:auto !important; height:100%; min-height:100%; background: url(../img/background-fond.jpg) no-repeat 50% 0; text-align:left;}
 #enrobage {padding:0; margin:0 auto; display:block; position:relative; width:960px; height:auto !important; height:100%; min-height:100%;}
 
-div.sous-menu { padding-top:1px; color:#fff; font-weight:bold; }
+div.sous-menu { display:inline; padding-top:1px; color:#fff; font-weight:bold; }
 div.sous-menu a { display:block; height:19px; padding:5px 10px 1px 10px; color:#fff; font-size:1.1em; text-decoration:none; float:right; white-space:nowrap; background-color:#4c4030;}
 div.sous-menu a:hover { text-decoration:underline;}
 div.sous-menu a.bout-gauche { background:#4c4030 url(../img/sous-menu-top-coin-gauche.gif) no-repeat 0 0; padding-right:5px;}
 div.sous-menu a.bout-droit {  background:#4c4030 url(../img/sous-menu-top-coin-droit.gif) no-repeat 100% 0; padding-left:5px;}
 div.sous-menu span { display:block; height:19px;float:right;padding:6px 2px 0 2px; background-color:#4c4030;}
 
-div.gauche { float:left; }
+div.gauche { float:left; left:0px; top:0px; }
 div.droite { float:right; }
 
 #logo { float:left; width:144px; height:110px; margin-top:45px; margin-left:20px; }

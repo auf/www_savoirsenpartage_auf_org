@@ -13,6 +13,7 @@ class Personne(models.Model):
     prenom = models.CharField(max_length=128, verbose_name = 'Prénom')
     courriel = models.EmailField(max_length=128, unique=True)
     fonction = models.CharField(max_length=128, null = True, blank = True)
+    date_naissance = models.DateField(null=True, blank=True)
     sousfonction = models.CharField(max_length=128, null = True, blank = True,
                                     verbose_name = 'Sous-fonction')
     mobile = models.CharField(max_length=32, null = True, blank = True,

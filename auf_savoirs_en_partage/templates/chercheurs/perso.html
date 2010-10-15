@@ -12,15 +12,15 @@
         <table>
             <tr>
                 <td class="label">Nationalité:</td>
-                <td>{{chercheur.nationalite.nom}}</td>
+                <td>{{chercheur.nationalite.nom|default:"-"}}</td>
             </tr>
             <tr>
                 <td class="label">Fonction:</td>
-                <td>{{chercheur.fonction}}</td>
+                <td>{{chercheur.fonction|default:"-"}}</td>
             </tr>
             <tr>
                 <td class="label">Diplôme:</td>
-                <td>{{chercheur.diplome}}</td>
+                <td>{{chercheur.diplome|default:"-"}}</td>
             </tr>
         </table>
     

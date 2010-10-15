@@ -153,7 +153,7 @@ class SEP:
         q = "SELECT r.id, (%s) AS score FROM savoirs_record AS r \
              LEFT JOIN savoirs_record_listsets AS rl ON r.id = rl.record_id \
              LEFT JOIN savoirs_listset AS l ON rl.listset_id = l.spec \
-             WHERE (%s) AND r.validated = 1 AND l.validated = 1 \
+             WHERE (%s) AND r.validated = 1 AND (l.validated = 1 OR l.validated IS NULL) \
              GROUP BY r.id \
              HAVING score > 0 ORDER BY score DESC" % (m, m)
         from django.db import connection, transaction

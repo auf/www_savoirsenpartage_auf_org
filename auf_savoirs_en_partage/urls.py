@@ -23,7 +23,7 @@ urlpatterns = patterns(
     (r'^admin/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
 
-    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'savoirs/login.html'}),
+    (r'^accounts/login/$', 'chercheurs.views.chercheur_login', {'template_name': 'savoirs/login.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'savoirs/logout.html'}),
 
     # sous-menu gauche

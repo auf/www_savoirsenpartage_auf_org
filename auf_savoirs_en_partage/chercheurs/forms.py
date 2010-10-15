@@ -4,7 +4,8 @@ from models import *
 
 
 class PersonneForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe")  
+    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
+    genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
     class Meta:
         model = Utilisateur
         fields = ('nom', 'prenom', 'courriel', 'password', 'genre')

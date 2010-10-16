@@ -103,6 +103,7 @@ def inscription(request):
                 c = chercheur_form.save(commit=False)
                 
                 etablissement_form = EtablissementForm (request.POST, prefix="etablissement", instance=c)
+                etablissement_autre_form = EtablissementAutreForm (request.POST, prefix="etablissement_autre", instance=c)
                 discipline_form = DisciplineForm (request.POST, prefix="discipline", instance=c)
                 
                 if etablissement_form.is_valid() and discipline_form.is_valid() and these_form.is_valid():       
@@ -189,10 +190,14 @@ def edit(request):
         
         #formset = GroupeFormset(request.POST, prefix="groupes", instance = chercheur)
         
-        if( personne_form.is_valid() and discipline_form.is_valid() and chercheur_form.is_valid() and these_form.is_valid() and groupe_form.is_valid() ):
+        if( personne_form.is_valid() and discipline_form.is_valid() and chercheur_form.is_valid() and these_form.is_valid()
+            and etablissement_form.is_valid() and etablissement_autre_form.save() and groupe_form.is_valid() ):
             personne_form.save()
             discipline_form.save()
             chercheur_form.save()
+            etablissement_form.save()
+            etablissement_autre_form.save()
+            
             if publication1_form.is_valid() and publication1_form.cleaned_data['titre']:
                 chercheur.publication1 = publication1_form.save()
             if publication2_form.is_valid() and publication2_form.cleaned_data['titre']:

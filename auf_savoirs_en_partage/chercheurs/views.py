@@ -14,6 +14,7 @@ from models import Personne, Utilisateur, Groupe, ChercheurGroupe
 from django.contrib.auth.decorators import login_required
 
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
@@ -95,9 +96,10 @@ def inscription(request):
         publication3_form = PublicationForm (request.POST, prefix="publication3") 
         publication4_form = PublicationForm (request.POST, prefix="publication4")
         these_form = TheseForm(request.POST, prefix="these")
+        groupe_form = GroupeForm(request.POST, prefix="groupe")
         
         if personne_form.is_valid():
-            if chercheur_form.is_valid():
+            if chercheur_form.is_valid() and groupe_form.is_valid():
                 c = chercheur_form.save(commit=False)
                 
                 etablissement_form = EtablissementForm (request.POST, prefix="etablissement", instance=c)
@@ -127,6 +129,13 @@ def inscription(request):
                     p = personne_form.save()
                     c.personne = p
                     c.save()
+                    
+                    #sauvegarde des groupes
+                    groupes = request.POST.getlist('groupe-groupes')
+                    for g in groupes:
+                        g = Groupe.objects.get(pk=g)
+                        ChercheurGroupe.objects.get_or_create(chercheur=c, groupe=g, actif=1)
+                    
                     return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(c.id,)))
     else:
         personne_form = PersonneForm(prefix="personne")
@@ -139,6 +148,7 @@ def inscription(request):
         publication3_form = PublicationForm(prefix="publication3") 
         publication4_form = PublicationForm(prefix="publication4")
         these_form = TheseForm(prefix="these")
+        groupe_form = GroupeForm(prefix="groupe")
     
     variables = { 'personne_form': personne_form,
                   'chercheur_form': chercheur_form,
@@ -150,6 +160,7 @@ def inscription(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  'groupe_form': groupe_form,
                 }
     
     return render_to_response ("chercheurs/inscription.html", \
@@ -174,12 +185,14 @@ def edit(request):
         publication3_form = PublicationForm(request.POST, prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(request.POST, prefix="publication4", instance=chercheur.publication4)
         these_form = TheseForm(request.POST, prefix="these", instance=chercheur.these)
+        groupe_form = GroupeForm(request.POST, prefix="groupe", instance=chercheur)
         
         #formset = GroupeFormset(request.POST, prefix="groupes", instance = chercheur)
         
-        if( personne_form.is_valid() and discipline_form.is_valid() and these_form.is_valid() ):
+        if( personne_form.is_valid() and discipline_form.is_valid() and chercheur_form.is_valid() and these_form.is_valid() and groupe_form.is_valid() ):
             personne_form.save()
             discipline_form.save()
+            chercheur_form.save()
             if publication1_form.is_valid() and publication1_form.cleaned_data['titre']:
                 chercheur.publication1 = publication1_form.save()
             if publication2_form.is_valid() and publication2_form.cleaned_data['titre']:
@@ -191,7 +204,7 @@ def edit(request):
             chercheur.these = these_form.save()                  
             chercheur.save()
             #Gestion des groupes
-            groupes = request.POST.getlist('chercheur-groupes')
+            groupes = request.POST.getlist('groupe-groupes')
             #On delete les chercheurs deselectionnés
             ChercheurGroupe.objects.filter(chercheur=chercheur).exclude(groupe__in=groupes).delete()
             #Sauvegarde des groupes...
@@ -213,6 +226,7 @@ def edit(request):
         publication3_form = PublicationForm(prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(prefix="publication4", instance=chercheur.publication4) 
         these_form = TheseForm(prefix="these", instance=chercheur.these)
+        groupe_form = GroupeForm(prefix="groupe", instance=chercheur)
         #formset = GroupeFormset(prefix="groupes", instance = chercheur)
         
     variables = { 'chercheur': chercheur,
@@ -226,6 +240,7 @@ def edit(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  'groupe_form': groupe_form,
                   #'formset' : formset
                 }
     return render_to_response ("chercheurs/edit.html", \
@@ -248,7 +263,8 @@ def perso(request):
             
 def retrieve(request, id):
     """Fiche du chercheur"""
-    chercheur = Chercheur.objects.get(id=id)
+    #chercheur = Chercheur.objects.get(id=id)
+    chercheur = get_object_or_404(Chercheur, id=id)
     variables = { 'chercheur': chercheur,
                 }
     return render_to_response ("chercheurs/retrieve.html", \

@@ -10,11 +10,15 @@ class PersonneForm(forms.ModelForm):
         model = Utilisateur
         fields = ('nom', 'prenom', 'courriel', 'password', 'genre')
         
+class GroupeForm(forms.ModelForm):
+    class Meta:
+        model = Chercheur
+        fields = ('groupes',)
 
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('groupes',)
+        fields = ('fonction', 'diplome',)
         
 class PublicationForm(forms.ModelForm):
     class Meta:
@@ -23,6 +27,7 @@ class PublicationForm(forms.ModelForm):
         
 class TheseForm(PublicationForm):
     titre = forms.CharField(required=True, label="Titre")
+    annee = forms.IntegerField(required=False, label="Année de soutenance")
     class Meta:
         model = Publication
         fields = ('titre', 'annee', 'revue', 'editeur', 'lieu_edition', 'nb_pages', 'url')

@@ -12,10 +12,12 @@
             {% include "table_form.html" %}
         {% endwith %}
     </fieldset>
-    lolqut
     <fieldset>
         <legend>Informations académiques</legend>
         {% with chercheur_form as form %}
+            {% include "table_form.html" %}
+        {% endwith %}
+        {% with groupe_form as form %}
             {% include "table_form.html" %}
         {% endwith %}
     </fieldset>

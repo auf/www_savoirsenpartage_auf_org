@@ -74,17 +74,6 @@ class Chercheur(models.Model):
     
     these = models.ForeignKey('Publication', db_column='these', null=True, blank=True, related_name='These')
     
-    #communication_annee
-    #communication_titre
-    #communication_nom_manifestation_scientifique
-    #communication_lieu
-    #communication_date
-    
-    #laboratoire_nom =
-    #laboratoire_etablissement =
-    #laboratoire_pays =
-    #laboratoire_url=
-    
     #meta
     actif = models.BooleanField(editable = False)
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')

@@ -54,16 +54,19 @@ def chercheur_queryset (request):
     if simpleForm.is_valid ():
         pays = simpleForm.cleaned_data["pays"]
         if pays:
-            list = list.filter (nationalite = pays.pk)
+            list = list.filter(nationalite = pays.pk)
         fonction = simpleForm.cleaned_data["fonction"]
         if fonction:
-            list = list.filter (fonction = fonction)
+            list = list.filter(fonction = fonction)
         genre = simpleForm.cleaned_data["genre"]
         if genre:
-            list = list.filter (personne__genre=genre)
+            list = list.filter(personne__genre=genre)
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
-            list = list.filter (discipline=discipline)
+            list = list.filter(discipline=discipline)
+        domaine = simpleForm.cleaned_data["domaine"]
+        if domaine:
+            list = list.filter(groupes=domaine)
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:
             list = list.filter (Q(personne__nom__icontains=mots_cles) | Q(personne__prenom__icontains=mots_cles))

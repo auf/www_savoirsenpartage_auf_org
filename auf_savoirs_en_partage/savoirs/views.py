@@ -30,6 +30,8 @@ def index (request):
     except:
         erreur_caldav = u"Problème de connexion à l'agenda"
         events = []
+    
+    
     ressources = Record.objects.all().order_by('?')[:configuration['accueil_ressource']]
     chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
     sites = Site.objects.all().order_by('?')[:configuration['accueil_sites']]

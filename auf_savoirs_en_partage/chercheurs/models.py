@@ -56,7 +56,7 @@ class Chercheur(models.Model):
                                         verbose_name='Champ disciplinaire')
     expertise = models.TextField(null=True, blank=True, verbose_name='Domaine d\'expertise et thèmes de recherche')                                    
     url_site_web = models.URLField(max_length=255, null=True, blank=True,
-                                    verbose_name='Adresse site Internet personnel')
+                                    verbose_name='Adresse site Internet')
     url_blog = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Blog')
     url_facebook = models.URLField(max_length=255, null=True, blank=True,

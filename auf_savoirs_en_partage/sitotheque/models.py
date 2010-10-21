@@ -43,3 +43,10 @@ class Site(models.Model):
     
     def __unicode__(self):
         return "%s" % (self.titre)
+        
+    def type_display(self):
+        for t in TYPE_SITE_CHOICES:
+            if self.type == t[0]:
+                return t[1]
+        return "-"
+

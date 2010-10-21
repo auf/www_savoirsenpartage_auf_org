@@ -59,4 +59,3 @@ class RepertoireSearchForm (forms.Form):
       domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
       fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
       pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
-      genre = forms.ChoiceField(choices=(('','Tous'),)+GENRE_CHOICES, required=False, label="Genre")

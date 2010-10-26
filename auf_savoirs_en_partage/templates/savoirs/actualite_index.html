@@ -1,14 +1,9 @@
 {% extends "container_base.html" %}
 
 {% load pagination_tags %}
-{% load sorting_tags %}
-
-
-{% autosort actualites %}
-{% autopaginate actualites 10 %}
-
 
 {% block contenu %}
+{% autopaginate actualites %}
 <h4>Actualités</h4>
 
 <div class="contenu-wrapper">
@@ -27,5 +22,4 @@
 </table>
 <div class="centre">{% paginate %}</div>
 </div>
-
 {% endblock %}

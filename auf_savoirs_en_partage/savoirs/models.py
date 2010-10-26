@@ -206,7 +206,7 @@ class RecordQuerySet(models.query.QuerySet):
         score_parts = []
         score_params = []
         for word in words:
-            score_parts.append('title LIKE %s')
+            score_parts.append('(title LIKE %s)')
             score_params.append('%' + word + '%')
         score_expr = ' + '.join(score_parts)
         return self.extra(

@@ -34,6 +34,9 @@ class ActualiteManager(models.Manager):
     def get_query_set(self):
         return ActualiteQuerySet(self.model)
 
+    def search(self, text):
+        return self.get_query_set().search(text)
+
 class ActualiteQuerySet(models.query.QuerySet):
 
     def search(self, text):
@@ -188,6 +191,31 @@ class ListSet(models.Model):
     def __unicode__(self,):
         return self.name
 
+class RecordManager(models.Manager):
+    
+    def get_query_set(self):
+        return RecordQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class RecordQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        words = text.split()
+        score_parts = []
+        score_params = []
+        for word in words:
+            score_parts.append('title LIKE %s')
+            score_params.append('%' + word + '%')
+        score_expr = ' + '.join(score_parts)
+        return self.extra(
+            select={'relevance': score_expr},
+            select_params=score_params,
+            where=[score_expr],
+            params=score_params
+        ).order_by('-relevance')
+
 class Record(models.Model):
     
     #fonctionnement interne
@@ -227,6 +255,9 @@ class Record(models.Model):
     thematiques = models.ManyToManyField(Thematique)
     pays = models.ManyToManyField(Pays)
     regions = models.ManyToManyField(Region)
+
+    # Manager
+    objects = RecordManager()
 
     def est_complet(self,):
         """teste si le record à toutes les données obligatoires"""

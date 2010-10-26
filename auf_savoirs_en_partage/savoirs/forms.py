@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from datamaster_modeles.models import Thematique, Pays, Region
-from models import Evenement, Discipline
+from models import Evenement, Discipline, Record
+
+# Formulaires de recherche
 
 class RechercheAvancee (forms.Form):
     creator = forms.CharField (max_length=60, required=False, \
@@ -14,6 +16,22 @@ class RechercheAvancee (forms.Form):
     operator = forms.ChoiceField (choices = (('or', 'ou'), ('and', 'et')), label = "Operateur")
     type = forms.CharField (initial='avancee', required=False, widget=forms.HiddenInput)
 
+class RecordSearchForm(forms.Form):
+    """Formulaire de recherche pour les ressources."""
+
+    q = forms.CharField(required=False, label="Mots-clés")
+
+    def get_query_set(self):
+        """Retourne l'ensemble des ressources qui correspondent aux valeurs
+           entrées dans le formulaire."""
+        records = Record.objects.all()
+        if self.is_valid():
+            query = self.cleaned_data['q']
+            if query:
+                records = records.search(query)
+        return records
+
+###
 
 class EvenementForm(forms.ModelForm):
     class Meta:

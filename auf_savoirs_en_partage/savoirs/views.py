@@ -111,10 +111,10 @@ def conseils (request):
 
 # ressources
 def ressource_index(request):
-    ressources = Record.objects.all().order_by('?')
-    return render_to_response ("savoirs/ressource_index.html", \
-            Context ({'ressources':ressources}), \
-            context_instance = RequestContext(request))
+    search_form = RecordSearchForm(request.GET)
+    ressources = search_form.get_query_set()
+    return render_to_response("savoirs/ressource_index.html", {'search_form': search_form, 'ressources': ressources},
+                              context_instance = RequestContext(request))
        
 def ressource_retrieve(request, id):
     """Notice OAI de la ressource"""

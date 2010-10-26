@@ -6,19 +6,23 @@
 <h4>Ressources</h4>
 {% autopaginate ressources %}
 <div class="contenu-wrapper">
-<div class="centre">{% paginate %}</div>
-<table id="repertoire">
+  <form action="" method="get">
+    {{ search_form }}
+    <input type="submit" value="Rechercher" />
+  </form>
+  <div class="centre">{% paginate %}</div>
+  <table id="repertoire">
     <tr>
-        <th>Nom</th>
-        <th>Source</th>
+    <th>Nom</th>
+    <th>Source</th>
     </tr>
-{% for r in ressources %}
+    {% for r in ressources %}
     <tr class="{% cycle 'odd' 'notodd' %}">
-        <td><a href="{% url savoirs.views.ressource_retrieve r.id %}" class="le-titre">{{ r.title|truncatewords:11 }}</a></td>
-        <td>{{ r.server }}</td>
+    <td><a href="{% url savoirs.views.ressource_retrieve r.id %}" class="le-titre">{{ r.title|truncatewords:11 }}</a></td>
+    <td>{{ r.server }}</td>
     </tr>
-{% endfor %}
-</table>
-<div class="centre">{% paginate %}</div>
+    {% endfor %}
+  </table>
+  <div class="centre">{% paginate %}</div>
 </div>
 {% endblock %}

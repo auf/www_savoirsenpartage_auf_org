@@ -249,3 +249,10 @@ width:150px;
 {
   border-bottom:1px solid #DDD;
 }
+
+.message
+{
+font-weight:bold;
+font-size:12px;
+color:red;
+}

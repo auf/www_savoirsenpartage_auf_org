@@ -1,9 +1,11 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 
 from forms import *
 from django.forms.models import inlineformset_factory
@@ -19,9 +21,56 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
 
+#TODO: Migrer tout ce qui a rapport aux users dans une nouvelle app
+
 class AuthenticationForm(OriginalAuthenticationForm):
     username = forms.CharField(label=_("Username"), max_length=255)
 
+def send_password(request):
+    if request.method == "POST":
+        form = SendPasswordForm(data=request.POST)
+        if form.is_valid():
+            u = Utilisateur.objects.get(courriel=form.cleaned_data['email'])
+            code = hashlib.md5(u.courriel+u.password).hexdigest()
+            code = code[0:6]
+            link = "%saccounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
+            send_mail('Savoirs en partage: changement de mot de passe',
+                    'Bonjour \n. Veuillez acceder a ce lien pour modifier votre mot de passe'+link, settings.CONTACT_EMAIL,
+                [u.courriel], fail_silently=False)
+    else:
+        form = SendPasswordForm()
+    
+    variables = { 'form': form,
+                }
+    return render_to_response ("accounts/send_password.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+
+def random_password():
+    import string
+    from random import choice
+    chars = string.ascii_letters + string.digits
+    password = "".join(choice(chars) for x in range(0,8))
+    return password
+
+
+def new_password(request, email, code):
+    u = Utilisateur.objects.get(courriel=email)
+    original_code = hashlib.md5(u.courriel+u.password).hexdigest()
+    original_code = original_code[0:6]
+    if(code == original_code):
+        new_password = random_password()
+        u.password = hashlib.md5(new_password).hexdigest()
+        u.save()
+    else:
+        return HttpResponseRedirect('/')
+    variables = { 'new_password': new_password,
+                }
+    return render_to_response ("accounts/new_password.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+            
+            
 
 def chercheur_login(request, template_name='registration/login.html', redirect_field_name='next'):
     "Displays the login form and handles the login action."
@@ -140,8 +189,8 @@ def inscription(request):
                     for g in groupes:
                         g = Groupe.objects.get(pk=g)
                         ChercheurGroupe.objects.get_or_create(chercheur=c, groupe=g, actif=1)
-                    
-                    return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(c.id,)))
+                    return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % c.id)
+                    #return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(c.id,)))
     else:
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")
@@ -172,7 +221,7 @@ def inscription(request):
             Context (variables), 
             context_instance = RequestContext(request))
 
-
+@login_required()
 def edit(request):
     """Edition d'un chercheur"""
     context_instance = RequestContext(request)
@@ -257,7 +306,7 @@ def edit(request):
             context_instance = RequestContext(request))
             
             
-
+@login_required()
 def perso(request):
     """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
@@ -273,8 +322,10 @@ def perso(request):
 def retrieve(request, id):
     """Fiche du chercheur"""
     #chercheur = Chercheur.objects.get(id=id)
+    inscription = request.GET.get('inscription')
     chercheur = get_object_or_404(Chercheur, id=id)
     variables = { 'chercheur': chercheur,
+                  'inscription': inscription,
                 }
     return render_to_response ("chercheurs/retrieve.html", \
             Context (variables), 

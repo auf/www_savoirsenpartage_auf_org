@@ -139,12 +139,15 @@ def informations (request):
 
 # actualités
 def actualite_index(request):
-    delta = datetime.timedelta (days = 90)
-    oldest = datetime.date.today () - delta
-    actualites = Actualite.objects.filter (visible = '1', date__gt = oldest)
-    return render_to_response ("savoirs/actualite_index.html", \
-            Context ({'actualites': actualites}), \
-            context_instance = RequestContext(request))
+    delta = datetime.timedelta(days=90)
+    oldest = datetime.date.today() - delta
+    actualites = Actualite.objects.filter(visible=True, date__gt=oldest)
+    query = request.GET.get('q')
+    if query:
+        actualites = actualites.search(query)
+    return render_to_response("savoirs/actualite_index.html",
+                              {'actualites': actualites},
+                              context_instance = RequestContext(request))
 
 # agenda
 def evenement_index(request):

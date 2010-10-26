@@ -29,6 +29,16 @@ class SourceActualite(models.Model):
     def __unicode__(self,):
         return u"%s" % self.nom
 
+class ActualiteManager(models.Manager):
+    
+    def get_query_set(self):
+        return ActualiteQuerySet(self.model)
+
+class ActualiteQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        return self.filter(titre__icontains=text)
+
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
     titre = models.CharField(max_length=765, db_column='titre_actualite')
@@ -38,6 +48,8 @@ class Actualite(models.Model):
     visible = models.BooleanField(db_column='visible_actualite', default = False)
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
     source = models.ForeignKey(SourceActualite, blank = True, null = True)
+
+    objects = ActualiteManager()
 
     def __unicode__ (self):
         return "%s" % (self.titre)

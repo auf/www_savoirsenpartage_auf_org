@@ -1,16 +1,10 @@
 {% extends "container_base.html" %}
 
 {% load pagination_tags %}
-{% load sorting_tags %}
-
-
-{% autosort ressources %}
-{% autopaginate ressources 10 %}
-
 
 {% block contenu %}
 <h4>Ressources</h4>
-
+{% autopaginate ressources %}
 <div class="contenu-wrapper">
 <div class="centre">{% paginate %}</div>
 <table id="repertoire">
@@ -27,5 +21,4 @@
 </table>
 <div class="centre">{% paginate %}</div>
 </div>
-
 {% endblock %}

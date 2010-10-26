@@ -20,6 +20,9 @@ class RecordSearchForm(forms.Form):
     """Formulaire de recherche pour les ressources."""
 
     q = forms.CharField(required=False, label="Mots-clés")
+    auteur = forms.CharField(required=False, label="Auteur ou contributeur")
+    titre = forms.CharField(required=False, label="Titre")
+    sujet = forms.CharField(required=False, label="Sujet")
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -29,6 +32,15 @@ class RecordSearchForm(forms.Form):
             query = self.cleaned_data['q']
             if query:
                 records = records.search(query)
+            auteur = self.cleaned_data['auteur']
+            if auteur:
+                records = records.search_auteur(auteur)
+            titre = self.cleaned_data['titre']
+            if titre:
+                records = records.search_titre(titre)
+            sujet = self.cleaned_data['sujet']
+            if sujet:
+                records = records.search_sujet(sujet)
         return records
 
 ###

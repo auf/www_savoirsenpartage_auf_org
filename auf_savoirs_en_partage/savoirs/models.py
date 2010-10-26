@@ -2,6 +2,7 @@
 import simplejson, uuid, datetime, caldav, vobject, uuid
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import pre_delete
 from timezones.fields import TimeZoneField
 from auf_savoirs_en_partage.backend_config import RESOURCES
@@ -202,20 +203,42 @@ class RecordManager(models.Manager):
 class RecordQuerySet(models.query.QuerySet):
 
     def search(self, text):
+        qs = self
         words = text.split()
-        score_parts = []
-        score_params = []
-        for word in words:
-            score_parts.append('(title LIKE %s)')
-            score_params.append('%' + word + '%')
-        score_expr = ' + '.join(score_parts)
-        return self.extra(
-            select={'relevance': score_expr},
-            select_params=score_params,
-            where=[score_expr],
-            params=score_params
-        ).order_by('-relevance')
 
+        # Ne garder que les ressources qui contiennent tous les mots
+        # demandés.
+        for word in words:
+            qs = qs.filter(Q(title__icontains=word) | Q(description__icontains=word) |
+                           Q(creator__icontains=word) | Q(contributor__icontains=word) |
+                           Q(subject__icontains=word))
+
+        # On donne un point pour chaque mot présent dans le titre.
+        score_expr = ' + '.join(['(title LIKE %s)'] * len(words))
+        score_params = ['%' + word + '%' for word in words]
+        return qs.extra(
+            select={'score': score_expr},
+            select_params=score_params
+        ).order_by('-score')
+
+    def search_auteur(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(Q(creator__icontains=word) | Q(contributor__icontains=word))
+        return qs
+
+    def search_sujet(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(subject__icontains=word)
+        return qs
+
+    def search_titre(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(title__icontains=word)
+        return qs
+            
 class Record(models.Model):
     
     #fonctionnement interne

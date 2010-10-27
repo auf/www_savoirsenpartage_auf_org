@@ -11,4 +11,7 @@ $(document).ready(function() {
     
     });
 
+    // Activer le datepicker sur les input de classe "date"
+    $.datepicker.setDefaults($.datepicker.regional['fr']);
+    $('input:text.date').datepicker();
 });

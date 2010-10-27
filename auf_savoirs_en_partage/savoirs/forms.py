@@ -2,7 +2,7 @@
 import re
 from django import forms
 from datamaster_modeles.models import Thematique, Pays, Region
-from models import Evenement, Discipline, Record
+from models import Evenement, Discipline, Record, Actualite
 from savoirs.lib.recherche import build_search_regexp
 
 # Formulaires de recherche
@@ -51,6 +51,39 @@ class RecordSearchForm(forms.Form):
         if self.is_valid():
             return build_search_regexp(self.cleaned_data['q'])
 
+class ActualiteSearchForm(forms.Form):
+    """Formulaire de recherche pour les actualités."""
+
+    q = forms.CharField(required=False, label="Mots-clés")
+    date_min = forms.DateField(required=False, label="Depuis le", 
+                               widget=forms.DateInput(attrs={'class': 'date'}),
+                               input_formats=['%d/%m/%Y'])
+    date_max = forms.DateField(required=False, label="Jusqu'au", 
+                               widget=forms.DateInput(attrs={'class': 'date'}),
+                               input_formats=['%d/%m/%Y'])
+
+    def get_query_set(self):
+        """Retourne l'ensemble des actualités qui correspondent aux valeurs
+           entrées dans le formulaire."""
+        actualites = Actualite.objects.all()
+        if self.is_valid():
+            query = self.cleaned_data['q']
+            if query:
+                actualites = actualites.search(query)
+            date_min = self.cleaned_data['date_min']
+            if date_min:
+                print date_min
+                actualites = actualites.filter(date__gte=date_min)
+            date_max = self.cleaned_data['date_max']
+            if date_max:
+                actualites = actualites.filter(date__lte=date_max)
+        return actualites
+    
+    def get_search_regexp(self):
+        """Retourne une expression régulière compilée qui peut servir à
+           chercher les mot-clés recherchés dans un texte."""
+        if self.is_valid():
+            return build_search_regexp(self.cleaned_data['q'])
 ###
 
 class EvenementForm(forms.ModelForm):

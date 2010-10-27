@@ -147,14 +147,14 @@ def informations (request):
 
 # actualités
 def actualite_index(request):
-    delta = datetime.timedelta(days=90)
-    oldest = datetime.date.today() - delta
-    actualites = Actualite.objects.filter(visible=True, date__gt=oldest)
-    query = request.GET.get('q')
-    if query:
-        actualites = actualites.search(query)
+    search_form = ActualiteSearchForm(request.GET)
+    actualites = search_form.get_query_set()
+    search_regexp = search_form.get_search_regexp()
     return render_to_response("savoirs/actualite_index.html",
-                              {'actualites': actualites},
+                              dict(actualites=actualites,
+                                   search_form=search_form,
+                                   search_regexp=search_regexp,
+                                   nb_resultats=len(actualites)),
                               context_instance = RequestContext(request))
 
 # agenda

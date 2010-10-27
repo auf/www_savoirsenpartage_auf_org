@@ -3,7 +3,7 @@
 {% load pagination_tags %}
 
 {% block contenu %}
-{% autopaginate actualites %}
+{% autopaginate actualites 10 %}
 <h4>Actualités</h4>
 <ul class="actions">
   <li><a href="/rss/actualites"><img src="/media/img/feed.png" /></a></li>
@@ -11,22 +11,16 @@
 
 <div class="contenu-wrapper">
   <form action="" method="get">
-    <input type="text" name="q" value="{{ request.GET.q }}" size="50" />
-    <input type="submit" value="Rechercher" />
+    <table>
+      {{ search_form.as_table }}
+      <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
+    </table>
   </form>
+  <p><strong>{{ nb_resultats }} actualités correspondant à votre recherche :</strong></p>
   <div class="centre">{% paginate %}</div>
-  <table id="repertoire">
-    <tr>
-    <th>Nom</th>
-    <th>Source</th>
-    </tr>
-    {% for actualite in actualites %}
-    <tr class="{% cycle 'odd' 'notodd' %}">
-    <td><a href="{{ actualite.url }}" class="le-titre">{{ actualite.titre|truncatewords:20 }}</a></td>
-    <td>{{ actualite.source.nom }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+  {% for actualite in actualites %}
+  {% include "savoirs/actualite_resultat.html" %}
+  {% endfor %}
   <div class="centre">{% paginate %}</div>
 </div>
 {% endblock %}

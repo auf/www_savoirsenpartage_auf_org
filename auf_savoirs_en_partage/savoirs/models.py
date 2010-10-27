@@ -41,7 +41,7 @@ class ActualiteManager(models.Manager):
 class ActualiteQuerySet(models.query.QuerySet):
 
     def search(self, text):
-        return self.filter(titre__icontains=text)
+        return self.filter(Q(titre__icontains=text) | Q(texte__icontains=text))
 
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')

@@ -1,6 +1,7 @@
 {% extends "container_base.html" %}
 
 {% load pagination_tags %}
+{% load search %}
 
 {% block contenu %}
 <h4>Ressources</h4>
@@ -16,7 +17,15 @@
   <div class="centre">{% paginate %}</div>
   <div class="zone-texte">
     {% for r in ressources %}
-    {% include "savoirs/resultat.html" %} 
+    <div class="resultatRecherche">
+      <a class="le-titre" href="{{ r.uri }}">{{ r.title|highlight:search_regexp }}</a>
+      {% if r.creator %}
+      <div><span class="lbl">Auteur:</span> {{ r.creator|highlight:search_regexp }}</div>
+      {% endif %}
+      {% if r.description %}
+      <div class="resultatResume"><span class="lbl">Description:</span> {{ r.description|highlight:search_regexp }}</div>
+      {% endif %}
+    </div>
     {% empty %}
     <div class="resultatRecherche">
       <h2>Aucun résultat trouvé</h2>

@@ -61,8 +61,8 @@ def nous_contacter (request):
 # recherche
 def recherche (request):
     query = request.GET.get("q", "")
-    ressources = Record.objects.search(query)
-    actualites = Actualite.objects.search(query)
+    ressources = Record.objects.validated().search(query)
+    actualites = Actualite.objects.filter(visible=1).search(query)
     search_regexp = build_search_regexp(query)
     return render_to_response(
         "savoirs/recherche.html",

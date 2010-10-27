@@ -200,6 +200,9 @@ class RecordManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
+    def validated(self):
+        return self.get_query_set().validated()
+
 class RecordQuerySet(models.query.QuerySet):
 
     def search(self, text):
@@ -239,6 +242,16 @@ class RecordQuerySet(models.query.QuerySet):
             qs = qs.filter(title__icontains=word)
         return qs
             
+    def validated(self):
+        """Ne garder que les ressources validées et qui sont soit dans aucun
+           listset ou au moins dans un listset validé."""
+        qs = self.filter(validated=True)
+        qs = qs.extra(where=['''((savoirs_record.id NOT IN (SELECT record_id FROM savoirs_record_listsets)) OR
+                                 ((SELECT MAX(l.validated) FROM savoirs_listset l
+                                   INNER JOIN savoirs_record_listsets rl ON rl.listset_id = l.spec
+                                   WHERE rl.record_id = savoirs_record.id) = TRUE))'''])
+        return qs
+
 class Record(models.Model):
     
     #fonctionnement interne

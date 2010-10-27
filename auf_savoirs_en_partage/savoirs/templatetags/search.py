@@ -9,7 +9,7 @@ register = template.Library()
 EXCERPT_LENGTH = 200
 
 @register.filter
-def highlight(text, regexp, autoescape=None):
+def highlight(text, regexp=None, autoescape=None):
     """Met en évidence les parties du texte qui correspondent à l'expression
        régulière passée en argument."""
     if autoescape:
@@ -19,12 +19,12 @@ def highlight(text, regexp, autoescape=None):
     return mark_safe(text)
 
 @register.filter
-def excerpt(text, regexp):
+def excerpt(text, regexp=None):
     """Tronque le texte autour de la première correspondance de l'expression
        régulière."""
     if len(text) <= EXCERPT_LENGTH:
         return text
-    m = regexp.search(text)
+    m = regexp is not None and regexp.search(text)
     if m:
         pos = m.start()
         end_of_sentence = max(text.rfind('.', 0, pos), text.rfind('?', 0, pos), text.rfind('!', 0, pos))

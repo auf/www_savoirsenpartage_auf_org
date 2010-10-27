@@ -25,6 +25,7 @@ urlpatterns = patterns(
 
     (r'^accounts/login/$', 'chercheurs.views.chercheur_login', {'template_name': 'accounts/login.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'accounts/logout.html'}),
+    (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
     (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
     (r'^accounts/new_password/(.+)/(.+)/$', 'chercheurs.views.new_password'),
 

@@ -30,7 +30,7 @@ class Personne(models.Model):
         ordering = ["prenom", "nom"]
 
 class Utilisateur(Personne):
-    password = models.CharField (max_length=35, verbose_name = 'Mot de passe')
+    password = models.CharField(max_length=35, verbose_name = 'Mot de passe')
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Chercheur_independant', 'Chercheur indépendant'), ('Doctorant', 'Doctorant'))
 class Chercheur(models.Model):
@@ -81,6 +81,12 @@ class Chercheur(models.Model):
     
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
+        
+    def fonction_display(self):
+        for f in FONCTION_CHOICES:
+            if self.fonction == f[0]:
+                return f[1]
+        return "-"
     
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')

@@ -16,7 +16,7 @@
             </tr>
             <tr>
                 <td class="label">Fonction:</td>
-                <td>{{chercheur.fonction|default:"-"}}</td>
+                <td>{{chercheur.fonction_display|default:"-"}}</td>
             </tr>
             <tr>
                 <td class="label">Diplôme:</td>
@@ -25,6 +25,7 @@
         </table>
     
     </div>
+    <p><a href="{% url chercheurs.views.change_password %}">Modifier mot de passe</a></p>
 </div>
 
 {% endblock %}

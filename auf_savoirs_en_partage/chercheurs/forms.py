@@ -70,5 +70,17 @@ class SendPasswordForm(forms.Form):
                 Utilisateur.objects.get(courriel=email)
             except:
                 raise forms.ValidationError("Ce courriel n'existe pas dans notre base de données.")       
-        return email        
+        return email
+
+class NewPasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput(), required=True, label="Mot de passe") 
+    password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez mot de passe")
+    def clean_password_repeat(self):
+        cleaned_data = self.cleaned_data
+        password = cleaned_data.get("password")
+        password_repeat = cleaned_data.get("password_repeat")
+        if password and password_repeat:
+            if password != password_repeat:
+                raise forms.ValidationError("Les mots de passe ne concordent pas")
+        return password_repeat   
 

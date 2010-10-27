@@ -23,7 +23,7 @@
       <div><span class="lbl">Auteur:</span> {{ r.creator|highlight:search_regexp }}</div>
       {% endif %}
       {% if r.description %}
-      <div class="resultatResume"><span class="lbl">Description:</span> {{ r.description|highlight:search_regexp }}</div>
+      <div class="resultatResume"><span class="lbl">Description:</span> {{ r.description|excerpt:search_regexp|highlight:search_regexp }}</div>
       {% endif %}
     </div>
     {% empty %}

@@ -30,10 +30,7 @@
         
         <ul class="sous-menu">
             <li><a href="{% url chercheurs.views.index %}">Répertoire</a></li>
-            {% if not user_chercheur %}
-            <li><a href="{% url chercheurs.views.inscription %}">Inscription</a></li>
-            {% endif %}
-            <li><a href="{% url chercheurs.views.perso %}">Espace chercheur</a></li>
+            {% include "chercheurs/actions.html" %}
         </ul>
         
         <ul class="liste-de-l-accueil">
@@ -54,8 +51,7 @@
             
             <ul class="sous-menu">
                 <li><a href="{% url savoirs.views.evenement_index %}">Tous les événements</a></li>
-                <li><a href="{% url savoirs.views.evenement_ajout %}">Soumettre un événement</a></li>
-                {% comment %}<li><a href="{{ caldav_url }}">S'abonner</a></li>{% endcomment %}
+                {% include "savoirs/evenement_actions.html" %}
             </ul>
             
             <ul class="liste-de-l-accueil">

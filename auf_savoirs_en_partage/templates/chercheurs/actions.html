@@ -1,0 +1,4 @@
+{% if not user_chercheur %}
+<li><a href="{% url chercheurs.views.inscription %}">Inscription</a></li>
+{% endif %}
+<li><a href="{% url chercheurs.views.perso %}">Espace chercheur</a></li>

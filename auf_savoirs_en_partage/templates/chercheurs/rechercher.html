@@ -5,6 +5,9 @@
 {% autopaginate chercheurs 20 %}
 
 <h4>Répertoire des chercheurs</h4>
+<ul class="actions">
+  {% include "chercheurs/actions.html" %}
+</ul>
 
 <div class="contenu-wrapper">
 
@@ -38,4 +41,3 @@
 </table>
 <div class="centre">{% paginate %}</div>
 </div>
-

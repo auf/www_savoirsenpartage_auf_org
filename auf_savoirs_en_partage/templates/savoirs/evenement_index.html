@@ -3,6 +3,10 @@
 
 {% block contenu %}
 <h4>Agenda</h4>
+<ul class="actions">
+  {% include "savoirs/evenement_actions.html" %}
+  <li><a href="/rss/agenda"><img src="/media/img/feed.png" /></a></li>
+</ul>
 
 <div class="contenu-wrapper">
 <table id="repertoire">

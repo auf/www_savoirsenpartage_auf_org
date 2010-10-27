@@ -21,21 +21,15 @@
 
 </script>
 
-<h4>Résultats de recherche pour « {{ q }} » :</h4>
-
+{% if ressources %}
+<h4>Ressources correspondant à « {{ q }} » ({{ ressources|length }} sur {{ nb_ressources }}):</h4>
 <div class="zone-texte">
-  {% for r in data.results %}
-    {% include "savoirs/resultat.html" %} 
-  {% empty %}
-  <div class="resultatRecherche">
-    <h2>Aucun résultat trouvé</h2>
-  </div>
+  {% for ressource in ressources %}
+  {% include "savoirs/ressource_resultat.html" %} 
   {% endfor %}
+  <a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ nb_ressources }} ressources correspondant à « {{ q }} »</a>
 </div>
-<div class="resultatPages">
-  <span id="pageLinks">
-  </span>
-</div>
+{% endif %}
 
 {% if user.is_authenticated %}
 {% include "savoirs/editor.html" %}

@@ -3,6 +3,7 @@ import re
 from django import forms
 from datamaster_modeles.models import Thematique, Pays, Region
 from models import Evenement, Discipline, Record
+from savoirs.lib.recherche import build_search_regexp
 
 # Formulaires de recherche
 
@@ -48,29 +49,8 @@ class RecordSearchForm(forms.Form):
         """Retourne une expression régulière compilée qui peut servir à
            chercher les mot-clés recherchés dans un texte."""
         if self.is_valid():
-            words = self.cleaned_data['q'].split()
-            if not words:
-                return None
-            parts = []
-            for word in words:
-                part = re.escape(word.lower())
-                # Les expressions régulières ne connaissent pas la version
-                # en majuscules des caractères accentués.  :(
-                part = part.replace(u'à', u'[àÀ]')
-                part = part.replace(u'â', u'[âÂ]')
-                part = part.replace(u'é', u'[éÉ]')
-                part = part.replace(u'ê', u'[êÊ]')
-                part = part.replace(u'î', u'[îÎ]')
+            return build_search_regexp(self.cleaned_data['q'])
 
-                # Faire ceci après avoir traité les caractères accentués...
-                part = part.replace('a', u'[aàâÀÂ]')
-                part = part.replace('e', u'[eéèëêÉÊ]')
-                part = part.replace('i', u'[iïîÎ]')
-                part = part.replace('o', u'[oô]')
-                part = part.replace('u', u'[uûüù]')
-
-                parts.append(part)
-            return re.compile('|'.join(parts), re.I) 
 ###
 
 class EvenementForm(forms.ModelForm):

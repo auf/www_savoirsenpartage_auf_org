@@ -1,0 +1,11 @@
+{% load search %}
+
+<div class="resultatRecherche">
+  <a class="le-titre" href="{{ ressource.uri }}">{{ ressource.title|highlight:search_regexp }}</a>
+  {% if ressource.creator %}
+  <div><span class="lbl">Auteur:</span> {{ ressource.creator|highlight:search_regexp }}</div>
+  {% endif %}
+  {% if ressource.description %}
+  <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description|excerpt:search_regexp|highlight:search_regexp }}</div>
+  {% endif %}
+</div>

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django import forms
 from django.conf import settings
-from lib.recherche import cherche, google_search
+from lib.recherche import cherche, google_search, build_search_regexp
 from lib import sep
 from lib.calendrier import evenements, evenement_info, combine
 from savoirs.globals import configuration
@@ -60,16 +60,15 @@ def nous_contacter (request):
 
 # recherche
 def recherche (request):
-    q = request.GET.get("q", "")
-    page = int(request.GET.get("page", 0))
-
-    r = cherche (page, q)
-
-    return render_to_response ("savoirs/recherche.html", \
-            Context ({'q': q,
-                      'page': page,
-                      'data': r}), \
-            context_instance = RequestContext(request))
+    query = request.GET.get("q", "")
+    ressources = Record.objects.search(query)
+    search_regexp = build_search_regexp(query)
+    return render_to_response(
+        "savoirs/recherche.html",
+        {'q': query, 'ressources': ressources[:5], 
+         'nb_ressources': len(ressources), 'search_regexp': search_regexp},
+        context_instance = RequestContext(request)
+    )
 
 def avancee (request):
     type = request.GET.get("type", "")

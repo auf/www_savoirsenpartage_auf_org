@@ -3,6 +3,7 @@ import hashlib
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
+from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.conf import settings
@@ -34,8 +35,16 @@ def send_password(request):
             code = hashlib.md5(u.courriel+u.password).hexdigest()
             code = code[0:6]
             link = "%saccounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
+
+            variables = { 'user': u,
+                          'link': link,
+                          'SITE_ROOT_URL': settings.SITE_ROOT_URL
+                }     
+            t = get_template('accounts/email_password.html')
+            content = t.render(Context(variables)) 
+            
             send_mail('Savoirs en partage: changement de mot de passe',
-                    'Bonjour \n. Veuillez acceder a ce lien pour modifier votre mot de passe'+link, settings.CONTACT_EMAIL,
+                    content, settings.CONTACT_EMAIL,
                 [u.courriel], fail_silently=False)
     else:
         form = SendPasswordForm()
@@ -45,33 +54,52 @@ def send_password(request):
     return render_to_response ("accounts/send_password.html", \
             Context (variables), 
             context_instance = RequestContext(request))
-
-def random_password():
-    import string
-    from random import choice
-    chars = string.ascii_letters + string.digits
-    password = "".join(choice(chars) for x in range(0,8))
-    return password
-
-
+            
 def new_password(request, email, code):
     u = Utilisateur.objects.get(courriel=email)
     original_code = hashlib.md5(u.courriel+u.password).hexdigest()
     original_code = original_code[0:6]
+    message=""
     if(code == original_code):
-        new_password = random_password()
-        u.password = hashlib.md5(new_password).hexdigest()
-        u.save()
+        if request.method == "POST":
+            form = NewPasswordForm(data=request.POST)
+            if form.is_valid():
+                new_password = form.cleaned_data['password']
+                u.password = hashlib.md5(new_password).hexdigest()
+                u.save()
+                message = "Votre mot de passe a été modifié."
+        else:
+            form = NewPasswordForm()
     else:
         return HttpResponseRedirect('/')
-    variables = { 'new_password': new_password,
+    variables = { 'form': form,
+                  'message': message,
                 }
     return render_to_response ("accounts/new_password.html", \
             Context (variables), 
             context_instance = RequestContext(request))
-            
-            
 
+@login_required()            
+def change_password(request):
+    context_instance = RequestContext(request)
+    u = context_instance['user_sep']
+    message = ""
+    if request.method == "POST":
+        form = NewPasswordForm(data=request.POST)
+        if form.is_valid():
+            new_password = form.cleaned_data['password']
+            u.password = hashlib.md5(new_password).hexdigest()
+            u.save()
+            message = "Votre mot de passe a été modifié."
+    else:
+        form = NewPasswordForm()
+    variables = { 'form': form,
+                  'message': message,
+                }
+    return render_to_response ("accounts/new_password.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))            
+             
 def chercheur_login(request, template_name='registration/login.html', redirect_field_name='next'):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')

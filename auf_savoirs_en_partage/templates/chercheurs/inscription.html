@@ -5,6 +5,10 @@
 
 <div class="contenu-wrapper">
 
+{% if personne_form.errors or chercheur_form.errors or etablissement_form.errors or discipline_form.errors or these_form.errors %}
+<span class="message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</span>
+{% endif %}
+
 <form method="post">
     <fieldset>
         <legend>Informations personnelles</legend>

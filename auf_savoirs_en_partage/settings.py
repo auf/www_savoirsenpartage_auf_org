@@ -106,4 +106,6 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashb
 
 AUTH_PROFILE_MODULE = 'savoirs.Profile'
 
+CONTACT_EMAIL = 'contact-savoirsenpartage@auf.org'
+
 from auf_references_client.settings import *

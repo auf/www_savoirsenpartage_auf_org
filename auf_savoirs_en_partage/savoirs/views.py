@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django import forms
+from django.conf import settings
 from lib.recherche import cherche, google_search
 from lib import sep
 from lib.calendrier import evenements, evenement_info, combine
@@ -54,7 +55,7 @@ def a_propos (request):
 
 def nous_contacter (request):
     return render_to_response ("savoirs/contact.html", \
-            Context (), \
+            Context ({'courriel':settings.CONTACT_EMAIL}), \
             context_instance = RequestContext(request))
 
 # recherche

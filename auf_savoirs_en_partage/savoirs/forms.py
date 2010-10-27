@@ -72,7 +72,6 @@ class ActualiteSearchForm(forms.Form):
                 actualites = actualites.search(query)
             date_min = self.cleaned_data['date_min']
             if date_min:
-                print date_min
                 actualites = actualites.filter(date__gte=date_min)
             date_max = self.cleaned_data['date_max']
             if date_max:

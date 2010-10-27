@@ -62,11 +62,13 @@ def nous_contacter (request):
 def recherche (request):
     query = request.GET.get("q", "")
     ressources = Record.objects.search(query)
+    actualites = Actualite.objects.search(query)
     search_regexp = build_search_regexp(query)
     return render_to_response(
         "savoirs/recherche.html",
-        {'q': query, 'ressources': ressources[:5], 
-         'nb_ressources': len(ressources), 'search_regexp': search_regexp},
+        dict(q=query, ressources=ressources[:5], actualites=actualites[:5],
+             total_ressources=len(ressources), total_actualites=len(actualites),
+             search_regexp=search_regexp),
         context_instance = RequestContext(request)
     )
 

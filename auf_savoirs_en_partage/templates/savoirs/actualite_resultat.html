@@ -1,0 +1,7 @@
+{% load search %}
+
+<div class="resultatRecherche">
+  <a class="le-titre" href="{{ actualite.url }}">{{ actualite.titre|highlight:search_regexp }}</a>
+  <div class="resultatResume">{{ actualite.texte|highlight:search_regexp }}</div>
+</div>
+

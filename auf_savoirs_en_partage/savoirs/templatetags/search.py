@@ -1,3 +1,5 @@
+#coding: utf-8
+
 from django import template
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -10,6 +12,6 @@ def highlight(text, regexp, autoescape=None):
        régulière passée en argument."""
     if autoescape:
         text = conditional_escape(text)
-    if words:
-        text = words.sub(r'<b>\g<0></b>', text)
+    if regexp:
+        text = regexp.sub(r'<b>\g<0></b>', text)
     return mark_safe(text)

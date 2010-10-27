@@ -38,7 +38,8 @@ def send_password(request):
 
             variables = { 'user': u,
                           'link': link,
-                          'SITE_ROOT_URL': settings.SITE_ROOT_URL
+                          'SITE_ROOT_URL': settings.SITE_ROOT_URL,
+                          'CONTACT_EMAIL': settings.CONTACT_EMAIL,
                 }     
             t = get_template('accounts/email_password.html')
             content = t.render(Context(variables)) 

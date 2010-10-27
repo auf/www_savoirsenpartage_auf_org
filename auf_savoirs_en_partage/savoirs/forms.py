@@ -29,7 +29,7 @@ class RecordSearchForm(forms.Form):
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
            entrées dans le formulaire."""
-        records = Record.objects.all()
+        records = Record.objects.validated()
         if self.is_valid():
             query = self.cleaned_data['q']
             if query:
@@ -65,7 +65,7 @@ class ActualiteSearchForm(forms.Form):
     def get_query_set(self):
         """Retourne l'ensemble des actualités qui correspondent aux valeurs
            entrées dans le formulaire."""
-        actualites = Actualite.objects.all()
+        actualites = Actualite.objects.filter(visible=True)
         if self.is_valid():
             query = self.cleaned_data['q']
             if query:

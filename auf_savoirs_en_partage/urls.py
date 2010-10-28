@@ -35,6 +35,7 @@ urlpatterns = patterns(
     
     # sous-menu droite
     (r'^a-propos/$', 'savoirs.views.a_propos'),
+    (r'^legal/$', 'savoirs.views.legal'),
     (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
     
     # recherche

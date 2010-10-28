@@ -3,7 +3,7 @@
 {% block contenu %}
 <h4>À propos de</h4>
 	
-<div class="zone-texte">
+<div class="texte">
 <p>
 « Savoirs en partage » est un portail qui propose à la communauté universitaire 
 de nouveaux services et des outils destinés à faciliter le travail en commun. 
@@ -12,31 +12,46 @@ Ce portail permet également l'accès unifié vers un ensemble de ressources et 
 <p>
 Ainsi, vous pourrez accéder depuis ce portail à : 
 </p>
-<h5><a href="{% url chercheurs.views.index %}">...un répertoire des chercheurs</a></h5>
-<p>
-Le répertoire présente une base de données de plus de 7000   chercheurs, étudiants-chercheurs et enseignants-chercheurs  identifiés par domaines de recherche prioritaires. 
-</p>
+</div>
 
-<h5><a href="{% url savoirs.views.evenement_index %}">...un agenda scientifique</a></h5>
+<h5><a href="{% url chercheurs.views.index %}">... un répertoire des chercheurs</a></h5>
+
+<div class="texte">
+<p>
+Le répertoire présente une base de données de plus de 7000 chercheurs, étudiants-chercheurs et enseignants-chercheurs identifiés par domaines de recherche prioritaires. 
+</p>
+</div>
+
+<h5><a href="{% url savoirs.views.evenement_index %}">... un agenda scientifique</a></h5>
+
+<div class="texte">
 <p> 
 La possibilité est offerte aux chercheurs d'annoncer sur ce portail un événement scientifique en l'inscrivant dans un agenda consultable par tous. 
-C'est aussi un outil de communication  et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
+C'est aussi un outil de communication et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
 </p>
+</div>
 
-<h5><a href="{% url savoirs.views.ressource_index %}">...des ressources scientifiques</a></h5>
+<h5><a href="{% url savoirs.views.ressource_index %}">... des ressources scientifiques</a></h5>
+
+<div class="texte">
 <p>
-Le portail « Savoirs en partage » s'inscrit dans la continuité des différents projets de l'Agence universitaire de la Francophonie  visant la mise en ligne de nombreux contenus scientifiques produits par ses implantations, ses directions,ses réseaux de chercheurs, en collaboration avec ses établissements membres : ouvrages, revues, articles, cours en ligne, sites web, etc.  Ces contenus, dispersés, sont maintenant accessibles  par une porte d'entrée unique. 
+Le portail « Savoirs en partage » s'inscrit dans la continuité des différents projets de l'Agence universitaire de la Francophonie  visant la mise en ligne de nombreux contenus scientifiques produits par ses implantations, ses directions, ses réseaux de chercheurs, en collaboration avec ses établissements membres : ouvrages, revues, articles, cours en ligne, sites web, etc.  Ces contenus, dispersés, sont maintenant accessibles par une porte d'entrée unique. 
 </p>
+</div>
 
 <h5><a href="{% url sitotheque.views.index %}">... une sitothèque</a></h5>
+
+<div class="texte">
 <p>
 Les sites retenus ici ont été créés en partenariat par l'AUF et des universités membres : cours en ligne, revues électroniques, fonds patrimoniaux, etc. constituent une source importante de ressources pédagogiques et scientifiques, à la disposition de tous. 
 </p>
+</div>
 
 <h5><a href="{% url savoirs.views.actualite_index %}">... des actualités scientifiques</a></h5>
+
+<div class="texte">
 <p>
 Les actualités scientifiques proposés sur différents sites de l'AUF sont reprises ici. 
 </p>
-
 </div>
 {% endblock %}

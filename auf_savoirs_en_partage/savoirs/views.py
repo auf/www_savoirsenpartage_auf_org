@@ -41,12 +41,17 @@ def index (request):
 # sous-menu droite
 def a_propos (request):
     return render_to_response ("savoirs/a-propos.html", \
-            Context ({'count': len(backend_config.RESOURCES)}), \
+            Context (), \
             context_instance = RequestContext(request))
 
 def nous_contacter (request):
     return render_to_response ("savoirs/contact.html", \
             Context ({'courriel':settings.CONTACT_EMAIL}), \
+            context_instance = RequestContext(request))
+            
+def legal(request):
+    return render_to_response ("savoirs/legal.html", \
+            Context (), \
             context_instance = RequestContext(request))
 
 # recherche

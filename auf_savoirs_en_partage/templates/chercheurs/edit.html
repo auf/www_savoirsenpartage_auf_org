@@ -1,6 +1,7 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
+
 <h4>{{chercheur.personne.prenom}} {{chercheur.personne.nom}}</h4>
 
 <div class="contenu-wrapper">
@@ -45,7 +46,7 @@
     </fieldset>
     
     <fieldset>
-        <legend>Thèse</legend>
+        <legend>Thèse ou mémoire</legend>
         <div>
             <div class="publication">
               {% with these_form as form %}

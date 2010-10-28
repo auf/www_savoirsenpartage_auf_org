@@ -298,7 +298,7 @@ def edit(request):
             for g in groupes:
                 g = Groupe.objects.get(pk=g)
                 ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=g, actif=1)
-            return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % chercheur.id)
+            return HttpResponseRedirect("/chercheurs/perso/?modification=1")
             
             #formset.save()
             
@@ -340,9 +340,11 @@ def perso(request):
     """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']
+    modification = request.GET.get('modification')
     if not chercheur:
         return HttpResponseRedirect(reverse('chercheurs.views.chercheur_login'))
     variables = { 'chercheur': chercheur,
+                  'modification': modification,
                 }
     return render_to_response ("chercheurs/perso.html", \
             Context (variables), 

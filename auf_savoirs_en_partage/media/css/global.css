@@ -94,9 +94,14 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 }
 
 #tabs { margin-left: 8px; margin-right: 8px; }
+
 #contenu h4 { padding: 0 25px; margin-bottom:0.4em; font-size:2.2em; font-weight:normal; letter-spacing:-1px; }
 #contenu h4 a { text-decoration:none; color:black; }
 #contenu h4 a:hover { text-decoration:underline; }
+#contenu h5 { padding: 10px 0 0 25px; margin-bottom:0.4em; font-size:1.8em; font-weight:normal; letter-spacing:-1px; }
+#contenu h5 a { text-decoration:none; color:black; }
+#contenu h5 a:hover { text-decoration:underline; }
+
 #contenu .zone-texte {padding: 0 25px; font-size: 1.2em; min-height: 375px;}
 #contenu .zone-texte ul li {list-style: disc; margin: 0 0 .25em;}
 #contenu .zone-texte ol li {list-style: decimal; margin: 0 0 .25em;}
@@ -104,6 +109,12 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 #contenu .zone-texte h2 {font-size: 1.2em;}
 #contenu .zone-texte h3 {font-size: 1.1em;}
 #contenu .zone-texte blockquote {margin: 0 2em 1em; font-style: italic;}
+
+#contenu .texte { padding: 0 25px; font-size: 1.2em; }
+#contenu .texte ul li { list-style: disc; margin: 0 0 .25em; }
+#contenu .texte ol li { list-style: decimal; margin: 0 0 .25em; }
+#contenu .texte ul ul, #contenu .description ol ol  { margin-top: .25em; margin-bottom: .25em; }
+
 
 #contenu img.top, .resultats img.top { height:10px; position:relative; top:-10px; left:0;}
 #contenu img.bottom, .resultats img.bottom{ height:10px; position:relative; bottom:-10px; left:0;}

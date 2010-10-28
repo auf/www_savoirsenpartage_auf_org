@@ -34,7 +34,10 @@ class SiteQuerySet(models.query.QuerySet):
                            Q(description__icontains=word) |
                            Q(editeur__icontains=word) |
                            Q(auteur__icontains=word) |
-                           Q(mots_cles__icontains=word)) 
+                           Q(mots_cles__icontains=word) |
+                           Q(discipline__nom__icontains=word) |
+                           Q(pays__nom__icontains=word) |
+                           Q(pays__region__nom__icontains=word)).distinct()
         return qs
 
 class Site(models.Model):

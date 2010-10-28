@@ -142,6 +142,14 @@ def chercheur_queryset (request):
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:
             list = list.search(mots_cles)
+        fonction = simpleForm.cleaned_data["fonction"]
+        if fonction:
+            if fonction == "enseignant":
+                list = list.filter(enseignant=True)
+            if fonction == "expert":
+                list = list.exclude(expertise=None)
+             
+        
     return list
     
 def index(request):
@@ -196,7 +204,8 @@ def inscription(request):
                        pub = publication4_form.save()
                        c.publication4 = pub    
                     these = these_form.save()
-                    expertise = expertise_form.save()
+                    if expertise_form.is_valid() and expertise_form.cleaned_data['nom']:
+                        expertise = expertise_form.save()
                     c.these = these 
                     c.expertise = expertise
                     etablissement_form.save(commit=False)
@@ -288,7 +297,8 @@ def edit(request):
             if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
                 chercheur.publication4 = publication4_form.save()
             chercheur.these = these_form.save()  
-            chercheur.expertise = expertise_form.save()                
+            if expertise_form.cleaned_data['nom']:
+                chercheur.expertise = expertise_form.save()                
             chercheur.save()
             #Gestion des groupes
             groupes = request.POST.getlist('groupe-groupes')

@@ -63,7 +63,7 @@ class RepertoireSearchForm (forms.Form):
     mots_cles = forms.CharField (required = False, label="Mots-clés")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
-    #fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
+    fonction = forms.ChoiceField(choices=(('','Tous'),('chercheur','Chercheur'), ('enseignant','Enseignant-Chercheur'), ('expert','Expert')), required=False, label="Fonction")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
       
 class SendPasswordForm(forms.Form):

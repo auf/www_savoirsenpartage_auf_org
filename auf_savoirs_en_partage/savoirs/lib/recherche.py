@@ -154,3 +154,32 @@ def cherche (page, q, engin=None):
         sep_search (page, q, rc)
     
     return rc
+
+def build_search_regexp(query):
+    """Construit une expression régulière qui peut servir à chercher les
+       mots-clés donnés dans 'query'."""
+    words = query.split()
+    if not words:
+        return None
+    parts = []
+    for word in words:
+        part = re.escape(word.lower())
+        # Les expressions régulières ne connaissent pas la version
+        # en majuscules des caractères accentués.  :(
+        part = part.replace(u'à', u'[àÀ]')
+        part = part.replace(u'â', u'[âÂ]')
+        part = part.replace(u'é', u'[éÉ]')
+        part = part.replace(u'ê', u'[êÊ]')
+        part = part.replace(u'î', u'[îÎ]')
+        part = part.replace(u'ç', u'[çÇ]')
+
+        # Faire ceci après avoir traité les caractères accentués...
+        part = part.replace('a', u'[aàâÀÂ]')
+        part = part.replace('e', u'[eéèëêÉÊ]')
+        part = part.replace('i', u'[iïîÎ]')
+        part = part.replace('o', u'[oô]')
+        part = part.replace('u', u'[uûüù]')
+        part = part.replace('c', u'[cç]')
+
+        parts.append(part)
+    return re.compile('|'.join(parts), re.I) 

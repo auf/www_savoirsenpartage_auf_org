@@ -2,12 +2,13 @@
 
 {% block contenu %}
 
-{% if form.errors %}
-<p>Login ou mot de passe invalide.</p>
-{% endif %}
-
-  <div class="zone-texte">
+<h4>Connexion</h4>
+<div class="contenu-wrapper">
+    {% if form.errors %}
+    <p class="message">Login ou mot de passe invalide.</p>
+    {% endif %}
     <form method="post" action="{% url chercheurs.views.chercheur_login %}">
+      <fieldset>
       <table>
         <tr>
           <td>{{ form.username.label_tag }}</td>
@@ -18,11 +19,12 @@
           <td>{{ form.password }}</td>
         </tr>
       </table>
-
+      <p><a href="{% url chercheurs.views.send_password %}">Mot de passe oublié ?</a></p>
       <input type="submit" value="Connexion" />
-      <input type="hidden" name="next" value="/" />
+      <input type="hidden" name="next" value="{% if next %}{{next}}{% else %}/chercheurs/perso/{% endif %}" />
+      </fieldset>
     </form>
-  </div>
+</div>
 
 {% endblock %}
 

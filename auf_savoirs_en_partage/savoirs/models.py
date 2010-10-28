@@ -2,6 +2,7 @@
 import simplejson, uuid, datetime, caldav, vobject, uuid
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import pre_delete
 from timezones.fields import TimeZoneField
 from auf_savoirs_en_partage.backend_config import RESOURCES
@@ -29,6 +30,19 @@ class SourceActualite(models.Model):
     def __unicode__(self,):
         return u"%s" % self.nom
 
+class ActualiteManager(models.Manager):
+    
+    def get_query_set(self):
+        return ActualiteQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class ActualiteQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        return self.filter(Q(titre__icontains=text) | Q(texte__icontains=text))
+
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
     titre = models.CharField(max_length=765, db_column='titre_actualite')
@@ -39,12 +53,38 @@ class Actualite(models.Model):
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
     source = models.ForeignKey(SourceActualite, blank = True, null = True)
 
+    objects = ActualiteManager()
+
     def __unicode__ (self):
         return "%s" % (self.titre)
 
     class Meta:
         db_table = u'actualite'
         ordering = ["-date",]
+
+class EvenementManager(models.Manager):
+
+    def get_query_set(self):
+        return EvenementQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class EvenementQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        qs = self
+        words = text.split()
+        for word in words:
+            qs = qs.filter(Q(titre__icontains=word) | 
+                           Q(mots_cles__icontains=word) |
+                           Q(discipline__nom__icontains=word) | 
+                           Q(discipline_secondaire__nom__icontains=word) |
+                           Q(type__icontains=word) |
+                           Q(lieu__icontains=word) |
+                           Q(description__icontains=word) |
+                           Q(contact__icontains=word))
+        return qs
 
 class Evenement(models.Model):
     uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
@@ -73,6 +113,11 @@ class Evenement(models.Model):
     #fichiers = TODO?
     contact = models.TextField(blank = True, null = True)
     url = models.CharField(max_length=255, blank = True, null = True)
+
+    objects = EvenementManager()
+
+    class Meta:
+        ordering = ['-debut']
 
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)
@@ -176,6 +221,66 @@ class ListSet(models.Model):
     def __unicode__(self,):
         return self.name
 
+class RecordManager(models.Manager):
+    
+    def get_query_set(self):
+        return RecordQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+    def validated(self):
+        return self.get_query_set().validated()
+
+class RecordQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        qs = self
+        words = text.split()
+
+        # Ne garder que les ressources qui contiennent tous les mots
+        # demandés.
+        for word in words:
+            qs = qs.filter(Q(title__icontains=word) | Q(description__icontains=word) |
+                           Q(creator__icontains=word) | Q(contributor__icontains=word) |
+                           Q(subject__icontains=word))
+
+        # On donne un point pour chaque mot présent dans le titre.
+        score_expr = ' + '.join(['(title LIKE %s)'] * len(words))
+        score_params = ['%' + word + '%' for word in words]
+        return qs.extra(
+            select={'score': score_expr},
+            select_params=score_params
+        ).order_by('-score')
+
+    def search_auteur(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(Q(creator__icontains=word) | Q(contributor__icontains=word))
+        return qs
+
+    def search_sujet(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(subject__icontains=word)
+        return qs
+
+    def search_titre(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(title__icontains=word)
+        return qs
+            
+    def validated(self):
+        """Ne garder que les ressources validées et qui sont soit dans aucun
+           listset ou au moins dans un listset validé."""
+        qs = self.filter(validated=True)
+        qs = qs.extra(where=['''((savoirs_record.id NOT IN (SELECT record_id FROM savoirs_record_listsets)) OR
+                                 ((SELECT MAX(l.validated) FROM savoirs_listset l
+                                   INNER JOIN savoirs_record_listsets rl ON rl.listset_id = l.spec
+                                   WHERE rl.record_id = savoirs_record.id) = TRUE))'''])
+        return qs
+
 class Record(models.Model):
     
     #fonctionnement interne
@@ -215,6 +320,9 @@ class Record(models.Model):
     thematiques = models.ManyToManyField(Thematique)
     pays = models.ManyToManyField(Pays)
     regions = models.ManyToManyField(Region)
+
+    # Manager
+    objects = RecordManager()
 
     def est_complet(self,):
         """teste si le record à toutes les données obligatoires"""

@@ -5,6 +5,9 @@
 {% autopaginate chercheurs 20 %}
 
 <h4>Répertoire des chercheurs</h4>
+<ul class="actions">
+  {% include "chercheurs/actions.html" %}
+</ul>
 
 <div class="contenu-wrapper">
 
@@ -26,7 +29,7 @@
     <tr>
         <th>{% anchor personne__nom Nom %}</th>
         <th>{% anchor etablissement__nom Établissement %}</th>
-        <th>{% anchor pays__nom Localisation %}</th>
+        <th>{% anchor etablissement__pays Localisation %}</th>
     </tr>
 {% for chercheur in chercheurs %}
     <tr class="{% cycle 'odd' 'notodd' %}">
@@ -38,4 +41,3 @@
 </table>
 <div class="centre">{% paginate %}</div>
 </div>
-

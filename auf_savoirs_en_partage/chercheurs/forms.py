@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from models import *
-
+from models import Utilisateur
 
 class PersonneForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
@@ -54,8 +54,33 @@ class PersonneEditForm(forms.ModelForm):
         
         
 class RepertoireSearchForm (forms.Form):
-      mots_cles = forms.CharField (required = False, label="Mots-clés")
-      discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
-      fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
-      pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
-      genre = forms.ChoiceField(choices=(('','Tous'),)+GENRE_CHOICES, required=False, label="Genre")
+    mots_cles = forms.CharField (required = False, label="Mots-clés")
+    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
+    domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
+    fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
+    pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
+      
+class SendPasswordForm(forms.Form):
+    email = forms.EmailField(required=True, label="courriel")
+    def clean_email(self):
+        cleaned_data = self.cleaned_data
+        email = cleaned_data.get("email")
+        if email:
+            try:
+                Utilisateur.objects.get(courriel=email)
+            except:
+                raise forms.ValidationError("Ce courriel n'existe pas dans notre base de données.")       
+        return email
+
+class NewPasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput(), required=True, label="Mot de passe") 
+    password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez mot de passe")
+    def clean_password_repeat(self):
+        cleaned_data = self.cleaned_data
+        password = cleaned_data.get("password")
+        password_repeat = cleaned_data.get("password_repeat")
+        if password and password_repeat:
+            if password != password_repeat:
+                raise forms.ValidationError("Les mots de passe ne concordent pas")
+        return password_repeat   
+

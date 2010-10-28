@@ -1,11 +1,11 @@
 {% if publication.titre %}
     <td class="souligne">
-    {{publication.titre}}
-    {% if publication.annee %}{{publication.annee}}{% endif %}
+    <i>{{publication.titre}}</i>
+    {% if publication.editeur %}, {{publication.editeur}}{% endif %}
+    {% if publication.lieu_edition %}, {{publication.lieu_edition}}{% endif %}
+    {% if publication.annee %}, {{publication.annee}}{% endif %}
+    {% if publication.nb_pages %}, {{publication.nb_pages}} pages{% endif %}
     {% if publication.revue %}<br />{{publication.revue}}{% endif %}
-    {% if publication.editeur %}<br />{{publication.editeur}}{% endif %}
-    {% if publication.lieu_edition %}<br />{{publication.lieu_edition}}{% endif %}
-    {% if publication.nb_pages %}<br />{{publication.nb_pages}}{% endif %}
     {% if publication.url %}<br />{{publication.url}}{% endif %}
     </td>
 {% else %}

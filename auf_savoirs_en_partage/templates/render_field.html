@@ -3,7 +3,7 @@
         {{ field }}
     {% else %}
         <td{{ field.row_attrs }} class="required" style="width: 150px;">
-            {{ field.label_tag }} {% if field.field.required %}<span style="color:red">*</span>{% endif %}
+            {{ field.label_tag }}&nbsp;{% if field.field.required %}<span style="color:red">*</span>{% endif %}
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}

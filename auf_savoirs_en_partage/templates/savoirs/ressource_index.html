@@ -1,31 +1,28 @@
 {% extends "container_base.html" %}
 
 {% load pagination_tags %}
-{% load sorting_tags %}
-
-
-{% autosort ressources %}
-{% autopaginate ressources 10 %}
-
 
 {% block contenu %}
 <h4>Ressources</h4>
-
+{% autopaginate ressources 15 %}
 <div class="contenu-wrapper">
-<div class="centre">{% paginate %}</div>
-<table id="repertoire">
-    <tr>
-        <th>Nom</th>
-        <th>Source</th>
-    </tr>
-{% for r in ressources %}
-    <tr class="{% cycle 'odd' 'notodd' %}">
-        <td><a href="{% url savoirs.views.ressource_retrieve r.id %}" class="le-titre">{{ r.title|truncatewords:11 }}</a></td>
-        <td>{{ r.server }}</td>
-    </tr>
-{% endfor %}
-</table>
-<div class="centre">{% paginate %}</div>
+  <form action="" method="get">
+    <table>
+      {{ search_form.as_table }}
+      <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
+    </table>
+  </form>
+  <p><strong>{{ nb_resultats }} ressources correspondant à votre recherche :</strong></p>
+  <div class="centre">{% paginate %}</div>
+  <div class="zone-texte">
+    {% for ressource in ressources %}
+    {% include "savoirs/ressource_resultat.html" %}
+    {% empty %}
+    <div class="resultatRecherche">
+      <h2>Aucun résultat trouvé</h2>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="centre">{% paginate %}</div>
 </div>
-
 {% endblock %}

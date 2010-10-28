@@ -1,9 +1,12 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
+from django.template.loader import get_template
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 
 from forms import *
 from django.forms.models import inlineformset_factory
@@ -19,10 +22,85 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
 
+#TODO: Migrer tout ce qui a rapport aux users dans une nouvelle app
+
 class AuthenticationForm(OriginalAuthenticationForm):
     username = forms.CharField(label=_("Username"), max_length=255)
 
+def send_password(request):
+    if request.method == "POST":
+        form = SendPasswordForm(data=request.POST)
+        if form.is_valid():
+            u = Utilisateur.objects.get(courriel=form.cleaned_data['email'])
+            code = hashlib.md5(u.courriel+u.password).hexdigest()
+            code = code[0:6]
+            link = "%saccounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
 
+            variables = { 'user': u,
+                          'link': link,
+                          'SITE_ROOT_URL': settings.SITE_ROOT_URL,
+                          'CONTACT_EMAIL': settings.CONTACT_EMAIL,
+                }     
+            t = get_template('accounts/email_password.html')
+            content = t.render(Context(variables)) 
+            
+            send_mail('Savoirs en partage: changement de mot de passe',
+                    content, settings.CONTACT_EMAIL,
+                [u.courriel], fail_silently=False)
+    else:
+        form = SendPasswordForm()
+    
+    variables = { 'form': form,
+                }
+    return render_to_response ("accounts/send_password.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+            
+def new_password(request, email, code):
+    u = Utilisateur.objects.get(courriel=email)
+    original_code = hashlib.md5(u.courriel+u.password).hexdigest()
+    original_code = original_code[0:6]
+    message=""
+    if(code == original_code):
+        if request.method == "POST":
+            form = NewPasswordForm(data=request.POST)
+            if form.is_valid():
+                new_password = form.cleaned_data['password']
+                u.password = hashlib.md5(new_password).hexdigest()
+                u.save()
+                message = "Votre mot de passe a été modifié."
+        else:
+            form = NewPasswordForm()
+    else:
+        return HttpResponseRedirect('/')
+    variables = { 'form': form,
+                  'message': message,
+                }
+    return render_to_response ("accounts/new_password.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))
+
+@login_required()            
+def change_password(request):
+    context_instance = RequestContext(request)
+    u = context_instance['user_sep']
+    message = ""
+    if request.method == "POST":
+        form = NewPasswordForm(data=request.POST)
+        if form.is_valid():
+            new_password = form.cleaned_data['password']
+            u.password = hashlib.md5(new_password).hexdigest()
+            u.save()
+            message = "Votre mot de passe a été modifié."
+    else:
+        form = NewPasswordForm()
+    variables = { 'form': form,
+                  'message': message,
+                }
+    return render_to_response ("accounts/new_password.html", \
+            Context (variables), 
+            context_instance = RequestContext(request))            
+             
 def chercheur_login(request, template_name='registration/login.html', redirect_field_name='next'):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
@@ -54,19 +132,19 @@ def chercheur_queryset (request):
     if simpleForm.is_valid ():
         pays = simpleForm.cleaned_data["pays"]
         if pays:
-            list = list.filter (nationalite = pays.pk)
+            list = list.filter(Q(etablissement__pays = pays.pk) | Q(etablissement_autre_pays = pays.pk))
         fonction = simpleForm.cleaned_data["fonction"]
         if fonction:
-            list = list.filter (fonction = fonction)
-        genre = simpleForm.cleaned_data["genre"]
-        if genre:
-            list = list.filter (personne__genre=genre)
+            list = list.filter(fonction = fonction)
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
-            list = list.filter (discipline=discipline)
+            list = list.filter(discipline=discipline)
+        domaine = simpleForm.cleaned_data["domaine"]
+        if domaine:
+            list = list.filter(groupes=domaine)
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:
-            list = list.filter (Q(personne__nom__icontains=mots_cles) | Q(personne__prenom__icontains=mots_cles))
+            list = list.search(mots_cles)
     return list
     
 def index(request):
@@ -136,8 +214,8 @@ def inscription(request):
                     for g in groupes:
                         g = Groupe.objects.get(pk=g)
                         ChercheurGroupe.objects.get_or_create(chercheur=c, groupe=g, actif=1)
-                    
-                    return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(c.id,)))
+                    return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % c.id)
+                    #return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(c.id,)))
     else:
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")
@@ -168,7 +246,7 @@ def inscription(request):
             Context (variables), 
             context_instance = RequestContext(request))
 
-
+@login_required()
 def edit(request):
     """Edition d'un chercheur"""
     context_instance = RequestContext(request)
@@ -216,7 +294,7 @@ def edit(request):
             for g in groupes:
                 g = Groupe.objects.get(pk=g)
                 ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=g, actif=1)
-
+            return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % chercheur.id)
             
             #formset.save()
             
@@ -253,7 +331,7 @@ def edit(request):
             context_instance = RequestContext(request))
             
             
-
+@login_required()
 def perso(request):
     """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
@@ -269,8 +347,10 @@ def perso(request):
 def retrieve(request, id):
     """Fiche du chercheur"""
     #chercheur = Chercheur.objects.get(id=id)
+    inscription = request.GET.get('inscription')
     chercheur = get_object_or_404(Chercheur, id=id)
     variables = { 'chercheur': chercheur,
+                  'inscription': inscription,
                 }
     return render_to_response ("chercheurs/retrieve.html", \
             Context (variables), 

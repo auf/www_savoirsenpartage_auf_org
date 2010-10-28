@@ -1,16 +1,20 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import Context, RequestContext
+from django.db.models import Q
 
 from models import Site
+from forms import SiteSearchForm
 
 def index(request):
-    sites = Site.objects.all().order_by('titre')
-    variables = { 'sites': sites,
-                }
-    return render_to_response ("sites/index.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    search_form = SiteSearchForm(request.GET)
+    sites = search_form.get_query_set()
+    search_regexp = search_form.get_search_regexp()
+    nb_sites = sites.count()
+    return render_to_response("sites/index.html",
+                              dict(sites=sites, search_form=search_form, 
+                                   search_regexp=search_regexp, nb_sites=nb_sites), 
+                              context_instance = RequestContext(request))
             
 def retrieve(request, id):
     """Fiche du site"""

@@ -84,7 +84,15 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 #col-menu a:hover { cursor:pointer; text-decoration:underline; }
 #col-menu .actif a { color:#97012c; font-weight:bold; }
 
-#contenu { width:744px; margin:100px 0px 50px 0px; padding:0; float:left;background:url(../img/contenu-bkg-middle.png) repeat-y 0 0; }
+#contenu { 
+    position: relative;
+    width:744px; 
+    margin:100px 0px 50px 0px; 
+    padding:0; 
+    float:left;
+    background:url(../img/contenu-bkg-middle.png) repeat-y 0 0; 
+}
+
 #tabs { margin-left: 8px; margin-right: 8px; }
 #contenu h4 { padding: 0 25px; margin-bottom:0.4em; font-size:2.2em; font-weight:normal; letter-spacing:-1px; }
 #contenu h4 a { text-decoration:none; color:black; }
@@ -118,7 +126,9 @@ ul.liste-de-l-accueil a.la-date { color:black; }
 ul.liste-de-l-accueil .le-titre {display: block; font-size:1.2em; font-weight:bold; margin: .25em 0;}
 ul.liste-de-l-accueil .le-resume {font-size:1.1em;}
 ul.liste-de-l-accueil .le-resume a { display:inline;}
-ul.sous-menu li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
+ul.sous-menu li, ul.actions li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
+
+ul.actions { position: absolute; top: 15px; right: 20px; }
 
 .resultats { width:744px; display:inline; margin:0; padding:0; float:left; margin-top:100px; margin-bottom:50px; margin-left:0; background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
 .resultats a:hover{text-decoration:none;}
@@ -248,4 +258,11 @@ width:150px;
 #fiche_chercheur .souligne
 {
   border-bottom:1px solid #DDD;
+}
+
+.message
+{
+font-weight:bold;
+font-size:12px;
+color:red;
 }

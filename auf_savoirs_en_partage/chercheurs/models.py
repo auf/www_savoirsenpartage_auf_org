@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.db import models
+from django.db.models import Q
 from datamaster_modeles.models import *
 from auf_references_modeles.models import Thematique
 from savoirs.models import Discipline
@@ -30,7 +31,27 @@ class Personne(models.Model):
         ordering = ["prenom", "nom"]
 
 class Utilisateur(Personne):
-    password = models.CharField (max_length=35, verbose_name = 'Mot de passe')
+    password = models.CharField(max_length=35, verbose_name = 'Mot de passe')
+
+class ChercheurManager(models.Manager):
+
+    def get_query_set(self):
+        return ChercheurQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class ChercheurQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(Q(personne__nom__icontains=word) |
+                           Q(personne__prenom__icontains=word) |
+                           Q(expertise__icontains=word) |
+                           Q(etablissement_autre_nom__icontains=word) |
+                           Q(etablissement__nom__icontains=word))    
+        return qs
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Chercheur_independant', 'Chercheur indépendant'), ('Doctorant', 'Doctorant'))
 class Chercheur(models.Model):
@@ -56,7 +77,7 @@ class Chercheur(models.Model):
                                         verbose_name='Champ disciplinaire')
     expertise = models.TextField(null=True, blank=True, verbose_name='Domaine d\'expertise et thèmes de recherche')                                    
     url_site_web = models.URLField(max_length=255, null=True, blank=True,
-                                    verbose_name='Adresse site Internet personnel')
+                                    verbose_name='Adresse site Internet')
     url_blog = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Blog')
     url_facebook = models.URLField(max_length=255, null=True, blank=True,
@@ -79,8 +100,17 @@ class Chercheur(models.Model):
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
     date_modification = models.DateField(auto_now=True, db_column='date_modification')
     
+    # Manager
+    objects = ChercheurManager()
+
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
+        
+    def fonction_display(self):
+        for f in FONCTION_CHOICES:
+            if self.fonction == f[0]:
+                return f[1]
+        return "-"
     
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')

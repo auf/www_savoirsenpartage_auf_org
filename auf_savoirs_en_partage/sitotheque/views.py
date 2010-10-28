@@ -18,9 +18,11 @@ def search_queryset(request):
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
             list = list.filter(discipline=discipline)
-        thematique = simpleForm.cleaned_data["thematique"]
-        if thematique:
-            list = list.filter(thematique=thematique)            
+
+        # XXX: On ne veut pas chercher par thématique pour l'instant
+        # thematique = simpleForm.cleaned_data["thematique"]
+        # if thematique:
+        #     list = list.filter(thematique=thematique)            
             
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:

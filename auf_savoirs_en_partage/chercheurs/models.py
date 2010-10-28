@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.db import models
+from django.db.models import Q
 from datamaster_modeles.models import *
 #from auf_references_modeles.models import Thematique
 from savoirs.models import Discipline
@@ -31,6 +32,26 @@ class Personne(models.Model):
 
 class Utilisateur(Personne):
     password = models.CharField(max_length=35, verbose_name = 'Mot de passe')
+
+class ChercheurManager(models.Manager):
+
+    def get_query_set(self):
+        return ChercheurQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class ChercheurQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(Q(personne__nom__icontains=word) |
+                           Q(personne__prenom__icontains=word) |
+                           Q(expertise__icontains=word) |
+                           Q(etablissement_autre_nom__icontains=word) |
+                           Q(etablissement__nom__icontains=word))    
+        return qs
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Chercheur_independant', 'Chercheur indépendant'), ('Doctorant', 'Doctorant'))
 class Chercheur(models.Model):
@@ -80,6 +101,9 @@ class Chercheur(models.Model):
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
     date_modification = models.DateField(auto_now=True, db_column='date_modification')
     
+    # Manager
+    objects = ChercheurManager()
+
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
         

@@ -83,6 +83,28 @@ class ActualiteSearchForm(forms.Form):
            chercher les mot-clés recherchés dans un texte."""
         if self.is_valid():
             return build_search_regexp(self.cleaned_data['q'])
+
+class EvenementSearchForm(forms.Form):
+    """Formulaire de recherche pour les événements."""
+
+    q = forms.CharField(required=False, label="Mots-clés")
+    
+    def get_query_set(self):
+        """Retourne l'ensemble des événements qui correspondent aux valeurs
+           entrées dans le formulaire."""
+        evenements = Evenement.objects.filter(approuve=True)
+        if self.is_valid():
+            query = self.cleaned_data['q']
+            if query:
+                evenements = evenements.search(query)
+        return evenements
+
+    def get_search_regexp(self):
+        """Retourne une expression régulière compilée qui peut servir à
+           chercher les mot-clés recherchés dans un texte."""
+        if self.is_valid():
+            return build_search_regexp(self.cleaned_data['q'])
+
 ###
 
 class EvenementForm(forms.ModelForm):

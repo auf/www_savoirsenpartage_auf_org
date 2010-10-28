@@ -1,6 +1,7 @@
 #coding: utf-8
 
 from django import template
+from django.template.defaultfilters import stringfilter
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
@@ -9,6 +10,7 @@ register = template.Library()
 EXCERPT_LENGTH = 200
 
 @register.filter
+@stringfilter
 def highlight(text, regexp=None, autoescape=None):
     """Met en évidence les parties du texte qui correspondent à l'expression
        régulière passée en argument."""
@@ -19,6 +21,7 @@ def highlight(text, regexp=None, autoescape=None):
     return mark_safe(text)
 
 @register.filter
+@stringfilter
 def excerpt(text, regexp=None):
     """Tronque le texte autour de la première correspondance de l'expression
        régulière."""

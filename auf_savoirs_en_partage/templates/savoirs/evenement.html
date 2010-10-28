@@ -1,35 +1,46 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>{{ event.summary.value }}</h4>
+<h4>{{ evenement.titre }}</h4>
 
 <div class="zone-texte">
   <table width="100%">
     <tr>
       <th width="120px">Début</th>
-      <td>{{ event.dtstart.value|date:"Y-m-d H:i" }} (UTC)</td>
+      <td>{{ evenement.debut|date:"Y-m-d H:i" }} (UTC)</td>
     </tr>
     <tr>
       <th>Fin</th>
-      <td>{{ event.dtend.value|date:"Y-m-d H:i" }} (UTC)</td>
+      <td>{{ evenement.fin|date:"Y-m-d H:i" }} (UTC)</td>
     </tr>
     <tr>
       <th>Description</th>
-      <td>{{ event.description.value|linebreaksbr }}</td>
+      <td>{{ evenement.description|linebreaksbr }}</td>
     </tr>
+    {% if evenement.mots_cles %}
+    <tr>
+      <th>Mots-clés</th>
+      <td>{{ evenement.mots_cles }}</td>
+    </tr>
+    {% endif %}
+    {% if evenement.contact %}
     <tr>
       <th>Contact</th>
-      <td>{{ event.contact.value|linebreaksbr }}</td>
+      <td>{{ evenement.contact|linebreaksbr }}</td>
     </tr>
+    {% endif %}
+    {% if evenement.lieu %}
     <tr>
       <th>Emplacement</th>
-      <td>{{ event.location.value|linebreaksbr }}</td>
+      <td>{{ evenement.lieu|linebreaksbr }}</td>
     </tr>
+    {% endif %}
+    {% if evenement.url %}
     <tr>
       <th>URL</th>
-      <td><a href="{{ event.url.value }}">{{ event.url.value }}</a></td>
+      <td><a href="{{ evenement.url }}">{{ evenement.url }}</a></td>
     </tr>
+    {% endif %}
   </table>
 </div>
-
 {% endblock %}

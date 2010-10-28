@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import datetime, simplejson, copy, vobject
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import Context, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -25,27 +25,18 @@ def index (request):
     oldest = datetime.date.today () - delta
     actualites = Actualite.objects.filter (visible = '1', date__gt = oldest)
     actualites = actualites[0:configuration['accueil_actualite']]
-    try:
-        erreur_caldav = False
-        events = evenements()[0:configuration['accueil_evenement']]
-    except:
-        erreur_caldav = u"Problème de connexion à l'agenda"
-        events = []
-    
-    
+    evenements = Evenement.objects.filter(approuve=True)[0:configuration['accueil_evenement']]
     ressources = Record.objects.all().order_by('?')[:configuration['accueil_ressource']]
     chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
     sites = Site.objects.all().order_by('?')[:configuration['accueil_sites']]
-    return render_to_response ("savoirs/index.html", \
-            Context ({"actualites": actualites,
-                      "events": events,
-                      "erreur_caldav": erreur_caldav,
-                      "caldav_url": configuration['calendrier_publique'],
-                      "ressources":ressources,
-                      "chercheurs":chercheurs,
-                      "sites":sites,
-                      }), \
-            context_instance = RequestContext(request))
+    return render_to_response("savoirs/index.html",
+                               dict(actualites=actualites,
+                                    evenements=evenements,
+                                    caldav_url=configuration['calendrier_publique'],
+                                    ressources=ressources,
+                                    chercheurs=chercheurs,
+                                    sites=sites),
+                              context_instance = RequestContext(request))
 
 # sous-menu droite
 def a_propos (request):
@@ -59,16 +50,22 @@ def nous_contacter (request):
             context_instance = RequestContext(request))
 
 # recherche
-def recherche (request):
+def recherche(request):
     query = request.GET.get("q", "")
     ressources = Record.objects.validated().search(query)
     actualites = Actualite.objects.filter(visible=1).search(query)
+    evenements = Evenement.objects.filter(approuve=1).search(query)
+    chercheurs = Chercheur.objects.search(query)
+    sites = Site.objects.search(query)
     search_regexp = build_search_regexp(query)
     return render_to_response(
         "savoirs/recherche.html",
-        dict(q=query, ressources=ressources[:5], actualites=actualites[:5],
-             total_ressources=len(ressources), total_actualites=len(actualites),
-             search_regexp=search_regexp),
+        dict(q=query, search_regexp=search_regexp,
+             ressources=ressources[:5], total_ressources=ressources.count(), 
+             evenements=evenements[:5], total_evenements=evenements.count(),
+             chercheurs=chercheurs[:10], total_chercheurs=chercheurs.count(),
+             actualites=actualites[:5], total_actualites=actualites.count(),
+             sites=sites[:5], total_sites=sites.count()),
         context_instance = RequestContext(request)
     )
 
@@ -115,12 +112,12 @@ def conseils (request):
 def ressource_index(request):
     search_form = RecordSearchForm(request.GET)
     ressources = search_form.get_query_set()
-    nb_resultats = len(ressources)
+    nb_resultats = ressources.count()
     search_regexp = search_form.get_search_regexp()
     return render_to_response(
         "savoirs/ressource_index.html", 
         {'search_form': search_form, 'ressources': ressources,
-         'nb_resultats': len(ressources), 'search_regexp': search_regexp},
+         'nb_resultats': nb_resultats, 'search_regexp': search_regexp},
         context_instance = RequestContext(request)
     )
 
@@ -154,26 +151,26 @@ def actualite_index(request):
                               dict(actualites=actualites,
                                    search_form=search_form,
                                    search_regexp=search_regexp,
-                                   nb_resultats=len(actualites)),
+                                   nb_resultats=actualites.count()),
                               context_instance = RequestContext(request))
 
 # agenda
 def evenement_index(request):
-    try:
-        erreur_caldav = False
-        events = evenements()
-    except:
-        erreur_caldav = u"Problème de connexion à l'agenda"
-        events = []
-    return render_to_response ("savoirs/evenement_index.html", \
-            Context ({'evenements':events}), \
-            context_instance = RequestContext(request))
+    search_form = EvenementSearchForm(request.GET)
+    evenements = search_form.get_query_set()
+    search_regexp = search_form.get_search_regexp()
+    return render_to_response("savoirs/evenement_index.html",
+                              dict(evenements=evenements,
+                                   search_form=search_form,
+                                   search_regexp=search_regexp,
+                                   nb_resultats=evenements.count()),
+                              context_instance=RequestContext(request))
 
 def evenement(request, id):
-    event = evenement_info(id)
-    return render_to_response ("savoirs/evenement.html", \
-            Context ({'event': event.instance.vevent}), \
-            context_instance = RequestContext(request))
+    evenement = get_object_or_404(Evenement, pk=id)
+    return render_to_response("savoirs/evenement.html",
+                              dict(evenement=evenement),
+                              context_instance=RequestContext(request))
 
 def evenement_ajout(request):
     template = "savoirs/evenement_ajout.html"

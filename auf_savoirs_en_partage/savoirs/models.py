@@ -62,6 +62,30 @@ class Actualite(models.Model):
         db_table = u'actualite'
         ordering = ["-date",]
 
+class EvenementManager(models.Manager):
+
+    def get_query_set(self):
+        return EvenementQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class EvenementQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        qs = self
+        words = text.split()
+        for word in words:
+            qs = qs.filter(Q(titre__icontains=word) | 
+                           Q(mots_cles__icontains=word) |
+                           Q(discipline__nom__icontains=word) | 
+                           Q(discipline_secondaire__nom__icontains=word) |
+                           Q(type__icontains=word) |
+                           Q(lieu__icontains=word) |
+                           Q(description__icontains=word) |
+                           Q(contact__icontains=word))
+        return qs
+
 class Evenement(models.Model):
     uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
     approuve = models.BooleanField(default = False)
@@ -89,6 +113,11 @@ class Evenement(models.Model):
     #fichiers = TODO?
     contact = models.TextField(blank = True, null = True)
     url = models.CharField(max_length=255, blank = True, null = True)
+
+    objects = EvenementManager()
+
+    class Meta:
+        ordering = ['-debut']
 
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)

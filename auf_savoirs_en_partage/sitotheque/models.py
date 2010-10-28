@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.db import models
+from django.db.models import Q
 from datamaster_modeles.models import *
 from savoirs.models import Discipline
 
@@ -15,6 +16,26 @@ TYPE_SITE_CHOICES = (
     ('SI', 'Site d\'information'),
     ('AU', 'Autre type de site'),
     )
+
+class SiteManager(models.Manager):
+
+    def get_query_set(self):
+        return SiteQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+class SiteQuerySet(models.query.QuerySet):
+
+    def search(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(Q(titre__icontains=word) |
+                           Q(description__icontains=word) |
+                           Q(editeur__icontains=word) |
+                           Q(auteur__icontains=word) |
+                           Q(mots_cles__icontains=word)) 
+        return qs
 
 class Site(models.Model):
     """Fiche d'info d'un site web"""
@@ -40,6 +61,9 @@ class Site(models.Model):
     # meta
     actif = models.BooleanField()
     date_maj = models.DateField(auto_now=True)
+
+    # Manager
+    objects = SiteManager()
     
     def __unicode__(self):
         return "%s" % (self.titre)

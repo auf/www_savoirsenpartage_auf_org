@@ -171,6 +171,7 @@ def build_search_regexp(query):
         part = part.replace(u'é', u'[éÉ]')
         part = part.replace(u'ê', u'[êÊ]')
         part = part.replace(u'î', u'[îÎ]')
+        part = part.replace(u'ç', u'[çÇ]')
 
         # Faire ceci après avoir traité les caractères accentués...
         part = part.replace('a', u'[aàâÀÂ]')
@@ -178,6 +179,7 @@ def build_search_regexp(query):
         part = part.replace('i', u'[iïîÎ]')
         part = part.replace('o', u'[oô]')
         part = part.replace('u', u'[uûüù]')
+        part = part.replace('c', u'[cç]')
 
         parts.append(part)
     return re.compile('|'.join(parts), re.I) 

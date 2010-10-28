@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
-from django.conf.urls.defaults import patterns, include, handler500, url
+from django.conf.urls.defaults import patterns, include, handler500, handler404, url
 from django.conf import settings
 from django.contrib import admin
 from savoirs.rss import FilActualite, FilEvenement
 
 admin.autodiscover()
 
-handler500 # Pyflakes
+handler500 = "views.page_500"
+handler404 = "views.page_404"
 
 site_feeds = {'actualites': FilActualite,
               'agenda': FilEvenement }

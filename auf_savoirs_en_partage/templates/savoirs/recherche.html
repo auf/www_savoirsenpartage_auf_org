@@ -59,9 +59,23 @@
     <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur.personne.prenom }} {{ chercheur.personne.nom }}</a></li>
     {% endfor %}
   </ul>
+  {% ifnotequal chercheurs|length total_chercheurs %}
+  <p><a href="{% url chercheurs.views.index %}?q={{ q|urlencode }}">Tous les {{ total_chercheurs }} chercheurs correspondant à « {{ q }} »</a></p>
+  {% endifnotequal %}
+
   {% endif %}
   
-  {% if not ressources and not actualites and not evenements and not chercheurs %}
+  {% if sites %}
+  <h4>Sites correspondant à « {{ q }} » ({{ sites|length }} sur {{ total_sites }}):</h4>
+  {% for site in sites %}
+  {% include "sites/resultat.html" %}
+  {% endfor %}
+  {% ifnotequal sites|length total_sites %}
+  <p><a href="{% url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites correspondant à « {{ q }} »</a></p>
+  {% endifnotequal %}
+  {% endif %}
+
+  {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
   <h4>Aucune ressource ne correspond à « {{ q }} »</h4>
   <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
   {% endif %}

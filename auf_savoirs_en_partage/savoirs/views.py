@@ -56,14 +56,16 @@ def recherche(request):
     actualites = Actualite.objects.filter(visible=1).search(query)
     evenements = Evenement.objects.filter(approuve=1).search(query)
     chercheurs = Chercheur.objects.search(query)
+    sites = Site.objects.search(query)
     search_regexp = build_search_regexp(query)
     return render_to_response(
         "savoirs/recherche.html",
-        dict(q=query, ressources=ressources[:5], actualites=actualites[:5],
-             evenements=evenements[:5], total_evenements=len(evenements),
-             chercheurs=chercheurs[:10], total_chercheurs=len(chercheurs),
-             total_ressources=len(ressources), total_actualites=len(actualites),
-             search_regexp=search_regexp),
+        dict(q=query, search_regexp=search_regexp,
+             ressources=ressources[:5], total_ressources=ressources.count(), 
+             evenements=evenements[:5], total_evenements=evenements.count(),
+             chercheurs=chercheurs[:10], total_chercheurs=chercheurs.count(),
+             actualites=actualites[:5], total_actualites=actualites.count(),
+             sites=sites[:5], total_sites=sites.count()),
         context_instance = RequestContext(request)
     )
 
@@ -110,12 +112,12 @@ def conseils (request):
 def ressource_index(request):
     search_form = RecordSearchForm(request.GET)
     ressources = search_form.get_query_set()
-    nb_resultats = len(ressources)
+    nb_resultats = ressources.count()
     search_regexp = search_form.get_search_regexp()
     return render_to_response(
         "savoirs/ressource_index.html", 
         {'search_form': search_form, 'ressources': ressources,
-         'nb_resultats': len(ressources), 'search_regexp': search_regexp},
+         'nb_resultats': nb_resultats, 'search_regexp': search_regexp},
         context_instance = RequestContext(request)
     )
 
@@ -149,7 +151,7 @@ def actualite_index(request):
                               dict(actualites=actualites,
                                    search_form=search_form,
                                    search_regexp=search_regexp,
-                                   nb_resultats=len(actualites)),
+                                   nb_resultats=actualites.count()),
                               context_instance = RequestContext(request))
 
 # agenda
@@ -161,7 +163,7 @@ def evenement_index(request):
                               dict(evenements=evenements,
                                    search_form=search_form,
                                    search_regexp=search_regexp,
-                                   nb_resultats=len(evenements)),
+                                   nb_resultats=evenements.count()),
                               context_instance=RequestContext(request))
 
 def evenement(request, id):

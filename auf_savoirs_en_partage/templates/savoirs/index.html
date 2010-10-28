@@ -46,26 +46,22 @@
 <div class="demi-droite clearfix">
     <div id="agenda" class="box">
         <h4><a href="{% url savoirs.views.evenement_index %}">Agenda</a></h4>
-        {% if not erreur_caldav %}
-            <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
-            
-            <ul class="sous-menu">
-                <li><a href="{% url savoirs.views.evenement_index %}">Tous les événements</a></li>
-                {% include "savoirs/evenement_actions.html" %}
-            </ul>
-            
-            <ul class="liste-de-l-accueil">
-            {% for event in events %}
-                <li>
-                <span class="la-date">{{ event.dtstart.value|date:"d F Y" }} {{ event.dtstart.value|date:"H:i" }}</span>
-                <a href="{% url savoirs.views.evenement event.uid.value %}" class="le-titre">{{ event.summary.value|truncatewords:20 }}</a>
-                <span class="le-resume">{{ event.description.value|truncatewords:20 }}</span>
-                </li>
-            {% endfor %}
-            </ul>
-        {% else %}
-            <ul><li>{{ erreur_caldav }}</li></ul>
-        {% endif %}
+        <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
+
+        <ul class="sous-menu">
+          <li><a href="{% url savoirs.views.evenement_index %}">Tous les événements</a></li>
+          {% include "savoirs/evenement_actions.html" %}
+        </ul>
+
+        <ul class="liste-de-l-accueil">
+          {% for evenement in evenements %}
+          <li>
+          <span class="la-date">{{ evenement.debut|date:"d F Y H:i" }}</span>
+          <a href="{% url savoirs.views.evenement evenement.id %}" class="le-titre">{{ evenement.titre|truncatewords:20 }}</a>
+          <span class="le-resume">{{ evenement.description|truncatewords:20 }}</span>
+          </li>
+          {% endfor %}
+        </ul>
     </div>
     <div  id="ressources" class="box">
         <h4><a href="{% url savoirs.views.ressource_index %}">Ressources</a></h4>

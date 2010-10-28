@@ -2,60 +2,9 @@
 
 {% block contenu %}
 <h4>{{chercheur.personne.prenom}} {{chercheur.personne.nom}}</h4>
-
 <div class="contenu-wrapper">
-
-{% if personne_form.errors or chercheur_form.errors or etablissement_form.errors or discipline_form.errors or these_form.errors %}
-<span class="message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</span>
-{% endif %}
-
 <form method="post">
-    <fieldset>
-        <legend>Informations personnelles</legend>
-        {% with personne_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-    </fieldset>
-    <fieldset>
-        <legend>Informations académiques</legend>
-        {% with chercheur_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-        {% with groupe_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-    </fieldset>
-    
-    <fieldset>
-        <legend>Etablissement de rattachement</legend>
-        {% with etablissement_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-        <p>Si l'établissement n'existe pas ci-dessus</p>
-        {% with etablissement_autre_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-    </fieldset>
-    
-    <fieldset>
-        <legend>Champ disciplinaire, thèmes de recherche</legend>
-        {% with discipline_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-    </fieldset>
-    
-    <fieldset>
-        <legend>Thèse</legend>
-        <div>
-            <div class="publication">
-              {% with these_form as form %}
-                  {% include "table_form.html" %}
-              {% endwith %}
-            </div>
-            <div style="clear:both"></div>
-        </div>
-    </fieldset>
-    
+    {% include "chercheurs/chercheur_form.html" %}    
     <fieldset>
         <legend>Publications</legend>
         <div>

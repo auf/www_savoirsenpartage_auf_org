@@ -144,11 +144,7 @@ def chercheur_queryset (request):
             list = list.filter(groupes=domaine)
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:
-            list = list.filter( Q(personne__nom__search=mots_cles) 
-                                | Q(personne__prenom__search=mots_cles) 
-                                | Q(expertise__search=mots_cles) 
-                                | Q(etablissement_autre_nom__search=mots_cles) 
-                                | Q(etablissement__nom__search=mots_cles) )    
+            list = list.search(mots_cles)
     return list
     
 def index(request):

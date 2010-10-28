@@ -50,16 +50,18 @@ def nous_contacter (request):
             context_instance = RequestContext(request))
 
 # recherche
-def recherche (request):
+def recherche(request):
     query = request.GET.get("q", "")
     ressources = Record.objects.validated().search(query)
     actualites = Actualite.objects.filter(visible=1).search(query)
     evenements = Evenement.objects.filter(approuve=1).search(query)
+    chercheurs = Chercheur.objects.search(query)
     search_regexp = build_search_regexp(query)
     return render_to_response(
         "savoirs/recherche.html",
         dict(q=query, ressources=ressources[:5], actualites=actualites[:5],
              evenements=evenements[:5], total_evenements=len(evenements),
+             chercheurs=chercheurs[:10], total_chercheurs=len(chercheurs),
              total_ressources=len(ressources), total_actualites=len(actualites),
              search_regexp=search_regexp),
         context_instance = RequestContext(request)

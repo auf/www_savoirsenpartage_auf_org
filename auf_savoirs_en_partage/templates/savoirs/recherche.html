@@ -21,48 +21,51 @@
 
 </script>
 
-{% if ressources %}
-<h4>Ressources correspondant à « {{ q }} » ({{ ressources|length }} sur {{ total_ressources }}):</h4>
 <div class="zone-texte">
+  {% if ressources %}
+  <h4>Ressources correspondant à « {{ q }} » ({{ ressources|length }} sur {{ total_ressources }}):</h4>
   {% for ressource in ressources %}
   {% include "savoirs/ressource_resultat.html" %} 
   {% endfor %}
   {% ifnotequal ressources|length total_ressources %}
   <p><a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources correspondant à « {{ q }} »</a></p>
   {% endifnotequal %}
-</div>
-{% endif %}
+  {% endif %}
 
-{% if actualites %}
-<h4>Actualités correspondant à « {{ q }} » ({{ actualites|length }} sur {{ total_actualites }}):</h4>
-<div class="zone-texte">
+  {% if actualites %}
+  <h4>Actualités correspondant à « {{ q }} » ({{ actualites|length }} sur {{ total_actualites }}):</h4>
   {% for actualite in actualites %}
   {% include "savoirs/actualite_resultat.html" %} 
   {% endfor %}
   {% ifnotequal actualites|length total_actualites %}
   <p><a href="{% url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} actualités correspondant à « {{ q }} »</a></p>
   {% endifnotequal %}
-</div>
-{% endif %}
+  {% endif %}
 
-{% if evenements %}
-<h4>Événements correspondant à « {{ q }} » ({{ evenements|length }} sur {{ total_evenements }}):</h4>
-<div class="zone-texte">
+  {% if evenements %}
+  <h4>Événements correspondant à « {{ q }} » ({{ evenements|length }} sur {{ total_evenements }}):</h4>
   {% for evenement in evenements %}
   {% include "savoirs/evenement_resultat.html" %}
   {% endfor %}
   {% ifnotequal evenements|length total_evenements %}
   <p><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements correspondant à « {{ q }} »</a></p>
   {% endifnotequal %}
-</div>
-{% endif %}
+  {% endif %}
 
-{% if not ressources and not actualites and not evenements %}
-<h4>Aucune ressource ne correspond à « {{ q }} »</h4>
-<div class="zone-texte">
+  {% if chercheurs %}
+  <h4>Chercheurs correspondant à « {{ q }} » ({{ chercheurs|length }} sur {{ total_chercheurs }}):</h4>
+  <ul>
+    {% for chercheur in chercheurs %}
+    <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur.personne.prenom }} {{ chercheur.personne.nom }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  {% if not ressources and not actualites and not evenements and not chercheurs %}
+  <h4>Aucune ressource ne correspond à « {{ q }} »</h4>
   <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
+  {% endif %}
 </div>
-{% endif %}
 
 {% if user.is_authenticated %}
 {% include "savoirs/editor.html" %}

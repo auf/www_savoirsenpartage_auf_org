@@ -50,7 +50,14 @@ class ChercheurQuerySet(models.query.QuerySet):
                            Q(personne__prenom__icontains=word) |
                            Q(theme_recherche__icontains=word) |
                            Q(etablissement_autre_nom__icontains=word) |
-                           Q(etablissement__nom__icontains=word))    
+                           Q(etablissement__nom__icontains=word) |
+                           Q(etablissement__pays__nom__icontains=word) |
+                           Q(discipline__nom__icontains=word) |
+                           Q(publication1__titre__icontains=word) |
+                           Q(publication2__titre__icontains=word) |
+                           Q(publication3__titre__icontains=word) |
+                           Q(publication4__titre__icontains=word) |
+                           Q(these__titre__icontains=word)).distinct()
         return qs
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Chercheur_independant', 'Chercheur indépendant'), ('Doctorant', 'Doctorant'))

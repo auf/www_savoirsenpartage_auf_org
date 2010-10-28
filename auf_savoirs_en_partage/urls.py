@@ -53,6 +53,7 @@ urlpatterns = patterns(
     
     # agenda
     (r'^agenda/$', 'savoirs.views.evenement_index'),
+    (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
     (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
     (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
     (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),

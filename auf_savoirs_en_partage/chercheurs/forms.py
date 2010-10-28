@@ -18,7 +18,7 @@ class GroupeForm(forms.ModelForm):
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('fonction', 'diplome',)
+        fields = ('diplome',)
         
 class PublicationForm(forms.ModelForm):
     class Meta:
@@ -27,14 +27,17 @@ class PublicationForm(forms.ModelForm):
         
 class TheseForm(PublicationForm):
     titre = forms.CharField(required=True, label="Titre de la thèse ou du mémoire")
-    annee = forms.IntegerField(required=False, label="Année de soutenance")
+    annee = forms.IntegerField(required=False, label="Année de soutenance (réalisée ou prévue)")
     editeur = forms.CharField(required=False, label="Directeur de thèse")
     lieu_edition = forms.CharField(required=False, label="Établissement de soutenance")
     class Meta:
         model = Publication
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
-        
+class ExpertiseForm(forms.ModelForm):
+    class Meta:
+        model = Expertise
+        fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        
 
 class EtablissementForm(forms.ModelForm):
     class Meta:
@@ -44,24 +47,23 @@ class EtablissementForm(forms.ModelForm):
 class EtablissementAutreForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('etablissement_autre_nom', 'etablissement_autre_pays', )
+        fields = ('etablissement_autre_nom', 'etablissement_autre_pays', 'enseignant' )
 
 class DisciplineForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('discipline', 'expertise', 'mots_cles', 'url_site_web', 'url_blog', 'url_facebook', 'url_linkedin')
+        fields = ('discipline', 'theme_recherche', 'mots_cles', 'url_site_web', 'url_blog', 'url_facebook', 'url_linkedin')
         
 class PersonneEditForm(forms.ModelForm):
     class Meta:
         model = Personne
         fields = ('nom', 'prenom', 'genre') 
-        
-        
+
 class RepertoireSearchForm (forms.Form):
     mots_cles = forms.CharField (required = False, label="Mots-clés")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
-    fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
+    #fonction = forms.ChoiceField(choices=(('','Tous'),)+FONCTION_CHOICES, required=False, label="Fonction")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
       
 class SendPasswordForm(forms.Form):

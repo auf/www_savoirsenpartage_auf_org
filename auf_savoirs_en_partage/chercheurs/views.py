@@ -133,9 +133,6 @@ def chercheur_queryset (request):
         pays = simpleForm.cleaned_data["pays"]
         if pays:
             list = list.filter(Q(etablissement__pays = pays.pk) | Q(etablissement_autre_pays = pays.pk))
-        fonction = simpleForm.cleaned_data["fonction"]
-        if fonction:
-            list = list.filter(fonction = fonction)
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
             list = list.filter(discipline=discipline)
@@ -174,6 +171,7 @@ def inscription(request):
         publication3_form = PublicationForm (request.POST, prefix="publication3") 
         publication4_form = PublicationForm (request.POST, prefix="publication4")
         these_form = TheseForm(request.POST, prefix="these")
+        expertise_form = ExpertiseForm(request.POST, prefix="expertise")
         groupe_form = GroupeForm(request.POST, prefix="groupe")
         
         if personne_form.is_valid():
@@ -198,7 +196,9 @@ def inscription(request):
                        pub = publication4_form.save()
                        c.publication4 = pub    
                     these = these_form.save()
+                    expertise = expertise_form.save()
                     c.these = these 
+                    c.expertise = expertise
                     etablissement_form.save(commit=False)
                     etablissement_autre_form.save(commit=False)
                     discipline_form.save(commit=False)
@@ -227,6 +227,7 @@ def inscription(request):
         publication3_form = PublicationForm(prefix="publication3") 
         publication4_form = PublicationForm(prefix="publication4")
         these_form = TheseForm(prefix="these")
+        expertise_form = ExpertiseForm(prefix="expertise")
         groupe_form = GroupeForm(prefix="groupe")
     
     variables = { 'personne_form': personne_form,
@@ -239,6 +240,7 @@ def inscription(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  'expertise_form': expertise_form,
                   'groupe_form': groupe_form,
                 }
     
@@ -264,12 +266,13 @@ def edit(request):
         publication3_form = PublicationForm(request.POST, prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(request.POST, prefix="publication4", instance=chercheur.publication4)
         these_form = TheseForm(request.POST, prefix="these", instance=chercheur.these)
+        expertise_form = ExpertiseForm(request.POST, prefix="expertise", instance=chercheur.expertise)
         groupe_form = GroupeForm(request.POST, prefix="groupe", instance=chercheur)
         
         #formset = GroupeFormset(request.POST, prefix="groupes", instance = chercheur)
         
         if( personne_form.is_valid() and discipline_form.is_valid() and chercheur_form.is_valid() and these_form.is_valid()
-            and etablissement_form.is_valid() and etablissement_autre_form.save() and groupe_form.is_valid() ):
+            and etablissement_form.is_valid() and etablissement_autre_form.save() and groupe_form.is_valid() and expertise_form.is_valid() ):
             personne_form.save()
             discipline_form.save()
             chercheur_form.save()
@@ -284,7 +287,8 @@ def edit(request):
                 chercheur.publication3 = publication3_form.save()              
             if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
                 chercheur.publication4 = publication4_form.save()
-            chercheur.these = these_form.save()                  
+            chercheur.these = these_form.save()  
+            chercheur.expertise = expertise_form.save()                
             chercheur.save()
             #Gestion des groupes
             groupes = request.POST.getlist('groupe-groupes')
@@ -309,6 +313,7 @@ def edit(request):
         publication3_form = PublicationForm(prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(prefix="publication4", instance=chercheur.publication4) 
         these_form = TheseForm(prefix="these", instance=chercheur.these)
+        expertise_form = ExpertiseForm(prefix="expertise", instance=chercheur.expertise)
         groupe_form = GroupeForm(prefix="groupe", instance=chercheur)
         #formset = GroupeFormset(prefix="groupes", instance = chercheur)
         
@@ -323,6 +328,7 @@ def edit(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  'expertise_form': expertise_form,
                   'groupe_form': groupe_form,
                   #'formset' : formset
                 }

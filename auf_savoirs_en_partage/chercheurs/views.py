@@ -298,7 +298,7 @@ def edit(request):
             for g in groupes:
                 g = Groupe.objects.get(pk=g)
                 ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=g, actif=1)
-
+            return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % chercheur.id)
             
             #formset.save()
             

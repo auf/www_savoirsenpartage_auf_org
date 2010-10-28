@@ -27,7 +27,9 @@
   {% for ressource in ressources %}
   {% include "savoirs/ressource_resultat.html" %} 
   {% endfor %}
+  {% ifnotequal ressources|length total_ressources %}
   <p><a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources correspondant à « {{ q }} »</a></p>
+  {% endifnotequal %}
 </div>
 {% endif %}
 
@@ -37,7 +39,28 @@
   {% for actualite in actualites %}
   {% include "savoirs/actualite_resultat.html" %} 
   {% endfor %}
+  {% ifnotequal actualites|length total_actualites %}
   <p><a href="{% url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} actualités correspondant à « {{ q }} »</a></p>
+  {% endifnotequal %}
+</div>
+{% endif %}
+
+{% if evenements %}
+<h4>Événements correspondant à « {{ q }} » ({{ evenements|length }} sur {{ total_evenements }}):</h4>
+<div class="zone-texte">
+  {% for evenement in evenements %}
+  {% include "savoirs/evenement_resultat.html" %}
+  {% endfor %}
+  {% ifnotequal evenements|length total_evenements %}
+  <p><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements correspondant à « {{ q }} »</a></p>
+  {% endifnotequal %}
+</div>
+{% endif %}
+
+{% if not ressources and not actualites and not evenements %}
+<h4>Aucune ressource ne correspond à « {{ q }} »</h4>
+<div class="zone-texte">
+  <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 </div>
 {% endif %}
 

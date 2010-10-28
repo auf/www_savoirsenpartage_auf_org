@@ -4,23 +4,29 @@
 
 {% block contenu %}
 {% autopaginate actualites 10 %}
+
 <h4>Actualités</h4>
+
 <ul class="actions">
-  <li><a href="/rss/actualites"><img src="/media/img/feed.png" /></a></li>
+    <li><a href="/rss/actualites"><img src="/media/img/feed.png" /></a></li>
 </ul>
 
-<div class="contenu-wrapper">
-  <form action="" method="get">
+<h5>Recherche</h5>
+
+<form action="" method="get" class="contenu-wrapper">
     <table>
-      {{ search_form.as_table }}
-      <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
+    {{ search_form.as_table }}
+    <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
     </table>
-  </form>
-  <p><strong>{{ nb_resultats }} actualités correspondant à votre recherche :</strong></p>
-  <div class="centre">{% paginate %}</div>
-  {% for actualite in actualites %}
-  {% include "savoirs/actualite_resultat.html" %}
-  {% endfor %}
-  <div class="centre">{% paginate %}</div>
+</form>
+
+<h5>Résultats : {{ nb_resultats }} actualités correspondant à votre recherche</h5>
+
+<div  class="contenu-wrapper">
+    <div class="centre">{% paginate %}</div>
+    {% for actualite in actualites %}
+        {% include "savoirs/actualite_resultat.html" %}
+    {% endfor %}
+    <div class="centre">{% paginate %}</div>
 </div>
 {% endblock %}

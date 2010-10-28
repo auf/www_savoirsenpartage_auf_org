@@ -10,6 +10,8 @@
         <script type="text/javascript" src="{{ MEDIA_URL }}js/tabber.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/pagination.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/sep.js"></script>
+        {% block extra-script %}{% endblock %}
+
         <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
         <link href="{{ MEDIA_URL }}css/tabber.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="{{ MEDIA_URL }}js/jquery/css/smoothness/jquery-ui-1.8rc3.custom.css" type="text/css" media="all" />
@@ -21,6 +23,7 @@
             DD_belatedPNG.fix('.top, .bottom, #col-droite, #contenu, .resultats');
         </script>
         <![endif]-->
+        {% block extra-style %}{% endblock %}
     </head>
 
     <body>

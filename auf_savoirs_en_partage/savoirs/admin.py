@@ -251,7 +251,20 @@ class ActualiteAdmin(admin.ModelAdmin):
 admin.site.register(Actualite, ActualiteAdmin)
 
 
+class EvenementAdminForm(forms.ModelForm):
+    class Meta:
+        model = Evenement
+
+    def clean(self,):
+        cleaned_data = self.cleaned_data
+        debut = cleaned_data.get("debut")
+        fin = cleaned_data.get("fin")
+        if debut > fin:
+            raise forms.ValidationError("La date de fin ne doit pas être antérieure à la date de début")
+        return cleaned_data
+
 class EvenementAdmin(admin.ModelAdmin):
+    form = EvenementAdminForm
     list_filter = ('approuve',)
     list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
     fields = ['titre',

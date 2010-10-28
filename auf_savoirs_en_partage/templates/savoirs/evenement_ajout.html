@@ -1,5 +1,15 @@
 {% extends "container_base.html" %}
 
+{% block extra-script %}
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/admin_media/js/core.js"></script>
+    {{ form.media.js }}
+{% endblock %}
+
+{% block extra-style %}
+    {{ form.media.css }}
+{% endblock %}
+
 {% block contenu %}
 
 <style>
@@ -10,13 +20,6 @@
   th { font-weight: normal; padding-right: 10px;}
   input[type=text] { width: 250px; }
 </style>
-
-<script>
-  $(function () {
-      $("#id_debut").datetime({ userLang: 'fr' });
-      $("#id_fin").datetime({ userLang: 'fr' });
-      });
-</script>
 
 <div class="clearfix">
   <h4>Soumettre un événement</h4>

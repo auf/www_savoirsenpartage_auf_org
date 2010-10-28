@@ -1,9 +1,12 @@
 # -*- encoding: utf-8 -*-
-import re
+import re, datetime
 from django import forms
+from django.db import models
+from django.contrib.admin import widgets
 from datamaster_modeles.models import Thematique, Pays, Region
 from models import Evenement, Discipline, Record, Actualite
 from savoirs.lib.recherche import build_search_regexp
+from savoirs.admin import EvenementAdminForm
 
 # Formulaires de recherche
 
@@ -107,7 +110,16 @@ class EvenementSearchForm(forms.Form):
 
 ###
 
-class EvenementForm(forms.ModelForm):
+class FrontEndSplitDateTime(widgets.AdminSplitDateTime):
+    class Media:
+        extends=True
+        js = ('js/calendrier.js', )
+        css = {'all' : ('css/calendrier.css', )}
+
+class EvenementForm(EvenementAdminForm):
+    debut = forms.DateTimeField(widget=FrontEndSplitDateTime)
+    fin = forms.DateTimeField(widget=FrontEndSplitDateTime)
+
     class Meta:
         model = Evenement
         exclude = ('approuve', 'uid')

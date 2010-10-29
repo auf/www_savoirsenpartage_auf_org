@@ -63,7 +63,7 @@ div.droite { float:right; width:40%; }
 h1 a { display:block; width:144px; height:110px; text-indent:-99999px; background:url(../img/logo-agence-universitaire-de-la-francophonie.gif) no-repeat 0 0;border:none; text-decoration:none;}
 h5 a { text-decoration:none; }
 
-#sep-recherche {  }
+#sep-recherche {}
 h2.slogan { position:absolute; top:53px; left:240px; font-size:3.4em; color:#3a3125; padding:0;font-family:"Myriad Pro", "Lucida Grande", sans-serif; font-weight:normal; letter-spacing:-1px; line-height:0.8em; z-index:1000; }
 h2.slogan span { display:block; margin: .7em 0 0; font-size:0.55em; color:#97012c; letter-spacing:normal; line-height: 1.1;}
 div.boite-recherche { z-index:1000; position:absolute; top:150px; left:240px; width:390px; height:90px; background: url(../img/recherche-background.gif) no-repeat 0 5px;}
@@ -228,7 +228,7 @@ form fieldset legend {
 label {
   font-size: 12px;
 }
-td
+td, th
 {
 vertical-align:middle;
 }
@@ -277,3 +277,13 @@ font-weight:bold;
 font-size:12px;
 color:red;
 }
+
+
+.ressource-retrieve * {margin-top: 1em;}
+.ressource-retrieve .fiche {margin-top: 2em;}
+
+.le-titre{line-height: 24px;}
+
+.fiche, .original, .provenance {font-size: 80%; margin: 2px 0px;}
+.fiche {margin-top: 6px;}
+.fiche a, .original a, .provenance a{text-decoration: none;}

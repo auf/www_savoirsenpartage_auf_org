@@ -4,14 +4,24 @@
 <h4>{{ evenement.titre }}</h4>
 
 <div class="zone-texte">
-  <table width="100%">
+    <table width="100%">
+    <tr>
+        <th>Type</th>
+        <td>{{ evenement.type }}</td>
+    </tr>    
+    <tr>
+        <th>Discipline{% if evenement.discipline_secondaire %}s{% endif %}</th>
+        <td>{{ evenement.discipline }}
+            {% if evenement.discipline_secondaire %}, {{ evenement.discipline_secondaire }}{% endif %}
+        </td>
+    </tr>    
     <tr>
       <th width="120px">Début</th>
-      <td>{{ evenement.debut|date:"Y-m-d H:i" }} (UTC)</td>
+      <td>{{ evenement.debut|date:"d/m/Y H\hi" }} (UTC)</td>
     </tr>
     <tr>
       <th>Fin</th>
-      <td>{{ evenement.fin|date:"Y-m-d H:i" }} (UTC)</td>
+      <td>{{ evenement.fin|date:"d/m/Y H\hi" }} (UTC)</td>
     </tr>
     <tr>
       <th>Description</th>
@@ -31,7 +41,7 @@
     {% endif %}
     {% if evenement.lieu %}
     <tr>
-      <th>Emplacement</th>
+      <th>Lieu</th>
       <td>{{ evenement.lieu|linebreaksbr }}</td>
     </tr>
     {% endif %}

@@ -56,7 +56,7 @@
         <ul class="liste-de-l-accueil">
           {% for evenement in evenements %}
           <li>
-          <span class="la-date">{{ evenement.debut|date:"d F Y H:i" }}</span>
+          <span class="la-date">{{ evenement.debut|date:"d/m/Y H\hi" }}</span>
           <a href="{% url savoirs.views.evenement evenement.id %}" class="le-titre">{{ evenement.titre|truncatewords:20 }}</a>
           <span class="le-resume">{{ evenement.description|truncatewords:20 }}</span>
           </li>

@@ -15,6 +15,10 @@ site_feeds = {'actualites': FilActualite,
 
 urlpatterns = patterns(
     '',
+
+    # traduction disponible dans le frontend sans permissons
+    url(r'^jsi18n/$', admin.site.i18n_javascript,),
+
     url(r'^admin_tools/', include('admin_tools.urls')),
     (r'^admin/', include(admin.site.urls)),
     (r'^admin/confirmation/(.*)', 'savoirs.admin_views.confirmation'),
@@ -53,6 +57,7 @@ urlpatterns = patterns(
     
     # agenda
     (r'^agenda/$', 'savoirs.views.evenement_index'),
+    (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
     (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
     (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
     (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
@@ -65,6 +70,7 @@ urlpatterns = patterns(
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
+    (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),
 
     # sites
     (r'^sites/$', 'sitotheque.views.index'),

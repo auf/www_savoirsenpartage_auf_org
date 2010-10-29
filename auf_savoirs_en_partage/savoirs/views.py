@@ -104,6 +104,7 @@ def avancee (request):
             Context ({'type': type,
                       'page': page,
                       'data': r,
+                      'search_regexp': None, # pour pouvoir utiliser la même template de résultat
                       'form': f,
                       'q': q}), 
             context_instance = RequestContext(request))
@@ -170,7 +171,12 @@ def evenement_index(request):
                                    search_regexp=search_regexp,
                                    nb_resultats=evenements.count()),
                               context_instance=RequestContext(request))
-
+                              
+def evenement_utilisation(request):
+    return render_to_response ("savoirs/evenement_utilisation.html", \
+            Context (), \
+            context_instance = RequestContext(request))
+            
 def evenement(request, id):
     evenement = get_object_or_404(Evenement, pk=id)
     return render_to_response("savoirs/evenement.html",

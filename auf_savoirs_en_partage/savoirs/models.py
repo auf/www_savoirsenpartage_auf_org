@@ -261,8 +261,7 @@ class RecordQuerySet(models.query.QuerySet):
             part = (Q(title__icontains=word) | Q(description__icontains=word) |
                     Q(creator__icontains=word) | Q(contributor__icontains=word) |
                     Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
-                    Q(regions__nom__icontains=word) | Q(pays__nom__icontains=word) |
-                    Q(pays__region__nom__icontains=word))
+                    Q(regions__nom__icontains=word) | Q(pays__nom__icontains=word))
             if q is None:
                 q = part
             else:

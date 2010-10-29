@@ -37,8 +37,7 @@ class SiteQuerySet(models.query.QuerySet):
                     Q(auteur__icontains=word) |
                     Q(mots_cles__icontains=word) |
                     Q(discipline__nom__icontains=word) |
-                    Q(pays__nom__icontains=word) |
-                    Q(pays__region__nom__icontains=word))
+                    Q(pays__nom__icontains=word))
             if q is None:
                 q = part
             else:

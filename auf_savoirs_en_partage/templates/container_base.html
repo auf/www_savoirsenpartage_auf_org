@@ -37,9 +37,11 @@
                     <a href="{% url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
                     {% endif %}
                     <span>|</span>
-                    <a href="{% url savoirs.views.nous_contacter %}">Nous contacter</a>
+                    <a href="{% url savoirs.views.legal %}">Légal</a>
                     <span>|</span>
-                    <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos de</a>
+                    <a href="{% url savoirs.views.nous_contacter %}">Contact</a>
+                    <span>|</span>
+                    <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos</a>
                 </div>
                 
                 <div class="sous-menu gauche">
@@ -51,7 +53,7 @@
                     <span>|</span>
                     <a href="{% url savoirs.views.ressource_index %}">Ressources</a>
                     <span>|</span>
-                    <a href="{% url chercheurs.views.index %}">Chercheurs</a>
+                    <a href="{% url chercheurs.views.index %}">Répertoire</a>
                     <span>|</span>
                     <a href="{% url savoirs.views.index %}" class="bout-gauche">Accueil</a>
                 </div>

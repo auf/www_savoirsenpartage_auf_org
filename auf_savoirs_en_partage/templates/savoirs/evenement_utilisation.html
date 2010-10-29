@@ -1,0 +1,48 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>Agenda</h4>
+
+<ul class="actions">
+    {% include "savoirs/evenement_actions.html" %}
+    <li><a href="/rss/agenda"><img src="/media/img/feed.png" /></a></li>
+</ul>
+
+<h5>Conditions d'utilisation</h5>
+
+<div class="texte">
+    <p>
+        <b>Autorisations :</b><br />
+        <ul>
+        <li>L'agenda est librement consultable par tous les visiteurs du site Savoirs en partage.</li>
+        <li>En revanche, seuls les chercheurs inscrits au répertoire peuvent ajouter des événements et pourront ainsi proposer d'annoncer à la communauté universitaire francophone un événement  scientifique en remplissant en ligne une « fiche évènement ».</li>
+        </ul>
+    </p>
+    <p>
+        <b>Critères de validation :</b><br />
+        La validation de l'annonce est automatique, selon deux critères : 
+        <ul>
+        <li>L'inscription au répertoire tient lieu de validation : tous les évènements proposés par des chercheurs inscrits apparaissent aussitôt dans le répertoire.</li>
+        <li>Seules les annonces complètes sont publiées : voir les champs indispensables sur la fiche évènement en ligne.</li>
+        </ul>
+    </p>
+    <p>
+        <b>Type d'événement : </b><br />
+        L'agenda scientifique permet d'annoncer les évènements de type : 
+        <ul>
+        <li>Colloque, conférence</li>
+        <li>Journée d'étude, séminaire</li>
+        <li>Appels à contribution ou à communication pour colloque ou publication</li>
+        <li>Appels à projet</li>
+        <li style="color:red">NB : les cours et formations ne peuvent pas faire l'objet d'une annonce dans cet agenda.</li>
+        </ul>    
+    </p>
+    <p>
+        <b>Droits : </b><br />
+        <br />
+        L'AUF se réserve le droit de retenir ou non une annonce.
+        L'auteur d'une annonce  autorise l'AUF à publier en ligne les informations données sur le formulaire d'annonce d'évènement. 
+        L'auteur d'une annonce s'engage à détenir l'autorisation de publication en ligne des  informations attachés à leur annonce.
+    </p>
+</div>
+{% endblock %}

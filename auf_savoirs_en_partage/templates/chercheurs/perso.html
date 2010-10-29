@@ -1,6 +1,11 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
+
+{% if modification %}
+    <span class="contenu-wrapper message">Votre fiche a bien été enregistrée.</span>
+{% endif %}
+    
 <h4>{{ chercheur }}</h4>
 
 <div class="contenu-wrapper">

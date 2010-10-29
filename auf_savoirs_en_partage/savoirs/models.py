@@ -249,7 +249,9 @@ class RecordQuerySet(models.query.QuerySet):
         for word in words:
             qs = qs.filter(Q(title__icontains=word) | Q(description__icontains=word) |
                            Q(creator__icontains=word) | Q(contributor__icontains=word) |
-                           Q(subject__icontains=word))
+                           Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
+                           Q(regions__nom__icontains=word) | Q(pays__nom__icontains=word) |
+                           Q(pays__region__nom__icontains=word)).distinct()
 
         # On donne un point pour chaque mot présent dans le titre.
         score_expr = ' + '.join(['(title LIKE %s)'] * len(words))

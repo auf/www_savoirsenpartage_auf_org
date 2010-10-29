@@ -43,7 +43,8 @@ class SiteQuerySet(models.query.QuerySet):
                 q = part
             else:
                 q = q & part
-        qs = qs.filter(q).distinct()
+        if q is not None:
+            qs = qs.filter(q).distinct()
         return qs
 
 class Site(models.Model):

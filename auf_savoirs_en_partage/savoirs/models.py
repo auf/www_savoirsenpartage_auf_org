@@ -88,7 +88,7 @@ class EvenementQuerySet(models.query.QuerySet):
                 q = part
             else:
                 q = q & part
-        return qs.filter(q)
+        return qs.filter(q) if q is not None else qs
 
     def search_titre(self, text):
         qs = self
@@ -267,15 +267,19 @@ class RecordQuerySet(models.query.QuerySet):
                 q = part
             else:
                 q = q & part
-        qs = qs.filter(q).distinct()
+        if q is not None:
+            qs = qs.filter(q).distinct()
 
         # On donne un point pour chaque mot présent dans le titre.
-        score_expr = ' + '.join(['(title LIKE %s)'] * len(words))
-        score_params = ['%' + word + '%' for word in words]
-        return qs.extra(
-            select={'score': score_expr},
-            select_params=score_params
-        ).order_by('-score')
+        if words:
+            score_expr = ' + '.join(['(title LIKE %s)'] * len(words))
+            score_params = ['%' + word + '%' for word in words]
+            qs = qs.extra(
+                select={'score': score_expr},
+                select_params=score_params
+            ).order_by('-score')
+
+        return qs
 
     def search_auteur(self, text):
         qs = self

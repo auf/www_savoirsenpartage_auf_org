@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import datetime, simplejson, copy, vobject
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -57,6 +57,8 @@ def legal(request):
 # recherche
 def recherche(request):
     query = request.GET.get("q", "")
+    if not query.strip():
+        return redirect('/')
     ressources = Record.objects.validated().search(query)
     actualites = Actualite.objects.filter(visible=1).search(query)
     evenements = Evenement.objects.filter(approuve=1).search(query)

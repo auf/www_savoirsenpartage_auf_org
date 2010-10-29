@@ -24,10 +24,10 @@
                 <td>{{chercheur.nationalite.nom|default:"-"}}</td>
             </tr>
             {% endif %}
-            <!--<tr>
-                <td class="label">Fonction:</td>
-                <td>{{chercheur.fonction_display|default:"-"}}</td>
-            </tr>-->
+            <tr>
+                <td class="label">Statut:</td>
+                <td>{{chercheur.statut_display|default:"-"}}</td>
+            </tr>
             <tr>
                 <td class="label">Diplôme:</td>
                 <td>{{chercheur.diplome|default:"-"}}</td>
@@ -84,10 +84,12 @@
 
         <h5>Thèmes de recherche et publications</h5>
         <table id="publications">
+            {% if chercheur.theme_recherche %}
             <tr class="souligne">
                 <td class="label">Thèmes de recherche:</td>
                 <td>{{chercheur.theme_recherche}}</td>
             </tr>
+            {% endif %}
             {% if chercheur.these %}
             <tr class="souligne">
                 <td class="label">Thèse:</td>

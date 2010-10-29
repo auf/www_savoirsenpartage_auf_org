@@ -12,7 +12,7 @@ class Personne(models.Model):
     salutation = models.CharField(max_length=128, null = True, blank = True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name = 'Prénom')
-    courriel = models.EmailField(max_length=128, unique=True)
+    courriel = models.EmailField(max_length=128, unique=True, verbose_name="Adresse électronique")
     fonction = models.CharField(max_length=128, null = True, blank = True)
     date_naissance = models.DateField(null=True, blank=True)
     sousfonction = models.CharField(max_length=128, null = True, blank = True,
@@ -60,13 +60,14 @@ class ChercheurQuerySet(models.query.QuerySet):
                            Q(these__titre__icontains=word)).distinct()
         return qs
 
-FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Chercheur_independant', 'Chercheur indépendant'), ('Doctorant', 'Doctorant'))
+STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     personne = models.ForeignKey('Personne', db_column='personne')
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'Nationalité', related_name='nationalite')
     #fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
+    statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
     diplome = models.CharField(max_length=255, null=True,
                                  verbose_name = 'Diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
@@ -75,14 +76,13 @@ class Chercheur(models.Model):
     etablissement_autre_pays = models.ForeignKey(Pays, null = True, blank=True, db_column='etablissement_autre_pays', 
                                                 to_field='code', related_name='etablissement_autre_pays',
                                                  verbose_name = 'Pays de l\'établissement')
-    enseignant = models.BooleanField(verbose_name="Êtes-vous aussi enseignant dans cet établissement?")
     #Domaine
     thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='Thematique')
 
-    mots_cles = models.CharField(max_length=255, null=True, blank=True,
+    mots_cles = models.CharField(max_length=255, null=True,
                                     verbose_name='Mots-clés')                    
-    discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, blank=True,
-                                        verbose_name='Champ disciplinaire')
+    discipline = models.ForeignKey(Discipline, db_column='discipline', null=True,
+                                        verbose_name='Discipline')
     theme_recherche = models.TextField(null=True, blank=True, verbose_name='Thème de recherche')                                    
     expertise = models.ForeignKey('Expertise', db_column='expertise', null=True, blank=True, related_name='expertise')
     url_site_web = models.URLField(max_length=255, null=True, blank=True,
@@ -115,10 +115,10 @@ class Chercheur(models.Model):
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
         
-    def fonction_display(self):
-        for f in FONCTION_CHOICES:
-            if self.fonction == f[0]:
-                return f[1]
+    def statut_display(self):
+        for s in STATUT_CHOICES:
+            if self.statut == s[0]:
+                return s[1]
         return "-"
     
 class Publication(models.Model):
@@ -140,10 +140,11 @@ class Publication(models.Model):
         
 class Expertise(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Titre de l\'expertise')
+    nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Objet de la dernière expertise')
     date = models.DateField(db_column='date_expertise', null=True, blank=True)
-    organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme demandeur')
-    organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme demandeur")
+    lieu = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Lieu de la dernière expertise')
+    organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme commanditaire')
+    organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme commanditaire")
     actif = models.BooleanField(editable = False, db_column='actif')
 
     def __unicode__(self):

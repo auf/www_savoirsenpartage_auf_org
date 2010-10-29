@@ -10,6 +10,8 @@
         <script type="text/javascript" src="{{ MEDIA_URL }}js/tabber.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/pagination.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/sep.js"></script>
+        {% block extra-script %}{% endblock %}
+
         <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
         <link href="{{ MEDIA_URL }}css/tabber.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="{{ MEDIA_URL }}js/jquery/css/smoothness/jquery-ui-1.8rc3.custom.css" type="text/css" media="all" />
@@ -21,6 +23,7 @@
             DD_belatedPNG.fix('.top, .bottom, #col-droite, #contenu, .resultats');
         </script>
         <![endif]-->
+        {% block extra-style %}{% endblock %}
     </head>
 
     <body>
@@ -34,9 +37,11 @@
                     <a href="{% url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
                     {% endif %}
                     <span>|</span>
-                    <a href="{% url savoirs.views.nous_contacter %}">Nous contacter</a>
+                    <a href="{% url savoirs.views.legal %}">Légal</a>
                     <span>|</span>
-                    <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos de</a>
+                    <a href="{% url savoirs.views.nous_contacter %}">Contact</a>
+                    <span>|</span>
+                    <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos</a>
                 </div>
                 
                 <div class="sous-menu gauche">
@@ -48,7 +53,7 @@
                     <span>|</span>
                     <a href="{% url savoirs.views.ressource_index %}">Ressources</a>
                     <span>|</span>
-                    <a href="{% url chercheurs.views.index %}">Chercheurs</a>
+                    <a href="{% url chercheurs.views.index %}">Répertoire</a>
                     <span>|</span>
                     <a href="{% url savoirs.views.index %}" class="bout-gauche">Accueil</a>
                 </div>

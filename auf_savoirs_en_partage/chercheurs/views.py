@@ -133,9 +133,6 @@ def chercheur_queryset (request):
         pays = simpleForm.cleaned_data["pays"]
         if pays:
             list = list.filter(Q(etablissement__pays = pays.pk) | Q(etablissement_autre_pays = pays.pk))
-        fonction = simpleForm.cleaned_data["fonction"]
-        if fonction:
-            list = list.filter(fonction = fonction)
         discipline = simpleForm.cleaned_data["discipline"]
         if discipline:
             list = list.filter(discipline=discipline)
@@ -145,6 +142,14 @@ def chercheur_queryset (request):
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:
             list = list.search(mots_cles)
+        fonction = simpleForm.cleaned_data["fonction"]
+        if fonction:
+            if fonction == "enseignant":
+                list = list.filter(enseignant=True)
+            if fonction == "expert":
+                list = list.exclude(expertise=None)
+             
+        
     return list
     
 def index(request):
@@ -174,6 +179,7 @@ def inscription(request):
         publication3_form = PublicationForm (request.POST, prefix="publication3") 
         publication4_form = PublicationForm (request.POST, prefix="publication4")
         these_form = TheseForm(request.POST, prefix="these")
+        expertise_form = ExpertiseForm(request.POST, prefix="expertise")
         groupe_form = GroupeForm(request.POST, prefix="groupe")
         
         if personne_form.is_valid():
@@ -198,7 +204,10 @@ def inscription(request):
                        pub = publication4_form.save()
                        c.publication4 = pub    
                     these = these_form.save()
+                    if expertise_form.is_valid() and expertise_form.cleaned_data['nom']:
+                        expertise = expertise_form.save()
                     c.these = these 
+                    c.expertise = expertise
                     etablissement_form.save(commit=False)
                     etablissement_autre_form.save(commit=False)
                     discipline_form.save(commit=False)
@@ -227,6 +236,7 @@ def inscription(request):
         publication3_form = PublicationForm(prefix="publication3") 
         publication4_form = PublicationForm(prefix="publication4")
         these_form = TheseForm(prefix="these")
+        expertise_form = ExpertiseForm(prefix="expertise")
         groupe_form = GroupeForm(prefix="groupe")
     
     variables = { 'personne_form': personne_form,
@@ -239,6 +249,7 @@ def inscription(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  'expertise_form': expertise_form,
                   'groupe_form': groupe_form,
                 }
     
@@ -264,12 +275,13 @@ def edit(request):
         publication3_form = PublicationForm(request.POST, prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(request.POST, prefix="publication4", instance=chercheur.publication4)
         these_form = TheseForm(request.POST, prefix="these", instance=chercheur.these)
+        expertise_form = ExpertiseForm(request.POST, prefix="expertise", instance=chercheur.expertise)
         groupe_form = GroupeForm(request.POST, prefix="groupe", instance=chercheur)
         
         #formset = GroupeFormset(request.POST, prefix="groupes", instance = chercheur)
         
         if( personne_form.is_valid() and discipline_form.is_valid() and chercheur_form.is_valid() and these_form.is_valid()
-            and etablissement_form.is_valid() and etablissement_autre_form.save() and groupe_form.is_valid() ):
+            and etablissement_form.is_valid() and etablissement_autre_form.save() and groupe_form.is_valid() and expertise_form.is_valid() ):
             personne_form.save()
             discipline_form.save()
             chercheur_form.save()
@@ -284,7 +296,9 @@ def edit(request):
                 chercheur.publication3 = publication3_form.save()              
             if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
                 chercheur.publication4 = publication4_form.save()
-            chercheur.these = these_form.save()                  
+            chercheur.these = these_form.save()  
+            if expertise_form.cleaned_data['nom']:
+                chercheur.expertise = expertise_form.save()                
             chercheur.save()
             #Gestion des groupes
             groupes = request.POST.getlist('groupe-groupes')
@@ -294,7 +308,7 @@ def edit(request):
             for g in groupes:
                 g = Groupe.objects.get(pk=g)
                 ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=g, actif=1)
-            return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % chercheur.id)
+            return HttpResponseRedirect("/chercheurs/perso/?modification=1")
             
             #formset.save()
             
@@ -309,6 +323,7 @@ def edit(request):
         publication3_form = PublicationForm(prefix="publication3", instance=chercheur.publication3) 
         publication4_form = PublicationForm(prefix="publication4", instance=chercheur.publication4) 
         these_form = TheseForm(prefix="these", instance=chercheur.these)
+        expertise_form = ExpertiseForm(prefix="expertise", instance=chercheur.expertise)
         groupe_form = GroupeForm(prefix="groupe", instance=chercheur)
         #formset = GroupeFormset(prefix="groupes", instance = chercheur)
         
@@ -323,6 +338,7 @@ def edit(request):
                   'publication3_form': publication3_form,
                   'publication4_form': publication4_form,
                   'these_form': these_form,
+                  'expertise_form': expertise_form,
                   'groupe_form': groupe_form,
                   #'formset' : formset
                 }
@@ -336,9 +352,11 @@ def perso(request):
     """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']
+    modification = request.GET.get('modification')
     if not chercheur:
         return HttpResponseRedirect(reverse('chercheurs.views.chercheur_login'))
     variables = { 'chercheur': chercheur,
+                  'modification': modification,
                 }
     return render_to_response ("chercheurs/perso.html", \
             Context (variables), 

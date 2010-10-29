@@ -128,9 +128,15 @@ class Evenement(models.Model):
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.debut > self.fin:
+            raise ValidationError('La date de fin ne doit pas être antérieure à la date de début')
+
     def save(self, *args, **kwargs):
         """Sauvegarde l'objet dans django et le synchronise avec caldav s'il a été
         approuvé"""
+        self.clean()
         self.update_vevent()
         super(Evenement, self).save(*args, **kwargs)
 

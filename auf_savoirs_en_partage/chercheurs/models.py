@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import Q
 from datamaster_modeles.models import *
-from auf_references_modeles.models import Thematique
+#from auf_references_modeles.models import Thematique
 from savoirs.models import Discipline
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
@@ -48,7 +48,7 @@ class ChercheurQuerySet(models.query.QuerySet):
         for word in text.split():
             qs = qs.filter(Q(personne__nom__icontains=word) |
                            Q(personne__prenom__icontains=word) |
-                           Q(expertise__icontains=word) |
+                           Q(theme_recherche__icontains=word) |
                            Q(etablissement_autre_nom__icontains=word) |
                            Q(etablissement__nom__icontains=word) |
                            Q(etablissement__pays__nom__icontains=word) |
@@ -66,7 +66,7 @@ class Chercheur(models.Model):
     personne = models.ForeignKey('Personne', db_column='personne')
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'Nationalité', related_name='nationalite')
-    fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
+    #fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
     diplome = models.CharField(max_length=255, null=True,
                                  verbose_name = 'Diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
@@ -75,6 +75,7 @@ class Chercheur(models.Model):
     etablissement_autre_pays = models.ForeignKey(Pays, null = True, blank=True, db_column='etablissement_autre_pays', 
                                                 to_field='code', related_name='etablissement_autre_pays',
                                                  verbose_name = 'Pays de l\'établissement')
+    enseignant = models.BooleanField(verbose_name="Êtes-vous aussi enseignant dans cet établissement?")
     #Domaine
     thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='Thematique')
 
@@ -82,7 +83,8 @@ class Chercheur(models.Model):
                                     verbose_name='Mots-clés')                    
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, blank=True,
                                         verbose_name='Champ disciplinaire')
-    expertise = models.TextField(null=True, blank=True, verbose_name='Domaine d\'expertise et thèmes de recherche')                                    
+    theme_recherche = models.TextField(null=True, blank=True, verbose_name='Thème de recherche')                                    
+    expertise = models.ForeignKey('Expertise', db_column='expertise', null=True, blank=True, related_name='expertise')
     url_site_web = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Adresse site Internet')
     url_blog = models.URLField(max_length=255, null=True, blank=True,
@@ -132,7 +134,21 @@ class Publication(models.Model):
     publication_affichage = models.TextField(verbose_name = 'Publication', null = True, 
                                    blank = True)
     actif = models.BooleanField(editable = False, db_column='actif')
+    
+    def __unicode__(self):
+        return u"%s" % (self.titre)
+        
+class Expertise(models.Model):
+    id = models.AutoField(primary_key=True, db_column='id')
+    nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Titre de l\'expertise')
+    date = models.DateField(db_column='date_expertise', null=True, blank=True)
+    organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme demandeur')
+    organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme demandeur")
+    actif = models.BooleanField(editable = False, db_column='actif')
 
+    def __unicode__(self):
+        return u"%s" % (self.nom)
+    
 class Groupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     nom = models.CharField(max_length=255, db_column='nom')
@@ -154,3 +170,6 @@ class ChercheurGroupe(models.Model):
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
     actif = models.BooleanField(editable = False, db_column='actif')
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.chercheur, self.groupe)

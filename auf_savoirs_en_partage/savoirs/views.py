@@ -41,12 +41,17 @@ def index (request):
 # sous-menu droite
 def a_propos (request):
     return render_to_response ("savoirs/a-propos.html", \
-            Context ({'count': len(backend_config.RESOURCES)}), \
+            Context (), \
             context_instance = RequestContext(request))
 
 def nous_contacter (request):
     return render_to_response ("savoirs/contact.html", \
             Context ({'courriel':settings.CONTACT_EMAIL}), \
+            context_instance = RequestContext(request))
+            
+def legal(request):
+    return render_to_response ("savoirs/legal.html", \
+            Context (), \
             context_instance = RequestContext(request))
 
 # recherche
@@ -165,7 +170,12 @@ def evenement_index(request):
                                    search_regexp=search_regexp,
                                    nb_resultats=evenements.count()),
                               context_instance=RequestContext(request))
-
+                              
+def evenement_utilisation(request):
+    return render_to_response ("savoirs/evenement_utilisation.html", \
+            Context (), \
+            context_instance = RequestContext(request))
+            
 def evenement(request, id):
     evenement = get_object_or_404(Evenement, pk=id)
     return render_to_response("savoirs/evenement.html",

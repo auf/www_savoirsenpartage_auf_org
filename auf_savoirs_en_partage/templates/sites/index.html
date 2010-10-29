@@ -7,20 +7,22 @@
 
 <h4>Sitothèque</h4>
 
-<div class="contenu-wrapper">
+<h5>Recherche</h5>
 
-  <form method="get" action="">
+<form method="get" action="" class="contenu-wrapper">
     <table id="repertoire_recherche">
-      {{search_form.as_table}}
-      <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
+    {{search_form.as_table}}
+    <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
     </table>
-  </form>
+</form>
 
-  <p><strong>{{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche :</strong></p>
-  <div class="centre">{% paginate %}</div>
-  {% for site in sites %}
-  {% include "sites/resultat.html" %}
-  {% endfor %}
-  <div class="centre">{% paginate %}</div>
+<h5>Résultats : {{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche</h5>
+
+<div class="contenu-wrapper">
+    <div class="centre">{% paginate %}</div>
+    {% for site in sites %}
+        {% include "sites/resultat.html" %}
+    {% endfor %}
+    <div class="centre">{% paginate %}</div>
 </div>
 {% endblock %}

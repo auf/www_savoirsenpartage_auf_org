@@ -1,10 +1,14 @@
 # -*- encoding: utf-8 -*-
-import re
+import re, datetime
 from django import forms
 from django.db.models import Q
+from django.db import models
+from django.contrib.admin import widgets
 from datamaster_modeles.models import Thematique, Pays, Region
 from models import Evenement, Discipline, Record, Actualite
 from savoirs.lib.recherche import build_search_regexp
+from savoirs.admin import EvenementAdminForm
+import settings
 
 # Modifications custom aux champs Django
 
@@ -140,7 +144,20 @@ class EvenementSearchForm(forms.Form):
 
 ###
 
-class EvenementForm(forms.ModelForm):
+class FrontEndSplitDateTime(widgets.AdminSplitDateTime):
+    class Media:
+        extend=False
+        js = ("/jsi18n/",
+              settings.ADMIN_MEDIA_PREFIX + "js/core.js",
+              settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
+              settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js",
+              'js/calendrier.js', )
+        css = {'all' : ('css/calendrier.css', )}
+
+class EvenementForm(EvenementAdminForm):
+    debut = forms.DateTimeField(widget=FrontEndSplitDateTime)
+    fin = forms.DateTimeField(widget=FrontEndSplitDateTime)
+
     class Meta:
         model = Evenement
         exclude = ('approuve', 'uid')

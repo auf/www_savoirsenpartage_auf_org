@@ -64,6 +64,10 @@ def recherche(request):
     evenements = Evenement.objects.filter(approuve=1).search(query)
     chercheurs = Chercheur.objects.search(query)
     sites = Site.objects.search(query)
+    try:
+        sites_auf = google_search(0, query)['results']
+    except:
+        sites_auf = []
     search_regexp = build_search_regexp(query)
     return render_to_response(
         "savoirs/recherche.html",
@@ -72,7 +76,8 @@ def recherche(request):
              evenements=evenements[:5], total_evenements=evenements.count(),
              chercheurs=chercheurs[:10], total_chercheurs=chercheurs.count(),
              actualites=actualites[:5], total_actualites=actualites.count(),
-             sites=sites[:5], total_sites=sites.count()),
+             sites=sites[:5], total_sites=sites.count(),
+             sites_auf=sites_auf[:5]),
         context_instance = RequestContext(request)
     )
 

@@ -18,7 +18,7 @@
   }
   {% endif %}
 </script>
-<div class="zone-texte">
+<div class="texte">
     <h4>Résultats correspondant à « {{ q }} »</h4>
     
 {% if ressources %}
@@ -27,7 +27,7 @@
         {% include "savoirs/ressource_resultat.html" %} 
     {% endfor %}
     {% ifnotequal ressources|length total_ressources %}
-        <p class="texte"><a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources pour cette recherche</a></p>
+        <p class="pad"><a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 
@@ -37,7 +37,7 @@
         {% include "savoirs/actualite_resultat.html" %} 
     {% endfor %}
     {% ifnotequal actualites|length total_actualites %}
-        <p class="texte"><a href="{% url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_actualites }} actualités pour cette recherche</a></p>
+        <p class="pad"><a href="{% url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_actualites }} actualités pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 
@@ -47,7 +47,7 @@
         {% include "savoirs/evenement_resultat.html" %}
     {% endfor %}
     {% ifnotequal evenements|length total_evenements %}
-        <p class="texte"><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements pour cette recherche</a></p>
+        <p class="pad"><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 
@@ -59,7 +59,7 @@
     {% endfor %}
     </ul>
     {% ifnotequal chercheurs|length total_chercheurs %}
-        <p class="texte"><a href="{% url chercheurs.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_chercheurs }} chercheurs pour cette recherche</a></p>
+        <p class="pad"><a href="{% url chercheurs.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_chercheurs }} chercheurs pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 
@@ -69,13 +69,13 @@
         {% include "sites/resultat.html" %}
     {% endfor %}
     {% ifnotequal sites|length total_sites %}
-        <p class="texte"><a href="{% url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites pour cette recherche</a></p>
+        <p class="pad"><a href="{% url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 
 {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
     <h5>Aucune résultat</h5>
-    <p class="texte"><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
+    <p class="pad"><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 {% endif %}
 </div>
 

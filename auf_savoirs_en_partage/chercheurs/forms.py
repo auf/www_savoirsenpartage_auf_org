@@ -2,6 +2,8 @@
 from django import forms
 from models import *
 from models import Utilisateur
+from savoirs.forms import SEPDateField
+from models import STATUT_CHOICES
 
 class PersonneForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
@@ -33,19 +35,9 @@ class TheseForm(PublicationForm):
     class Meta:
         model = Publication
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
-    
-    #def clean(self):
-    #    statut = self.data.get('chercheur-statut')
-    #    titre = self.cleaned_data.get("titre")
-    #    annee = self.cleaned_data.get("annee")
-    #    editeur = self.cleaned_data.get("editeur")
-    #    
-    #    if (statut == "enseignant" or statut == "etudiant") \
-    #        and (not titre or not annee or not editeur):
-    #        raise forms.ValidationError("Vous devez renseigner la rubrique thèse.")
         
 class ExpertiseForm(forms.ModelForm):
-    date = forms.DateInput(attrs={'class': 'date'}, format='%d/%m/%Y')
+    date = SEPDateField(required=False, label="Date")
     class Meta:
         model = Expertise
         fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        
@@ -55,14 +47,14 @@ class EtablissementForm(forms.ModelForm):
         model = Chercheur
         fields = ('etablissement',)
     def clean(self):
+        cleaned_data = self.cleaned_data
         statut = self.data.get('chercheur-statut')
         etablissement = self.cleaned_data.get("etablissement")
         etablissement_autre_nom = self.data.get("etablissement_autre-etablissement_autre_nom")
-        
         if statut == "enseignant":
-            if not etablissement or not etablissement_autre_nom:
+            if not etablissement and not etablissement_autre_nom:
                 raise forms.ValidationError("")
-        
+        return cleaned_data
 
 class EtablissementAutreForm(forms.ModelForm):
     class Meta:
@@ -83,7 +75,7 @@ class RepertoireSearchForm (forms.Form):
     mots_cles = forms.CharField (required = False, label="Mots-clés")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
-    fonction = forms.ChoiceField(choices=(('','Tous'),('chercheur','Chercheur'), ('enseignant','Enseignant-Chercheur'), ('expert','Expert')), required=False, label="Fonction")
+    statut = forms.ChoiceField(choices=(('','Tous'),)+STATUT_CHOICES+(('expert','Expert'),), required=False, label="Statut")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
       
 class SendPasswordForm(forms.Form):

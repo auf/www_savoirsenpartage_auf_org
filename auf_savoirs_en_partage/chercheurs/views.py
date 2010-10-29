@@ -142,14 +142,12 @@ def chercheur_queryset (request):
         mots_cles = simpleForm.cleaned_data["mots_cles"]
         if mots_cles:
             list = list.search(mots_cles)
-        fonction = simpleForm.cleaned_data["fonction"]
-        if fonction:
-            if fonction == "enseignant":
-                list = list.filter(enseignant=True)
-            if fonction == "expert":
+        statut = simpleForm.cleaned_data["statut"]
+        if statut:
+            if statut == "expert":
                 list = list.exclude(expertise=None)
-             
-        
+            else:
+                list = list.filter(statut=statut)
     return list
     
 def index(request):

@@ -48,12 +48,10 @@ class EtablissementForm(forms.ModelForm):
         fields = ('etablissement',)
     def clean(self):
         cleaned_data = self.cleaned_data
-        statut = self.data.get('chercheur-statut')
         etablissement = self.cleaned_data.get("etablissement")
         etablissement_autre_nom = self.data.get("etablissement_autre-etablissement_autre_nom")
-        if statut == "enseignant":
-            if not etablissement and not etablissement_autre_nom:
-                raise forms.ValidationError("")
+        if not etablissement and not etablissement_autre_nom:
+            raise forms.ValidationError("")
         return cleaned_data
 
 class EtablissementAutreForm(forms.ModelForm):

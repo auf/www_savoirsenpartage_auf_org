@@ -7,6 +7,7 @@ from datamaster_modeles.models import Thematique, Pays, Region
 from models import Evenement, Discipline, Record, Actualite
 from savoirs.lib.recherche import build_search_regexp
 from savoirs.admin import EvenementAdminForm
+import settings
 
 # Formulaires de recherche
 
@@ -112,8 +113,12 @@ class EvenementSearchForm(forms.Form):
 
 class FrontEndSplitDateTime(widgets.AdminSplitDateTime):
     class Media:
-        extends=True
-        js = ('js/calendrier.js', )
+        extend=False
+        js = ("/admin/jsi18n/",
+              settings.ADMIN_MEDIA_PREFIX + "js/core.js",
+              settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
+              settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js",
+              'js/calendrier.js', )
         css = {'all' : ('css/calendrier.css', )}
 
 class EvenementForm(EvenementAdminForm):

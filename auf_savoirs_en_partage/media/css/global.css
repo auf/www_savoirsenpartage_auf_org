@@ -285,3 +285,4 @@ color:red;
 .fiche, .original, .provenance {font-size: 80%; margin: 2px 0px;}
 .fiche {margin-top: 6px;}
 .fiche a, .original a, .provenance a{text-decoration: none;}
+.back {position: absolute; top: 20px; right: 20px;}

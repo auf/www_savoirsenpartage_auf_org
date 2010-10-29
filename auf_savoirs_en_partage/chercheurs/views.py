@@ -206,8 +206,8 @@ def inscription(request):
                     these = these_form.save()
                     if expertise_form.is_valid() and expertise_form.cleaned_data['nom']:
                         expertise = expertise_form.save()
+                        c.expertise = expertise
                     c.these = these 
-                    c.expertise = expertise
                     etablissement_form.save(commit=False)
                     etablissement_autre_form.save(commit=False)
                     discipline_form.save(commit=False)

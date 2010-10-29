@@ -18,7 +18,7 @@ class GroupeForm(forms.ModelForm):
 class ChercheurForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('diplome',)
+        fields = ('statut', 'diplome', )
         
 class PublicationForm(forms.ModelForm):
     class Meta:
@@ -27,12 +27,22 @@ class PublicationForm(forms.ModelForm):
         
 class TheseForm(PublicationForm):
     titre = forms.CharField(required=True, label="Titre de la thèse ou du mémoire")
-    annee = forms.IntegerField(required=False, label="Année de soutenance (réalisée ou prévue)")
+    annee = forms.IntegerField(required=True, label="Année de soutenance (réalisée ou prévue)")
     editeur = forms.CharField(required=False, label="Directeur de thèse")
     lieu_edition = forms.CharField(required=False, label="Établissement de soutenance")
     class Meta:
         model = Publication
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
+    
+    #def clean(self):
+    #    statut = self.data.get('chercheur-statut')
+    #    titre = self.cleaned_data.get("titre")
+    #    annee = self.cleaned_data.get("annee")
+    #    editeur = self.cleaned_data.get("editeur")
+    #    
+    #    if (statut == "enseignant" or statut == "etudiant") \
+    #        and (not titre or not annee or not editeur):
+    #        raise forms.ValidationError("Vous devez renseigner la rubrique thèse.")
         
 class ExpertiseForm(forms.ModelForm):
     class Meta:
@@ -43,16 +53,25 @@ class EtablissementForm(forms.ModelForm):
     class Meta:
         model = Chercheur
         fields = ('etablissement',)
+    def clean(self):
+        statut = self.data.get('chercheur-statut')
+        etablissement = self.cleaned_data.get("etablissement")
+        etablissement_autre_nom = self.data.get("etablissement_autre-etablissement_autre_nom")
+        
+        if statut == "enseignant":
+            if not etablissement or not etablissement_autre_nom:
+                raise forms.ValidationError("")
+        
 
 class EtablissementAutreForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('etablissement_autre_nom', 'etablissement_autre_pays', 'enseignant' )
+        fields = ('etablissement_autre_nom', 'etablissement_autre_pays' )
 
 class DisciplineForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('discipline', 'theme_recherche', 'mots_cles', 'url_site_web', 'url_blog', 'url_facebook', 'url_linkedin')
+        fields = ('discipline', 'theme_recherche', 'mots_cles', 'url_site_web', 'url_blog',)
         
 class PersonneEditForm(forms.ModelForm):
     class Meta:

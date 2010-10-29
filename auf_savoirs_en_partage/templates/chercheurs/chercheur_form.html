@@ -25,6 +25,9 @@
     
     <fieldset>
         <legend>Etablissement de rattachement</legend>
+        {% if etablissement_form.errors %}
+        <span class="message">Vous devez renseigner un établissement.</span>
+        {% endif %}
         {% with etablissement_form as form %}
             {% include "table_form.html" %}
         {% endwith %}

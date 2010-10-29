@@ -373,3 +373,8 @@ def retrieve(request, id):
     return render_to_response ("chercheurs/retrieve.html", \
             Context (variables), 
             context_instance = RequestContext(request))
+            
+def conversion(request):
+    return render_to_response ("chercheurs/conversion.html", \
+            Context (), \
+            context_instance = RequestContext(request))

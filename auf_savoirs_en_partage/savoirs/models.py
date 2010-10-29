@@ -74,17 +74,21 @@ class EvenementQuerySet(models.query.QuerySet):
 
     def search(self, text):
         qs = self
-        words = text.split()
-        for word in words:
-            qs = qs.filter(Q(titre__icontains=word) | 
-                           Q(mots_cles__icontains=word) |
-                           Q(discipline__nom__icontains=word) | 
-                           Q(discipline_secondaire__nom__icontains=word) |
-                           Q(type__icontains=word) |
-                           Q(lieu__icontains=word) |
-                           Q(description__icontains=word) |
-                           Q(contact__icontains=word))
-        return qs
+        q = None
+        for word in text.split():
+            part = (Q(titre__icontains=word) | 
+                    Q(mots_cles__icontains=word) |
+                    Q(discipline__nom__icontains=word) | 
+                    Q(discipline_secondaire__nom__icontains=word) |
+                    Q(type__icontains=word) |
+                    Q(lieu__icontains=word) |
+                    Q(description__icontains=word) |
+                    Q(contact__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        return qs.filter(q)
 
     def search_titre(self, text):
         qs = self
@@ -252,12 +256,18 @@ class RecordQuerySet(models.query.QuerySet):
 
         # Ne garder que les ressources qui contiennent tous les mots
         # demandés.
+        q = None
         for word in words:
-            qs = qs.filter(Q(title__icontains=word) | Q(description__icontains=word) |
-                           Q(creator__icontains=word) | Q(contributor__icontains=word) |
-                           Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
-                           Q(regions__nom__icontains=word) | Q(pays__nom__icontains=word) |
-                           Q(pays__region__nom__icontains=word)).distinct()
+            part = (Q(title__icontains=word) | Q(description__icontains=word) |
+                    Q(creator__icontains=word) | Q(contributor__icontains=word) |
+                    Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
+                    Q(regions__nom__icontains=word) | Q(pays__nom__icontains=word) |
+                    Q(pays__region__nom__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        qs = qs.filter(q).distinct()
 
         # On donne un point pour chaque mot présent dans le titre.
         score_expr = ' + '.join(['(title LIKE %s)'] * len(words))

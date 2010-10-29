@@ -30,13 +30,13 @@
 <h4><a href="">Régions</a></h4>
 <ul>
     {% for r in regions %}
-    <li><a href="{% url savoirs.views.avancee %}?type=avancee&operator=or&subject={{ r.nom }}">{{ r.nom }}</a></li>
+    <li><a href="{% url savoirs.views.recherche %}?q={{ r.nom|urlencode }}">{{ r.nom }}</a></li>
     {% endfor %}
 </ul>
 
 <h4><a href="">Disciplines</a></h4>
 <ul>
     {% for d in disciplines %}
-    <li><a href="{% url savoirs.views.avancee %}?type=avancee&operator=or&subject={{ d.nom }}">{{ d.nom }}</a></li>
+    <li><a href="{% url savoirs.views.recherche %}?q={{ d.nom|urlencode }}">{{ d.nom }}</a></li>
     {% endfor %}
 </ul>

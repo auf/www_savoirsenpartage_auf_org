@@ -29,15 +29,21 @@ class SiteQuerySet(models.query.QuerySet):
 
     def search(self, text):
         qs = self
+        q = None
         for word in text.split():
-            qs = qs.filter(Q(titre__icontains=word) |
-                           Q(description__icontains=word) |
-                           Q(editeur__icontains=word) |
-                           Q(auteur__icontains=word) |
-                           Q(mots_cles__icontains=word) |
-                           Q(discipline__nom__icontains=word) |
-                           Q(pays__nom__icontains=word) |
-                           Q(pays__region__nom__icontains=word)).distinct()
+            part = (Q(titre__icontains=word) |
+                    Q(description__icontains=word) |
+                    Q(editeur__icontains=word) |
+                    Q(auteur__icontains=word) |
+                    Q(mots_cles__icontains=word) |
+                    Q(discipline__nom__icontains=word) |
+                    Q(pays__nom__icontains=word) |
+                    Q(pays__region__nom__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        qs = qs.filter(q).distinct()
         return qs
 
 class Site(models.Model):

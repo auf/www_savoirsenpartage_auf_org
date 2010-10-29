@@ -7,7 +7,8 @@ from sep import SEP
 from utils import smart_str
 from savoirs.globals import configuration
 
-def google_search (page, q, data):
+def google_search (page, q):
+    data = {'results': [], 'last_page': 0, 'more_link': ''}
     params = {'q': q,
               'rsz': 'large',
               'v': '1.0',
@@ -37,7 +38,7 @@ def google_search (page, q, data):
                         'title': r['title']} )
 
         data['more_link'] = response['responseData']['cursor']['moreResultsUrl']
-
+    return data
 
 def sep_build_content (regexp, description):
     maxlen = 200
@@ -148,7 +149,7 @@ def cherche (page, q, engin=None):
         engin = configuration['engin_recherche']
 
     if engin == 'google':
-        google_search (page, q, rc)
+        rc = google_search (page, q)
 
     elif engin == 'sep':
         sep_search (page, {'q': q}, rc)

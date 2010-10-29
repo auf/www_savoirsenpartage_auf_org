@@ -44,8 +44,6 @@ urlpatterns = patterns(
     
     # recherche
     (r'^recherche/$', 'savoirs.views.recherche'),
-    (r'^recherche/avancee/$', 'savoirs.views.avancee'),
-    (r'^recherche/conseils/$', 'savoirs.views.conseils'),
     
     # ressources
     (r'^ressources/$', 'savoirs.views.ressource_index'),
@@ -75,6 +73,9 @@ urlpatterns = patterns(
     # sites
     (r'^sites/$', 'sitotheque.views.index'),
     (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
+
+    # sites AUF
+    (r'^sites-auf/$', 'savoirs.views.sites_auf'),
 
     (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),
     (r'^json/get/$', 'savoirs.views.json_get'),

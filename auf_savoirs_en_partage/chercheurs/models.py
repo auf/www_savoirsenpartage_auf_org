@@ -44,21 +44,25 @@ class ChercheurManager(models.Manager):
 class ChercheurQuerySet(models.query.QuerySet):
 
     def search(self, text):
-        qs = self
+        q = None
         for word in text.split():
-            qs = qs.filter(Q(personne__nom__icontains=word) |
-                           Q(personne__prenom__icontains=word) |
-                           Q(theme_recherche__icontains=word) |
-                           Q(etablissement_autre_nom__icontains=word) |
-                           Q(etablissement__nom__icontains=word) |
-                           Q(etablissement__pays__nom__icontains=word) |
-                           Q(discipline__nom__icontains=word) |
-                           Q(publication1__titre__icontains=word) |
-                           Q(publication2__titre__icontains=word) |
-                           Q(publication3__titre__icontains=word) |
-                           Q(publication4__titre__icontains=word) |
-                           Q(these__titre__icontains=word)).distinct()
-        return qs
+            part = (Q(personne__nom__icontains=word) |
+                    Q(personne__prenom__icontains=word) |
+                    Q(theme_recherche__icontains=word) |
+                    Q(etablissement_autre_nom__icontains=word) |
+                    Q(etablissement__nom__icontains=word) |
+                    Q(etablissement__pays__nom__icontains=word) |
+                    Q(discipline__nom__icontains=word) |
+                    Q(publication1__titre__icontains=word) |
+                    Q(publication2__titre__icontains=word) |
+                    Q(publication3__titre__icontains=word) |
+                    Q(publication4__titre__icontains=word) |
+                    Q(these__titre__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        return self.filter(q).distinct() if q is not None else self
 
 FONCTION_CHOICES = (('Professeur', 'Professeur'), ('Chercheur', 'Chercheur'), ('Chercheur_independant', 'Chercheur indépendant'), ('Doctorant', 'Doctorant'))
 class Chercheur(models.Model):

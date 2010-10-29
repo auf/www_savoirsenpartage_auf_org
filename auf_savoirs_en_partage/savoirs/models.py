@@ -86,7 +86,19 @@ class EvenementQuerySet(models.query.QuerySet):
                            Q(contact__icontains=word))
         return qs
 
+    def search_titre(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(titre__icontains=word)
+        return qs
+
 class Evenement(models.Model):
+    TYPE_CHOICES = ((u'Colloque', u'Colloque'),
+                    (u'Conférence', u'Conférence'),
+                    (u'Appel à contribution', u'Appel à contribution'),
+                    (u'Journée d\'étude', u'Journée d\'étude'),
+                    (None, u'Autre'))
+                   
     uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
     approuve = models.BooleanField(default = False)
     titre = models.CharField(max_length=255)
@@ -98,13 +110,7 @@ class Evenement(models.Model):
                                               "Discipline secondaire", 
                                               blank = True, null = True)
     mots_cles = models.TextField('Mots-Clés', blank = True, null = True)
-    type = models.CharField(max_length = 255, choices = \
-                            (('Colloque', 'Colloque'),
-                             ('Conférence', 'Conférence'),
-                             ('Appel à contribution', 'Appel à contribution'),
-                             ('Journée d\'étude', 'Journée d\'étude'),
-                             (None, 'Autre')
-                            )) #TODO: choices
+    type = models.CharField(max_length=255, choices=TYPE_CHOICES)
     fuseau = TimeZoneField(verbose_name = 'Fuseau horaire')
     debut = models.DateTimeField(default = datetime.datetime.now)
     fin = models.DateTimeField(default = datetime.datetime.now)

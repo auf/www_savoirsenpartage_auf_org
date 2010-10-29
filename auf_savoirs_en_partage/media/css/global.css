@@ -228,7 +228,7 @@ form fieldset legend {
 label {
   font-size: 12px;
 }
-td
+td, th
 {
 vertical-align:middle;
 }

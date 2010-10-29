@@ -1,0 +1,33 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<script>
+    $(document).ready(function(){
+        makePageLinks ({{ page|default:0 }}, {{ data.last_page|default:0 }}, 
+        '{{ data.more_link }}');
+    });
+</script>
+
+<h4>Sites &#8212; Sites AUF</h4>
+<div class="zone-texte">
+    <form method="get" action="" class="contenu-wrapper">
+        <p style="margin-top: 10px;"><input type="text" size="40" name="q" value="{{ google_q|default:""}}" /><input type="submit" name="" value="Chercher" /></p>
+    </form>
+
+    {% if data %}
+    <div id="results">
+        {% for r in data.results %}
+        {% include "savoirs/resultat.html" %}
+        {% empty %}
+        <div class="resultatRecherche">
+            <h2>Aucun résultat trouvé</h2>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="resultatPages">
+        <span id="pageLinks">
+        </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

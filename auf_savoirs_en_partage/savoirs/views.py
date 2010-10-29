@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 import datetime, simplejson, copy, vobject
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django import forms
 from django.conf import settings
-from lib.recherche import cherche, google_search, build_search_regexp
+from lib.recherche import google_search, build_search_regexp
 from lib import sep
 from lib.calendrier import evenements, evenement_info, combine
 from savoirs.globals import configuration
@@ -57,6 +57,8 @@ def legal(request):
 # recherche
 def recherche(request):
     query = request.GET.get("q", "")
+    if not query.strip():
+        return redirect('/')
     ressources = Record.objects.validated().search(query)
     actualites = Actualite.objects.filter(visible=1).search(query)
     evenements = Evenement.objects.filter(approuve=1).search(query)
@@ -74,45 +76,16 @@ def recherche(request):
         context_instance = RequestContext(request)
     )
 
-def avancee (request):
-    type = request.GET.get("type", "")
-    page = int(request.GET.get("page", 0))
-
-    r = {'results': [], 'last_page': 0, 'more_link': ''}
-
-    q = request.GET.get("google-q", "")
-    f = RechercheAvancee ()
-
-    if type == 'google':
-        r = cherche (page, q, type)
-        q = {'q': q}
-    elif type == 'avancee':
-        f = RechercheAvancee (request.GET)
-        if f.is_valid():
-            q = {}
-            for k in ['creator', 'title', 'description', 'subject']:
-                tmp = f.cleaned_data[k].strip()
-                if len (tmp) > 0:
-                    q[k] = tmp
-            q['operator'] = '|'
-            if f.cleaned_data['operator'] == 'and':
-                q['operator'] = "&"
-
-            r = cherche (page, q, type)
-
-    return render_to_response ("savoirs/avancee.html", \
-            Context ({'type': type,
-                      'page': page,
-                      'data': r,
-                      'search_regexp': None, # pour pouvoir utiliser la même template de résultat
-                      'form': f,
-                      'q': q}), 
-            context_instance = RequestContext(request))
-
-def conseils (request):
-    return render_to_response ("savoirs/conseils.html", \
-            Context (), \
-            context_instance = RequestContext(request))
+def sites_auf(request):
+    q = request.GET.get('q')
+    page = int(request.GET.get('page', 0))
+    try:
+        data = google_search(page, q) if q else None
+    except:
+        data = None
+    return render_to_response('savoirs/sites_auf.html',
+                              dict(google_q=q, data=data, page=page),
+                              context_instance=RequestContext(request))
 
 # ressources
 def ressource_index(request):

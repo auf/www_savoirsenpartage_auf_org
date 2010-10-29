@@ -338,6 +338,10 @@ class Record(models.Model):
     # Manager
     objects = RecordManager()
 
+    def getServeurURL(self,):
+        """Retourne l'URL du serveur de provenance"""
+        return RESOURCES[self.server]['url']
+
     def est_complet(self,):
         """teste si le record à toutes les données obligatoires"""
         return self.disciplines.count() > 0 and \

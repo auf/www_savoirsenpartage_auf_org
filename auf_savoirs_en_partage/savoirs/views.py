@@ -104,6 +104,7 @@ def avancee (request):
             Context ({'type': type,
                       'page': page,
                       'data': r,
+                      'search_regexp': None, # pour pouvoir utiliser la même template de résultat
                       'form': f,
                       'q': q}), 
             context_instance = RequestContext(request))

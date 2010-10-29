@@ -17,72 +17,70 @@
     });
   }
   {% endif %}
-
-
 </script>
-
 <div class="zone-texte">
-  {% if ressources %}
-  <h4>Ressources correspondant à « {{ q }} » ({{ ressources|length }} sur {{ total_ressources }}):</h4>
-  {% for ressource in ressources %}
-  {% include "savoirs/ressource_resultat.html" %} 
-  {% endfor %}
-  {% ifnotequal ressources|length total_ressources %}
-  <p><a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources correspondant à « {{ q }} »</a></p>
-  {% endifnotequal %}
-  {% endif %}
-
-  {% if actualites %}
-  <h4>Actualités correspondant à « {{ q }} » ({{ actualites|length }} sur {{ total_actualites }}):</h4>
-  {% for actualite in actualites %}
-  {% include "savoirs/actualite_resultat.html" %} 
-  {% endfor %}
-  {% ifnotequal actualites|length total_actualites %}
-  <p><a href="{% url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} actualités correspondant à « {{ q }} »</a></p>
-  {% endifnotequal %}
-  {% endif %}
-
-  {% if evenements %}
-  <h4>Événements correspondant à « {{ q }} » ({{ evenements|length }} sur {{ total_evenements }}):</h4>
-  {% for evenement in evenements %}
-  {% include "savoirs/evenement_resultat.html" %}
-  {% endfor %}
-  {% ifnotequal evenements|length total_evenements %}
-  <p><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements correspondant à « {{ q }} »</a></p>
-  {% endifnotequal %}
-  {% endif %}
-
-  {% if chercheurs %}
-  <h4>Chercheurs correspondant à « {{ q }} » ({{ chercheurs|length }} sur {{ total_chercheurs }}):</h4>
-  <ul>
-    {% for chercheur in chercheurs %}
-    <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur.personne.prenom }} {{ chercheur.personne.nom }}</a></li>
+    <h4>Résultats correspondant à « {{ q }} »</h4>
+    
+{% if ressources %}
+    <h5>Ressources ({{ ressources|length }} sur {{ total_ressources }})</h5>
+    {% for ressource in ressources %}
+        {% include "savoirs/ressource_resultat.html" %} 
     {% endfor %}
-  </ul>
-  {% ifnotequal chercheurs|length total_chercheurs %}
-  <p><a href="{% url chercheurs.views.index %}?q={{ q|urlencode }}">Tous les {{ total_chercheurs }} chercheurs correspondant à « {{ q }} »</a></p>
-  {% endifnotequal %}
+    {% ifnotequal ressources|length total_ressources %}
+        <p class="texte"><a href="{% url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources pour cette recherche</a></p>
+    {% endifnotequal %}
+{% endif %}
 
-  {% endif %}
-  
-  {% if sites %}
-  <h4>Sites correspondant à « {{ q }} » ({{ sites|length }} sur {{ total_sites }}):</h4>
-  {% for site in sites %}
-  {% include "sites/resultat.html" %}
-  {% endfor %}
-  {% ifnotequal sites|length total_sites %}
-  <p><a href="{% url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites correspondant à « {{ q }} »</a></p>
-  {% endifnotequal %}
-  {% endif %}
+{% if actualites %}
+    <h5>Actualités ({{ actualites|length }} sur {{ total_actualites }})</h5>
+    {% for actualite in actualites %}
+        {% include "savoirs/actualite_resultat.html" %} 
+    {% endfor %}
+    {% ifnotequal actualites|length total_actualites %}
+        <p class="texte"><a href="{% url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_actualites }} actualités pour cette recherche</a></p>
+    {% endifnotequal %}
+{% endif %}
 
-  {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
-  <h4>Aucune ressource ne correspond à « {{ q }} »</h4>
-  <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
-  {% endif %}
+{% if evenements %}
+    <h5>Événements ({{ evenements|length }} sur {{ total_evenements }})</h5>
+    {% for evenement in evenements %}
+        {% include "savoirs/evenement_resultat.html" %}
+    {% endfor %}
+    {% ifnotequal evenements|length total_evenements %}
+        <p class="texte"><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements pour cette recherche</a></p>
+    {% endifnotequal %}
+{% endif %}
+
+{% if chercheurs %}
+    <h5>Chercheurs ({{ chercheurs|length }} sur {{ total_chercheurs }})</h5>
+    <ul>
+    {% for chercheur in chercheurs %}
+        <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></li>
+    {% endfor %}
+    </ul>
+    {% ifnotequal chercheurs|length total_chercheurs %}
+        <p class="texte"><a href="{% url chercheurs.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_chercheurs }} chercheurs pour cette recherche</a></p>
+    {% endifnotequal %}
+{% endif %}
+
+{% if sites %}
+    <h5>Sites ({{ sites|length }} sur {{ total_sites }})</h5>
+    {% for site in sites %}
+        {% include "sites/resultat.html" %}
+    {% endfor %}
+    {% ifnotequal sites|length total_sites %}
+        <p class="texte"><a href="{% url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites pour cette recherche</a></p>
+    {% endifnotequal %}
+{% endif %}
+
+{% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
+    <h5>Aucune résultat</h5>
+    <p class="texte"><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
+{% endif %}
 </div>
 
 {% if user.is_authenticated %}
-{% include "savoirs/editor.html" %}
+    {% include "savoirs/editor.html" %}
 {% endif %}
 
 {% endblock %}

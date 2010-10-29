@@ -70,6 +70,7 @@ urlpatterns = patterns(
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
+    (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),
 
     # sites
     (r'^sites/$', 'sitotheque.views.index'),

@@ -15,10 +15,12 @@
         <p>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom "-" %}, {% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays "-" %}</p>
         
         <table>
+            {% if chercheur.nationalite %}
             <tr>
                 <td class="label">Nationalité:</td>
                 <td>{{chercheur.nationalite.nom|default:"-"}}</td>
             </tr>
+            {% endif %}
             <tr>
                 <td class="label">Statut:</td>
                 <td>{{chercheur.statut_display|default:"-"}}</td>

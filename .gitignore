@@ -17,7 +17,6 @@
 
 # Configuration du projet - par environnement
 conf.py
-backend_config.py
 django.wsgi
 
 # buildout

@@ -16,14 +16,13 @@ class SEPDateField(forms.DateField):
     """Un champ de date avec des valeurs par défaut un peu modifiées."""
 
     def __init__(self, *args, **kwargs):
+        super(SEPDateField, self).__init__(self, *args, **kwargs)
 
         # La classe "date" active le datepicker dans sep.js
-        kwargs.setdefault('widget', forms.DateInput(*args, attrs={'class': 'date'}))
-
         # Nous recevons les dates en format français
-        kwargs.setdefault('input_formats', ['%d/%m/%Y'])
-
-        forms.DateField.__init__(self, *args, **kwargs)
+        format = '%d/%m/%Y'
+        self.widget = forms.DateInput(attrs={'class': 'date'}, format=format)
+        self.input_formats = [format,]
 
 # Formulaires de recherche
 

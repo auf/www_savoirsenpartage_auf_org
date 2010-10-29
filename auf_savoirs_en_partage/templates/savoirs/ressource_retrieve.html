@@ -3,9 +3,11 @@
 {% block contenu %}
 <h4>Ressource</h4>
 
+<a class="back" href="javascript:history.go(-1)">Retourner à la page précédente</a>
+
 <div class="zone-texte ressource-retrieve">
-    
-    <a class="le-titre" href="{% url savoirs.views.ressource_retrieve ressource.id %}">{{ ressource.title }}</a>
+
+    <h3>{{ ressource.title }}</h3>
 
     {% if ressource.subject %}
     <div><span class="lbl">Sujet:</span> {{ ressource.subject }}</div>

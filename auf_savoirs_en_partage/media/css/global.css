@@ -111,8 +111,9 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 #contenu .texte ul li { list-style: disc; margin: 0 0 .25em; }
 #contenu .texte ol li { list-style: decimal; margin: 0 0 .25em; }
 #contenu .texte ul ul, #contenu .description ol ol  { margin-top: .25em; margin-bottom: .25em; }
-#contenu .texte a { text-decoration:none; font-size: 0.8em; }
+#contenu .texte a { text-decoration:none; }
 #contenu .texte a:hover { text-decoration:underline; }
+#contenu p.pad { padding: 0 25px; }
 
 #contenu img.top, .resultats img.top { height:10px; position:relative; top:-10px; left:0;}
 #contenu img.bottom, .resultats img.bottom{ height:10px; position:relative; bottom:-10px; left:0;}
@@ -280,8 +281,7 @@ color:red;
 .ressource-retrieve * {margin-top: 1em;}
 .ressource-retrieve .fiche {margin-top: 2em;}
 
-.le-titre{line-height: 24px;}
-
 .fiche, .original, .provenance {font-size: 80%; margin: 2px 0px;}
 .fiche {margin-top: 6px;}
 .fiche a, .original a, .provenance a{text-decoration: none;}
+.back {position: absolute; top: 20px; right: 20px;}

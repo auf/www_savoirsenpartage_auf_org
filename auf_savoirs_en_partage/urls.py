@@ -15,6 +15,10 @@ site_feeds = {'actualites': FilActualite,
 
 urlpatterns = patterns(
     '',
+
+    # traduction disponible dans le frontend sans permissons
+    url(r'^jsi18n/$', admin.site.i18n_javascript,),
+
     url(r'^admin_tools/', include('admin_tools.urls')),
     (r'^admin/', include(admin.site.urls)),
     (r'^admin/confirmation/(.*)', 'savoirs.admin_views.confirmation'),

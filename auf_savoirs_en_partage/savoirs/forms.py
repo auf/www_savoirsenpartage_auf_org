@@ -114,7 +114,7 @@ class EvenementSearchForm(forms.Form):
 class FrontEndSplitDateTime(widgets.AdminSplitDateTime):
     class Media:
         extend=False
-        js = ("/admin/jsi18n/",
+        js = ("/jsi18n/",
               settings.ADMIN_MEDIA_PREFIX + "js/core.js",
               settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
               settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js",

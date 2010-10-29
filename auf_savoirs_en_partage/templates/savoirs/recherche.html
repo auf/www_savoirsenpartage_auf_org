@@ -64,13 +64,21 @@
 {% endif %}
 
 {% if sites %}
-    <h5>Sites ({{ sites|length }} sur {{ total_sites }})</h5>
+    <h5>Sites de la sitothèque ({{ sites|length }} sur {{ total_sites }})</h5>
     {% for site in sites %}
         {% include "sites/resultat.html" %}
     {% endfor %}
     {% ifnotequal sites|length total_sites %}
         <p class="pad"><a href="{% url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites pour cette recherche</a></p>
     {% endifnotequal %}
+{% endif %}
+
+{% if sites_auf %}
+    <h5>Sites AUF</h5>
+    {% for r in sites_auf %}
+        {% include "savoirs/sites_auf_resultat.html" %}
+    {% endfor %}
+    <p class="pad"><a href="{% url savoirs.views.sites_auf %}?q={{ q|urlencode }}">Tous les sites AUF pour cette recherche</a></p>
 {% endif %}
 
 {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}

@@ -1,0 +1,6 @@
+<div class="resultatRecherche">
+  <a class="le-titre" href="{{ r.uri }}">{{ r.title|safe }}</a>
+  {% if r.content %}
+  <div class="resultatResume"><span class="lbl">Description:</span> {{ r.content|safe }}</div>
+  {% endif %}
+</div>

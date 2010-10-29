@@ -3,9 +3,46 @@
 {% block contenu %}
 <h4>Ressource</h4>
 
-<div class="zone-texte">
-  {% with ressource as r %}
-    {% include "savoirs/resultat.html" %} 
-  {% endwith %}
+<div class="zone-texte ressource-retrieve">
+    
+    <a class="le-titre" href="{% url savoirs.views.ressource_retrieve ressource.id %}">{{ ressource.title }}</a>
+
+    {% if ressource.subject %}
+    <div><span class="lbl">Sujet:</span> {{ ressource.subject }}</div>
+    {% endif %}
+
+    {% if ressource.creator %}
+    <div><span class="lbl">Auteur:</span> {{ ressource.creator }}</div>
+    {% endif %}
+    {% if ressource.description %}
+    <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description }}</div>
+    {% endif %}
+
+    {% if ressource.source %}
+    <div><span class="lbl">Source:</span> {{ ressource.source }}</div>
+    {% endif %}
+
+    {% if ressource.publisher %}
+    <div><span class="lbl">Editeur:</span> {{ ressource.publisher }}</div>
+    {% endif %}
+
+    {% if ressource.format %}
+    <div><span class="lbl">Format:</span> {{ ressource.format }}</div>
+    {% endif %}
+
+    {% if ressource.type %}
+    <div><span class="lbl">Type:</span> {{ ressource.type }}</div>
+    {% endif %}
+
+
+
+
+
+    <div class="fiche"><span>Fiche: </span><a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{% url savoirs.views.ressource_retrieve ressource.id %}</a></div>
+    <div class="original"><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>
+    <div class="provenance"><span>Provenance: </span><a target="_blank" href="{{ ressource.getServeurURL }}">{{ ressource.getServeurURL }}</a></div>
+
+
+
 </div>
 {% endblock %}

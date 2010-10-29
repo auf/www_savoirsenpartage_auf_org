@@ -2,10 +2,10 @@
 import urllib, httplib, time, simplejson, pprint, math, re
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from auf_savoirs_en_partage.backend_config import RESOURCES
 from sep import SEP
 from utils import smart_str
 from savoirs.globals import configuration
-
 
 def google_search (page, q, data):
     params = {'q': q,
@@ -107,6 +107,8 @@ def sep_search (page, q, data):
         if len (uri) == 0:
             uri = r.get ("source")
         
+        serveur = RESOURCES[r.get('server')]['url']
+
         # Récupère la source si ce n'est pas une URL
         source = r.get("source", None)
         if source is not None and source.startswith('http'):
@@ -125,6 +127,7 @@ def sep_search (page, q, data):
 
         data['results'].append ({
                 'uri': uri,
+                'getServeurURL': serveur,
                 'source' : source,
                 'id': r.get("id"), \
                 'title': hl(regexp, title), 

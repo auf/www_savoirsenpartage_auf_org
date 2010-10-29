@@ -45,6 +45,7 @@ class TheseForm(PublicationForm):
     #        raise forms.ValidationError("Vous devez renseigner la rubrique thèse.")
         
 class ExpertiseForm(forms.ModelForm):
+    date = forms.DateInput(attrs={'class': 'date'}, format='%d/%m/%Y')
     class Meta:
         model = Expertise
         fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        

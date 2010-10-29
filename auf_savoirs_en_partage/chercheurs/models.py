@@ -115,10 +115,10 @@ class Chercheur(models.Model):
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
         
-    def fonction_display(self):
-        for f in FONCTION_CHOICES:
-            if self.fonction == f[0]:
-                return f[1]
+    def statut_display(self):
+        for s in STATUT_CHOICES:
+            if self.statut == s[0]:
+                return s[1]
         return "-"
     
 class Publication(models.Model):

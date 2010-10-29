@@ -280,9 +280,10 @@ color:red;
 
 
 .ressource-retrieve * {margin-top: 1em;}
+.ressource-retrieve .fiche {margin-top: 2em;}
 
 .le-titre{line-height: 24px;}
 
 .fiche, .original, .provenance {font-size: 80%; margin: 2px 0px;}
-.fiche {margin-top: 12px;}
+.fiche {margin-top: 6px;}
 .fiche a, .original a, .provenance a{text-decoration: none;}

@@ -110,6 +110,8 @@ def ressource_retrieve(request, id):
     """Notice OAI de la ressource"""
     ressource = get_object_or_404(Record, id=id)
     variables = { 'ressource': ressource,
+                  'disciplines': ressource.disciplines.all(),
+                  'regions': ressource.regions.all()
                 }
     return render_to_response ("savoirs/ressource_retrieve.html", \
             Context (variables), 

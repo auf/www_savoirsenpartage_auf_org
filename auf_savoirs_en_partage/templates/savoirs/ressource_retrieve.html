@@ -16,6 +16,7 @@
     {% if ressource.creator %}
     <div><span class="lbl">Auteur:</span> {{ ressource.creator }}</div>
     {% endif %}
+
     {% if ressource.description %}
     <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description }}</div>
     {% endif %}
@@ -36,9 +37,13 @@
     <div><span class="lbl">Type:</span> {{ ressource.type }}</div>
     {% endif %}
 
+    {% if disciplines %}
+    <div><span class="lbl">Disciplines:</span> {{ disciplines|join:", " }}</div>
+    {% endif %}
 
-
-
+    {% if regions %}
+    <div><span class="lbl">Régions:</span> {{ regions|join:", " }}</div>
+    {% endif %}
 
     <div class="fiche"><span>Fiche: </span><a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{% url savoirs.views.ressource_retrieve ressource.id %}</a></div>
     <div class="original"><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>

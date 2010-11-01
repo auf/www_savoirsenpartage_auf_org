@@ -34,7 +34,7 @@ class RecordSearchForm(forms.Form):
         
         def __iter__(self):
             """Génère dynamiquement les choix possibles pour la recherche par type."""
-            yield ('', '')
+            yield ('', 'Tous')
             cursor = db.connection.cursor()
             cursor.execute("""SELECT DISTINCT TRIM(REPLACE(REPLACE(type, ', PeerReviewed', ''), ', NonPeerReviewed', '')) AS clean_type 
                               FROM savoirs_record ORDER BY clean_type""")
@@ -48,7 +48,7 @@ class RecordSearchForm(forms.Form):
 
         def __iter__(self):
             """Génère dynamiquement les choix possibles pour la recherche par éditeur."""
-            yield ('', '')
+            yield ('', 'Tous')
             cursor = db.connection.cursor()
             cursor.execute("SELECT DISTINCT publisher AS publisher FROM savoirs_record ORDER BY publisher")
             for result in cursor.fetchall():
@@ -61,6 +61,8 @@ class RecordSearchForm(forms.Form):
     auteur = forms.CharField(required=False, label="Auteur ou contributeur")
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
+    discipline = forms.ModelChoiceField(required=False, label="Discipline", queryset=Discipline.objects.all(), empty_label='Toutes')
+    region = forms.ModelChoiceField(required=False, label="Région", queryset=Region.objects.all(), empty_label='Toutes')
     type = forms.ChoiceField(required=False, label="Type de document", choices=TYPE_CHOICES)
     publisher = forms.ChoiceField(required=False, label="Éditeur", choices=PUBLISHER_CHOICES)
 
@@ -81,6 +83,12 @@ class RecordSearchForm(forms.Form):
             sujet = self.cleaned_data['sujet']
             if sujet:
                 records = records.search_sujet(sujet)
+            discipline = self.cleaned_data['discipline']
+            if discipline:
+                records = records.filter(disciplines=discipline)
+            region = self.cleaned_data['region']
+            if region:
+                records = records.filter(regions=region)
             type = self.cleaned_data['type']
             if type:
                 records = records.filter(type__icontains=type)

@@ -25,7 +25,7 @@ from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticati
 #TODO: Migrer tout ce qui a rapport aux users dans une nouvelle app
 
 class AuthenticationForm(OriginalAuthenticationForm):
-    username = forms.CharField(label=_("Username"), max_length=255)
+    username = forms.CharField(label='Adresse électronique', max_length=255)
 
 def send_password(request):
     if request.method == "POST":

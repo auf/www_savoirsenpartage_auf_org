@@ -36,19 +36,33 @@ class RecordSearchForm(forms.Form):
             """Génère dynamiquement les choix possibles pour la recherche par type."""
             yield ('', '')
             cursor = db.connection.cursor()
-            cursor.execute("SELECT DISTINCT REPLACE(REPLACE(type, ', PeerReviewed', ''), ', NonPeerReviewed', '') FROM savoirs_record")
+            cursor.execute("""SELECT DISTINCT TRIM(REPLACE(REPLACE(type, ', PeerReviewed', ''), ', NonPeerReviewed', '')) AS clean_type 
+                              FROM savoirs_record ORDER BY clean_type""")
             for result in cursor.fetchall():
-                type = result[0].strip()
+                type = result[0]
                 if type:
                     yield (type, type)
-
     TYPE_CHOICES = TypeChoices()
+
+    class PublisherChoices(object):
+
+        def __iter__(self):
+            """Génère dynamiquement les choix possibles pour la recherche par éditeur."""
+            yield ('', '')
+            cursor = db.connection.cursor()
+            cursor.execute("SELECT DISTINCT publisher AS publisher FROM savoirs_record ORDER BY publisher")
+            for result in cursor.fetchall():
+                publisher = result[0]
+                if publisher not in ('', '-'):
+                    yield (publisher, publisher)
+    PUBLISHER_CHOICES = PublisherChoices()
 
     q = forms.CharField(required=False, label="Mots-clés")
     auteur = forms.CharField(required=False, label="Auteur ou contributeur")
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
-    type = forms.ChoiceField(required=False, label="Type de document", choices = TYPE_CHOICES)
+    type = forms.ChoiceField(required=False, label="Type de document", choices=TYPE_CHOICES)
+    publisher = forms.ChoiceField(required=False, label="Éditeur", choices=PUBLISHER_CHOICES)
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -70,6 +84,9 @@ class RecordSearchForm(forms.Form):
             type = self.cleaned_data['type']
             if type:
                 records = records.filter(type__icontains=type)
+            publisher = self.cleaned_data['publisher']
+            if publisher:
+                records = records.filter(publisher=publisher)
         return records
 
     def get_search_regexp(self):

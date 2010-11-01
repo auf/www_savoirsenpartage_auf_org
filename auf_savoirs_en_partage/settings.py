@@ -3,7 +3,6 @@
 import os
 from conf import *
 
-EMAIL_SUBJECT_PREFIX = '[Savoirs en partage] '
 ADMINS = (
     ('Équipe ARI-SI', 'developpeurs@ca.auf.org'),
 )

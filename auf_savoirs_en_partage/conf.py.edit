@@ -13,4 +13,4 @@ CALENDRIER_URL = 'http://davin:davin@cal.ro.auf.org/caldav.php/davin/test/'
 SITE_ROOT_URL = 'http://www.savoirsenpartage.auf.org'
 
 AUTH_PASSWORD_REQUIRED = True
-
+EMAIL_SUBJECT_PREFIX = '[savoirsenpartage - TEST] '

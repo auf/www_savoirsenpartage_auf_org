@@ -66,6 +66,7 @@ class Site(models.Model):
 
     # source    # dc:source (dc:relation?)
     pays = models.ForeignKey(Pays, null = True, blank=True, db_column='pays', to_field='code', verbose_name = 'Pays')
+    regions = models.ManyToManyField(Region, blank=True, related_name="sites", verbose_name='Régions')
     
     # meta
     actif = models.BooleanField()

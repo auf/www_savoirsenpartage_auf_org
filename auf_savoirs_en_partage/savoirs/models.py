@@ -52,6 +52,8 @@ class Actualite(models.Model):
     visible = models.BooleanField(db_column='visible_actualite', default = False)
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
     source = models.ForeignKey(SourceActualite, blank = True, null = True)
+    disciplines = models.ManyToManyField(Discipline, blank=True, related_name="actualites")
+    regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='Régions')
 
     objects = ActualiteManager()
 
@@ -123,6 +125,7 @@ class Evenement(models.Model):
     #fichiers = TODO?
     contact = models.TextField(blank = True, null = True)
     url = models.CharField(max_length=255, blank = True, null = True)
+    regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='Régions')
 
     objects = EvenementManager()
 
@@ -346,7 +349,7 @@ class Record(models.Model):
     disciplines = models.ManyToManyField(Discipline)
     thematiques = models.ManyToManyField(Thematique)
     pays = models.ManyToManyField(Pays)
-    regions = models.ManyToManyField(Region)
+    regions = models.ManyToManyField(Region, verbose_name='Régions')
 
     # Manager
     objects = RecordManager()

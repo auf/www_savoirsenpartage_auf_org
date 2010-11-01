@@ -192,7 +192,7 @@ class EvenementForm(EvenementAdminForm):
 
     class Meta:
         model = Evenement
-        exclude = ('approuve', 'uid')
+        exclude = ('approuve', 'uid', 'regions')
 
 # Admin views pour les associations par lots
 

@@ -276,6 +276,7 @@ class EvenementAdmin(admin.ModelAdmin):
               'debut',
               'fin',
               'lieu',
+              'regions',
               'description',
               'contact',
               'url',

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import re, datetime
 from django import forms
+from django import db
 from django.db.models import Q
 from django.db import models
 from django.contrib.admin import widgets
@@ -29,10 +30,25 @@ class SEPDateField(forms.DateField):
 class RecordSearchForm(forms.Form):
     """Formulaire de recherche pour les ressources."""
 
+    class TypeChoices(object):
+        
+        def __iter__(self):
+            """Génère dynamiquement les choix possibles pour la recherche par type."""
+            yield ('', '')
+            cursor = db.connection.cursor()
+            cursor.execute("SELECT DISTINCT REPLACE(REPLACE(type, ', PeerReviewed', ''), ', NonPeerReviewed', '') FROM savoirs_record")
+            for result in cursor.fetchall():
+                type = result[0].strip()
+                if type:
+                    yield (type, type)
+
+    TYPE_CHOICES = TypeChoices()
+
     q = forms.CharField(required=False, label="Mots-clés")
     auteur = forms.CharField(required=False, label="Auteur ou contributeur")
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
+    type = forms.ChoiceField(required=False, label="Type de document", choices = TYPE_CHOICES)
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -51,6 +67,9 @@ class RecordSearchForm(forms.Form):
             sujet = self.cleaned_data['sujet']
             if sujet:
                 records = records.search_sujet(sujet)
+            type = self.cleaned_data['type']
+            if type:
+                records = records.filter(type__icontains=type)
         return records
 
     def get_search_regexp(self):

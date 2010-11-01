@@ -42,12 +42,12 @@
 {% endif %}
 
 {% if evenements %}
-    <h5>Événements ({{ evenements|length }} sur {{ total_evenements }})</h5>
+    <h5>Évènements ({{ evenements|length }} sur {{ total_evenements }})</h5>
     {% for evenement in evenements %}
         {% include "savoirs/evenement_resultat.html" %}
     {% endfor %}
     {% ifnotequal evenements|length total_evenements %}
-        <p class="pad"><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} événements pour cette recherche</a></p>
+        <p class="pad"><a href="{% url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} évènements pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 

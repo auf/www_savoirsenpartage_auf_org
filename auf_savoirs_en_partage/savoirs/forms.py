@@ -133,7 +133,7 @@ class ActualiteSearchForm(forms.Form):
             return build_search_regexp(self.cleaned_data['q'])
 
 class EvenementSearchForm(forms.Form):
-    """Formulaire de recherche pour les événements."""
+    """Formulaire de recherche pour les évènements."""
 
     q = forms.CharField(required=False, label="Mots-clés")
     titre = forms.CharField(required=False, label="Intitulé")
@@ -144,7 +144,7 @@ class EvenementSearchForm(forms.Form):
     date_max = SEPDateField(required=False, label="Jusqu'au") 
     
     def get_query_set(self):
-        """Retourne l'ensemble des événements qui correspondent aux valeurs
+        """Retourne l'ensemble des évènements qui correspondent aux valeurs
            entrées dans le formulaire."""
         evenements = Evenement.objects.filter(approuve=True)
         if self.is_valid():

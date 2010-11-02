@@ -6,8 +6,8 @@
 <div id="content-main">
     <h1>{{description}}</h1>
 <ul>
-{% for id, r in records.items %}
-<li>[{{r.server}}] {{r.title}}</li>
+{% for o in objects %}
+<li>{{ o }}</li>
 {% endfor %}
 </ul>
 </div>

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import re
 
+from django.core.urlresolvers import reverse as url
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -193,7 +194,8 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
 
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('regions', ",".join(selected)))
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + ','.join(selected))
+    assigner_regions.short_description = u'Assigner des régions'
 
     def assigner_thematiques(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -201,7 +203,8 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
 
     def assigner_disciplines(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('disciplines', ",".join(selected)))
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + ','.join(selected))
+    assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Record, RecordAdmin)
 
@@ -237,7 +240,7 @@ admin.site.register(User, UserProfileAdmin)
 class ActualiteAdmin(admin.ModelAdmin):
     list_filter = ('visible',)
     list_display = ('titre', 'source', 'date', 'visible')
-    actions = ['rendre_visible', 'rendre_invisible']
+    actions = ['rendre_visible', 'rendre_invisible', 'assigner_regions', 'assigner_disciplines']
 
     # actions
     def rendre_visible(self, request, queryset):
@@ -247,6 +250,16 @@ class ActualiteAdmin(admin.ModelAdmin):
     def rendre_invisible(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'invisible', ",".join(selected)))
+
+    def assigner_regions(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='actualite')) + '?ids=' + ','.join(selected))
+    assigner_regions.short_description = u'Assigner des régions'
+
+    def assigner_disciplines(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='actualite')) + '?ids=' + ','.join(selected))
+    assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Actualite, ActualiteAdmin)
 
@@ -267,20 +280,20 @@ class EvenementAdmin(admin.ModelAdmin):
     form = EvenementAdminForm
     list_filter = ('approuve',)
     list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
-    fields = ['titre',
-              'discipline',
-              'discipline_secondaire',
-              'mots_cles',
-              'type',
-              'fuseau',
-              'debut',
-              'fin',
-              'lieu',
-              'regions',
-              'description',
-              'contact',
-              'url',
-              'approuve']
+    fields = ['titre', 'discipline', 'discipline_secondaire', 'mots_cles',
+              'type', 'fuseau', 'debut', 'fin', 'lieu', 'regions',
+              'description', 'contact', 'url', 'approuve']
+    actions = ['assigner_regions', 'assigner_disciplines']
+
+    def assigner_regions(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='evenement')) + '?ids=' + ','.join(selected))
+    assigner_regions.short_description = u'Assigner des régions'
+
+    def assigner_disciplines(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='evenement')) + '?ids=' + ','.join(selected))
+    assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Evenement, EvenementAdmin)
 

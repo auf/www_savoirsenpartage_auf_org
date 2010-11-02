@@ -1,7 +1,8 @@
 # -*- encoding: utf-8 -*-
 from django import forms
+from django.db.models import get_model
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse as url
 from django.contrib.auth.decorators import login_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
@@ -48,7 +49,7 @@ class RecordDashboard:
 
     def change_url(self, object):
         """Retourne l'url pour éditer le record"""
-        return reverse('admin:%s_%s_change' %(object._meta.app_label, object._meta.module_name), args=[object.id])
+        return url('admin:%s_%s_change' %(object._meta.app_label, object._meta.module_name), args=[object.id])
 
     def a_traiter(self, ):
         """Retourne la structure de données nécessaire pour le widget de django-admin-tool"""
@@ -92,76 +93,65 @@ def assigner_pays(request):
                      context_instance = RequestContext(request))
 
 @login_required
-def assigner_regions(request):
+def assigner_regions(request, app_name, model_name):
     ids = request.GET.get("ids").split(",")
-    records = Record.objects.in_bulk(ids)
+    model = get_model(app_name, model_name)
+    objects = model.objects.filter(pk__in=ids)
     if request.method == 'POST':
         regions_form = RegionsForm(request.POST)
 
         if regions_form.is_valid():
+            regions = regions_form.cleaned_data['regions']
+            for o in objects:
+                o.assigner_regions(regions)
+                o.save() 
 
-            # charger tous les objets regions
-            regions = []
-            for region_id in request.POST.getlist("regions"):
-                regions.append(Region.objects.get(id=region_id))
-
-            # assigner chaque regions à chaque référence
-            for r in records.values():
-                for p in regions:
-                    r.regions.add(p)
-                r.save()
-            
             # retouner un status à l'utilisateur sur la liste des références
             regions_noms = u", ".join([p.nom for p in regions])
-            succes = u"Les regions %s ont été assignées à %s références" % (regions_noms, len(ids))
+            succes = u"Les regions %s ont été assignées à %s objets" % (regions_noms, len(ids))
             request.user.message_set.create(message=succes)
-            return HttpResponseRedirect('/admin/savoirs/record')
+            return HttpResponseRedirect(url('admin:%s_%s_changelist' % (app_name, model_name)))
     else:
         regions_form = RegionsForm()
-
-    return render_to_response ("savoirs/assigner.html",
-            Context ({'records': records,
-                      'form': regions_form,
-                      'titre': u"Assignation de régions par lots",
-                      'description': u"Sélectionner les regions qui seront associées aux références suivantes :" ,
-                      }),
-                     context_instance = RequestContext(request))
+    return render_to_response(
+        "savoirs/assigner.html",
+        dict(objects=objects,
+             form=regions_form,
+             titre=u"Assignation de régions par lots",
+             description=u"Sélectionner les régions qui seront associées aux références suivantes :"),
+        context_instance = RequestContext(request)
+    )
 
 @login_required
-def assigner_disciplines(request):
+def assigner_disciplines(request, app_name, model_name):
     ids = request.GET.get("ids").split(",")
-    records = Record.objects.in_bulk(ids)
+    model = get_model(app_name, model_name)
+    objects = model.objects.filter(pk__in=ids)
     if request.method == 'POST':
         disciplines_form = DisciplinesForm(request.POST)
 
         if disciplines_form.is_valid():
-
-            # charger tous les objets disciplines
-            disciplines = []
-            for discipline_id in request.POST.getlist("disciplines"):
-                disciplines.append(Discipline.objects.get(id=discipline_id))
-
-            # assigner chaque disciplines à chaque référence
-            for r in records.values():
-                for p in disciplines:
-                    r.disciplines.add(p)
-                r.save()
+            disciplines = disciplines_form.cleaned_data['disciplines']
+            for o in objects:
+                o.assigner_disciplines(disciplines)
+                o.save()
             
             # retouner un status à l'utilisateur sur la liste des références
             disciplines_noms = u", ".join([p.nom for p in disciplines])
-            succes = u"Les disciplines %s ont été assignées à %s références" % (disciplines_noms, len(ids))
+            succes = u"Les disciplines %s ont été assignées à %s objets" % (disciplines_noms, len(ids))
             request.user.message_set.create(message=succes)
-            return HttpResponseRedirect('/admin/savoirs/record')
+            return HttpResponseRedirect(url('admin:%s_%s_changelist' % (app_name, model_name)))
     else:
         disciplines_form = DisciplinesForm()
 
-    return render_to_response ("savoirs/assigner.html",
-            Context ({'records': records,
-                      'form': disciplines_form,
-                      'titre': u"Assignation de disciplines par lots",
-                      'description': u"Sélectionner les disciplines qui seront associées aux références suivantes :" ,
-                      }),
-                     context_instance = RequestContext(request))
+    return render_to_response(
+        "savoirs/assigner.html",
+        dict(objects=objects,
+             form=disciplines_form,
+             titre=u"Assignation de disciplines par lots",
+             description=u"Sélectionner les disciplines qui seront associées aux références suivantes :"),
+        context_instance = RequestContext(request)
+    )
 
 @login_required
 def assigner_thematiques(request):

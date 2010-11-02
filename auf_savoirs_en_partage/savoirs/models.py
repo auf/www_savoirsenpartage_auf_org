@@ -57,12 +57,18 @@ class Actualite(models.Model):
 
     objects = ActualiteManager()
 
-    def __unicode__ (self):
-        return "%s" % (self.titre)
-
     class Meta:
         db_table = u'actualite'
         ordering = ["-date",]
+
+    def __unicode__ (self):
+        return "%s" % (self.titre)
+
+    def assigner_disciplines(self, disciplines):
+        self.disciplines.add(*disciplines)
+
+    def assigner_regions(self, regions):
+        self.regions.add(*regions)
 
 class EvenementManager(models.Manager):
 
@@ -221,6 +227,19 @@ class Evenement(models.Model):
         except error.NotFoundError:
             pass
 
+    def assigner_regions(self, regions):
+        self.regions.add(*regions)
+
+    def assigner_disciplines(self, disciplines):
+        if len(disciplines) == 1:
+            if self.discipline:
+                self.discipline_secondaire = disciplines[0]
+            else:
+                self.discipline = disciplines[0]
+        elif len(disciplines) >= 2:
+            self.discipline = disciplines[0]
+            self.discipline_secondaire = disciplines[1]
+
 
 # Surcharge du comportement de suppression
 # La méthode de connexion par signals est préférable à surcharger la méthode delete()
@@ -354,20 +373,27 @@ class Record(models.Model):
     # Manager
     objects = RecordManager()
 
-    def getServeurURL(self,):
+    def __unicode__(self):
+        return "[%s] %s" % (self.server, self.title)
+
+    def getServeurURL(self):
         """Retourne l'URL du serveur de provenance"""
         return RESOURCES[self.server]['url']
 
-    def est_complet(self,):
+    def est_complet(self):
         """teste si le record à toutes les données obligatoires"""
         return self.disciplines.count() > 0 and \
            self.thematiques.count() > 0 and \
            self.pays.count() > 0 and \
            self.regions.count() > 0
 
-    def __unicode__(self):
-        return "[%s] %s" % (self.server, self.title)
+    def assigner_regions(self, regions):
+        self.regions.add(*regions)
 
+    def assigner_disciplines(self, disciplines):
+        self.disciplines.add(*disciplines)
+
+    
 class Serveur(models.Model):
     """Identification d'un serveur d'ou proviennent les références"""
     nom = models.CharField(primary_key = True, max_length = 255)

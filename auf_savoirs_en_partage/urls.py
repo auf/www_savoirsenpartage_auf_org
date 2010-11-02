@@ -23,9 +23,9 @@ urlpatterns = patterns(
     (r'^admin/', include(admin.site.urls)),
     (r'^admin/confirmation/(.*)', 'savoirs.admin_views.confirmation'),
     (r'^admin/assigner_pays', 'savoirs.admin_views.assigner_pays'),
-    (r'^admin/assigner_regions', 'savoirs.admin_views.assigner_regions'),
     (r'^admin/assigner_thematiques', 'savoirs.admin_views.assigner_thematiques'),
-    (r'^admin/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines'),
+    (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_regions', 'savoirs.admin_views.assigner_regions', {}, 'assigner_regions'),
+    (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
 
     (r'^accounts/login/$', 'chercheurs.views.chercheur_login', {'template_name': 'accounts/login.html'}),

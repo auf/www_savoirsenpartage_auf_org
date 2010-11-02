@@ -201,16 +201,14 @@ class PaysForm(forms.Form):
     pays = forms.MultipleChoiceField(choices=values)
 
 class RegionsForm(forms.Form):
-    values = [(r.id, r.nom) for r in Region.objects.all()]
-    regions = forms.MultipleChoiceField(choices=values)
+    regions = forms.ModelMultipleChoiceField(queryset=Region.objects.all())
 
 class ThematiquesForm(forms.Form):
     values = [(t.id, t.nom) for t in Thematique.objects.all()]
     thematiques = forms.MultipleChoiceField(choices=values)
 
 class DisciplinesForm(forms.Form):
-    values = [(t.id, t.nom) for t in Discipline.objects.all()]
-    disciplines = forms.MultipleChoiceField(choices=values)
+    disciplines = forms.ModelMultipleChoiceField(queryset=Discipline.objects.all())
 
 class ConfirmationForm(forms.Form):
     pass

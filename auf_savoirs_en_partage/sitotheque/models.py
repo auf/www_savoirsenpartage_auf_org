@@ -84,3 +84,8 @@ class Site(models.Model):
                 return t[1]
         return "-"
 
+    def assigner_regions(self, regions):
+        self.regions.add(*regions)
+
+    def assigner_disciplines(self, disciplines):
+        self.discipline.add(*disciplines)

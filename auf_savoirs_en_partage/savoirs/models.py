@@ -53,7 +53,7 @@ class Actualite(models.Model):
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
     source = models.ForeignKey(SourceActualite, blank = True, null = True)
     disciplines = models.ManyToManyField(Discipline, blank=True, related_name="actualites")
-    regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='Régions')
+    regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='régions')
 
     objects = ActualiteManager()
 
@@ -112,18 +112,16 @@ class Evenement(models.Model):
                     (None, u'Autre'))
                    
     uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
-    approuve = models.BooleanField(default = False)
+    approuve = models.BooleanField(default=False, verbose_name=u'approuvé')
     titre = models.CharField(max_length=255)
     discipline = models.ForeignKey('Discipline', related_name = "discipline", 
                                    blank = True, null = True)
-    discipline_secondaire = models.ForeignKey('Discipline', related_name = \
-                                              "discipline_secondaire", 
-                                              verbose_name = \
-                                              "Discipline secondaire", 
-                                              blank = True, null = True)
+    discipline_secondaire = models.ForeignKey('Discipline', related_name="discipline_secondaire", 
+                                              verbose_name=u"discipline secondaire", 
+                                              blank=True, null=True)
     mots_cles = models.TextField('Mots-Clés', blank = True, null = True)
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
-    fuseau = TimeZoneField(verbose_name = 'Fuseau horaire')
+    fuseau = TimeZoneField(verbose_name='fuseau horaire')
     debut = models.DateTimeField(default = datetime.datetime.now)
     fin = models.DateTimeField(default = datetime.datetime.now)
     lieu = models.TextField()
@@ -131,7 +129,7 @@ class Evenement(models.Model):
     #fichiers = TODO?
     contact = models.TextField(blank = True, null = True)
     url = models.CharField(max_length=255, blank = True, null = True)
-    regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='Régions')
+    regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions')
 
     objects = EvenementManager()
 
@@ -334,10 +332,10 @@ class Record(models.Model):
     
     #fonctionnement interne
     id = models.AutoField(primary_key = True)
-    server = models.CharField(max_length = 255)
+    server = models.CharField(max_length = 255, verbose_name=u'serveur')
     last_update = models.CharField(max_length = 255)
     last_checksum = models.CharField(max_length = 255)
-    validated = models.BooleanField(default = True)
+    validated = models.BooleanField(default=True, verbose_name=u'validé')
 
     #OAI
     title = models.TextField(null = True, blank = True)

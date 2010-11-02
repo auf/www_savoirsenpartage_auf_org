@@ -2,7 +2,7 @@
 {% load smart_if %}
 
 <h3>{% blocktrans with title as filter_title %} By {{ filter_title }} {% endblocktrans %}</h3>
-{% if title == 'pays' or title == 'region' or title == 'discipline' or title == 'thematique' or title == 'list set' or title == 'server' %}
+{% if choices|length > 5 %}
 <select style="width: 160px;" onchange="window.location=window.location.pathname+this.options[this.selectedIndex].value">
 {% for choice in choices %}
     <option{% if choice.selected %} selected="selected"{% endif %} style="width: 130px;"

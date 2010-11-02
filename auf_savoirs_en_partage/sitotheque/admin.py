@@ -5,7 +5,8 @@ from django.http import HttpResponseRedirect
 from models import Site
 
 class SiteAdmin(admin.ModelAdmin):
-    actions = ['assigner_regions', 'assigner_disciplines']
+    actions = ('assigner_regions', 'assigner_disciplines')
+    list_filter = ('discipline', 'regions')
 
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)

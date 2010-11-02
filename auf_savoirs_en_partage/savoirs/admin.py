@@ -84,39 +84,16 @@ class ReadOnlyAdminFields(object):
 
 
 class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
-    fields = [
-        'server',
-        'title',
-        'creator',
-        'description',
-        'modified',
-        'identifier',
-        'uri',
-        'source',
-        'contributor',
-        'publisher',
-        'type',
-        'format',
-        'language',
-        'disciplines',
-        'thematiques',
-        'pays',
-        'regions',
-        'validated',
-        ]
+    fields = ['server', 'title', 'creator', 'description', 'modified',
+              'identifier', 'uri', 'source', 'contributor', 'publisher',
+              'type', 'format', 'language', 'disciplines', 'thematiques',
+              'pays', 'regions', 'validated']
 
     search_fields = []
     readonly_fields = []
 
-    list_filter = (
-      'validated',
-      'server',
-      'listsets',
-      'pays',
-      'regions',
-      'disciplines',
-      'thematiques',
-      )
+    list_filter = ('validated', 'server', 'listsets', 'pays', 'regions',
+                   'disciplines', 'thematiques')
     list_display = (
       #OAI et extra AUF
       'title',
@@ -144,11 +121,8 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
       'est_complet',
       'validated',
     )
-    actions = ['valider_references',
-               'invalider_references',
-               'assigner_pays',
-               'assigner_regions',
-               'assigner_disciplines',
+    actions = ['valider_references', 'invalider_references',
+               'assigner_pays', 'assigner_regions', 'assigner_disciplines',
                'assigner_thematiques']
 
     # fonctions pour présenter l'information
@@ -238,7 +212,7 @@ admin.site.unregister(User)
 admin.site.register(User, UserProfileAdmin)
 
 class ActualiteAdmin(admin.ModelAdmin):
-    list_filter = ('visible',)
+    list_filter = ('visible', 'disciplines', 'regions')
     list_display = ('titre', 'source', 'date', 'visible')
     actions = ['rendre_visible', 'rendre_invisible', 'assigner_regions', 'assigner_disciplines']
 
@@ -278,7 +252,7 @@ class EvenementAdminForm(forms.ModelForm):
 
 class EvenementAdmin(admin.ModelAdmin):
     form = EvenementAdminForm
-    list_filter = ('approuve',)
+    list_filter = ('approuve', 'regions', 'discipline', 'discipline_secondaire')
     list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
     fields = ['titre', 'discipline', 'discipline_secondaire', 'mots_cles',
               'type', 'fuseau', 'debut', 'fin', 'lieu', 'regions',

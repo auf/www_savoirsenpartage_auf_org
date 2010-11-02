@@ -57,7 +57,7 @@ class RecordSearchForm(forms.Form):
                     yield (publisher, publisher)
     PUBLISHER_CHOICES = PublisherChoices()
 
-    q = forms.CharField(required=False, label="Mots-clés")
+    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     auteur = forms.CharField(required=False, label="Auteur ou contributeur")
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
@@ -106,7 +106,7 @@ class RecordSearchForm(forms.Form):
 class ActualiteSearchForm(forms.Form):
     """Formulaire de recherche pour les actualités."""
 
-    q = forms.CharField(required=False, label="Mots-clés")
+    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     date_min = SEPDateField(required=False, label="Depuis le")
     date_max = SEPDateField(required=False, label="Jusqu'au") 
 
@@ -135,7 +135,7 @@ class ActualiteSearchForm(forms.Form):
 class EvenementSearchForm(forms.Form):
     """Formulaire de recherche pour les évènements."""
 
-    q = forms.CharField(required=False, label="Mots-clés")
+    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     titre = forms.CharField(required=False, label="Intitulé")
     type = forms.ChoiceField(required=False, choices=(('', 'Tous'),)+Evenement.TYPE_CHOICES)
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), 

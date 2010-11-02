@@ -4,7 +4,7 @@ from models import *
 from savoirs.lib.recherche import build_search_regexp
 
 class SiteSearchForm(forms.Form):
-    mots_cles = forms.CharField (required = False, label="Mots-clés")
+    mots_cles = forms.CharField (required = False, label="Rechercher dans tous les champs")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
 

@@ -69,7 +69,7 @@ class PersonneEditForm(forms.ModelForm):
         fields = ('nom', 'prenom', 'genre') 
 
 class RepertoireSearchForm (forms.Form):
-    mots_cles = forms.CharField(required=False, label="Mots-clés")
+    mots_cles = forms.CharField(required=False, label="Rechercher dans tous les champs")
     nom = forms.CharField(required=False, label="Nom")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")

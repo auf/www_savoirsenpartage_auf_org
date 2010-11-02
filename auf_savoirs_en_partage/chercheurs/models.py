@@ -60,7 +60,8 @@ class ChercheurQuerySet(models.query.QuerySet):
                     Q(publication2__titre__icontains=word) |
                     Q(publication3__titre__icontains=word) |
                     Q(publication4__titre__icontains=word) |
-                    Q(these__titre__icontains=word))
+                    Q(these__titre__icontains=word) |
+                    Q(groupes__nom__icontains=word))
             if q is None:
                 q = part
             else:

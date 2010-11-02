@@ -14,13 +14,14 @@ from django.forms.models import inlineformset_factory
 from auf_references_client.models import Discipline, TypeImplantation
 from models import Personne, Utilisateur, Groupe, ChercheurGroupe
 
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
 
 #TODO: Migrer tout ce qui a rapport aux users dans une nouvelle app
 
@@ -182,8 +183,11 @@ def inscription(request):
                     for g in groupes:
                         g = Groupe.objects.get(pk=g)
                         ChercheurGroupe.objects.get_or_create(chercheur=c, groupe=g, actif=1)
-                    return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % c.id)
-                    #return HttpResponseRedirect(url('chercheurs.views.retrieve', args=(c.id,)))
+
+                    # login automatique
+                    login(request, authenticate(username=personne_form.cleaned_data['courriel'], 
+                                                password=personne_form.cleaned_data['password']))
+                    return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")
@@ -324,11 +328,8 @@ def perso(request):
 def retrieve(request, id):
     """Fiche du chercheur"""
     #chercheur = Chercheur.objects.get(id=id)
-    inscription = request.GET.get('inscription')
     chercheur = get_object_or_404(Chercheur, id=id)
-    variables = { 'chercheur': chercheur,
-                  'inscription': inscription,
-                }
+    variables = { 'chercheur': chercheur }
     return render_to_response ("chercheurs/retrieve.html", \
             Context (variables), 
             context_instance = RequestContext(request))

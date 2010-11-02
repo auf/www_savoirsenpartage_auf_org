@@ -41,6 +41,9 @@ class ChercheurManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
+    def search_nom(self, nom):
+        return self.get_query_set().search_nom(nom)
+
 class ChercheurQuerySet(models.query.QuerySet):
 
     def search(self, text):
@@ -63,6 +66,17 @@ class ChercheurQuerySet(models.query.QuerySet):
             else:
                 q = q & part
         return self.filter(q).distinct() if q is not None else self
+
+    def search_nom(self, nom):
+        q = None
+        for word in nom.split():
+            part = Q(personne__nom__icontains=word) | Q(personne__prenom__icontains=word)
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        return self.filter(q) if q is not None else self
+
 
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):

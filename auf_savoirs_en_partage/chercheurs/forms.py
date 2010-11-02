@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
 from django import forms
+from django.db.models import Q
 from models import *
-from models import Utilisateur
 from savoirs.forms import SEPDateField
-from models import STATUT_CHOICES
 
 class PersonneForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
@@ -70,12 +69,39 @@ class PersonneEditForm(forms.ModelForm):
         fields = ('nom', 'prenom', 'genre') 
 
 class RepertoireSearchForm (forms.Form):
-    mots_cles = forms.CharField (required = False, label="Mots-clés")
+    mots_cles = forms.CharField(required=False, label="Mots-clés")
+    nom = forms.CharField(required=False, label="Nom")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
     statut = forms.ChoiceField(choices=(('','Tous'),)+STATUT_CHOICES+(('expert','Expert'),), required=False, label="Statut")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all().order_by("nom"), required=False, label="Localisation", empty_label="Tous")
       
+    def get_query_set(self):
+        qs = Chercheur.objects.all()
+        if self.is_valid():
+            nom = self.cleaned_data['nom']
+            if nom:
+                qs = qs.search_nom(nom)
+            pays = self.cleaned_data["pays"]
+            if pays:
+                qs = qs.filter(Q(etablissement__pays = pays.pk) | Q(etablissement_autre_pays = pays.pk))
+            discipline = self.cleaned_data["discipline"]
+            if discipline:
+                qs = qs.filter(discipline=discipline)
+            domaine = self.cleaned_data["domaine"]
+            if domaine:
+                qs = qs.filter(groupes=domaine)
+            mots_cles = self.cleaned_data["mots_cles"]
+            if mots_cles:
+                qs = qs.search(mots_cles)
+            statut = self.cleaned_data["statut"]
+            if statut:
+                if statut == "expert":
+                    qs = qs.exclude(expertise=None)
+                else:
+                    qs = qs.filter(statut=statut)
+        return qs
+    
 class SendPasswordForm(forms.Form):
     email = forms.EmailField(required=True, label="courriel")
     def clean_email(self):

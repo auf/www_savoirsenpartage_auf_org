@@ -124,46 +124,14 @@ def chercheur_login(request, template_name='registration/login.html', redirect_f
     }, context_instance=RequestContext(request))
     
     
-def chercheur_queryset (request):
-    list = Chercheur.objects.order_by("id")
-    pays = ""
-
-    simpleForm = RepertoireSearchForm (request.GET)
-    if simpleForm.is_valid ():
-        pays = simpleForm.cleaned_data["pays"]
-        if pays:
-            list = list.filter(Q(etablissement__pays = pays.pk) | Q(etablissement_autre_pays = pays.pk))
-        discipline = simpleForm.cleaned_data["discipline"]
-        if discipline:
-            list = list.filter(discipline=discipline)
-        domaine = simpleForm.cleaned_data["domaine"]
-        if domaine:
-            list = list.filter(groupes=domaine)
-        mots_cles = simpleForm.cleaned_data["mots_cles"]
-        if mots_cles:
-            list = list.search(mots_cles)
-        statut = simpleForm.cleaned_data["statut"]
-        if statut:
-            if statut == "expert":
-                list = list.exclude(expertise=None)
-            else:
-                list = list.filter(statut=statut)
-    return list
-    
 def index(request):
     """Répertoire des chercheurs"""
-    
-    chercheurs = chercheur_queryset (request)
-    repertoire_form = RepertoireSearchForm (request.GET)
-
+    search_form = RepertoireSearchForm(request.GET)
+    chercheurs = search_form.get_query_set()
     nb_chercheurs = chercheurs.count()
-    variables = { 'chercheurs': chercheurs,
-                  'nb_chercheurs': nb_chercheurs,
-                  'repertoire_form': repertoire_form,
-                }
-    return render_to_response ("chercheurs/index.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    return render_to_response("chercheurs/index.html",
+                              dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, repertoire_form=search_form),
+                              context_instance=RequestContext(request))
 
 def inscription(request):
     if request.method == 'POST':

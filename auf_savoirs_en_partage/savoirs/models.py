@@ -365,10 +365,10 @@ class Record(models.Model):
     orig_lang = models.TextField(null = True, blank = True)
 
     # Metadata AUF multivaluées
-    disciplines = models.ManyToManyField(Discipline)
-    thematiques = models.ManyToManyField(Thematique)
-    pays = models.ManyToManyField(Pays)
-    regions = models.ManyToManyField(Region, verbose_name='Régions')
+    disciplines = models.ManyToManyField(Discipline, blank=True)
+    thematiques = models.ManyToManyField(Thematique, blank=True, verbose_name='thématiques')
+    pays = models.ManyToManyField(Pays, blank=True)
+    regions = models.ManyToManyField(Region, blank=True, verbose_name='régions')
 
     # Manager
     objects = RecordManager()

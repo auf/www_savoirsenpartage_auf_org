@@ -33,11 +33,11 @@
                 <div class="sous-menu droite">
                     {% if user.is_authenticated %}
                     <a href="{% url django.contrib.auth.views.logout %}" class="bout-droit">Déconnexion</a>
-                    {% else %}
-                    <a href="{% url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
-                    {% endif %}
                     <span>|</span>
                     <a href="{% url savoirs.views.legal %}">Légal</a>
+                    {% else %}
+                    <a href="{% url savoirs.views.legal %}" class="bout-droit">Légal</a>
+                    {% endif %}
                     <span>|</span>
                     <a href="{% url savoirs.views.nous_contacter %}">Contact</a>
                     <span>|</span>

@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
 from django.template.loader import get_template
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -101,27 +101,20 @@ def change_password(request):
             Context (variables), 
             context_instance = RequestContext(request))            
              
-def chercheur_login(request, template_name='registration/login.html', redirect_field_name='next'):
+def chercheur_login(request):
     "Displays the login form and handles the login action."
-    redirect_to = request.REQUEST.get(redirect_field_name, '')
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            # Light security check -- make sure redirect_to isn't garbage.
-            if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = settings.LOGIN_REDIRECT_URL
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
-            return HttpResponseRedirect(redirect_to)
+            return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         form = AuthenticationForm(request)
     request.session.set_test_cookie()
-    return render_to_response(template_name, {
-        'form': form,
-        redirect_field_name: redirect_to,
-    }, context_instance=RequestContext(request))
+    return render_to_response('accounts/login.html', dict(form=form), context_instance=RequestContext(request))
     
     
 def index(request):
@@ -190,7 +183,7 @@ def inscription(request):
                         g = Groupe.objects.get(pk=g)
                         ChercheurGroupe.objects.get_or_create(chercheur=c, groupe=g, actif=1)
                     return HttpResponseRedirect("/chercheurs/%d/?inscription=1" % c.id)
-                    #return HttpResponseRedirect(reverse('chercheurs.views.retrieve', args=(c.id,)))
+                    #return HttpResponseRedirect(url('chercheurs.views.retrieve', args=(c.id,)))
     else:
         personne_form = PersonneForm(prefix="personne")
         chercheur_form = ChercheurForm(prefix="chercheur")
@@ -320,7 +313,7 @@ def perso(request):
     chercheur = context_instance['user_chercheur']
     modification = request.GET.get('modification')
     if not chercheur:
-        return HttpResponseRedirect(reverse('chercheurs.views.chercheur_login'))
+        return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
     variables = { 'chercheur': chercheur,
                   'modification': modification,
                 }

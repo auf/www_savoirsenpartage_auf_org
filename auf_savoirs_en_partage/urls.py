@@ -28,7 +28,7 @@ urlpatterns = patterns(
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
 
-    (r'^accounts/login/$', 'chercheurs.views.chercheur_login', {'template_name': 'accounts/login.html'}),
+    (r'^accounts/login/$', 'chercheurs.views.chercheur_login'),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'accounts/logout.html'}),
     (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
     (r'^accounts/send_password/$', 'chercheurs.views.send_password'),

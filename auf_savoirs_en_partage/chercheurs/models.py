@@ -108,10 +108,10 @@ class Chercheur(models.Model):
                                     verbose_name='Adresse site Internet')
     url_blog = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Blog')
-    url_facebook = models.URLField(max_length=255, null=True, blank=True,
-                                    verbose_name='Facebook')
-    url_linkedin = models.URLField(max_length=255, null=True, blank=True,
-                                    verbose_name='Linkedin')                                                                 
+    url_reseau_social = models.URLField(
+        max_length=255, null=True, blank=True, verbose_name='Réseau social',
+        help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"
+    )
                                     
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name = 'Domaines de recherche')
     

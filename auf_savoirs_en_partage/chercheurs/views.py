@@ -327,7 +327,6 @@ def perso(request):
             
 def retrieve(request, id):
     """Fiche du chercheur"""
-    #chercheur = Chercheur.objects.get(id=id)
     chercheur = get_object_or_404(Chercheur, id=id)
     variables = { 'chercheur': chercheur }
     return render_to_response ("chercheurs/retrieve.html", \

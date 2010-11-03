@@ -41,6 +41,14 @@ dt{margin:0.5em 0 0;}
 dd{margin:0.25em 0 0.5em 2.5em;}
 sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
 
+form td { vertical-align: top }
+form th { width: 20em; text-align: left; font-weight: bold }
+form table { width: 100% }
+form input[type=text] { width: 20em }
+form input.date { width: auto }
+form select { width: 80%; overflow: hidden }
+form p { margin-bottom: 2px }
+
 .box { padding:0 0 20px 0; }
 .lbl {color: #97012c; }
 
@@ -181,15 +189,6 @@ ul.actions { position: absolute; top: 15px; right: 20px; }
 #edit-form tr { border-top: 1px black solid; }
 #edit-form tr:first-child { border-top: none; }
 
-.form td { vertical-align: top; }
-.form th { font-weight: bold; }
-.form td:first-child { width: 150px; text-align: left; }
-.form table { width: 100%; }
-.form input[type=text], .form textarea, .form select { width: 80%; }
-.form textarea { height: 100px; }
-.form p { margin-bottom: 2px; }
-.form tr:first-child { border-top: none; }
-
 .odd { background: #ddd; }
 
 #repertoire { border:1px solid #bbb; padding:20px; margin: 10px; width:95% }
@@ -197,7 +196,6 @@ ul.actions { position: absolute; top: 15px; right: 20px; }
 
 
 .errorlist {color:red}
-select     { width:100%; overflow:hidden }
 
 .publications_autre {border:1px solid #CCC; background:#FAFAFA; margin:10px; padding:10px; display:none;}
 

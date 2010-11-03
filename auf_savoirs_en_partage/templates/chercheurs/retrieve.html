@@ -42,16 +42,10 @@
                 <td><a href="{{chercheur.url_blog}}">{{chercheur.url_blog}}</a></td>
             </tr>
             {% endif %}
-            {% if chercheur.url_facebook %}
+            {% if chercheur.url_reseau_social %}
             <tr>
-                <td class="label">Facebook:</td>
-                <td><a href="{{chercheur.url_facebook}}">{{chercheur.url_facebook}}</a></td>
-            </tr>
-            {% endif %}
-            {% if chercheur.url_linkedin %}
-            <tr>
-                <td class="label">Linkedin:</td>
-                <td><a href="{{chercheur.url_linkedin}}">{{chercheur.url_linkedin}}</a></td>
+                <td class="label">Réseau social:</td>
+                <td><a href="{{chercheur.url_reseau_social}}">{{chercheur.url_reseau_social }}</a></td>
             </tr>
             {% endif %}
         </table>

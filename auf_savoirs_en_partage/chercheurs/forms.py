@@ -61,7 +61,7 @@ class EtablissementAutreForm(forms.ModelForm):
 class DisciplineForm(forms.ModelForm):
     class Meta:
         model = Chercheur
-        fields = ('discipline', 'theme_recherche', 'mots_cles', 'url_site_web', 'url_blog',)
+        fields = ('discipline', 'theme_recherche', 'mots_cles', 'url_site_web', 'url_blog', 'url_reseau_social')
         
 class PersonneEditForm(forms.ModelForm):
     class Meta:

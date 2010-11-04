@@ -173,6 +173,7 @@ class RepertoireSearchForm (forms.Form):
     nom = forms.CharField(required=False, label="Nom")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
+    groupe_recherche = forms.CharField(required=False, label="Groupe de recherche")
     statut = forms.ChoiceField(choices=(('','Tous'),)+STATUT_CHOICES+(('expert','Expert'),), required=False, label="Statut")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
     region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
@@ -190,6 +191,10 @@ class RepertoireSearchForm (forms.Form):
             domaine = self.cleaned_data["domaine"]
             if domaine:
                 qs = qs.filter(groupes=domaine)
+            groupe_recherche = self.cleaned_data['groupe_recherche']
+            if groupe_recherche:
+                for word in groupe_recherche.split():
+                    qs = qs.filter(groupe_recherche__icontains=word)
             mots_cles = self.cleaned_data["mots_cles"]
             if mots_cles:
                 qs = qs.search(mots_cles)

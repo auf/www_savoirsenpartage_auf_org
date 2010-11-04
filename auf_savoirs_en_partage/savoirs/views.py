@@ -27,9 +27,9 @@ def index (request):
     actualites = Actualite.objects.filter (visible = '1', date__gt = oldest)
     actualites = actualites[0:configuration['accueil_actualite']]
     evenements = Evenement.objects.filter(approuve=True)[0:configuration['accueil_evenement']]
-    ressources = Record.objects.all().order_by('?')[:configuration['accueil_ressource']]
-    chercheurs = Chercheur.objects.all().order_by('?')[:configuration['accueil_chercheur']]
-    sites = Site.objects.all().order_by('?')[:configuration['accueil_sites']]
+    ressources = Record.objects.all().random(configuration['accueil_ressource'])
+    chercheurs = Chercheur.objects.all().random(configuration['accueil_chercheur'])
+    sites = Site.objects.all().random(configuration['accueil_sites'])
     return render_to_response("savoirs/index.html",
                                dict(actualites=actualites,
                                     evenements=evenements,

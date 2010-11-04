@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import Q
 from datamaster_modeles.models import *
-from savoirs.models import Discipline
+from savoirs.models import Discipline, RandomQuerySetMixin
 
 TYPE_SITE_CHOICES = (
     ('RV', 'Revue en ligne'), 
@@ -25,7 +25,7 @@ class SiteManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
-class SiteQuerySet(models.query.QuerySet):
+class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):
         qs = self

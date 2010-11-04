@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import Q
 from datamaster_modeles.models import *
 #from auf_references_modeles.models import Thematique
-from savoirs.models import Discipline
+from savoirs.models import Discipline, RandomQuerySetMixin
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
@@ -44,7 +44,7 @@ class ChercheurManager(models.Manager):
     def search_nom(self, nom):
         return self.get_query_set().search_nom(nom)
 
-class ChercheurQuerySet(models.query.QuerySet):
+class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):
         q = None

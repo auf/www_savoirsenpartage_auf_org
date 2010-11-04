@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-import simplejson, uuid, datetime, caldav, vobject, uuid
+import simplejson, uuid, datetime, caldav, vobject, uuid, random
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
 from timezones.fields import TimeZoneField
 from auf_savoirs_en_partage.backend_config import RESOURCES
@@ -11,6 +11,18 @@ from settings import CALENDRIER_URL
 from datamaster_modeles.models import Thematique, Pays, Region
 from lib.calendrier import combine
 from caldav.lib import error
+
+class RandomQuerySetMixin(object):
+    """Mixin pour les modèles.
+       
+    ORDER BY RAND() est très lent sous MySQL. On a besoin d'une autre
+    méthode pour récupérer des objets au hasard.
+    """
+
+    def random(self, n=1):
+        """Récupère aléatoirement un nombre donné d'objets."""
+        ids = random.sample(xrange(self.count()), n)
+        return [self[i] for i in ids]
 
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')
@@ -38,7 +50,7 @@ class ActualiteManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
-class ActualiteQuerySet(models.query.QuerySet):
+class ActualiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):
         q = None
@@ -86,7 +98,7 @@ class EvenementManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
-class EvenementQuerySet(models.query.QuerySet):
+class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):
         q = None
@@ -276,7 +288,7 @@ class RecordManager(models.Manager):
     def validated(self):
         return self.get_query_set().validated()
 
-class RecordQuerySet(models.query.QuerySet):
+class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):
         qs = self

@@ -113,7 +113,7 @@ class Chercheur(models.Model):
         help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"
     )
                                     
-    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name = 'Domaines de recherche')
+    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name='Domaines de recherche')
     
     #Refactoring, mettre les publications comme etant des many2many;
     publication1 = models.ForeignKey('Publication', db_column='publication1', null=True, blank=True, related_name='publication1', verbose_name = 'Publication 1')
@@ -147,6 +147,13 @@ class Chercheur(models.Model):
                 return s[1]
         return "-"
     
+    @property
+    def etablissement_display(self):
+        if self.etablissement:
+            return self.etablissement.nom + ', ' + self.etablissement.pays.nom
+        else:
+            return self.etablissement_autre_nom + ', ' + self.etablissement_autre_pays
+
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     titre = models.CharField(max_length=255, db_column='titre', null=True, blank=True, verbose_name = 'Titre')

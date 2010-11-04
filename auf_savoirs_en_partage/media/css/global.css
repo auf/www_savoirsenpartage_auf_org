@@ -41,6 +41,8 @@ dt{margin:0.5em 0 0;}
 dd{margin:0.25em 0 0.5em 2.5em;}
 sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
 
+td ul { margin: 0 }
+
 form td { vertical-align: top }
 form th { width: 20em; text-align: left; font-weight: bold }
 form table { width: 100% }

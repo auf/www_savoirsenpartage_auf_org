@@ -6,20 +6,22 @@ from models import *
 from savoirs.forms import SEPDateField
 
 class PersonneForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
     genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
+
     class Meta:
         model = Utilisateur
+        fields = ('nom', 'prenom', 'courriel', 'genre')
+        
+class PersonneInscriptionForm(PersonneForm):
+    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
+
+    class Meta(PersonneForm.Meta):
         fields = ('nom', 'prenom', 'courriel', 'password', 'genre')
         
     def clean_password(self):
         """Encrypter le mot de passe avant de le mettre dans la BD."""
         return hashlib.md5(self.cleaned_data['password']).hexdigest()
 
-class PersonneEditForm(PersonneForm):
-    class Meta(PersonneForm.Meta):
-        exclude = ('password',)
-        
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
     OUI_NON_CHOICES = ((1, 'Oui'), (0, 'Non'))
@@ -73,7 +75,11 @@ class ChercheurForm(forms.ModelForm):
 
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
-    groupes = forms.ModelMultipleChoiceField(queryset=Groupe.objects.all(), required=False)
+    groupes = forms.ModelMultipleChoiceField(
+        queryset=Groupe.objects.all(), 
+        label='Domaines de recherche', required=False,
+        help_text="Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
+    )
 
     def __init__(self, data=None, prefix=None, chercheur=None):
         self.chercheur = chercheur
@@ -114,7 +120,7 @@ class ChercheurFormGroup(object):
        d'un chercheur."""
 
     def __init__(self, data=None, chercheur=None):
-        personne_form_class = PersonneForm if chercheur is None else PersonneEditForm
+        personne_form_class = PersonneInscriptionForm if chercheur is None else PersonneForm
         self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
         self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne)

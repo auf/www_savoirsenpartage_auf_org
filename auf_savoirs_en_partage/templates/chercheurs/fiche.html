@@ -1,0 +1,135 @@
+<div id="fiche_chercheur">
+
+    <div><a href="mailto:{{ chercheur.personne.courriel }}">{{ chercheur.personne.courriel }}</a></div>
+    <div>{{ chercheur.etablissement_display }}</div>
+
+    <h5>Informations académiques</h5>
+    <table>
+        <tr>
+            <td class="label">Statut:</td>
+            <td>{{ chercheur.statut_display }}</td>
+        </tr>
+        <tr>
+            <td class="label">Diplôme:</td>
+            <td>{{ chercheur.diplome }}</td>
+        </tr>
+        <tr>
+            <td class="label">Domaine{{ chercheur.groupes.all|pluralize }} de recherche:</td>
+            <td>
+                <ul>
+                    {% for g in chercheur.groupes.all %}
+                    <li>{{ g.nom }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <h5>Champ disciplinaire, thèmes de recherche</h5>
+    <table>
+        <tr>
+            <td class="label">Discipline:</td>
+            <td>{{ chercheur.discipline }}</td>
+        </tr>
+        {% if chercheur.theme_recherche %}
+        <tr>
+            <td class="label">Thèmes de recherche:</td>
+            <td>{{ chercheur.theme_recherche }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td class="label">Mots-clés:</td>
+            <td>{{ chercheur.mots_cles }}</td>
+        </tr>
+        {% if chercheur.url_site_web %}
+        <tr>
+            <td class="label">Url site web:</td>
+            <td><a href="{{ chercheur.url_site_web }}">{{ chercheur.url_site_web }}</a></td>
+        </tr>
+        {% endif %}
+        {% if chercheur.url_blog %}
+        <tr>
+            <td class="label">Blog:</td>
+            <td><a href="{{ chercheur.url_blog }}">{{ chercheur.url_blog }}</a></td>
+        </tr>
+        {% endif %}
+        {% if chercheur.url_reseau_social %}
+        <tr>
+            <td class="label">Réseau social:</td>
+            <td><a href="{{ chercheur.url_reseau_social }}">{{ chercheur.url_reseau_social }}</a></td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% if chercheur.membre_instance_auf or chercheur.expert_oif or chercheur.membre_fipf %}
+    <h5>Activités en Francophonie</h5>
+    <table>
+        {% if chercheur.membre_instance_auf %}
+        <tr>
+            <td class="label">Membre d'une instance de l'AUF</td>
+            <td>{{ chercheur.membre_instance_auf_dates }}</td>
+        </tr>
+        {% endif %}
+        {% if chercheur.expert_oif %}
+        <tr>
+            <td class="label">Expert de l'OIF</td>
+            <td></td>
+        </tr>
+        {% endif %}
+        {% if chercheur.membre_fipf %}
+        <tr>
+            <td class="label">Membre de la FIPF</td>
+            <td>Nom de l'association: {{ chercheur.membre_fipf_association }}</td>
+        </tr>
+        {% endif %}
+    </table>
+    {% endif %}
+
+    {% if chercheur.expertise %}
+    <h5>Expertise</h5>
+    <table>
+        <tr>
+            <td class="label">Titre de l'expertise:</td>
+            <td>{{ chercheur.expertise.nom }}</td>
+        </tr>
+        {% if chercheur.expertise.date %}
+        <tr>
+            <td class="label">Date:</td>
+            <td>{{ chercheur.expertise.date }}</td>
+        </tr>
+        {% endif %}
+        {% if chercheur.expertise.organisme_demandeur and chercheur.expertise.organisme_demandeur_visible %}
+        <tr>
+            <td class="label">Organisme demandeur:</td>
+            <td>{{ chercheur.expertise.organisme_demandeur }}</td>
+        </tr>
+        {% endif %}
+    </table>
+    {% endif %}
+
+    <h5>Publications</h5>
+    <table id="publications">
+        <tr class="souligne">
+            <td class="label">Thèse ou mémoire:</td>
+            {% with chercheur.these as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
+        </tr>
+        {% if chercheur.publication1 or chercheur.publication2 or chercheur.publication3 or chercheur.publication4 %}
+        <tr>
+            <td class="label">Publications:</td>
+            {% with chercheur.publication1 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
+        </tr>
+        <tr>
+            <td class="label"></td>
+            {% with chercheur.publication2 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
+        </tr>
+        <tr>
+            <td class="label"></td>
+            {% with chercheur.publication3 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
+        </tr>
+        <tr>
+            <td class="label"></td>
+            {% with chercheur.publication4 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
+        </tr>
+        {% endif %}
+    </table>
+</div>

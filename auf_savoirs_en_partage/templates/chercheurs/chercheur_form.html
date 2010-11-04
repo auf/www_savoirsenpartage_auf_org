@@ -61,6 +61,15 @@
     </fieldset>
 
     <fieldset>
+        <legend>Expertise</legend>
+        <div>
+            {% with forms.expertise as form %}
+                {% include "table_form.html" %}
+            {% endwith %}
+        </div>
+    </fieldset>
+
+    <fieldset>
         <legend>Thèse ou mémoire</legend>
         <div>
             <div class="publication">
@@ -69,14 +78,5 @@
               {% endwith %}
             </div>
             <div style="clear:both"></div>
-        </div>
-    </fieldset>
-    
-    <fieldset>
-        <legend>Expertise</legend>
-        <div>
-            {% with forms.expertise as form %}
-                {% include "table_form.html" %}
-            {% endwith %}
         </div>
     </fieldset>

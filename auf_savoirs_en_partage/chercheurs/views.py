@@ -170,20 +170,16 @@ def perso(request):
     modification = request.GET.get('modification')
     if not chercheur:
         return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
-    variables = { 'chercheur': chercheur,
-                  'modification': modification,
-                }
-    return render_to_response ("chercheurs/perso.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    return render_to_response("chercheurs/perso.html",
+                              dict(chercheur=chercheur, modification=modification),
+                              context_instance=RequestContext(request))
             
 def retrieve(request, id):
     """Fiche du chercheur"""
     chercheur = get_object_or_404(Chercheur, id=id)
-    variables = { 'chercheur': chercheur }
-    return render_to_response ("chercheurs/retrieve.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    return render_to_response("chercheurs/retrieve.html",
+                              dict(chercheur=chercheur),
+                              context_instance = RequestContext(request))
             
 def conversion(request):
     return render_to_response ("chercheurs/conversion.html", \

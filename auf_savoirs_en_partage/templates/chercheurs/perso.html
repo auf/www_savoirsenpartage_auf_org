@@ -7,32 +7,13 @@
 {% endif %}
     
 <h4>{{ chercheur }}</h4>
+<ul class="actions">
+    <li><a href="{% url chercheurs.views.edit %}">Éditer votre fiche</a></li>
+    <li><a href="{% url chercheurs.views.change_password %}">Modifier votre mot de passe</a></li>
+</ul>
 
 <div class="contenu-wrapper">
-    <div style="float:right; margin-right:40px;font-size:12px"><img src="/media/img/edit.png"> <a href="{% url chercheurs.views.edit %}">Éditer</a></div>
-    <div id="fiche_chercheur">
-        <p>{{chercheur.personne.courriel}}</p>
-        <p>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom "-" %}, {% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays "-" %}</p>
-        
-        <table>
-            {% if chercheur.nationalite %}
-            <tr>
-                <td class="label">Nationalité:</td>
-                <td>{{chercheur.nationalite.nom|default:"-"}}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td class="label">Statut:</td>
-                <td>{{chercheur.statut_display|default:"-"}}</td>
-            </tr>
-            <tr>
-                <td class="label">Diplôme:</td>
-                <td>{{chercheur.diplome|default:"-"}}</td>
-            </tr>
-        </table>
-    
-    </div>
-    <p><a href="{% url chercheurs.views.change_password %}">Modifier mot de passe</a></p>
+    {% include "chercheurs/fiche.html" %}
 </div>
 
 {% endblock %}

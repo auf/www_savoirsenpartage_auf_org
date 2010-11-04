@@ -6,6 +6,6 @@ AUTH_PASSWORD_REQUIRED = False
 
 # Activer la debug toolbar...
 
-# MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-# INSTALLED_APPS += ('debug_toolbar',)
+MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+INSTALLED_APPS += ('debug_toolbar',)
 # DEBUG_TOOLBAR_CONFIG = dict(INTERCEPT_REDIRECTS=False)

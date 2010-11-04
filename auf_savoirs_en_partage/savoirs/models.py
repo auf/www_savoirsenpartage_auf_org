@@ -41,7 +41,15 @@ class ActualiteManager(models.Manager):
 class ActualiteQuerySet(models.query.QuerySet):
 
     def search(self, text):
-        return self.filter(Q(titre__icontains=text) | Q(texte__icontains=text))
+        q = None
+        for word in text.split():
+            part = (Q(titre__icontains=word) | Q(texte__icontains=word) |
+                    Q(regions__nom__icontains=word) | Q(disciplines__nom__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        return self.filter(q).distinct() if q is not None else self
 
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
@@ -81,7 +89,6 @@ class EvenementManager(models.Manager):
 class EvenementQuerySet(models.query.QuerySet):
 
     def search(self, text):
-        qs = self
         q = None
         for word in text.split():
             part = (Q(titre__icontains=word) | 
@@ -91,12 +98,13 @@ class EvenementQuerySet(models.query.QuerySet):
                     Q(type__icontains=word) |
                     Q(lieu__icontains=word) |
                     Q(description__icontains=word) |
-                    Q(contact__icontains=word))
+                    Q(contact__icontains=word) |
+                    Q(regions__nom__icontains=word))
             if q is None:
                 q = part
             else:
                 q = q & part
-        return qs.filter(q) if q is not None else qs
+        return self.filter(q).distinct() if q is not None else self
 
     def search_titre(self, text):
         qs = self
@@ -278,10 +286,11 @@ class RecordQuerySet(models.query.QuerySet):
         # demandés.
         q = None
         for word in words:
+            matching_pays = list(Pays.objects.filter(Q(nom__icontains=word) | Q(region__nom__icontains=word)).values_list('pk', flat=True))
             part = (Q(title__icontains=word) | Q(description__icontains=word) |
                     Q(creator__icontains=word) | Q(contributor__icontains=word) |
                     Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
-                    Q(regions__nom__icontains=word) | Q(pays__nom__icontains=word))
+                    Q(regions__nom__icontains=word) | Q(pays__in=matching_pays))
             if q is None:
                 q = part
             else:
@@ -297,7 +306,6 @@ class RecordQuerySet(models.query.QuerySet):
                 select={'score': score_expr},
                 select_params=score_params
             ).order_by('-score')
-
         return qs
 
     def search_auteur(self, text):
@@ -322,11 +330,8 @@ class RecordQuerySet(models.query.QuerySet):
         """Ne garder que les ressources validées et qui sont soit dans aucun
            listset ou au moins dans un listset validé."""
         qs = self.filter(validated=True)
-        qs = qs.extra(where=['''((savoirs_record.id NOT IN (SELECT record_id FROM savoirs_record_listsets)) OR
-                                 ((SELECT MAX(l.validated) FROM savoirs_listset l
-                                   INNER JOIN savoirs_record_listsets rl ON rl.listset_id = l.spec
-                                   WHERE rl.record_id = savoirs_record.id) = TRUE))'''])
-        return qs
+        qs = qs.filter(Q(listsets__isnull=True) | Q(listsets__validated=True))
+        return qs.distinct()
 
 class Record(models.Model):
     

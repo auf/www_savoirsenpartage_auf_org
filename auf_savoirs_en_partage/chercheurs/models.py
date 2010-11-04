@@ -49,19 +49,24 @@ class ChercheurQuerySet(models.query.QuerySet):
     def search(self, text):
         q = None
         for word in text.split():
+            matching_pays = list(Pays.objects.filter(Q(nom__icontains=word) | Q(region__nom__icontains=word)).values_list('pk', flat=True))
+            matching_etablissements = list(Etablissement.objects.filter(Q(nom__icontains=word) | Q(pays__in=matching_pays)).values_list('pk', flat=True))
+            matching_publications = list(Publication.objects.filter(titre__icontains=word).values_list('pk', flat=True))
+            matching_groupes = list(Groupe.objects.filter(nom__icontains=word).values_list('pk', flat=True))
+            matching_disciplines = list(Discipline.objects.filter(nom__icontains=word).values_list('pk', flat=True))
             part = (Q(personne__nom__icontains=word) |
                     Q(personne__prenom__icontains=word) |
                     Q(theme_recherche__icontains=word) |
+                    Q(etablissement__in=matching_etablissements) |
                     Q(etablissement_autre_nom__icontains=word) |
-                    Q(etablissement__nom__icontains=word) |
-                    Q(etablissement__pays__nom__icontains=word) |
-                    Q(discipline__nom__icontains=word) |
-                    Q(publication1__titre__icontains=word) |
-                    Q(publication2__titre__icontains=word) |
-                    Q(publication3__titre__icontains=word) |
-                    Q(publication4__titre__icontains=word) |
-                    Q(these__titre__icontains=word) |
-                    Q(groupes__nom__icontains=word))
+                    Q(etablissement_autre_pays__in=matching_pays) |
+                    Q(discipline__in=matching_disciplines) |
+                    Q(publication1__in=matching_publications) |
+                    Q(publication2__in=matching_publications) |
+                    Q(publication3__in=matching_publications) |
+                    Q(publication4__in=matching_publications) |
+                    Q(these__in=matching_publications) |
+                    Q(groupes__in=matching_groupes))
             if q is None:
                 q = part
             else:

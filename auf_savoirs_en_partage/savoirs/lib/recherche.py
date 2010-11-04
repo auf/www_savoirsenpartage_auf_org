@@ -170,18 +170,21 @@ def build_search_regexp(query):
         part = re.escape(word.lower())
         # Les expressions régulières ne connaissent pas la version
         # en majuscules des caractères accentués.  :(
-        part = part.replace(u'à', u'[àÀ]')
-        part = part.replace(u'â', u'[âÂ]')
-        part = part.replace(u'é', u'[éÉ]')
-        part = part.replace(u'ê', u'[êÊ]')
-        part = part.replace(u'î', u'[îÎ]')
-        part = part.replace(u'ç', u'[çÇ]')
+        # Attention: re.escape aura ajouté un backslash devant tous les
+        # caractères accentués...
+        part = part.replace(u'\\à', u'[àÀ]')
+        part = part.replace(u'\\â', u'[âÂ]')
+        part = part.replace(u'\\é', u'[éÉ]')
+        part = part.replace(u'\\ê', u'[êÊ]')
+        part = part.replace(u'\\î', u'[îÎ]')
+        part = part.replace(u'\\ô', u'[ôÔ]')
+        part = part.replace(u'\\ç', u'[çÇ]')
 
         # Faire ceci après avoir traité les caractères accentués...
         part = part.replace('a', u'[aàâÀÂ]')
         part = part.replace('e', u'[eéèëêÉÊ]')
         part = part.replace('i', u'[iïîÎ]')
-        part = part.replace('o', u'[oô]')
+        part = part.replace('o', u'[oôÔ]')
         part = part.replace('u', u'[uûüù]')
         part = part.replace('c', u'[cç]')
 

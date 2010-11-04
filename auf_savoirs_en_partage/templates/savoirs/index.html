@@ -18,9 +18,6 @@
             {% if actualite.source %}
             <span class="la-date">source: {{ actualite.source.nom }}</span>
             {% endif %}
-            {% comment %}
-            <span class="le-resume">{{ actualite.texte }} -&nbsp;<a href="{{ actualite.url }}">Lire</a></span>
-            {% endcomment %}
             </li>
         {% endfor %}
         </ul>
@@ -29,7 +26,7 @@
         <h4><a href="{% url chercheurs.views.index %}">Répertoire</a></h4>
         
         <ul class="sous-menu">
-            <li><a href="{% url chercheurs.views.index %}">Répertoire</a></li>
+            <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
             {% include "chercheurs/actions.html" %}
         </ul>
         

@@ -7,4 +7,8 @@ ALTER TABLE `chercheurs_chercheur`
     ADD COLUMN `expert_oif` bool NOT NULL,
     ADD COLUMN `membre_fipf` bool NOT NULL,
     ADD COLUMN `membre_fipf_association` varchar(255) NOT NULL;
+
+ALTER TABLE chercheurs_expertise CHANGE COLUMN date_expertise `date` varchar(255) NOT NULL;
 COMMIT;
+
+

@@ -179,7 +179,7 @@ class Publication(models.Model):
 class Expertise(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Objet de la dernière expertise')
-    date = models.DateField(db_column='date_expertise', null=True, blank=True)
+    date = models.CharField(max_length=255, blank=True)
     lieu = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Lieu de la dernière expertise')
     organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme commanditaire')
     organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme commanditaire")

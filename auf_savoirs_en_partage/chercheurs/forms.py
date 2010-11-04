@@ -3,7 +3,6 @@ import hashlib
 from django import forms
 from django.db.models import Q
 from models import *
-from savoirs.forms import SEPDateField
 
 class PersonneForm(forms.ModelForm):
     genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
@@ -110,7 +109,6 @@ class TheseForm(PublicationForm):
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
 class ExpertiseForm(forms.ModelForm):
-    date = SEPDateField(required=False, label="Date")
     class Meta:
         model = Expertise
         fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        

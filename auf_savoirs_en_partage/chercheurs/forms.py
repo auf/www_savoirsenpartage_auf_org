@@ -224,7 +224,7 @@ class RepertoireSearchForm (forms.Form):
         return qs
     
 class SendPasswordForm(forms.Form):
-    email = forms.EmailField(required=True, label="courriel")
+    email = forms.EmailField(required=True, label="Adresse électronique")
     def clean_email(self):
         cleaned_data = self.cleaned_data
         email = cleaned_data.get("email")
@@ -232,7 +232,7 @@ class SendPasswordForm(forms.Form):
             try:
                 Utilisateur.objects.get(courriel=email)
             except:
-                raise forms.ValidationError("Ce courriel n'existe pas dans notre base de données.")       
+                raise forms.ValidationError("Cette adresse n'existe pas dans notre base de données.")       
         return email
 
 class NewPasswordForm(forms.Form):

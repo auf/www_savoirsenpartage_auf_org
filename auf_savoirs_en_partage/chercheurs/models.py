@@ -177,8 +177,8 @@ class Expertise(models.Model):
     nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Objet de la dernière expertise')
     date = models.CharField(max_length=255, blank=True)
     lieu = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Lieu de la dernière expertise')
-    organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme commanditaire')
-    organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme commanditaire")
+    organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme demandeur')
+    organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme demandeur")
     actif = models.BooleanField(editable = False, db_column='actif')
 
     def __unicode__(self):

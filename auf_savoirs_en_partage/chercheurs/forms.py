@@ -109,9 +109,17 @@ class TheseForm(PublicationForm):
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
 class ExpertiseForm(forms.ModelForm):
+    OUI_NON_CHOICES = ((1, 'Oui'), (0, 'Non'))
+    organisme_demandeur_visible = forms.ChoiceField(choices=OUI_NON_CHOICES,
+                                                    label="Voulez-vous que l'organisme demandeur soit visible sur votre fiche?",
+                                                    widget=forms.RadioSelect())
     class Meta:
         model = Expertise
         fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        
+
+    def clean_organisme_demandeur_visible(self):
+        """Transforme la valeur du champ en booléen"""
+        return bool(int(self.cleaned_data['organisme_demandeur_visible']))
 
 class ChercheurFormGroup(object):
     """Groupe de formulaires nécessaires pour l'inscription et l'édition

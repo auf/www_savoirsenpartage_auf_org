@@ -61,6 +61,7 @@ class ChercheurQuerySet(models.query.QuerySet):
                     Q(etablissement_autre_nom__icontains=word) |
                     Q(etablissement_autre_pays__in=matching_pays) |
                     Q(discipline__in=matching_disciplines) |
+                    Q(groupe_recherche__icontains=word) |
                     Q(publication1__in=matching_publications) |
                     Q(publication2__in=matching_publications) |
                     Q(publication3__in=matching_publications) |

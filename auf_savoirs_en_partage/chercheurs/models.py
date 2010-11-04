@@ -89,30 +89,25 @@ class Chercheur(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     personne = models.ForeignKey('Personne', db_column='personne')
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
-                                    verbose_name = 'Nationalité', related_name='nationalite')
+                                    verbose_name = 'nationalité', related_name='nationalite')
     #fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
-    diplome = models.CharField(max_length=255, null=True,
-                                 verbose_name = 'Diplôme le plus élevé')
+    diplome = models.CharField(max_length=255, null=True, verbose_name = 'diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
-    etablissement_autre_nom = models.CharField(max_length=255, null=True, blank=True,
-                                 verbose_name = 'Autre établissement')
+    etablissement_autre_nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'autre établissement')
     etablissement_autre_pays = models.ForeignKey(Pays, null = True, blank=True, db_column='etablissement_autre_pays', 
-                                                to_field='code', related_name='etablissement_autre_pays',
-                                                 verbose_name = 'Pays de l\'établissement')
-    #Domaine
-    thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='Thematique')
+                                                 to_field='code', related_name='etablissement_autre_pays',
+                                                 verbose_name = "pays de l'établissement")
 
-    mots_cles = models.CharField(max_length=255, null=True,
-                                    verbose_name='Mots-clés')                    
-    discipline = models.ForeignKey(Discipline, db_column='discipline', null=True,
-                                        verbose_name='Discipline')
-    theme_recherche = models.TextField(null=True, blank=True, verbose_name='Thème de recherche')                                    
+    #Domaine
+    thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='thematique')
+    mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés')                    
+    discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
+    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thème de recherche')                                    
+    groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
     expertise = models.ForeignKey('Expertise', db_column='expertise', null=True, blank=True, related_name='expertise')
-    url_site_web = models.URLField(max_length=255, null=True, blank=True,
-                                    verbose_name='Adresse site Internet')
-    url_blog = models.URLField(max_length=255, null=True, blank=True,
-                                    verbose_name='Blog')
+    url_site_web = models.URLField(max_length=255, null=True, blank=True, verbose_name='adresse site Internet')
+    url_blog = models.URLField(max_length=255, null=True, blank=True, verbose_name='blog')
     url_reseau_social = models.URLField(
         max_length=255, null=True, blank=True, verbose_name='Réseau social',
         help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"

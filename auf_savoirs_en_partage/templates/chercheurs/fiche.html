@@ -37,6 +37,12 @@
             <td>{{ chercheur.theme_recherche }}</td>
         </tr>
         {% endif %}
+        {% if chercheur.groupe_recherche %}
+        <tr>
+            <td class="label">Groupe de recherche:</td>
+            <td>{{ chercheur.groupe_recherche }}</td>
+        </tr>
+        {% endif %}
         <tr>
             <td class="label">Mots-clés:</td>
             <td>{{ chercheur.mots_cles }}</td>

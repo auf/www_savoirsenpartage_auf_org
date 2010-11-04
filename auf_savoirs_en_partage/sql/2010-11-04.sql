@@ -9,6 +9,7 @@ ALTER TABLE `chercheurs_chercheur`
     ADD COLUMN `membre_fipf_association` varchar(255) NOT NULL;
 
 ALTER TABLE chercheurs_expertise CHANGE COLUMN date_expertise `date` varchar(255) NOT NULL;
+ALTER TABLE chercheurs_chercheur ADD COLUMN groupe_recherche varchar(255) NOT NULL;
 COMMIT;
 
 

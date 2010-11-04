@@ -44,7 +44,7 @@ class ChercheurForm(forms.ModelForm):
         model = Chercheur
         fields = ('statut', 'diplome', 'etablissement',
                   'etablissement_autre_nom', 'etablissement_autre_pays',
-                  'discipline', 'theme_recherche', 'mots_cles',
+                  'discipline', 'theme_recherche', 'groupe_recherche', 'mots_cles',
                   'url_site_web', 'url_blog', 'url_reseau_social',
                   'membre_instance_auf', 'membre_instance_auf_dates',
                   'expert_oif', 'membre_fipf', 'membre_fipf_association')

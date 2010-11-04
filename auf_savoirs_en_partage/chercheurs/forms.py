@@ -103,8 +103,8 @@ class PublicationForm(forms.ModelForm):
 class TheseForm(PublicationForm):
     titre = forms.CharField(required=True, label="Titre de la thèse ou du mémoire")
     annee = forms.IntegerField(required=True, label="Année de soutenance (réalisée ou prévue)")
-    editeur = forms.CharField(required=False, label="Directeur de thèse")
-    lieu_edition = forms.CharField(required=False, label="Établissement de soutenance")
+    editeur = forms.CharField(required=True, label="Directeur de thèse")
+    lieu_edition = forms.CharField(required=True, label="Établissement de soutenance")
     class Meta:
         model = Publication
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')

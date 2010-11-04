@@ -123,6 +123,13 @@ class Chercheur(models.Model):
     
     these = models.ForeignKey('Publication', db_column='these', null=True, blank=True, related_name='These')
     
+    # Activités en francophonie
+    membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
+    membre_instance_auf_dates = models.CharField(max_length=255, blank=True, verbose_name="dates")
+    expert_oif = models.BooleanField(default=False, verbose_name="est un expert de l'OIF")
+    membre_fipf = models.BooleanField(default=False, verbose_name="est membre de la FIPF")
+    membre_fipf_association = models.CharField(max_length=255, blank=True, verbose_name="nom de l'association")
+
     #meta
     actif = models.BooleanField(editable = False)
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')

@@ -7,6 +7,7 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.cache import never_cache
 
 from forms import *
 from django.forms.models import inlineformset_factory
@@ -129,186 +130,37 @@ def index(request):
 
 def inscription(request):
     if request.method == 'POST':
-        personne_form = PersonneForm (request.POST, prefix="personne")
-        chercheur_form = ChercheurForm (request.POST, prefix="chercheur")
-        etablissement_form = EtablissementForm (request.POST, prefix="etablissement")
-        etablissement_autre_form = EtablissementAutreForm(request.POST, prefix="etablissement_autre")
-        discipline_form = DisciplineForm (request.POST, prefix="discipline")  
-        publication1_form = PublicationForm (request.POST, prefix="publication1")
-        publication2_form = PublicationForm (request.POST, prefix="publication2") 
-        publication3_form = PublicationForm (request.POST, prefix="publication3") 
-        publication4_form = PublicationForm (request.POST, prefix="publication4")
-        these_form = TheseForm(request.POST, prefix="these")
-        expertise_form = ExpertiseForm(request.POST, prefix="expertise")
-        groupe_form = GroupeForm(request.POST, prefix="groupe")
-        
-        if personne_form.is_valid():
-            if chercheur_form.is_valid() and groupe_form.is_valid():
-                c = chercheur_form.save(commit=False)
-                
-                etablissement_form = EtablissementForm (request.POST, prefix="etablissement", instance=c)
-                etablissement_autre_form = EtablissementAutreForm (request.POST, prefix="etablissement_autre", instance=c)
-                discipline_form = DisciplineForm (request.POST, prefix="discipline", instance=c)
-                
-                if etablissement_form.is_valid() and discipline_form.is_valid() and these_form.is_valid():       
-                    if publication1_form.is_valid() and publication1_form.cleaned_data['titre']:
-                       pub = publication1_form.save()
-                       c.publication1 = pub
-                    if publication2_form.is_valid() and publication2_form.cleaned_data['titre']:
-                       pub = publication2_form.save()
-                       c.publication2 = pub   
-                    if publication3_form.is_valid() and publication3_form.cleaned_data['titre']:
-                       pub = publication3_form.save()
-                       c.publication3 = pub    
-                    if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
-                       pub = publication4_form.save()
-                       c.publication4 = pub    
-                    these = these_form.save()
-                    if expertise_form.is_valid() and expertise_form.cleaned_data['nom']:
-                        expertise = expertise_form.save()
-                        c.expertise = expertise
-                    c.these = these 
-                    etablissement_form.save(commit=False)
-                    etablissement_autre_form.save(commit=False)
-                    discipline_form.save(commit=False)
-                    #encodage du mot de passe de l'utilisateur (refactorer car c'est pas clean
-                    #et c'est pas la bonne place pour faire ca - AJ
-                    personne_form.cleaned_data['password'] = hashlib.md5(personne_form.cleaned_data['password']).hexdigest()
-                    p = personne_form.save()
-                    c.personne = p
-                    c.save()
-                    
-                    #sauvegarde des groupes
-                    groupes = request.POST.getlist('groupe-groupes')
-                    for g in groupes:
-                        g = Groupe.objects.get(pk=g)
-                        ChercheurGroupe.objects.get_or_create(chercheur=c, groupe=g, actif=1)
-
-                    # login automatique
-                    login(request, authenticate(username=personne_form.cleaned_data['courriel'], 
-                                                password=personne_form.cleaned_data['password']))
-                    return HttpResponseRedirect(url('chercheurs.views.perso'))
+        forms = ChercheurFormGroup(request.POST)
+        if forms.is_valid():
+            forms.save()
+            # login automatique
+            login(request, authenticate(username=forms.personne.cleaned_data['courriel'], 
+                                        password=forms.personne.cleaned_data['password']))
+            return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
-        personne_form = PersonneForm(prefix="personne")
-        chercheur_form = ChercheurForm(prefix="chercheur")
-        etablissement_form = EtablissementForm(prefix="etablissement")
-        etablissement_autre_form = EtablissementAutreForm(prefix="etablissement_autre")
-        discipline_form = DisciplineForm(prefix="discipline")
-        publication1_form = PublicationForm(prefix="publication1")
-        publication2_form = PublicationForm(prefix="publication2") 
-        publication3_form = PublicationForm(prefix="publication3") 
-        publication4_form = PublicationForm(prefix="publication4")
-        these_form = TheseForm(prefix="these")
-        expertise_form = ExpertiseForm(prefix="expertise")
-        groupe_form = GroupeForm(prefix="groupe")
+        forms = ChercheurFormGroup()
     
-    variables = { 'personne_form': personne_form,
-                  'chercheur_form': chercheur_form,
-                  'etablissement_form': etablissement_form,
-                  'discipline_form': discipline_form,
-                  'etablissement_autre_form': etablissement_autre_form,
-                  'publication1_form': publication1_form,
-                  'publication2_form': publication2_form,
-                  'publication3_form': publication3_form,
-                  'publication4_form': publication4_form,
-                  'these_form': these_form,
-                  'expertise_form': expertise_form,
-                  'groupe_form': groupe_form,
-                }
-    
-    return render_to_response ("chercheurs/inscription.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    return render_to_response("chercheurs/inscription.html",
+                              dict(forms=forms),
+                              context_instance=RequestContext(request))
 
 @login_required()
+@never_cache
 def edit(request):
     """Edition d'un chercheur"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']    
-    #GroupeFormset = inlineformset_factory(Chercheur, ChercheurGroupe)
-    
     if request.method == 'POST':
-        personne_form = PersonneEditForm(request.POST, prefix="personne", instance=chercheur.personne)
-        chercheur_form = ChercheurForm (request.POST, prefix="chercheur", instance=chercheur)
-        etablissement_form = EtablissementForm(request.POST, prefix="etablissement", instance=chercheur)
-        etablissement_autre_form = EtablissementAutreForm(request.POST, prefix="etablissement_autre", instance=chercheur)
-        discipline_form = DisciplineForm(request.POST, prefix="discipline", instance=chercheur)
-        publication1_form = PublicationForm(request.POST, prefix="publication1", instance=chercheur.publication1)
-        publication2_form = PublicationForm(request.POST, prefix="publication2", instance=chercheur.publication2) 
-        publication3_form = PublicationForm(request.POST, prefix="publication3", instance=chercheur.publication3) 
-        publication4_form = PublicationForm(request.POST, prefix="publication4", instance=chercheur.publication4)
-        these_form = TheseForm(request.POST, prefix="these", instance=chercheur.these)
-        expertise_form = ExpertiseForm(request.POST, prefix="expertise", instance=chercheur.expertise)
-        groupe_form = GroupeForm(request.POST, prefix="groupe", instance=chercheur)
-        
-        #formset = GroupeFormset(request.POST, prefix="groupes", instance = chercheur)
-        
-        if( personne_form.is_valid() and discipline_form.is_valid() and chercheur_form.is_valid() and these_form.is_valid()
-            and etablissement_form.is_valid() and etablissement_autre_form.save() and groupe_form.is_valid() and expertise_form.is_valid() ):
-            personne_form.save()
-            discipline_form.save()
-            chercheur_form.save()
-            etablissement_form.save()
-            etablissement_autre_form.save()
-            
-            if publication1_form.is_valid() and publication1_form.cleaned_data['titre']:
-                chercheur.publication1 = publication1_form.save()
-            if publication2_form.is_valid() and publication2_form.cleaned_data['titre']:
-                chercheur.publication2 = publication2_form.save()
-            if publication3_form.is_valid() and publication3_form.cleaned_data['titre']:
-                chercheur.publication3 = publication3_form.save()              
-            if publication4_form.is_valid() and publication4_form.cleaned_data['titre']:
-                chercheur.publication4 = publication4_form.save()
-            chercheur.these = these_form.save()  
-            if expertise_form.cleaned_data['nom']:
-                chercheur.expertise = expertise_form.save()                
-            chercheur.save()
-            #Gestion des groupes
-            groupes = request.POST.getlist('groupe-groupes')
-            #On delete les chercheurs deselectionnés
-            ChercheurGroupe.objects.filter(chercheur=chercheur).exclude(groupe__in=groupes).delete()
-            #Sauvegarde des groupes...
-            for g in groupes:
-                g = Groupe.objects.get(pk=g)
-                ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=g, actif=1)
+        forms = ChercheurFormGroup(request.POST, chercheur=chercheur)
+        if forms.is_valid():
+            forms.save()
             return HttpResponseRedirect("/chercheurs/perso/?modification=1")
-            
-            #formset.save()
-            
     else:
-        personne_form = PersonneEditForm(prefix="personne", instance=chercheur.personne) 
-        chercheur_form = ChercheurForm (prefix="chercheur", instance=chercheur)
-        etablissement_form = EtablissementForm(prefix="etablissement", instance=chercheur)
-        etablissement_autre_form = EtablissementAutreForm(prefix="etablissement_autre", instance=chercheur)
-        discipline_form = DisciplineForm(prefix="discipline", instance=chercheur)
-        publication1_form = PublicationForm(prefix="publication1", instance=chercheur.publication1)
-        publication2_form = PublicationForm(prefix="publication2", instance=chercheur.publication2) 
-        publication3_form = PublicationForm(prefix="publication3", instance=chercheur.publication3) 
-        publication4_form = PublicationForm(prefix="publication4", instance=chercheur.publication4) 
-        these_form = TheseForm(prefix="these", instance=chercheur.these)
-        expertise_form = ExpertiseForm(prefix="expertise", instance=chercheur.expertise)
-        groupe_form = GroupeForm(prefix="groupe", instance=chercheur)
-        #formset = GroupeFormset(prefix="groupes", instance = chercheur)
+        forms = ChercheurFormGroup(chercheur=chercheur)
         
-    variables = { 'chercheur': chercheur,
-                  'personne_form':personne_form,
-                  'chercheur_form': chercheur_form,
-                  'etablissement_form': etablissement_form,
-                  'discipline_form': discipline_form,
-                  'etablissement_autre_form': etablissement_autre_form,
-                  'publication1_form': publication1_form,
-                  'publication2_form': publication2_form,
-                  'publication3_form': publication3_form,
-                  'publication4_form': publication4_form,
-                  'these_form': these_form,
-                  'expertise_form': expertise_form,
-                  'groupe_form': groupe_form,
-                  #'formset' : formset
-                }
-    return render_to_response ("chercheurs/edit.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
-            
+    return render_to_response("chercheurs/edit.html",
+                              dict(forms=forms, chercheur=chercheur),
+                              context_instance = RequestContext(request))
             
 @login_required()
 def perso(request):

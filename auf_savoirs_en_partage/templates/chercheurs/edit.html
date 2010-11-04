@@ -10,10 +10,10 @@
         <div>
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication1_form.instance.publication_affichage|default:"-"}}</p>
+              <p>{{forms.publication1.instance.publication_affichage|default:"-"}}</p>
             </div>
             <div class="publication">
-              {% with publication1_form as form %}
+              {% with forms.publication1 as form %}
                   {% include "table_form.html" %}
               {% endwith %}
             </div>
@@ -24,10 +24,10 @@
             <h6>- Publication 2</h6>
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication2_form.instance.publication_affichage|default:"-"}}</p>
+              <p>{{forms.publication2.instance.publication_affichage|default:"-"}}</p>
             </div>
             <div class="publication">
-                {% with publication2_form as form %}
+                {% with forms.publication2 as form %}
                     {% include "table_form.html" %}
                 {% endwith %} 
             </div>
@@ -35,10 +35,10 @@
             <h6>- Publication 3</h6>
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication3_form.instance.publication_affichage|default:"-"}}</p>
+              <p>{{forms.publication3.instance.publication_affichage|default:"-"}}</p>
             </div>
             <div class="publication">
-                {% with publication3_form as form %}
+                {% with forms.publication3 as form %}
                     {% include "table_form.html" %}
                 {% endwith %}
             </div>
@@ -46,10 +46,10 @@
             <h6>- Publication 4</h6>
             <div class="infotip">
               <strong>Renseignements préalablements enregistrés</strong>
-              <p>{{publication4_form.instance.publication_affichage|default:"-"}}</p>
+              <p>{{forms.publication4.instance.publication_affichage|default:"-"}}</p>
             </div>
             <div class="publication">
-                {% with publication4_form as form %}
+                {% with forms.publication4 as form %}
                     {% include "table_form.html" %}
                 {% endwith %}
             </div>

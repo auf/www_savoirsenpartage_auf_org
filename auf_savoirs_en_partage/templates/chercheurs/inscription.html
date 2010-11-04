@@ -10,7 +10,7 @@
         <legend>Publications</legend>
         <div>
             <div class="publication">
-              {% with publication1_form as form %}
+              {% with forms.publication1 as form %}
                   {% include "table_form.html" %}
               {% endwith %}
             </div>
@@ -19,15 +19,15 @@
         <p id="show_publications">+ Autres publications</p>
         <div class="publications_autre">
             <h6>- Publication 2</h6>
-            {% with publication2_form as form %}
+            {% with forms.publication2 as form %}
                 {% include "table_form.html" %}
             {% endwith %} 
             <h6>- Publication 3</h6>
-            {% with publication3_form as form %}
+            {% with forms.publication3 as form %}
                 {% include "table_form.html" %}
             {% endwith %}     
             <h6>- Publication 4</h6>
-            {% with publication4_form as form %}
+            {% with forms.publication4 as form %}
                 {% include "table_form.html" %}
             {% endwith %}
         </div>

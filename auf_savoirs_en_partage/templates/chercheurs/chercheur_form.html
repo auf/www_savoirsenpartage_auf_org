@@ -1,54 +1,70 @@
+{% load form_tags %}
+
 <script>
   $(function () {
       $("#id_expertise").datetime({ userLang: 'fr' });
       });
 </script>
 
- {% if personne_form.errors or chercheur_form.errors or etablissement_form.errors or discipline_form.errors or these_form.errors %}
+{% if forms.has_errors %}
 <span class="message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</span>
 {% endif %}   
-    <fieldset>
+    <fieldset class="horizontal-radio-buttons">
         <legend>Informations personnelles</legend>
-        {% with personne_form as form %}
+        {% with forms.personne as form %}
             {% include "table_form.html" %}
         {% endwith %}
     </fieldset>
+
     <fieldset>
         <legend>Informations académiques</legend>
-        {% with chercheur_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
-        {% with groupe_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
+        <table>
+            {% form_field forms.chercheur.statut %}
+            {% form_field forms.chercheur.diplome %}
+            {% form_field forms.groupes.groupes %}
+        </table>
     </fieldset>
-    
+
     <fieldset>
         <legend>Etablissement de rattachement <span style="color:red">*</span></legend>
-        {% if etablissement_form.errors %}
-        <span class="message">Vous devez renseigner un établissement.</span>
-        {% endif %}
-        {% with etablissement_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
+        <table>
+            {% form_field forms.chercheur.etablissement %}
+        </table>
         <p>Si l'établissement n'existe pas ci-dessus</p>
-        {% with etablissement_autre_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
+        <table>
+            {% form_field forms.chercheur.etablissement_autre_nom %}
+            {% form_field forms.chercheur.etablissement_autre_pays %}
+        </table>
     </fieldset>
     
     <fieldset>
         <legend>Champ disciplinaire, thèmes de recherche</legend>
-        {% with discipline_form as form %}
-            {% include "table_form.html" %}
-        {% endwith %}
+        <table>
+            {% form_field forms.chercheur.discipline %}
+            {% form_field forms.chercheur.theme_recherche %}
+            {% form_field forms.chercheur.mots_cles %}
+            {% form_field forms.chercheur.url_site_web %}
+            {% form_field forms.chercheur.url_blog %}
+            {% form_field forms.chercheur.url_reseau_social %}
+        </table>
     </fieldset>
     
+    <fieldset>
+        <legend>Activités en Francophonie</legend>
+        <table class="horizontal-radio-buttons">
+            {% form_field forms.chercheur.membre_instance_auf %}
+            {% form_field forms.chercheur.membre_instance_auf_dates %}
+            {% form_field forms.chercheur.expert_oif %}
+            {% form_field forms.chercheur.membre_fipf %}
+            {% form_field forms.chercheur.membre_fipf_association %}
+        </table>
+    </fieldset>
+
     <fieldset>
         <legend>Thèse ou mémoire</legend>
         <div>
             <div class="publication">
-              {% with these_form as form %}
+              {% with forms.these as form %}
                   {% include "table_form.html" %}
               {% endwith %}
             </div>
@@ -59,7 +75,7 @@
     <fieldset>
         <legend>Expertise</legend>
         <div>
-            {% with expertise_form as form %}
+            {% with forms.expertise as form %}
                 {% include "table_form.html" %}
             {% endwith %}
         </div>

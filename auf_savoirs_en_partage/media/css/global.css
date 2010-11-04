@@ -195,7 +195,7 @@ ul.actions { position: absolute; top: 15px; right: 20px; }
 #repertoire th, td { padding:5px }
 
 
-.errorlist {color:red}
+.errorlist { color:red; margin: 0 }
 
 .publications_autre {border:1px solid #CCC; background:#FAFAFA; margin:10px; padding:10px; display:none;}
 
@@ -283,3 +283,6 @@ color:red;
 .fiche {margin-top: 6px;}
 .fiche a, .original a, .provenance a{text-decoration: none;}
 .back {position: absolute; top: 20px; right: 20px;}
+
+.horizontal-radio-buttons ul { margin-left: 0 }
+.horizontal-radio-buttons li { display: inline }

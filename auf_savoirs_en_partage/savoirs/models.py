@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import simplejson, uuid, datetime, caldav, vobject, uuid, random
+import simplejson, uuid, datetime, caldav, vobject, uuid, random, operator
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q, Max
@@ -344,6 +344,42 @@ class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         qs = self.filter(validated=True)
         qs = qs.filter(Q(listsets__isnull=True) | Q(listsets__validated=True))
         return qs.distinct()
+
+    def filter(self, *args, **kwargs):
+        """Gère des filtres supplémentaires pour l'admin.
+           
+        C'est la seule façon que j'ai trouvée de contourner les mécanismes
+        de recherche de l'admin."""
+        search = kwargs.pop('admin_search', None)
+        search_titre = kwargs.pop('admin_search_titre', None)
+        search_sujet = kwargs.pop('admin_search_sujet', None)
+        search_description = kwargs.pop('admin_search_description', None)
+        search_auteur = kwargs.pop('admin_search_auteur', None)
+
+        if search:
+            qs = self
+            search_all = not (search_titre or search_description or search_sujet or search_auteur)
+            fields = []
+            if search_titre or search_all:
+                fields += ['title', 'alt_title']
+            if search_description or search_all:
+                fields += ['description', 'abstract']
+            if search_sujet or search_all:
+                fields += ['subject']
+            if search_auteur or search_all:
+                fields += ['creator', 'contributor']
+
+            for bit in search.split():
+                or_queries = [Q(**{field + '__icontains': bit}) for field in fields]
+                qs = qs.filter(reduce(operator.or_, or_queries))
+
+            if args or kwargs:
+                qs = super(RecordQuerySet, qs).filter(*args, **kwargs)
+            return qs
+        else:
+            return super(RecordQuerySet, self).filter(*args, **kwargs)
+
+
 
 class Record(models.Model):
     

@@ -89,7 +89,6 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
               'type', 'format', 'language', 'disciplines', 'thematiques',
               'pays', 'regions', 'validated']
 
-    search_fields = []
     readonly_fields = []
 
     list_filter = ('validated', 'server', 'listsets', 'pays', 'regions',
@@ -105,28 +104,26 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     def __init__(self, *args, **kwargs):
         """Surcharge l'initialisation pour définir les champs de recherche dynamiquement,
         et les champs en lecture seule uniquement."""
-        self.search_fields = META.keys()
         self.readonly_fields = META.keys()
         self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
 
-    # Fonctions pour présenter l'information
+    # Recherche par mots-clés
+
+    # Présentation de l'information
     
     def est_complet(self, obj):
-        """ """
         v = obj.est_complet()
         return '<img src="/admin_media/img/admin/icon-%s.gif" alt="%d"/>' % (('no','yes')[v], v)
     est_complet.allow_tags = True
     est_complet.short_description = u'complet'
     
     def uri_display(self, obj):
-        """ """
         return "<a target='_blank' href='%s'>%s</a>" % (obj.uri, obj.uri)
     uri_display.allow_tags = True
     uri_display.short_description = u'lien'
 
     def description_display(self, obj):
-        """ """
         max = 140
         if obj.description is not None and len(obj.description) > max:       
             return "%s..." % obj.description[:max]

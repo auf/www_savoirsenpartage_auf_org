@@ -88,7 +88,7 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    personne = models.ForeignKey('Personne', db_column='personne')
+    personne = models.ForeignKey('Personne', db_column='personne', editable=False)
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
     #fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
@@ -117,12 +117,29 @@ class Chercheur(models.Model):
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name='Domaines de recherche')
     
     #Refactoring, mettre les publications comme etant des many2many;
-    publication1 = models.ForeignKey('Publication', db_column='publication1', null=True, blank=True, related_name='publication1', verbose_name = 'Publication 1')
-    publication2 = models.ForeignKey('Publication', db_column='publication2', null=True, blank=True, related_name='publication2', verbose_name = 'Publication 2')
-    publication3 = models.ForeignKey('Publication', db_column='publication3', null=True, blank=True, related_name='publication3', verbose_name = 'Publication 3')
-    publication4 = models.ForeignKey('Publication', db_column='publication4', null=True, blank=True, related_name='publication4', verbose_name = 'Publication 4')
+    publication1 = models.ForeignKey('Publication',
+                                     db_column='publication1', null=True,
+                                     blank=True, editable=False,
+                                     related_name='publication1',
+                                     verbose_name='Publication 1')
+    publication2 = models.ForeignKey('Publication',
+                                     db_column='publication2', null=True,
+                                     blank=True, editable=False,
+                                     related_name='publication2',
+                                     verbose_name = 'Publication 2')
+    publication3 = models.ForeignKey('Publication',
+                                     db_column='publication3', null=True,
+                                     blank=True, editable=False,
+                                     related_name='publication3',
+                                     verbose_name = 'Publication 3')
+    publication4 = models.ForeignKey('Publication',
+                                     db_column='publication4', null=True,
+                                     blank=True, editable=False,
+                                     related_name='publication4',
+                                     verbose_name = 'Publication 4')
     
-    these = models.ForeignKey('Publication', db_column='these', null=True, blank=True, related_name='These')
+    these = models.ForeignKey('Publication', db_column='these', null=True,
+                              blank=True, related_name='These', editable=False)
     
     # Activités en francophonie
     membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
@@ -195,16 +212,23 @@ class Groupe(models.Model):
                                     verbose_name='Bulletin')
     actif = models.BooleanField(editable = False, db_column='actif')
 
+    class Meta:
+        verbose_name = 'domaine de recherche'
+        verbose_name_plural = 'domaines de recherche'
+
     def __unicode__(self):
         return u"%s" % (self.nom)
     
 class ChercheurGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
+    chercheur = models.ForeignKey('Chercheur', db_column='chercheur', editable=False)
     groupe = models.ForeignKey('Groupe', db_column='groupe')
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
     actif = models.BooleanField(editable = False, db_column='actif')
+
+    class Meta:
+        verbose_name = 'adhésion'
 
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)

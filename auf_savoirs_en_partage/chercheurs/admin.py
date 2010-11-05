@@ -28,7 +28,7 @@ class ChercheurAdmin(admin.ModelAdmin):
         if groupe_id:
             groupe = Groupe.objects.get(id=groupe_id)
             action_desc = actions['remove_from_group']
-            actions['remove_from_group'] = (action_desc[0], action_desc[1], u'Retirer du groupe « %s »' % groupe.nom)
+            actions['remove_from_group'] = (action_desc[0], action_desc[1], u'Retirer du domaine de recherche « %s »' % groupe.nom)
         else:
             del actions['remove_from_group']
         return actions

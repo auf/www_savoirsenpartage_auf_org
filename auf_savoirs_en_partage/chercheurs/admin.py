@@ -10,6 +10,7 @@ class ChercheurAdmin(admin.ModelAdmin):
     list_filter = ('groupes',)
     list_per_page = 25
     actions = ('remove_from_group',)
+    search_fields = ('personne__nom', 'personne__prenom')
 
     def remove_from_group(self, request, queryset):
         groupe_id = request.GET.get('groupes__id__exact')

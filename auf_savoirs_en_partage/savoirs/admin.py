@@ -94,38 +94,14 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
 
     list_filter = ('validated', 'server', 'listsets', 'pays', 'regions',
                    'disciplines', 'thematiques')
-    list_display = (
-      #OAI et extra AUF
-      'title',
-      'subject',
-      '_description',
-      '_uri',
-      #'server',
-      'identifier',
-      #'source',
-      'modified',
-      'creator',
-      #'contributor',
-      #'language',
-      #'publisher',
-      'format',
-      'type',
-    
-      #SEP 2 (aucune données récoltées)
-      #'alt_title',
-      #'abstract',
-      #'creation',
-      #'issued',
-      #'isbn',
-      #'orig_lang',
-      'est_complet',
-      'validated',
-    )
-    actions = ['valider_references', 'invalider_references',
-               'assigner_pays', 'assigner_regions', 'assigner_disciplines',
+    list_display = ('title', 'subject', 'uri_display', 'creator',
+                    'est_complet', 'validated',)
+    list_editable = ('validated',)
+    list_per_page = 25
+
+    actions = ['assigner_pays', 'assigner_regions', 'assigner_disciplines',
                'assigner_thematiques']
 
-    # fonctions pour présenter l'information
     def __init__(self, *args, **kwargs):
         """Surcharge l'initialisation pour définir les champs de recherche dynamiquement,
         et les champs en lecture seule uniquement."""
@@ -134,37 +110,36 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
 
+    # Fonctions pour présenter l'information
+    
     def est_complet(self, obj):
         """ """
         v = obj.est_complet()
         return '<img src="/admin_media/img/admin/icon-%s.gif" alt="%d"/>' % (('no','yes')[v], v)
     est_complet.allow_tags = True
+    est_complet.short_description = u'complet'
     
-    def _uri(self, obj):
+    def uri_display(self, obj):
         """ """
         return "<a target='_blank' href='%s'>%s</a>" % (obj.uri, obj.uri)
-    _uri.allow_tags = True
+    uri_display.allow_tags = True
+    uri_display.short_description = u'lien'
 
-    def _description(self, obj):
+    def description_display(self, obj):
         """ """
         max = 140
         if obj.description is not None and len(obj.description) > max:       
             return "%s..." % obj.description[:max]
         else:
             return obj.description
+    description_display.short_description = u'description'
 
-    # actions
-    def valider_references(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('record', 'valider', ",".join(selected)))
-
-    def invalider_references(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/confirmation/%s/%s/?ids=%s" % ('record', 'invalider', ",".join(selected)))
+    # Actions
 
     def assigner_pays(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('pays', ",".join(selected)))
+    assigner_pays.short_description = u'Assigner des pays'
 
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -174,6 +149,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     def assigner_thematiques(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('thematiques', ",".join(selected)))
+    assigner_thematiques.short_description = u'Assigner des thématiques'
 
     def assigner_disciplines(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)

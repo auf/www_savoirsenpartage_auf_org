@@ -355,15 +355,15 @@ class Record(models.Model):
     validated = models.BooleanField(default=True, verbose_name=u'validé')
 
     #OAI
-    title = models.TextField(null = True, blank = True)
-    creator = models.TextField(null = True, blank = True)
-    description = models.TextField(null = True, blank = True)
-    modified = models.CharField(max_length = 255, null = True, blank = True)
+    title = models.TextField(null=True, blank=True, verbose_name=u'titre')
+    creator = models.TextField(null=True, blank=True, verbose_name=u'auteur')
+    description = models.TextField(null=True, blank=True)
+    modified = models.CharField(max_length=255, null=True, blank=True)
     identifier = models.CharField(max_length = 255, null = True, blank = True, unique = True)
     uri = models.CharField(max_length = 255, null = True, blank = True, unique = True)
     source = models.TextField(null = True, blank = True)
     contributor = models.TextField(null = True, blank = True)
-    subject = models.TextField(null = True, blank = True)
+    subject = models.TextField(null=True, blank=True, verbose_name='sujet')
     publisher = models.TextField(null = True, blank = True)
     type = models.TextField(null = True, blank = True)
     format = models.TextField(null = True, blank = True)
@@ -387,6 +387,9 @@ class Record(models.Model):
 
     # Manager
     objects = RecordManager()
+
+    class Meta:
+        verbose_name = 'ressource'
 
     def __unicode__(self):
         return "[%s] %s" % (self.server, self.title)

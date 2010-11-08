@@ -67,7 +67,10 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
                     Q(publication3__in=matching_publications) |
                     Q(publication4__in=matching_publications) |
                     Q(these__in=matching_publications) |
-                    Q(groupes__in=matching_groupes))
+                    Q(groupes__in=matching_groupes) |
+                    Q(expertise__nom__icontains=word) |
+                    Q(mots_cles__icontains=word)
+                   )
             if q is None:
                 q = part
             else:

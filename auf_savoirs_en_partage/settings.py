@@ -69,7 +69,6 @@ INSTALLED_APPS = (
     'pagination',
     'django_sorting',
     'django_roa',
-    'timezones',
     'savoirs',
     'chercheurs',
     'sitotheque',

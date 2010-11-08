@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
-from timezones.fields import TimeZoneField
 from auf_savoirs_en_partage.backend_config import RESOURCES
 from savoirs.globals import META
 from settings import CALENDRIER_URL
@@ -226,8 +225,8 @@ class Evenement(models.Model):
                 description += "\n"
             description += u"Mots-clés: " + ", ".join(kw)
 
-        cal.vevent.add('dtstart').value = combine(self.debut, self.fuseau)
-        cal.vevent.add('dtend').value = combine(self.fin, self.fuseau)
+        cal.vevent.add('dtstart').value = combine(self.debut, pytz.timezone(self.fuseau))
+        cal.vevent.add('dtend').value = combine(self.fin, pytz.timezone(self.fuseau))
         cal.vevent.add('created').value = combine(datetime.datetime.now(), "UTC")
         cal.vevent.add('dtstamp').value = combine(datetime.datetime.now(), "UTC")
         if len(description) > 0:

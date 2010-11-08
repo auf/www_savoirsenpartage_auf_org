@@ -27,10 +27,12 @@
 
     <h5>Discipline, thèmes de recherche</h5>
     <table>
+        {% if chercheur.discipline %}
         <tr>
             <td class="label">Discipline:</td>
             <td>{{ chercheur.discipline }}</td>
         </tr>
+        {% endif %}
         {% if chercheur.theme_recherche %}
         <tr>
             <td class="label">Thèmes de recherche:</td>
@@ -43,10 +45,12 @@
             <td>{{ chercheur.groupe_recherche }}</td>
         </tr>
         {% endif %}
+        {% if chercheur.mots_cles %}
         <tr>
             <td class="label">Mots-clés:</td>
             <td>{{ chercheur.mots_cles }}</td>
         </tr>
+        {% endif %}
         {% if chercheur.url_site_web %}
         <tr>
             <td class="label">Url site web:</td>
@@ -115,10 +119,12 @@
 
     <h5>Publications</h5>
     <table id="publications">
+        {% if chercheur.these %}
         <tr class="souligne">
             <td class="label">Thèse ou mémoire:</td>
             {% with chercheur.these as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
         </tr>
+        {% endif %}
         {% if chercheur.publication1 or chercheur.publication2 or chercheur.publication3 or chercheur.publication4 %}
         <tr>
             <td class="label">Publications:</td>

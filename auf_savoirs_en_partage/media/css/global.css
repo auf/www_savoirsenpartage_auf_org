@@ -198,6 +198,7 @@ ul.actions { position: absolute; top: 15px; right: 20px; width: 240px; }
 
 
 .errorlist { color:red; margin: 0 }
+.errorlist li { list-style: none; }
 
 .publications_autre {border:1px solid #CCC; background:#FAFAFA; margin:10px; padding:10px; display:none;}
 

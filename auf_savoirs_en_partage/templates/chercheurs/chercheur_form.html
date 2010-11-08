@@ -1,11 +1,5 @@
 {% load form_tags %}
 
-<script>
-  $(function () {
-      $("#id_expertise").datetime({ userLang: 'fr' });
-      });
-</script>
-
 {% if forms.has_errors %}
 <span class="message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</span>
 {% endif %}   

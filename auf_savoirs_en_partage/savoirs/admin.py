@@ -212,6 +212,9 @@ admin.site.register(Actualite, ActualiteAdmin)
 
 
 class EvenementAdminForm(forms.ModelForm):
+    mots_cles = forms.CharField(label='Mots-clés', required=False)
+    lieu = forms.CharField(label='Lieu', required=False)
+
     class Meta:
         model = Evenement
 

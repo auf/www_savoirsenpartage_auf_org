@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
-import simplejson, uuid, datetime, caldav, vobject, uuid, random, operator
+import simplejson, uuid, datetime, caldav, vobject, uuid, random, operator, pytz
+from babel.dates import get_timezone_name
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q, Max
@@ -124,13 +125,32 @@ class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             qs = qs.filter(titre__icontains=word)
         return qs
 
+def build_time_zone_choices():
+    fr_names = set()
+    tzones = []
+    now = datetime.datetime.now()
+    for tzname in pytz.common_timezones:
+        tz = pytz.timezone(tzname)
+        fr_name = get_timezone_name(tz, locale='fr_FR')
+        if fr_name in fr_names:
+            continue
+        fr_names.add(fr_name)
+        offset = tz.utcoffset(now)
+        seconds = offset.seconds + offset.days * 86400
+        (hours, minutes) = divmod(seconds // 60, 60)
+        offset_str = 'UTC%+d:%d' % (hours, minutes) if minutes else 'UTC%+d' % hours
+        tzones.append((seconds, tzname, '%s - %s' % (offset_str, fr_name)))
+    tzones.sort()
+    return [(tz[1], tz[2]) for tz in tzones]
+
 class Evenement(models.Model):
     TYPE_CHOICES = ((u'Colloque', u'Colloque'),
                     (u'Conférence', u'Conférence'),
                     (u'Appel à contribution', u'Appel à contribution'),
                     (u'Journée d\'étude', u'Journée d\'étude'),
                     (None, u'Autre'))
-                   
+    TIME_ZONE_CHOICES = build_time_zone_choices()
+
     uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
     approuve = models.BooleanField(default=False, verbose_name=u'approuvé')
     titre = models.CharField(max_length=255)
@@ -141,10 +161,10 @@ class Evenement(models.Model):
                                               blank=True, null=True)
     mots_cles = models.TextField('Mots-Clés', blank = True, null = True)
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
-    fuseau = TimeZoneField(verbose_name='fuseau horaire')
+    lieu = models.TextField()
     debut = models.DateTimeField(default = datetime.datetime.now)
     fin = models.DateTimeField(default = datetime.datetime.now)
-    lieu = models.TextField()
+    fuseau = models.CharField(max_length=100, choices=TIME_ZONE_CHOICES, verbose_name='fuseau horaire')
     description = models.TextField(blank = True, null = True)
     #fichiers = TODO?
     contact = models.TextField(blank = True, null = True)

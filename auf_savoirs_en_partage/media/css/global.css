@@ -102,7 +102,7 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 
 #tabs { margin-left: 8px; margin-right: 8px; }
 
-#contenu h4 { padding: 0 25px; margin-bottom:0.4em; font-size:2.2em; font-weight:normal; letter-spacing:-1px; }
+#contenu h4 { padding: 0 25px; margin-bottom:0.4em; font-size:2.2em; font-weight:normal; letter-spacing:-1px; width: 450px; }
 #contenu h4 a { text-decoration:none; color:black; }
 #contenu h4 a:hover { text-decoration:underline; }
 #contenu h5 { padding: 10px 0 0 25px; margin-bottom:0.4em; font-size:1.8em; font-weight:normal; letter-spacing:-1px; }
@@ -148,7 +148,7 @@ ul.liste-de-l-accueil .le-resume {font-size:1.1em;}
 ul.liste-de-l-accueil .le-resume a { display:inline;}
 ul.sous-menu li, ul.actions li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
 
-ul.actions { position: absolute; top: 15px; right: 20px; }
+ul.actions { position: absolute; top: 15px; right: 20px; width: 240px; }
 
 .resultats { width:744px; display:inline; margin:0; padding:0; float:left; margin-top:100px; margin-bottom:50px; margin-left:0; background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
 .resultats a:hover{text-decoration:none;}

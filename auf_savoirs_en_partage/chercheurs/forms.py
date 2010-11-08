@@ -24,6 +24,8 @@ class PersonneInscriptionForm(PersonneForm):
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
     OUI_NON_CHOICES = ((1, 'Oui'), (0, 'Non'))
+    ETABLISSEMENT_CHOICES = ((id, nom if len(nom) < 80 else nom[:80] + '...')
+                             for id, nom in Etablissement.objects.values_list('id', 'nom'))
 
     membre_instance_auf = forms.ChoiceField(
         choices=OUI_NON_CHOICES, 
@@ -39,6 +41,7 @@ class ChercheurForm(forms.ModelForm):
                                     label="Êtes-vous membre de la FIPF?",
                                     widget=forms.RadioSelect())
     membre_fipf_association = forms.CharField(label="Préciser le nom de votre association", required=False)
+    etablissement = forms.ChoiceField(label='Etablissement', choices=ETABLISSEMENT_CHOICES)
 
     class Meta:
         model = Chercheur
@@ -49,6 +52,9 @@ class ChercheurForm(forms.ModelForm):
                   'membre_instance_auf', 'membre_instance_auf_dates',
                   'expert_oif', 'membre_fipf', 'membre_fipf_association')
         
+    def clean_etablissement(self):
+        return Etablissement.objects.get(id=self.cleaned_data['etablissement'])
+
     def clean(self):
         etablissement = self.cleaned_data['etablissement']
         etablissement_autre_nom = self.cleaned_data['etablissement_autre_nom']

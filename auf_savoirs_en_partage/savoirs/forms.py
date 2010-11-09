@@ -30,41 +30,13 @@ class SEPDateField(forms.DateField):
 class RecordSearchForm(forms.Form):
     """Formulaire de recherche pour les ressources."""
 
-    class TypeChoices(object):
-        
-        def __iter__(self):
-            """Génère dynamiquement les choix possibles pour la recherche par type."""
-            yield ('', 'Tous')
-            cursor = db.connection.cursor()
-            cursor.execute("""SELECT DISTINCT TRIM(REPLACE(REPLACE(type, ', PeerReviewed', ''), ', NonPeerReviewed', '')) AS clean_type 
-                              FROM savoirs_record ORDER BY clean_type""")
-            for result in cursor.fetchall():
-                type = result[0]
-                if type:
-                    yield (type, type)
-    TYPE_CHOICES = TypeChoices()
-
-    class PublisherChoices(object):
-
-        def __iter__(self):
-            """Génère dynamiquement les choix possibles pour la recherche par éditeur."""
-            yield ('', 'Tous')
-            cursor = db.connection.cursor()
-            cursor.execute("SELECT DISTINCT publisher AS publisher FROM savoirs_record ORDER BY publisher")
-            for result in cursor.fetchall():
-                publisher = result[0]
-                if publisher not in ('', '-'):
-                    yield (publisher, publisher)
-    PUBLISHER_CHOICES = PublisherChoices()
-
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     auteur = forms.CharField(required=False, label="Auteur ou contributeur")
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
+    publisher = forms.CharField(required=False, label="Éditeur")
     discipline = forms.ModelChoiceField(required=False, label="Discipline", queryset=Discipline.objects.all(), empty_label='Toutes')
     region = forms.ModelChoiceField(required=False, label="Région", queryset=Region.objects.all(), empty_label='Toutes')
-    type = forms.ChoiceField(required=False, label="Type de document", choices=TYPE_CHOICES)
-    publisher = forms.ChoiceField(required=False, label="Éditeur", choices=PUBLISHER_CHOICES)
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -89,12 +61,10 @@ class RecordSearchForm(forms.Form):
             region = self.cleaned_data['region']
             if region:
                 records = records.filter(regions=region)
-            type = self.cleaned_data['type']
-            if type:
-                records = records.filter(type__icontains=type)
             publisher = self.cleaned_data['publisher']
             if publisher:
-                records = records.filter(publisher=publisher)
+                for word in publisher.split():
+                    records = records.filter(publisher__icontains=word)
         return records
 
     def get_search_regexp(self):

@@ -175,6 +175,14 @@ class Chercheur(models.Model):
         else:
             return self.etablissement_autre_nom + ', ' + self.etablissement_autre_pays.nom
 
+    @property
+    def pays(self):
+        return self.etablissement.pays if self.etablissement else self.etablissement_autre_pays
+
+    @property
+    def region(self):
+        return self.pays.region
+
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     titre = models.CharField(max_length=255, db_column='titre', null=True, blank=True, verbose_name = 'Titre')

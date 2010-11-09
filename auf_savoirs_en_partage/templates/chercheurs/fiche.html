@@ -96,26 +96,31 @@
     </table>
     {% endif %}
 
-    {% if chercheur.expertise %}
-    <h5>Expertise</h5>
+    {% if chercheur.expertises.all %}
+    <h5>Expertises</h5>
+    {% for expertise in chercheur.expertises.all %}
     <table>
         <tr>
             <td class="label">Titre de l'expertise:</td>
-            <td>{{ chercheur.expertise.nom }}</td>
+            <td>{{ expertise.nom }}</td>
         </tr>
-        {% if chercheur.expertise.date %}
+        {% if expertise.date %}
         <tr>
             <td class="label">Date:</td>
-            <td>{{ chercheur.expertise.date }}</td>
+            <td>{{ expertise.date }}</td>
         </tr>
         {% endif %}
-        {% if chercheur.expertise.organisme_demandeur and chercheur.expertise.organisme_demandeur_visible %}
+        {% if expertise.organisme_demandeur and expertise.organisme_demandeur_visible %}
         <tr>
             <td class="label">Organisme demandeur:</td>
-            <td>{{ chercheur.expertise.organisme_demandeur }}</td>
+            <td>{{ expertise.organisme_demandeur }}</td>
         </tr>
         {% endif %}
     </table>
+    {% if not forloop.last %}
+    <hr>
+    {% endif %}
+    {% endfor %}
     {% endif %}
 
     <h5>Publications</h5>

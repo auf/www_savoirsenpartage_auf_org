@@ -43,6 +43,7 @@ sup{font-size: smaller; vertical-align: 0.5em; line-height: 1px;}
 
 td ul { margin: 0 }
 
+form { padding-right:20px; margin: 1em 0; }
 form td { vertical-align: top }
 form th { width: 20em; text-align: left; font-weight: bold }
 form table { width: 100% }
@@ -50,6 +51,20 @@ form input[type=text] { width: 20em }
 form input.date { width: auto }
 form select { width: 80%; overflow: hidden }
 form p { margin-bottom: 2px }
+fieldset { clear: both; padding: 10px; margin: 0 0 0 0; position: relative }
+fieldset { border-color: #000000; border-width: 1px 0 0 0; border-style: solid none none none; }
+fieldset { font-size: 100%; }
+fieldset fieldset { border: 1px solid #ccc; background: #fafafa; margin: 10px }
+legend { font-size: 150%; font-weight: bold; color: #000000; margin: 0 0 0 0; padding: 0 5px; }
+
+label {
+  font-size: 12px;
+}
+td, th
+{
+vertical-align:middle;
+}
+
 
 .box { padding:0 0 20px 0; }
 .lbl {color: #97012c; }
@@ -132,7 +147,7 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 #contenu .demi-gauche img.top { height:9px; position:relative; top:-9px;}
 #contenu .demi-gauche img.bottom { height:9px;  position:relative; bottom:-9px;}
 
-.contenu-wrapper { padding:0 0 0 25px; }
+.contenu-wrapper { padding: 0 25px; }
 
 ul a { text-decoration:none; }
 ul a:hover { text-decoration:underline; }
@@ -205,34 +220,6 @@ ul.actions { position: absolute; top: 15px; right: 20px; width: 240px; }
 #agenda, #actualites {position: relative;}
 #rss-agenda, #rss-actualites {position: absolute; right: 26px; top: 10px;}
 
-form {padding-right:20px; margin: 1em 0; }
-
-form fieldset {
-  clear: both;
-  font-size: 100%;
-  border-color: #000000;
-  border-width: 1px 0 0 0;
-  border-style: solid none none none;
-  padding: 10px;
-  margin: 0 0 0 0;
-}
-
-form fieldset legend {
-  font-size: 150%;
-  font-weight: bold;
-  color: #000000;
-  margin: 0 0 0 0;
-  padding: 0 5px;
-}
-
-label {
-  font-size: 12px;
-}
-td, th
-{
-vertical-align:middle;
-}
-
 .infotip
 {
 width:300px;
@@ -289,3 +276,6 @@ color:red;
 
 .horizontal-radio-buttons ul { margin-left: 0 }
 .horizontal-radio-buttons li { display: inline }
+
+.delete-row { position: absolute; top: 10px; right: 10px }
+.add-row { float: right; margin-right: 21px }

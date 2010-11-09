@@ -3,75 +3,83 @@
 {% if forms.has_errors %}
 <span class="message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</span>
 {% endif %}   
-    <fieldset class="horizontal-radio-buttons">
-        <legend>Informations personnelles</legend>
-        {% with forms.personne as form %}
+<fieldset class="horizontal-radio-buttons">
+    <legend>Informations personnelles</legend>
+    {% with forms.personne as form %}
+    {% include "table_form.html" %}
+    {% endwith %}
+</fieldset>
+
+<fieldset>
+    <legend>Informations académiques</legend>
+    <table>
+        {% form_field forms.chercheur.statut %}
+        {% form_field forms.chercheur.diplome %}
+        {% form_field forms.groupes.groupes %}
+    </table>
+</fieldset>
+
+<fieldset>
+    <legend>Etablissement de rattachement <span style="color:red">*</span></legend>
+    <table>
+        {% form_field forms.chercheur.etablissement %}
+    </table>
+    <p>Si l'établissement n'existe pas ci-dessus</p>
+    <table>
+        {% form_field forms.chercheur.etablissement_autre_nom %}
+        {% form_field forms.chercheur.etablissement_autre_pays %}
+    </table>
+</fieldset>
+
+<fieldset>
+    <legend>Discipline, thèmes de recherche</legend>
+    <table>
+        {% form_field forms.chercheur.discipline %}
+        {% form_field forms.chercheur.theme_recherche %}
+        {% form_field forms.chercheur.groupe_recherche %}
+        {% form_field forms.chercheur.mots_cles %}
+        {% form_field forms.chercheur.url_site_web %}
+        {% form_field forms.chercheur.url_blog %}
+        {% form_field forms.chercheur.url_reseau_social %}
+    </table>
+</fieldset>
+
+<fieldset>
+    <legend>Activités en Francophonie</legend>
+    <table class="horizontal-radio-buttons">
+        {% form_field forms.chercheur.membre_instance_auf %}
+        {% form_field forms.chercheur.membre_instance_auf_dates %}
+        {% form_field forms.chercheur.expert_oif %}
+        {% form_field forms.chercheur.membre_fipf %}
+        {% form_field forms.chercheur.membre_fipf_association %}
+    </table>
+</fieldset>
+
+<fieldset id="expertises" class="horizontal-radio-buttons">
+    <legend>Expertises</legend>
+    {{ forms.expertises.management_form }}
+    {% for form in forms.expertises.forms %}
+    <fieldset>
+        <table>
+            {% form_field form.nom %}
+            {% form_field form.date %}
+            {% form_field form.organisme_demandeur %}
+            {% form_field form.organisme_demandeur_visible %}
+        </table>
+        {{ form.id }}
+        {{ form.DELETE }}
+    </fieldset>
+    {% endfor %}
+</fieldset>
+
+<fieldset>
+    <legend>Thèse ou mémoire</legend>
+    <div>
+        <div class="publication">
+            {% with forms.these as form %}
             {% include "table_form.html" %}
-        {% endwith %}
-    </fieldset>
-
-    <fieldset>
-        <legend>Informations académiques</legend>
-        <table>
-            {% form_field forms.chercheur.statut %}
-            {% form_field forms.chercheur.diplome %}
-            {% form_field forms.groupes.groupes %}
-        </table>
-    </fieldset>
-
-    <fieldset>
-        <legend>Etablissement de rattachement <span style="color:red">*</span></legend>
-        <table>
-            {% form_field forms.chercheur.etablissement %}
-        </table>
-        <p>Si l'établissement n'existe pas ci-dessus</p>
-        <table>
-            {% form_field forms.chercheur.etablissement_autre_nom %}
-            {% form_field forms.chercheur.etablissement_autre_pays %}
-        </table>
-    </fieldset>
-    
-    <fieldset>
-        <legend>Discipline, thèmes de recherche</legend>
-        <table>
-            {% form_field forms.chercheur.discipline %}
-            {% form_field forms.chercheur.theme_recherche %}
-            {% form_field forms.chercheur.groupe_recherche %}
-            {% form_field forms.chercheur.mots_cles %}
-            {% form_field forms.chercheur.url_site_web %}
-            {% form_field forms.chercheur.url_blog %}
-            {% form_field forms.chercheur.url_reseau_social %}
-        </table>
-    </fieldset>
-    
-    <fieldset>
-        <legend>Activités en Francophonie</legend>
-        <table class="horizontal-radio-buttons">
-            {% form_field forms.chercheur.membre_instance_auf %}
-            {% form_field forms.chercheur.membre_instance_auf_dates %}
-            {% form_field forms.chercheur.expert_oif %}
-            {% form_field forms.chercheur.membre_fipf %}
-            {% form_field forms.chercheur.membre_fipf_association %}
-        </table>
-    </fieldset>
-
-    <fieldset class="horizontal-radio-buttons">
-        <legend>Expertise</legend>
-        <div>
-            {% with forms.expertise as form %}
-                {% include "table_form.html" %}
             {% endwith %}
         </div>
-    </fieldset>
-
-    <fieldset>
-        <legend>Thèse ou mémoire</legend>
-        <div>
-            <div class="publication">
-              {% with forms.these as form %}
-                  {% include "table_form.html" %}
-              {% endwith %}
-            </div>
-            <div style="clear:both"></div>
-        </div>
-    </fieldset>
+        <div style="clear:both"></div>
+    </div>
+</fieldset>

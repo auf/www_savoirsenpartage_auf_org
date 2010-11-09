@@ -109,7 +109,6 @@ class Chercheur(models.Model):
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
     theme_recherche = models.TextField(null=True, blank=True, verbose_name='thème de recherche')                                    
     groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
-    expertise = models.ForeignKey('Expertise', db_column='expertise', null=True, blank=True, related_name='expertise')
     url_site_web = models.URLField(max_length=255, null=True, blank=True, verbose_name='adresse site Internet')
     url_blog = models.URLField(max_length=255, null=True, blank=True, verbose_name='blog')
     url_reseau_social = models.URLField(
@@ -202,9 +201,10 @@ class Publication(models.Model):
         
 class Expertise(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Objet de la dernière expertise')
+    chercheur = models.ForeignKey(Chercheur, related_name='expertises')
+    nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = "Objet de l'expertise")
     date = models.CharField(max_length=255, blank=True)
-    lieu = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Lieu de la dernière expertise')
+    lieu = models.CharField(max_length=255, null=True, blank=True, verbose_name = "Lieu de l'expertise")
     organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme demandeur')
     organisme_demandeur_visible = models.BooleanField(verbose_name="Afficher l'organisme demandeur")
     actif = models.BooleanField(editable = False, db_column='actif')

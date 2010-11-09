@@ -2,6 +2,7 @@
 import hashlib
 from django import forms
 from django.db.models import Q
+from django.forms.models import inlineformset_factory
 from itertools import chain
 from models import *
 
@@ -132,6 +133,8 @@ class ExpertiseForm(forms.ModelForm):
         value = self.cleaned_data['organisme_demandeur_visible']
         return bool(int(value)) if value else False
 
+ExpertiseFormSet = inlineformset_factory(Chercheur, Expertise, form=ExpertiseForm, extra=1)
+
 class ChercheurFormGroup(object):
     """Groupe de formulaires nécessaires pour l'inscription et l'édition
        d'un chercheur."""
@@ -146,19 +149,19 @@ class ChercheurFormGroup(object):
         self.publication3 = PublicationForm(data=data, prefix='publication3', instance=chercheur and chercheur.publication3)
         self.publication4 = PublicationForm(data=data, prefix='publication4', instance=chercheur and chercheur.publication4)
         self.these = TheseForm(data=data, prefix='these', instance=chercheur and chercheur.these)
-        self.expertise = ExpertiseForm(data=data, prefix='expertise', instance=chercheur and chercheur.expertise)
+        self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)
 
     @property
     def has_errors(self):
         return bool(self.chercheur.errors or self.personne.errors or self.groupes.errors or
                     self.publication1.errors or self.publication2.errors or self.publication3.errors or
-                    self.publication4.errors or self.these.errors or self.expertise.errors)
+                    self.publication4.errors or self.these.errors or self.expertises.errors)
 
     def is_valid(self):
         return self.chercheur.is_valid() and self.personne.is_valid() and self.groupes.is_valid() and \
                self.publication1.is_valid() and self.publication2.is_valid() and \
                self.publication3.is_valid() and self.publication4.is_valid() and \
-               self.these.is_valid() and self.expertise.is_valid()
+               self.these.is_valid() and self.expertises.is_valid()
 
     def save(self):
         if self.is_valid():
@@ -177,8 +180,7 @@ class ChercheurFormGroup(object):
             if self.publication4.cleaned_data['titre']:
                 chercheur.publication4 = self.publication4.save()
             chercheur.these = self.these.save()
-            if self.expertise.cleaned_data['nom']:
-                chercheur.expertise = self.expertise.save()
+            self.expertises.save()
 
             # Puis enregistrer le chercheur lui-même.
             self.chercheur.save()
@@ -220,7 +222,7 @@ class RepertoireSearchForm (forms.Form):
             statut = self.cleaned_data["statut"]
             if statut:
                 if statut == "expert":
-                    qs = qs.exclude(expertise=None)
+                    qs = qs.exclude(expertises=None)
                 else:
                     qs = qs.filter(statut=statut)
             pays = self.cleaned_data["pays"]

@@ -321,7 +321,8 @@ class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             part = (Q(title__icontains=word) | Q(description__icontains=word) |
                     Q(creator__icontains=word) | Q(contributor__icontains=word) |
                     Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
-                    Q(regions__nom__icontains=word) | Q(pays__in=matching_pays))
+                    Q(regions__nom__icontains=word) | Q(pays__in=matching_pays) |
+                    Q(publisher__icontains=word))
             if q is None:
                 q = part
             else:

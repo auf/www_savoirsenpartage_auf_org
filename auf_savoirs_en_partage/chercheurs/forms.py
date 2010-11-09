@@ -27,7 +27,7 @@ class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
     OUI_NON_CHOICES = ((1, 'Oui'), (0, 'Non'))
     ETABLISSEMENT_CHOICES = ((id, nom if len(nom) < 80 else nom[:80] + '...')
-                             for id, nom in Etablissement.objects.values_list('id', 'nom'))
+                             for id, nom in Etablissement.objects.filter(membre=True).values_list('id', 'nom'))
 
     membre_instance_auf = forms.ChoiceField(
         choices=OUI_NON_CHOICES, 

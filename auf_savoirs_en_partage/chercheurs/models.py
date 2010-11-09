@@ -173,7 +173,7 @@ class Chercheur(models.Model):
         if self.etablissement:
             return self.etablissement.nom + ', ' + self.etablissement.pays.nom
         else:
-            return self.etablissement_autre_nom + ', ' + self.etablissement_autre_pays
+            return self.etablissement_autre_nom + ', ' + self.etablissement_autre_pays.nom
 
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')

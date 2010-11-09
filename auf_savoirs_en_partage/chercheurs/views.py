@@ -125,7 +125,7 @@ def index(request):
     chercheurs = search_form.get_query_set()
     nb_chercheurs = chercheurs.count()
     return render_to_response("chercheurs/index.html",
-                              dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, repertoire_form=search_form),
+                              dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, search_form=search_form),
                               context_instance=RequestContext(request))
 
 def inscription(request):

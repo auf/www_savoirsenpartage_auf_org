@@ -199,6 +199,9 @@ class RepertoireSearchForm (forms.Form):
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
     region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
     nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud")
+    membre_instance_auf = forms.BooleanField(required=False, label="Membre d'une instance de l'AUF")
+    expert_oif = forms.BooleanField(required=False, label="Expert de l'OIF")
+    membre_fipf = forms.BooleanField(required=False, label="Membre de la FIPF")
       
     def get_query_set(self):
         qs = Chercheur.objects.all()
@@ -234,6 +237,12 @@ class RepertoireSearchForm (forms.Form):
             nord_sud = self.cleaned_data['nord_sud']
             if nord_sud:
                 qs = qs.filter(Q(etablissement__pays__nord_sud=nord_sud) | Q(etablissement_autre_pays__nord_sud=nord_sud))
+            if self.cleaned_data['membre_instance_auf']:
+                qs = qs.filter(membre_instance_auf=True)
+            if self.cleaned_data['expert_oif']:
+                qs = qs.filter(expert_oif=True)
+            if self.cleaned_data['membre_fipf']:
+                qs = qs.filter(membre_fipf=True)
         return qs
     
 class SendPasswordForm(forms.Form):

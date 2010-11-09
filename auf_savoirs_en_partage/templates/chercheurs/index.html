@@ -1,24 +1,84 @@
 {% extends "container_base.html" %}
+{% load pagination_tags %}
+{% load sorting_tags %}
+{% load form_tags %}
 
 {% block contenu %}
+{% autosort chercheurs %}
+{% autopaginate chercheurs 20 %}
 
 <h4>Répertoire des chercheurs</h4>
 
 <ul class="actions">
-  {% include "chercheurs/actions.html" %}
+    {% include "chercheurs/actions.html" %}
 </ul>
 
 <div class="texte">
     <p>
-    Bienvenue sur le répertoire des chercheurs francophones de l'Agence universitaire de la Francophonie (AUF).
+    Bienvenue sur le répertoire des chercheurs francophones de l'Agence
+    universitaire de la Francophonie (AUF).
     </p>
     <p>
-    Cet outil recense les universitaires (enseignants, chercheurs, doctorants) impliqués, ou souhaitant s'impliquer, dans les projets scientifiques appuyés par l'AUF. Il permet à la communauté scientifique de se mobiliser sur des projets en fonction de repères thématiques et/ou régionaux. 
+    Cet outil recense les universitaires (enseignants, chercheurs, doctorants)
+    impliqués, ou souhaitant s'impliquer, dans les projets scientifiques appuyés
+    par l'AUF. Il permet à la communauté scientifique de se mobiliser sur des
+    projets en fonction de repères thématiques et/ou régionaux. 
     </p>
     <p>
-    Dans le cadre de la programmation quadriennale, la politique scientifique de l'AUF s'appuie sur la mise en œuvre de projets inter-universitaires régionaux ou internationaux. Les <i>réseaux de chercheurs</i> ne sont plus le critère d'organisation du répertoire (consulter la <a href="{% url chercheurs.views.conversion %}">table de passage</a>). Les chercheurs précisent leur discipline et choissent leurs centres d'intérêt dans des listes prédéfinies, et ajoutent des mots-clés pour affiner leur profil scientifique.
+    Dans le cadre de la programmation quadriennale, la politique scientifique de
+    l'AUF s'appuie sur la mise en œuvre de projets inter-universitaires
+    régionaux ou internationaux. Les <i>réseaux de chercheurs</i> ne sont plus
+    le critère d'organisation du répertoire (consulter la <a href="{% url chercheurs.views.conversion %}">table de passage</a>). 
+    Les chercheurs précisent leur discipline et choissent leurs centres
+    d'intérêt dans des listes prédéfinies, et ajoutent des mots-clés pour
+    affiner leur profil scientifique.
     </p>
 </div>
 
-{% include "chercheurs/rechercher.html" %}
+<h5>Recherche</h5>
+
+<form method="get" action="" class="contenu-wrapper">
+    <table id="repertoire_recherche">
+        {% form_field search_form.mots_cles %}
+        {% form_field search_form.nom %}
+        {% form_field search_form.discipline %}
+        {% form_field search_form.domaine %}
+        {% form_field search_form.groupe_recherche %}
+        {% form_field search_form.statut %}
+        {% form_field search_form.pays %}
+        {% form_field search_form.region %}
+        {% form_field search_form.nord_sud %}
+        <tr>
+            <td><label>Activités en francophonie</label></td>
+            <td>
+                {{ search_form.membre_instance_auf }} {{ search_form.membre_instance_auf.label_tag }}<br />
+                {{ search_form.expert_oif }} {{ search_form.expert_oif.label_tag }}<br />
+                {{ search_form.membre_fipf }} {{ search_form.membre_fipf.label_tag }}
+            </td>
+        </tr>
+        <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
+    </table>
+</form>
+
+<h5>Résultats : {{nb_chercheurs}} chercheurs correspondant à votre recherche</h5>
+
+<div class="centre">{% paginate %}</div>
+<div class="contenu-wrapper">
+    <table id="repertoire">
+        <tr>
+            <th>{% anchor personne__nom Nom %}</th>
+            <th>{% anchor etablissement__nom Établissement %}</th>
+            <th>{% anchor etablissement__pays Localisation %}</th>
+        </tr>
+    {% for chercheur in chercheurs %}
+        <tr class="{% cycle 'odd' 'notodd' %}">
+            <td><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></td>
+            <td>{% firstof chercheur.etablissement chercheur.etablissement_autre_nom %}</td>
+            <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays %}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+<div class="centre">{% paginate %}</div>
+
 {% endblock %}

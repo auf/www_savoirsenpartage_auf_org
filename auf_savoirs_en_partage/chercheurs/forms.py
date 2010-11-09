@@ -2,6 +2,7 @@
 import hashlib
 from django import forms
 from django.db.models import Q
+from itertools import chain
 from models import *
 
 class PersonneForm(forms.ModelForm):
@@ -41,7 +42,7 @@ class ChercheurForm(forms.ModelForm):
                                     label="Êtes-vous membre de la FIPF?",
                                     widget=forms.RadioSelect())
     membre_fipf_association = forms.CharField(label="Préciser le nom de votre association", required=False)
-    etablissement = forms.ChoiceField(label='Etablissement', choices=ETABLISSEMENT_CHOICES)
+    etablissement = forms.ChoiceField(label='Etablissement', required=False, choices=chain([('', '---------')], ETABLISSEMENT_CHOICES))
 
     class Meta:
         model = Chercheur
@@ -53,7 +54,9 @@ class ChercheurForm(forms.ModelForm):
                   'expert_oif', 'membre_fipf', 'membre_fipf_association')
         
     def clean_etablissement(self):
-        return Etablissement.objects.get(id=self.cleaned_data['etablissement'])
+        etablissement = self.cleaned_data['etablissement']
+        if etablissement:
+            return Etablissement.objects.get(id=etablissement)
 
     def clean(self):
         etablissement = self.cleaned_data['etablissement']

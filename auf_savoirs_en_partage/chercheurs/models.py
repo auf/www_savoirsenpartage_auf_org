@@ -186,8 +186,8 @@ class Chercheur(models.Model):
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     titre = models.CharField(max_length=255, db_column='titre', null=True, blank=True, verbose_name = 'Titre')
-    annee = models.IntegerField(db_column='annee', null=True, blank=True, verbose_name='Année de publication')
     revue = models.CharField(max_length=255, db_column='revue', null=True, blank=True, verbose_name = 'Revue')
+    annee = models.IntegerField(db_column='annee', null=True, blank=True, verbose_name='Année de publication')
     editeur = models.CharField(max_length=255, db_column='editeur', null=True, blank=True, verbose_name = 'Éditeur')
     lieu_edition = models.CharField(max_length=255, db_column='lieu_edition', null=True, blank=True, verbose_name = 'Lieu d\'édition')
     nb_pages = models.CharField(max_length=255, db_column='nb_pages', null=True, blank=True, verbose_name = 'Nombre de pages')

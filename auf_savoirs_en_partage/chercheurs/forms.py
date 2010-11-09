@@ -106,7 +106,7 @@ class GroupesForm(forms.Form):
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
-        fields = ('titre', 'annee', 'revue', 'editeur', 'lieu_edition', 'nb_pages', 'url')
+        fields = ('titre', 'revue', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
 class TheseForm(PublicationForm):
     titre = forms.CharField(required=True, label="Titre de la thèse ou du mémoire")

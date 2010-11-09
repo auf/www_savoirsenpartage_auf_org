@@ -161,9 +161,9 @@ ul.liste-de-l-accueil a.la-date { color:black; }
 ul.liste-de-l-accueil .le-titre {display: block; font-size:1.2em; font-weight:bold; margin: .25em 0;}
 ul.liste-de-l-accueil .le-resume {font-size:1.1em;}
 ul.liste-de-l-accueil .le-resume a { display:inline;}
-ul.sous-menu li, ul.actions li { display:inline; padding:0px 10px 0px 0px; font-size: 1.1em; }
+ul.sous-menu li, ul.actions li { display:inline; padding:0px 0px 0px 10px; font-size: 1.1em; }
 
-ul.actions { position: absolute; top: 15px; right: 20px; width: 240px; }
+ul.actions { position: absolute; top: 15px; right: 20px; width: 240px; text-align: right }
 
 .resultats { width:744px; display:inline; margin:0; padding:0; float:left; margin-top:100px; margin-bottom:50px; margin-left:0; background:url(../img/contenu-bkg-middle.png) repeat-y 0 0;}
 .resultats a:hover{text-decoration:none;}

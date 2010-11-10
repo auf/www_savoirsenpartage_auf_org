@@ -49,6 +49,12 @@
       <td>{{ evenement.lieu|linebreaksbr }}</td>
     </tr>
     {% endif %}
+    {% if evenement.piece_jointe %}
+    <tr>
+        <th>Pièce jointe</th>
+        <td><a href="{{ evenement.piece_jointe.url }}">{{ evenement.piece_jointe_display }}</a></td>
+    </tr>
+    {% endif %}
     {% if evenement.url %}
     <tr>
       <th>URL</th>

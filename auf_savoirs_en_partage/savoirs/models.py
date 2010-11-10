@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import simplejson, uuid, datetime, caldav, vobject, uuid, random, operator, pytz
+import simplejson, uuid, datetime, caldav, vobject, uuid, random, operator, pytz, os
 from babel.dates import get_timezone_name
 from django.contrib.auth.models import User
 from django.db import models
@@ -177,6 +177,9 @@ class Evenement(models.Model):
 
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)
+
+    def piece_jointe_display(self):
+        return self.piece_jointe and os.path.basename(self.piece_jointe.name)
 
     def clean(self):
         from django.core.exceptions import ValidationError

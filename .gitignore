@@ -33,3 +33,7 @@ tmp
 src
 
 auf_savoirs_en_partage_django/backend_config.py
+
+# Cache de django_compressor
+
+/auf_savoirs_en_partage/media/CACHE

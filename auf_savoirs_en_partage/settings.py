@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'pagination',
     'django_sorting',
+    'compressor',
     'django_roa',
     'savoirs',
     'chercheurs',

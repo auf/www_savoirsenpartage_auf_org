@@ -16,4 +16,4 @@ MIDDLEWARE_CLASSES += ('savoirs.middleware.ProfileMiddleware',)
 
 # css/js compression
 
-COMPRESS = True
+# COMPRESS = True

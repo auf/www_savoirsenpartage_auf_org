@@ -8,13 +8,15 @@
     <tr>
         <th>Type</th>
         <td>{{ evenement.type }}</td>
-    </tr>    
+    </tr>
+    {% if evenement.discipline %}
     <tr>
         <th>Discipline{% if evenement.discipline_secondaire %}s{% endif %}</th>
         <td>{{ evenement.discipline }}
             {% if evenement.discipline_secondaire %}, {{ evenement.discipline_secondaire }}{% endif %}
         </td>
     </tr>    
+    {% endif %}
     <tr>
       <th width="120px">Début</th>
       <td>{{ evenement.debut|date:"d/m/Y H\hi" }} (UTC)</td>
@@ -23,10 +25,12 @@
       <th>Fin</th>
       <td>{{ evenement.fin|date:"d/m/Y H\hi" }} (UTC)</td>
     </tr>
+    {% if evenement.description %}
     <tr>
       <th>Description</th>
       <td>{{ evenement.description|linebreaksbr }}</td>
     </tr>
+    {% endif %}
     {% if evenement.mots_cles %}
     <tr>
       <th>Mots-clés</th>

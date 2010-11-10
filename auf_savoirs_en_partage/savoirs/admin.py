@@ -231,7 +231,7 @@ class EvenementAdmin(admin.ModelAdmin):
     list_filter = ('approuve', 'regions', 'discipline', 'discipline_secondaire')
     list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
     fields = ['titre', 'discipline', 'discipline_secondaire', 'mots_cles',
-              'type', 'fuseau', 'debut', 'fin', 'lieu', 'regions',
+              'type', 'fuseau', 'debut', 'fin', 'lieu', 'piece_jointe', 'regions',
               'description', 'contact', 'url', 'approuve']
     actions = ['assigner_regions', 'assigner_disciplines']
 

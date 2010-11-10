@@ -7,7 +7,7 @@ from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
 from auf_savoirs_en_partage.backend_config import RESOURCES
 from savoirs.globals import META
-from settings import CALENDRIER_URL
+from settings import CALENDRIER_URL, SITE_ROOT_URL
 from datamaster_modeles.models import Thematique, Pays, Region
 from lib.calendrier import combine
 from caldav.lib import error
@@ -150,7 +150,7 @@ class Evenement(models.Model):
                     (None, u'Autre'))
     TIME_ZONE_CHOICES = build_time_zone_choices()
 
-    uid = models.CharField(max_length = 255, default = str(uuid.uuid1()))
+    uid = models.CharField(max_length=255, default=str(uuid.uuid1()))
     approuve = models.BooleanField(default=False, verbose_name=u'approuvé')
     titre = models.CharField(max_length=255)
     discipline = models.ForeignKey('Discipline', related_name = "discipline", 
@@ -158,16 +158,16 @@ class Evenement(models.Model):
     discipline_secondaire = models.ForeignKey('Discipline', related_name="discipline_secondaire", 
                                               verbose_name=u"discipline secondaire", 
                                               blank=True, null=True)
-    mots_cles = models.TextField('Mots-Clés', blank = True, null = True)
+    mots_cles = models.TextField('Mots-Clés', blank=True, null=True)
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
     lieu = models.TextField()
-    debut = models.DateTimeField(default = datetime.datetime.now)
-    fin = models.DateTimeField(default = datetime.datetime.now)
+    debut = models.DateTimeField(default=datetime.datetime.now)
+    fin = models.DateTimeField(default=datetime.datetime.now)
     fuseau = models.CharField(max_length=100, choices=TIME_ZONE_CHOICES, verbose_name='fuseau horaire')
-    description = models.TextField(blank = True, null = True)
-    #fichiers = TODO?
-    contact = models.TextField(blank = True, null = True)
-    url = models.CharField(max_length=255, blank = True, null = True)
+    description = models.TextField(blank=True, null=True)
+    contact = models.TextField(blank=True, null=True)
+    url = models.CharField(max_length=255, blank=True, null=True)
+    piece_jointe = models.FileField(upload_to='agenda/pj', blank=True, verbose_name='pièce jointe')
     regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions')
 
     objects = EvenementManager()
@@ -237,6 +237,11 @@ class Evenement(models.Model):
             cal.vevent.add('url').value = self.url
         if len(self.lieu) > 0:
             cal.vevent.add('location').value = self.lieu
+        if self.piece_jointe:
+            url = self.piece_jointe.url
+            if not url.startswith('http://'):
+                url = SITE_ROOT_URL + url
+            cal.vevent.add('attach').value = url
         return cal
 
     def update_vevent(self,):
@@ -399,8 +404,6 @@ class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         else:
             return super(RecordQuerySet, self).filter(*args, **kwargs)
 
-
-
 class Record(models.Model):
     
     #fonctionnement interne
@@ -466,7 +469,6 @@ class Record(models.Model):
 
     def assigner_disciplines(self, disciplines):
         self.disciplines.add(*disciplines)
-
     
 class Serveur(models.Model):
     """Identification d'un serveur d'ou proviennent les références"""

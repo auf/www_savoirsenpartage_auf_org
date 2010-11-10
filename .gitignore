@@ -34,6 +34,7 @@ src
 
 auf_savoirs_en_partage_django/backend_config.py
 
-# Cache de django_compressor
+# Fichiers écrits par le serveur
 
 /auf_savoirs_en_partage/media/CACHE
+/auf_savoirs_en_partage/media/agenda

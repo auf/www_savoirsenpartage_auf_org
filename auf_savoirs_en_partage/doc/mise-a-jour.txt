@@ -1,0 +1,19 @@
+Ce document décrit les modifications à appliquer au serveur lors des mises à
+jour.
+
+
+Migrations de la base de données
+--------------------------------
+
+Les migrations de la base de données se trouvent dans une série de scripts SQL
+datés. On les trouvera dans le répertoire sql/ . Il faut donc appliquer les
+scripts qui n'ont pas été appliqués depuis la dernière mise à jour, dans
+l'ordre.
+
+Répertoires dans lesquels le serveur web écrit
+----------------------------------------------
+
+Certains répertoires doivent être accessibles en écriture par le serveur web:
+
+- media/CACHE
+- media/agenda/pj

@@ -147,8 +147,17 @@ class Chercheur(models.Model):
     membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
     membre_instance_auf_dates = models.CharField(max_length=255, blank=True, verbose_name="dates")
     expert_oif = models.BooleanField(default=False, verbose_name="est un expert de l'OIF")
-    membre_fipf = models.BooleanField(default=False, verbose_name="est membre de la FIPF")
-    membre_fipf_association = models.CharField(max_length=255, blank=True, verbose_name="nom de l'association")
+    membre_association_francophone = models.BooleanField(default=False, verbose_name="est membre d'une association francophone")
+    membre_association_francophone_details = models.CharField(max_length=255, blank=True, verbose_name="nom de l'association")
+    membre_reseau_institutionnel = models.BooleanField(
+        default=False, verbose_name="a fait partie des instances d'un réseau institutionnel de l'AUF"
+    )
+    membre_reseau_institutionnel_details = models.CharField(
+        max_length=255, blank=True, verbose_name="instances et fonction"
+    )
+    membre_reseau_institutionnel_dates = models.CharField(
+        max_length=255, blank=True, verbose_name="dates"
+    )
 
     #meta
     actif = models.BooleanField(editable = False)

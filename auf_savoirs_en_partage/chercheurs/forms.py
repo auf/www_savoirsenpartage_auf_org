@@ -6,6 +6,8 @@ from django.forms.models import inlineformset_factory
 from itertools import chain
 from models import *
 
+OUI_NON_CHOICES = (('1', 'Oui'), ('0', 'Non'))
+
 class PersonneForm(forms.ModelForm):
     genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
 
@@ -25,24 +27,30 @@ class PersonneInscriptionForm(PersonneForm):
 
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
-    OUI_NON_CHOICES = ((1, 'Oui'), (0, 'Non'))
     ETABLISSEMENT_CHOICES = ((id, nom if len(nom) < 80 else nom[:80] + '...')
                              for id, nom in Etablissement.objects.filter(membre=True).values_list('id', 'nom'))
 
     membre_instance_auf = forms.ChoiceField(
-        choices=OUI_NON_CHOICES, 
         label="Êtes-vous (ou avez-vous déjà été) membre d'une instance de l'AUF?",
         help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
-        widget=forms.RadioSelect()
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
     membre_instance_auf_dates = forms.CharField(label="Préciser les dates", required=False)
-    expert_oif = forms.ChoiceField(choices=OUI_NON_CHOICES,
-                                   label="Êtes-vous expert de l'OIF?",
-                                   widget=forms.RadioSelect())
-    membre_fipf = forms.ChoiceField(choices=OUI_NON_CHOICES,
-                                    label="Êtes-vous membre de la FIPF?",
-                                    widget=forms.RadioSelect())
-    membre_fipf_association = forms.CharField(label="Préciser le nom de votre association", required=False)
+    expert_oif = forms.ChoiceField(label="Êtes-vous expert de l'OIF?", choices=OUI_NON_CHOICES, widget=forms.RadioSelect())
+    membre_association_francophone = forms.ChoiceField(
+        label="Êtes-vous membre d'une association ou d'une société savante francophone?",
+        help_text="e.g. FIPF, Collège international de philosophie, AISLF, etc.",
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
+    )
+    membre_association_francophone_details = forms.CharField(label="Préciser laquelle", required=False)
+    membre_reseau_institutionnel = forms.ChoiceField(
+        label="Avez-vous fait partie des instances d'un réseau institutionnel de l'AUF?",
+        help_text="e.g. AFELSH, RIFFEF, CIDMEF, etc.",
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
+    )
+    membre_reseau_institutionnel_details = forms.CharField(required=False, label="Préciser lesquelles et votre fonction")
+    membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
+
     etablissement = forms.ChoiceField(label='Etablissement', required=False, choices=chain([('', '---------')], ETABLISSEMENT_CHOICES))
 
     class Meta:
@@ -52,8 +60,50 @@ class ChercheurForm(forms.ModelForm):
                   'discipline', 'theme_recherche', 'groupe_recherche', 'mots_cles',
                   'url_site_web', 'url_blog', 'url_reseau_social',
                   'membre_instance_auf', 'membre_instance_auf_dates',
-                  'expert_oif', 'membre_fipf', 'membre_fipf_association')
+                  'expert_oif', 'membre_association_francophone', 'membre_association_francophone_details',
+                  'membre_reseau_institutionnel', 'membre_reseau_institutionnel_details',
+                  'membre_reseau_institutionnel_dates')
         
+    def clean_membre_instance_auf(self):
+        return bool(int(self.cleaned_data['membre_instance_auf']))
+    
+    def clean_membre_instance_auf_dates(self):
+        membre = self.cleaned_data.get('membre_instance_auf')
+        dates = self.cleaned_data.get('membre_instance_auf_dates')
+        if membre and not dates:
+            raise forms.ValidationError('Veuillez préciser les dates')
+        return dates
+
+    def clean_expert_oif(self):
+        return bool(int(self.cleaned_data['expert_oif']))
+
+    def clean_membre_association_francophone(self):
+        return bool(int(self.cleaned_data['membre_association_francophone']))
+
+    def clean_membre_association_francophone_details(self):
+        membre = self.cleaned_data.get('membre_association_francophone')
+        details = self.cleaned_data.get('membre_association_francophone_details')
+        if membre and not details:
+            raise forms.ValidationError('Veuillez préciser')
+        return details
+        
+    def clean_membre_reseau_institutionnel(self):
+        return bool(int(self.cleaned_data['membre_reseau_institutionnel']))
+
+    def clean_membre_reseau_institutionnel_details(self):
+        membre = self.cleaned_data.get('membre_reseau_institutionnel')
+        details = self.cleaned_data.get('membre_reseau_institutionnel_details')
+        if membre and not details:
+            raise forms.ValidationError('Veuillez préciser')
+        return details
+
+    def clean_membre_reseau_institutionnel_dates(self):
+        membre = self.cleaned_data.get('membre_reseau_institutionnel')
+        dates = self.cleaned_data.get('membre_reseau_institutionnel_dates')
+        if membre and not dates:
+            raise forms.ValidationError('Veuillez préciser les dates')
+        return dates
+
     def clean_etablissement(self):
         etablissement = self.cleaned_data['etablissement']
         if etablissement:
@@ -69,18 +119,6 @@ class ChercheurForm(forms.ModelForm):
             elif not etablissement_autre_pays:
                 self._errors['etablissement_autre_pays'] = self.error_class([u"Vous devez renseigner le pays de l'établissement"])
         return self.cleaned_data
-
-    def clean_membre_instance_auf(self):
-        """Transforme la valeur du champ en booléen"""
-        return bool(int(self.cleaned_data['membre_instance_auf']))
-
-    def clean_expert_oif(self):
-        """Transforme la valeur du champ en booléen"""
-        return bool(int(self.cleaned_data['expert_oif']))
-
-    def clean_membre_fipf(self):
-        """Transforme la valeur du champ en booléen"""
-        return bool(int(self.cleaned_data['membre_fipf']))
 
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
@@ -119,17 +157,15 @@ class TheseForm(PublicationForm):
         fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
 class ExpertiseForm(forms.ModelForm):
-    OUI_NON_CHOICES = ((1, 'Oui'), (0, 'Non'))
-    organisme_demandeur_visible = forms.ChoiceField(choices=OUI_NON_CHOICES,
-                                                    required=False,
-                                                    label="Voulez-vous que l'organisme demandeur soit visible sur votre fiche?",
-                                                    widget=forms.RadioSelect())
+    organisme_demandeur_visible = forms.ChoiceField(
+        label="Voulez-vous que l'organisme demandeur soit visible sur votre fiche?",
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect(), required=False
+    )
     class Meta:
         model = Expertise
         fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        
 
     def clean_organisme_demandeur_visible(self):
-        """Transforme la valeur du champ en booléen"""
         value = self.cleaned_data['organisme_demandeur_visible']
         return bool(int(value)) if value else False
 

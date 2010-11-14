@@ -19,25 +19,23 @@ from models import *
 from chercheurs.models import Chercheur
 from sitotheque.models import Site
 
-# sous-menu gauche
-def index (request):
+# Accueil
+
+def index (request, discipline=None, region=None):
     """Page d'accueil"""
-    delta = datetime.timedelta (days = 90)
-    oldest = datetime.date.today () - delta
-    actualites = Actualite.objects.filter (visible = '1', date__gt = oldest)
-    actualites = actualites[0:configuration['accueil_actualite']]
-    evenements = Evenement.objects.filter(approuve=True)[0:configuration['accueil_evenement']]
-    ressources = Record.objects.all().random(configuration['accueil_ressource'])
-    chercheurs = Chercheur.objects.all().random(configuration['accueil_chercheur'])
-    sites = Site.objects.all().random(configuration['accueil_sites'])
-    return render_to_response("savoirs/index.html",
-                               dict(actualites=actualites,
-                                    evenements=evenements,
-                                    caldav_url=configuration['calendrier_publique'],
-                                    ressources=ressources,
-                                    chercheurs=chercheurs,
-                                    sites=sites),
-                              context_instance = RequestContext(request))
+    delta = datetime.timedelta(days = 90)
+    oldest = datetime.date.today() - delta
+    actualites = Actualite.objects.filter(visible=True, date__gt=oldest).filter_discipline(discipline).filter_region(region)[:4]
+    evenements = Evenement.objects.filter(approuve=True).filter_discipline(discipline).filter_region(region)[:4]
+    ressources = Record.objects.all().filter_discipline(discipline).filter_region(region).random(4)
+    chercheurs = Chercheur.objects.all().filter_discipline(discipline).filter_region(region).random(10)
+    sites = Site.objects.all().filter_discipline(discipline).filter_region(region).random(4)
+    return render_to_response(
+        "savoirs/index.html",
+        dict(actualites=actualites, evenements=evenements,
+             caldav_url=configuration['calendrier_publique'],
+             ressources=ressources, chercheurs=chercheurs, sites=sites),
+        context_instance = RequestContext(request))
 
 # sous-menu droite
 def a_propos (request):

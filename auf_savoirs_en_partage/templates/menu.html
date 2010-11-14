@@ -1,42 +1,20 @@
-{% comment %}
-<h4><a href="">Chercheurs</a></h4>
+{% load sep %}
+<h4>Régions</h4>
 <ul>
-    <li><a href="">Répertoire</a></li>
-    <li><a href="">Inscription</a></li>
-    <li><a href="">Espace chercheur</a></li>
-</ul>
-
-<h4><a href="">Ressources documentaires</a></h4>
-<ul>
-    <li><a href="">Rechercher un contenu scientifique</a></li>
-</ul>
-
-<h4><a href="">Sites</a></h4>
-<ul>
-    <li><a href="">Sitothèque</a></li>
-    <li><a href="">Cours en ligne</a></li>
-    <li><a href="">Bibliothèques</a></li>
-    <li><a href="">Revues</a></li>
-</ul>
-
-<h4><a href="">Agenda</a></h4>
-<ul>
-    <li><a href="">Colloques</a></li>
-    <li><a href="">Conférences</a></li>
-    <li><a href="">Appels à contribution</a></li>
-</ul>
-{% endcomment %}
-
-<h4><a href="">Régions</a></h4>
-<ul>
+    <li{% if not region_active %} class="active"{% endif %}
+    ><a href="{% sep_url savoirs.views.index region='all' %}">Toutes les régions</a</li>
     {% for r in regions %}
-    <li><a href="{% url savoirs.views.recherche %}?q={{ r.nom|urlencode }}">{{ r.nom }}</a></li>
+    <li{% ifequal r.id region_active %} class="active"{% endifequal %}
+    ><a href="{% sep_url savoirs.views.index region=r.id %}">{{ r.nom }}</a></li>
     {% endfor %}
 </ul>
 
-<h4><a href="">Disciplines</a></h4>
+<h4>Disciplines</h4>
 <ul>
+    <li{% if not discipline_active %} class="active"{% endif %}
+    ><a href="{% sep_url savoirs.views.index discipline='all' %}">Toutes les disciplines</a></li>
     {% for d in disciplines %}
-    <li><a href="{% url savoirs.views.recherche %}?q={{ d.nom|urlencode }}">{{ d.nom }}</a></li>
+    <li{% ifequal d.id discipline_active %} class="active"{% endifequal %}
+    ><a href="{% sep_url savoirs.views.index discipline=d.id %}">{{ d.nom }}</a></li>
     {% endfor %}
 </ul>

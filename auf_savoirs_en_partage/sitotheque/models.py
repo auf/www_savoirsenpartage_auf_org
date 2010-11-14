@@ -46,6 +46,18 @@ class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             qs = qs.filter(q).distinct()
         return qs
 
+    def filter_discipline(self, discipline):
+        """Ne conserve que les sites dans la discipline donnée.
+           
+        Si ``disicipline`` est None, ce filtre n'a aucun effet."""
+        return self.filter(discipline=discipline) if discipline is not None else self
+
+    def filter_region(self, region):
+        """Ne conserve que les sites dans la région donnée.
+           
+        Si ``region`` est None, ce filtre n'a aucun effet."""
+        return self.filter(Q(regions=region) | Q(pays__region=region)) if region is not None else self
+
 class Site(models.Model):
     """Fiche d'info d'un site web"""
     url = models.URLField(verify_exists=False)   # dc:identifier (dc:source?)

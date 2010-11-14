@@ -25,6 +25,12 @@ class SiteManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
 class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):

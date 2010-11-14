@@ -1,6 +1,7 @@
+{% load sep %}
 {% if user_chercheur %}
-<li><a href="{% url chercheurs.views.perso %}">Espace chercheur</a></li>
+<li><a href="{% sep_url chercheurs.views.perso %}">Espace chercheur</a></li>
 {% else %}
-<li><a href="{% url chercheurs.views.chercheur_login %}">Se connecter</a></li>
-<li><a href="{% url chercheurs.views.inscription %}">S'inscrire</a></li>
+<li><a href="{% sep_url chercheurs.views.chercheur_login %}">Se connecter</a></li>
+<li><a href="{% sep_url chercheurs.views.inscription %}">S'inscrire</a></li>
 {% endif %}

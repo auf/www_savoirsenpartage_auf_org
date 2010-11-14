@@ -1,4 +1,5 @@
 {% extends "container_base.html" %}
+{% load sep %}
 
 {% block contenu %}
 <h4>À propos de</h4>
@@ -14,7 +15,7 @@ Ainsi, vous pourrez accéder depuis ce portail à :
 </p>
 </div>
 
-<h5><a href="{% url chercheurs.views.index %}">... un répertoire des chercheurs</a></h5>
+<h5><a href="{% sep_url chercheurs.views.index %}">... un répertoire des chercheurs</a></h5>
 
 <div class="texte">
 <p>
@@ -22,7 +23,7 @@ Le répertoire présente une base de données de plus de 7000 chercheurs, étudi
 </p>
 </div>
 
-<h5><a href="{% url savoirs.views.evenement_index %}">... un agenda scientifique</a></h5>
+<h5><a href="{% sep_url savoirs.views.evenement_index %}">... un agenda scientifique</a></h5>
 
 <div class="texte">
 <p> 
@@ -31,7 +32,7 @@ C'est aussi un outil de communication et de veille au service des universitaires
 </p>
 </div>
 
-<h5><a href="{% url savoirs.views.ressource_index %}">... des ressources scientifiques</a></h5>
+<h5><a href="{% sep_url savoirs.views.ressource_index %}">... des ressources scientifiques</a></h5>
 
 <div class="texte">
 <p>
@@ -39,7 +40,7 @@ Le portail « Savoirs en partage » s'inscrit dans la continuité des différe
 </p>
 </div>
 
-<h5><a href="{% url sitotheque.views.index %}">... une sitothèque</a></h5>
+<h5><a href="{% sep_url sitotheque.views.index %}">... une sitothèque</a></h5>
 
 <div class="texte">
 <p>
@@ -47,7 +48,7 @@ Les sites retenus ici ont été créés en partenariat par l'AUF et des universi
 </p>
 </div>
 
-<h5><a href="{% url savoirs.views.actualite_index %}">... des actualités scientifiques</a></h5>
+<h5><a href="{% sep_url savoirs.views.actualite_index %}">... des actualités scientifiques</a></h5>
 
 <div class="texte">
 <p>

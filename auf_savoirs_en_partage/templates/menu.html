@@ -2,19 +2,19 @@
 <h4>Régions</h4>
 <ul>
     <li{% if not region_active %} class="active"{% endif %}
-    ><a href="{% sep_url savoirs.views.index region='all' %}">Toutes les régions</a</li>
+    ><a href="{{ request.get_full_path|change_region:'all' }}">Toutes les régions</a</li>
     {% for r in regions %}
     <li{% ifequal r.id region_active %} class="active"{% endifequal %}
-    ><a href="{% sep_url savoirs.views.index region=r.id %}">{{ r.nom }}</a></li>
+    ><a href="{{ request.get_full_path|change_region:r.id }}">{{ r.nom }}</a></li>
     {% endfor %}
 </ul>
 
 <h4>Disciplines</h4>
 <ul>
     <li{% if not discipline_active %} class="active"{% endif %}
-    ><a href="{% sep_url savoirs.views.index discipline='all' %}">Toutes les disciplines</a></li>
+    ><a href="{{ request.get_full_path|change_discipline:'all' }}">Toutes les disciplines</a></li>
     {% for d in disciplines %}
     <li{% ifequal d.id discipline_active %} class="active"{% endifequal %}
-    ><a href="{% sep_url savoirs.views.index discipline=d.id %}">{{ d.nom }}</a></li>
+    ><a href="{{ request.get_full_path|change_discipline:d.id }}">{{ d.nom }}</a></li>
     {% endfor %}
 </ul>

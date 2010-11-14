@@ -1,4 +1,5 @@
 {% extends "container_base.html" %}
+{% load sep %}
 
 {% block contenu %}
 
@@ -7,7 +8,7 @@
     {% if form.errors %}
     <p class="message">Login ou mot de passe invalide.</p>
     {% endif %}
-    <form method="post" action="{% url chercheurs.views.chercheur_login %}">
+    <form method="post" action="{% sep_url chercheurs.views.chercheur_login %}">
       <table>
         <tr>
           <td>{{ form.username.label_tag }}</td>
@@ -20,9 +21,9 @@
       </table>
       <input type="submit" value="Connexion" />
     </form>
-    <p><a href="{% url chercheurs.views.send_password %}">Mot de passe oublié ?</a></p>
+    <p><a href="{% sep_url chercheurs.views.send_password %}">Mot de passe oublié ?</a></p>
     <p>Vous n'avez pas encore de compte? 
-    <a href="{% url chercheurs.views.inscription %}">Inscrivez-vous</a>.</p>
+    <a href="{% sep_url chercheurs.views.inscription %}">Inscrivez-vous</a>.</p>
 </div>
 
 {% endblock %}

@@ -51,6 +51,12 @@ class ActualiteManager(models.Manager):
     def search(self, text):
         return self.get_query_set().search(text)
 
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
 class ActualiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):
@@ -110,6 +116,12 @@ class EvenementManager(models.Manager):
 
     def search(self, text):
         return self.get_query_set().search(text)
+
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
 
 class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
@@ -339,6 +351,12 @@ class RecordManager(models.Manager):
 
     def validated(self):
         return self.get_query_set().validated()
+
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
 
 class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 

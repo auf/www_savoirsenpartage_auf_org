@@ -5,7 +5,6 @@ from savoirs.lib.recherche import build_search_regexp
 
 class SiteSearchForm(forms.Form):
     mots_cles = forms.CharField (required = False, label="Rechercher dans tous les champs")
-    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Tous")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
 
     def get_query_set(self):
@@ -16,9 +15,6 @@ class SiteSearchForm(forms.Form):
             pays = self.cleaned_data["pays"]
             if pays:
                 sites = sites.filter(pays=pays.pk)
-            discipline = self.cleaned_data["discipline"]
-            if discipline:
-                sites = sites.filter(discipline=discipline)
             mots_cles = self.cleaned_data["mots_cles"]
             if mots_cles:
                 sites = sites.search(mots_cles)

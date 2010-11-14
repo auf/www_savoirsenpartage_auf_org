@@ -1,19 +1,22 @@
 # -*- encoding: utf-8 -*-
 
+import re
 from django import template
 from django.conf import settings
+from django.template.defaultfilters import stringfilter
 from django.utils.encoding import smart_str
 from datamaster_modeles.models import Region
 from savoirs.models import Discipline
 
-def sep_menu(discipline_active, region_active):
+register = template.Library()
+
+@register.inclusion_tag('menu.html', takes_context=True)
+def sep_menu(context, discipline_active, region_active):
     regions = Region.objects.filter(actif=True).order_by('nom')
     disciplines = Discipline.objects.all()
     return dict(disciplines=disciplines, regions=regions,
-                discipline_active=discipline_active, region_active=region_active)
-
-register = template.Library()
-register.inclusion_tag('menu.html')(sep_menu)
+                discipline_active=discipline_active, region_active=region_active,
+                request=context['request'])
 
 class URLNode(template.Node):
     def __init__(self, view_name, args, kwargs, asvar):
@@ -30,18 +33,12 @@ class URLNode(template.Node):
 
         # C'est ici que nous injectons la discipline et la région courante
         # dans les arguments.
-        if kwargs.get('discipline') == 'all':
-            del kwargs['discipline']
-        else:
-            context_discipline = context.get('discipline_active')
-            if context_discipline:
-                kwargs.setdefault('discipline', context_discipline)
-        if kwargs.get('region') == 'all':
-            del kwargs['region']
-        else:
-            context_region = context.get('region_active')
-            if context_region:
-                kwargs.setdefault('region', context_region)
+        context_discipline = context.get('discipline_active')
+        if context_discipline:
+            kwargs.setdefault('discipline', context_discipline)
+        context_region = context.get('region_active')
+        if context_region:
+            kwargs.setdefault('region', context_region)
 
         # Try to look up the URL twice: once given the view name, and again
         # relative to what we guess is the "main" app. If they both fail,
@@ -72,15 +69,13 @@ class URLNode(template.Node):
         else:
             return url
 
+@register.tag
 def sep_url(parser, token):
     """
     Le tag ``url`` de Django, modifié pour SEP.
 
     Lorsque ce tag est utilisé, la discipline et la région actives sont
     automatiquement réinjectées dans les URL construites.
-
-    On peut annuler cette réinjection en spécifiant l'argument
-    ``region='all'`` ou ``discipline='all'``.
     """
     bits = token.split_contents()
     if len(bits) < 2:
@@ -106,4 +101,25 @@ def sep_url(parser, token):
                     elif arg:
                         args.append(parser.compile_filter(arg))
     return URLNode(viewname, args, kwargs, asvar)
-sep_url = register.tag(sep_url)
+
+DISCIPLINE_REGION_RE = re.compile(r'(/discipline/\d+)?(/region/\d+)?')
+
+@register.filter
+@stringfilter
+def change_region(path, region):
+    """Modifie la région dans le chemin donné."""
+    match = DISCIPLINE_REGION_RE.match(path)
+    discipline_bit = match.group(1) or ''
+    region_bit = '/region/%d' % region if region != 'all' else ''
+    rest = path[match.end():]
+    return discipline_bit + region_bit + rest
+        
+@register.filter
+@stringfilter
+def change_discipline(path, discipline):
+    """Modifie la discipline dans le chemin donné."""
+    match = DISCIPLINE_REGION_RE.match(path)
+    discipline_bit = '/discipline/%d' % discipline if discipline != 'all' else ''
+    region_bit = match.group(2) or ''
+    rest = path[match.end():]
+    return discipline_bit + region_bit + rest

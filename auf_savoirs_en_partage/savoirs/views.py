@@ -27,9 +27,9 @@ def index (request, discipline=None, region=None):
     oldest = datetime.date.today() - delta
     actualites = Actualite.objects.filter(visible=True, date__gt=oldest).filter_discipline(discipline).filter_region(region)[:4]
     evenements = Evenement.objects.filter(approuve=True).filter_discipline(discipline).filter_region(region)[:4]
-    ressources = Record.objects.all().filter_discipline(discipline).filter_region(region).random(4)
-    chercheurs = Chercheur.objects.all().filter_discipline(discipline).filter_region(region).random(10)
-    sites = Site.objects.all().filter_discipline(discipline).filter_region(region).random(4)
+    ressources = Record.objects.filter_discipline(discipline).filter_region(region).random(4)
+    chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).random(10)
+    sites = Site.objects.filter_discipline(discipline).filter_region(region).random(4)
     return render_to_response(
         "savoirs/index.html",
         dict(actualites=actualites, evenements=evenements,
@@ -38,31 +38,31 @@ def index (request, discipline=None, region=None):
         context_instance = RequestContext(request))
 
 # sous-menu droite
-def a_propos (request):
+def a_propos (request, discipline=None, region=None):
     return render_to_response ("savoirs/a-propos.html", \
             Context (), \
             context_instance = RequestContext(request))
 
-def nous_contacter (request):
+def nous_contacter (request, discipline=None, region=None):
     return render_to_response ("savoirs/contact.html", \
             Context ({'courriel':settings.CONTACT_EMAIL}), \
             context_instance = RequestContext(request))
             
-def legal(request):
+def legal(request, discipline=None, region=None):
     return render_to_response ("savoirs/legal.html", \
             Context (), \
             context_instance = RequestContext(request))
 
 # recherche
-def recherche(request):
+def recherche(request, discipline=None, region=None):
     query = request.GET.get("q", "")
     if not query.strip():
         return redirect('/')
-    ressources = Record.objects.validated().search(query)
-    actualites = Actualite.objects.filter(visible=1).search(query)
-    evenements = Evenement.objects.filter(approuve=1).search(query)
-    chercheurs = Chercheur.objects.search(query)
-    sites = Site.objects.search(query)
+    ressources = Record.objects.validated().filter_discipline(discipline).filter_region(region).search(query)
+    actualites = Actualite.objects.filter(visible=1).filter_discipline(discipline).filter_region(region).search(query)
+    evenements = Evenement.objects.filter(approuve=1).filter_discipline(discipline).filter_region(region).search(query)
+    chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).search(query)
+    sites = Site.objects.filter_discipline(discipline).filter_region(region).search(query)
     try:
         sites_auf = google_search(0, query)['results']
     except:
@@ -80,7 +80,7 @@ def recherche(request):
         context_instance = RequestContext(request)
     )
 
-def sites_auf(request):
+def sites_auf(request, discipline=None, region=None):
     q = request.GET.get('q')
     page = int(request.GET.get('page', 0))
     try:
@@ -92,9 +92,9 @@ def sites_auf(request):
                               context_instance=RequestContext(request))
 
 # ressources
-def ressource_index(request):
+def ressource_index(request, discipline=None, region=None):
     search_form = RecordSearchForm(request.GET)
-    ressources = search_form.get_query_set()
+    ressources = search_form.get_query_set().filter_discipline(discipline).filter_region(region)
     nb_resultats = ressources.count()
     search_regexp = search_form.get_search_regexp()
     return render_to_response(
@@ -104,16 +104,15 @@ def ressource_index(request):
         context_instance = RequestContext(request)
     )
 
-def ressource_retrieve(request, id):
+def ressource_retrieve(request, id, discipline=None, region=None):
     """Notice OAI de la ressource"""
     ressource = get_object_or_404(Record, id=id)
-    variables = { 'ressource': ressource,
-                  'disciplines': ressource.disciplines.all(),
-                  'regions': ressource.regions.all()
-                }
-    return render_to_response ("savoirs/ressource_retrieve.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    return render_to_response(
+        "savoirs/ressource_retrieve.html",
+        dict(ressource=ressource, disciplines=resource.disciplines.all(),
+             regions=ressource.regions.all()),
+        context_instance=RequestContext(request)
+    )
             
 def informations (request):
     s = sep.SEP()
@@ -128,41 +127,39 @@ def informations (request):
             context_instance = RequestContext(request))
 
 # actualités
-def actualite_index(request):
+def actualite_index(request, discipline=None, region=None):
     search_form = ActualiteSearchForm(request.GET)
-    actualites = search_form.get_query_set()
+    actualites = search_form.get_query_set().filter_discipline(discipline).filter_region(region)
     search_regexp = search_form.get_search_regexp()
-    return render_to_response("savoirs/actualite_index.html",
-                              dict(actualites=actualites,
-                                   search_form=search_form,
-                                   search_regexp=search_regexp,
-                                   nb_resultats=actualites.count()),
-                              context_instance = RequestContext(request))
+    return render_to_response(
+        "savoirs/actualite_index.html",
+        dict(actualites=actualites, search_form=search_form,
+             search_regexp=search_regexp, nb_resultats=actualites.count()),
+        context_instance = RequestContext(request))
 
 # agenda
-def evenement_index(request):
+def evenement_index(request, discipline=None, region=None):
     search_form = EvenementSearchForm(request.GET)
-    evenements = search_form.get_query_set()
+    evenements = search_form.get_query_set().filter_discipline(discipline).filter_region(region)
     search_regexp = search_form.get_search_regexp()
-    return render_to_response("savoirs/evenement_index.html",
-                              dict(evenements=evenements,
-                                   search_form=search_form,
-                                   search_regexp=search_regexp,
-                                   nb_resultats=evenements.count()),
-                              context_instance=RequestContext(request))
+    return render_to_response(
+        "savoirs/evenement_index.html",
+        dict(evenements=evenements, search_form=search_form,
+             search_regexp=search_regexp, nb_resultats=evenements.count()),
+        context_instance=RequestContext(request)
+    )
                               
-def evenement_utilisation(request):
-    return render_to_response ("savoirs/evenement_utilisation.html", \
-            Context (), \
-            context_instance = RequestContext(request))
+def evenement_utilisation(request, discipline=None, region=None):
+    return render_to_response("savoirs/evenement_utilisation.html", {},
+                              context_instance = RequestContext(request))
             
-def evenement(request, id):
+def evenement(request, id, discipline=None, region=None):
     evenement = get_object_or_404(Evenement, pk=id)
     return render_to_response("savoirs/evenement.html",
                               dict(evenement=evenement),
                               context_instance=RequestContext(request))
 
-def evenement_ajout(request):
+def evenement_ajout(request, discipline=None, region=None):
     template = "savoirs/evenement_ajout.html"
     if request.method == "POST":
         form = EvenementForm(request.POST)
@@ -171,9 +168,8 @@ def evenement_ajout(request):
             template = "savoirs/evenement_confirmation.html"
     else:
         form = EvenementForm()
-    return render_to_response (template, \
-                               Context ({'form': form}), \
-                               context_instance = RequestContext(request))
+    return render_to_response(template, dict(form=form),
+                              context_instance=RequestContext(request))
 
 @login_required
 def evenement_moderation(request):

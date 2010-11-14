@@ -21,30 +21,22 @@ sep_patterns = patterns(
 
     # accueil
     (r'^$', 'savoirs.views.index'),
-)
-
-urlpatterns = sep_patterns + patterns(
-    '',
 
     # recherche
     (r'^recherche/$', 'savoirs.views.recherche'),
-    
+
     # ressources
     (r'^ressources/$', 'savoirs.views.ressource_index'),
     (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve'),
-    (r'^informations/$', 'savoirs.views.informations'),
     
     # actualités
     (r'^actualites/$', 'savoirs.views.actualite_index'),
-    
+
     # agenda
     (r'^agenda/$', 'savoirs.views.evenement_index'),
     (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
     (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
-    (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
-    (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
-    (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
-    (r'^agenda/evenements/(.+)/$', 'savoirs.views.evenement'),
+    (r'^agenda/evenements/(?P<id>.+)/$', 'savoirs.views.evenement'),
 
     # chercheurs
     (r'^chercheurs/$', 'chercheurs.views.index'),
@@ -53,6 +45,9 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
     (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),
+    (r'^accounts/login/$', 'chercheurs.views.chercheur_login'),
+    (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
+    (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
 
     # sites
     (r'^sites/$', 'sitotheque.views.index'),
@@ -60,6 +55,23 @@ urlpatterns = sep_patterns + patterns(
 
     # sites AUF
     (r'^sites-auf/$', 'savoirs.views.sites_auf'),
+
+    # sous-menu droite
+    (r'^a-propos/$', 'savoirs.views.a_propos'),
+    (r'^legal/$', 'savoirs.views.legal'),
+    (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
+
+)
+
+urlpatterns = sep_patterns + patterns(
+    '',
+
+    (r'^informations/$', 'savoirs.views.informations'),
+
+    # agenda
+    (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
+    (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
+    (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
 
     # section par discipline et/ou région
     (r'^discipline/(?P<discipline>\d+)/', include(sep_patterns)),
@@ -78,16 +90,8 @@ urlpatterns = sep_patterns + patterns(
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
 
-    (r'^accounts/login/$', 'chercheurs.views.chercheur_login'),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'accounts/logout.html'}),
-    (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
-    (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
     (r'^accounts/new_password/(.+)/(.+)/$', 'chercheurs.views.new_password'),
-
-    # sous-menu droite
-    (r'^a-propos/$', 'savoirs.views.a_propos'),
-    (r'^legal/$', 'savoirs.views.legal'),
-    (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
 
     # rss
     (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),

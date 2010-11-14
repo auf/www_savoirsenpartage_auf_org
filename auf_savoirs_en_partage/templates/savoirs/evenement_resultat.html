@@ -1,7 +1,8 @@
 {% load search %}
+{% load sep %}
 
 <div class="resultatRecherche">
   <div class="la-date">{{ evenement.debut|date:"d/m/Y H\hi" }}</div>
-  <div><a href="{% url savoirs.views.evenement evenement.pk %}" class="le-titre">{{ evenement.titre|highlight:search_regexp }}</a></div>
+  <div><a href="{% sep_url savoirs.views.evenement id=evenement.pk %}" class="le-titre">{{ evenement.titre|highlight:search_regexp }}</a></div>
   <div class="le-resume">{{ evenement.description|excerpt:search_regexp|highlight:search_regexp }}</div>
 </div>

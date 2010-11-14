@@ -35,8 +35,6 @@ class RecordSearchForm(forms.Form):
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
     publisher = forms.CharField(required=False, label="Éditeur")
-    discipline = forms.ModelChoiceField(required=False, label="Discipline", queryset=Discipline.objects.all(), empty_label='Toutes')
-    region = forms.ModelChoiceField(required=False, label="Région", queryset=Region.objects.all(), empty_label='Toutes')
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -55,12 +53,6 @@ class RecordSearchForm(forms.Form):
             sujet = self.cleaned_data['sujet']
             if sujet:
                 records = records.search_sujet(sujet)
-            discipline = self.cleaned_data['discipline']
-            if discipline:
-                records = records.filter(disciplines=discipline)
-            region = self.cleaned_data['region']
-            if region:
-                records = records.filter(regions=region)
             publisher = self.cleaned_data['publisher']
             if publisher:
                 for word in publisher.split():
@@ -108,8 +100,6 @@ class EvenementSearchForm(forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     titre = forms.CharField(required=False, label="Intitulé")
     type = forms.ChoiceField(required=False, choices=(('', 'Tous'),)+Evenement.TYPE_CHOICES)
-    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), 
-                                        required=False, label="Discipline", empty_label="Toutes")
     date_min = SEPDateField(required=False, label="Depuis le") 
     date_max = SEPDateField(required=False, label="Jusqu'au") 
     
@@ -127,9 +117,6 @@ class EvenementSearchForm(forms.Form):
             type = self.cleaned_data['type']
             if type:
                 evenements = evenements.filter(type=type)
-            discipline = self.cleaned_data['discipline']
-            if discipline:
-                evenements = evenements.filter(Q(discipline=discipline) | Q(discipline_secondaire=discipline))
             date_min = self.cleaned_data['date_min']
             if date_min:
                 evenements = evenements.filter(debut__gte=date_min)

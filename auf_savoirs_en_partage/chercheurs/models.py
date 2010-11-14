@@ -44,6 +44,12 @@ class ChercheurManager(models.Manager):
     def search_nom(self, nom):
         return self.get_query_set().search_nom(nom)
 
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
 class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def search(self, text):

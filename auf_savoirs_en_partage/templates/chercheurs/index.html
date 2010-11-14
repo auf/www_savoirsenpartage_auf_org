@@ -2,6 +2,7 @@
 {% load pagination_tags %}
 {% load sorting_tags %}
 {% load form_tags %}
+{% load sep %}
 
 {% block contenu %}
 {% autosort chercheurs %}
@@ -28,7 +29,7 @@
     Dans le cadre de la programmation quadriennale, la politique scientifique de
     l'AUF s'appuie sur la mise en œuvre de projets inter-universitaires
     régionaux ou internationaux. Les <i>réseaux de chercheurs</i> ne sont plus
-    le critère d'organisation du répertoire (consulter la <a href="{% url chercheurs.views.conversion %}">table de passage</a>). 
+    le critère d'organisation du répertoire (consulter la <a href="{% sep_url chercheurs.views.conversion %}">table de passage</a>). 
     Les chercheurs précisent leur discipline et choissent leurs centres
     d'intérêt dans des listes prédéfinies, et ajoutent des mots-clés pour
     affiner leur profil scientifique.
@@ -41,12 +42,10 @@
     <table id="repertoire_recherche">
         {% form_field search_form.mots_cles %}
         {% form_field search_form.nom %}
-        {% form_field search_form.discipline %}
         {% form_field search_form.domaine %}
         {% form_field search_form.groupe_recherche %}
         {% form_field search_form.statut %}
         {% form_field search_form.pays %}
-        {% form_field search_form.region %}
         {% form_field search_form.nord_sud %}
         <tr>
             <td><label>Activités en francophonie</label></td>
@@ -72,7 +71,7 @@
         </tr>
     {% for chercheur in chercheurs %}
         <tr class="{% cycle 'odd' 'notodd' %}">
-            <td><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></td>
+            <td><a href="{% sep_url chercheurs.views.retrieve id=chercheur.id %}">{{ chercheur }}</a></td>
             <td>{% firstof chercheur.etablissement chercheur.etablissement_autre_nom %}</td>
             <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays %}</td>
         </tr>

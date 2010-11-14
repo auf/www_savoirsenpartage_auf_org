@@ -1,13 +1,14 @@
 {% extends "container_base.html" %}
+{% load sep %}
 
 {% block contenu %}
 <div class="demi-gauche clearfix">
     <div id="actualites" class="box">
-        <h4><a href="{% url savoirs.views.actualite_index %}">Actualités</a></h4>
+        <h4><a href="{% sep_url savoirs.views.actualite_index %}">Actualités</a></h4>
         <a id="rss-actualites" href="/rss/actualites"><img src="/media/img/feed.png" /></a>
         
         <ul class="sous-menu">
-            <li><a href="{% url savoirs.views.actualite_index %}">Toutes les actualités</a></li>
+            <li><a href="{% sep_url savoirs.views.actualite_index %}">Toutes les actualités</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
@@ -23,17 +24,17 @@
         </ul>
     </div>
     <div id="chercheurs" class="box">
-        <h4><a href="{% url chercheurs.views.index %}">Répertoire</a></h4>
+        <h4><a href="{% sep_url chercheurs.views.index %}">Répertoire</a></h4>
         
         <ul class="sous-menu">
-            <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
+            <li><a href="{% sep_url chercheurs.views.index %}">Tous les chercheurs</a></li>
             {% include "chercheurs/actions.html" %}
         </ul>
         
         <ul class="liste-de-l-accueil">
         {% for chercheur in chercheurs %}
             <li>
-            <a href="{% url chercheurs.views.retrieve chercheur.id %}" class="le-titre">{{ chercheur }}</a>
+            <a href="{% sep_url chercheurs.views.retrieve id=chercheur.id %}" class="le-titre">{{ chercheur }}</a>
             {% if chercheur.discipline %}<span class="la-date">Discipline : {{ chercheur.discipline }}</span>{% endif %}
             </li>
         {% endfor %}
@@ -42,11 +43,11 @@
 </div>
 <div class="demi-droite clearfix">
     <div id="agenda" class="box">
-        <h4><a href="{% url savoirs.views.evenement_index %}">Agenda</a></h4>
+        <h4><a href="{% sep_url savoirs.views.evenement_index %}">Agenda</a></h4>
         <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
 
         <ul class="sous-menu">
-          <li><a href="{% url savoirs.views.evenement_index %}">Tous les évènements</a></li>
+          <li><a href="{% sep_url savoirs.views.evenement_index %}">Tous les évènements</a></li>
           {% include "savoirs/evenement_actions.html" %}
         </ul>
 
@@ -54,23 +55,23 @@
           {% for evenement in evenements %}
           <li>
           <span class="la-date">{{ evenement.debut|date:"d/m/Y H\hi" }}</span>
-          <a href="{% url savoirs.views.evenement evenement.id %}" class="le-titre">{{ evenement.titre|truncatewords:20 }}</a>
+          <a href="{% sep_url savoirs.views.evenement id=evenement.id %}" class="le-titre">{{ evenement.titre|truncatewords:20 }}</a>
           <span class="le-resume">{{ evenement.description|truncatewords:20 }}</span>
           </li>
           {% endfor %}
         </ul>
     </div>
     <div  id="ressources" class="box">
-        <h4><a href="{% url savoirs.views.ressource_index %}">Ressources</a></h4>
+        <h4><a href="{% sep_url savoirs.views.ressource_index %}">Ressources</a></h4>
         
         <ul class="sous-menu">
-            <li><a href="{% url savoirs.views.ressource_index %}">Toutes les ressources</a></li>
+            <li><a href="{% sep_url savoirs.views.ressource_index %}">Toutes les ressources</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
         {% for ressource in ressources %}
             <li>
-            <a href="{% url savoirs.views.ressource_retrieve ressource.id %}" class="le-titre">{{ ressource.title|safe|truncatewords:20 }}</a>
+            <a href="{% sep_url savoirs.views.ressource_retrieve id=ressource.id %}" class="le-titre">{{ ressource.title|safe|truncatewords:20 }}</a>
             {% if resssource.creator %}
                 Auteur : {{ ressource.creator }}<br />
             {% endif %}
@@ -86,17 +87,17 @@
         </ul>
     </div>
     <div  id="sites" class="box">
-        <h4><a href="{% url sitotheque.views.index %}">Sites</a></h4>
+        <h4><a href="{% sep_url sitotheque.views.index %}">Sites</a></h4>
         
         <ul class="sous-menu">
-            <li><a href="{% url sitotheque.views.index %}">Sitothèque</a></li>
+            <li><a href="{% sep_url sitotheque.views.index %}">Sitothèque</a></li>
             {% include "sites/actions.html" %}
         </ul>
         
         <ul class="liste-de-l-accueil">
         {% for site in sites %}
             <li>
-            <a href="{% url sitotheque.views.retrieve site.id %}" class="le-titre">{{ site|truncatewords:20 }}</a>
+            <a href="{% sep_url sitotheque.views.retrieve id=site.id %}" class="le-titre">{{ site|truncatewords:20 }}</a>
             <a href="{{ site.url }}" class="la-date">{{ site.url }}</a>
             {% if site.discipline.all.count %}<span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>{% endif %}
             </li>

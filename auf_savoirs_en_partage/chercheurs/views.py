@@ -29,7 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 class AuthenticationForm(OriginalAuthenticationForm):
     username = forms.CharField(label='Adresse électronique', max_length=255)
 
-def send_password(request):
+def send_password(request, discipline=None, region=None):
     if request.method == "POST":
         form = SendPasswordForm(data=request.POST)
         if form.is_valid():
@@ -83,7 +83,7 @@ def new_password(request, email, code):
             context_instance = RequestContext(request))
 
 @login_required()            
-def change_password(request):
+def change_password(request, discipline=None, region=None):
     context_instance = RequestContext(request)
     u = context_instance['user_sep']
     message = ""
@@ -103,7 +103,7 @@ def change_password(request):
             Context (variables), 
             context_instance = RequestContext(request))            
              
-def chercheur_login(request):
+def chercheur_login(request, discipline=None, region=None):
     "Displays the login form and handles the login action."
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -112,23 +112,29 @@ def chercheur_login(request):
             login(request, form.get_user())
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
-            return HttpResponseRedirect(url('chercheurs.views.perso'))
+            kwargs = {}
+            if discipline:
+                kwargs['discipline'] = discipline
+            if region:
+                kwargs['region'] = region
+            return HttpResponseRedirect(url('chercheurs.views.perso', kwargs=kwargs))
     else:
         form = AuthenticationForm(request)
     request.session.set_test_cookie()
-    return render_to_response('accounts/login.html', dict(form=form), context_instance=RequestContext(request))
+    return render_to_response('accounts/login.html', dict(form=form),
+                              context_instance=RequestContext(request))
     
     
-def index(request):
+def index(request, discipline=None, region=None):
     """Répertoire des chercheurs"""
     search_form = RepertoireSearchForm(request.GET)
-    chercheurs = search_form.get_query_set()
+    chercheurs = search_form.get_query_set().filter_discipline(discipline).filter_region(region)
     nb_chercheurs = chercheurs.count()
     return render_to_response("chercheurs/index.html",
                               dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, search_form=search_form),
                               context_instance=RequestContext(request))
 
-def inscription(request):
+def inscription(request, discipline=None, region=None):
     if request.method == 'POST':
         forms = ChercheurFormGroup(request.POST)
         if forms.is_valid():
@@ -136,7 +142,12 @@ def inscription(request):
             # login automatique
             login(request, authenticate(username=forms.personne.cleaned_data['courriel'], 
                                         password=forms.personne.cleaned_data['password']))
-            return HttpResponseRedirect(url('chercheurs.views.perso'))
+            kwargs = {}
+            if discipline:
+                kwargs['discipline'] = discipline
+            if region:
+                kwargs['region'] = region
+            return HttpResponseRedirect(url('chercheurs.views.perso', kwargs=kwargs))
     else:
         forms = ChercheurFormGroup()
     
@@ -146,7 +157,7 @@ def inscription(request):
 
 @login_required()
 @never_cache
-def edit(request):
+def edit(request, discipline=None, region=None):
     """Edition d'un chercheur"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']    
@@ -154,7 +165,12 @@ def edit(request):
         forms = ChercheurFormGroup(request.POST, chercheur=chercheur)
         if forms.is_valid():
             forms.save()
-            return HttpResponseRedirect("/chercheurs/perso/?modification=1")
+            kwargs = {}
+            if discipline:
+                kwargs['discipline'] = discipline
+            if region:
+                kwargs['region'] = region
+            return HttpResponseRedirect(url('chercheurs.views.perso', kwargs=kwargs) + '?modification=1')
     else:
         forms = ChercheurFormGroup(chercheur=chercheur)
         
@@ -163,25 +179,29 @@ def edit(request):
                               context_instance = RequestContext(request))
             
 @login_required()
-def perso(request):
+def perso(request, discipline=None, region=None):
     """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']
     modification = request.GET.get('modification')
     if not chercheur:
-        return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
+        kwargs = {}
+        if discipline:
+            kwargs['discipline'] = discipline
+        if region:
+            kwargs['region'] = region
+        return HttpResponseRedirect(url('chercheurs.views.chercheur_login', kwargs=kwargs))
     return render_to_response("chercheurs/perso.html",
                               dict(chercheur=chercheur, modification=modification),
                               context_instance=RequestContext(request))
             
-def retrieve(request, id):
+def retrieve(request, id, discipline=None, region=None):
     """Fiche du chercheur"""
     chercheur = get_object_or_404(Chercheur, id=id)
     return render_to_response("chercheurs/retrieve.html",
                               dict(chercheur=chercheur),
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
             
-def conversion(request):
-    return render_to_response ("chercheurs/conversion.html", \
-            Context (), \
-            context_instance = RequestContext(request))
+def conversion(request, discipline=None, region=None):
+    return render_to_response("chercheurs/conversion.html", {}, 
+                              context_instance=RequestContext(request))

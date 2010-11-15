@@ -31,6 +31,7 @@
         </ul>
         
         <ul class="liste-de-l-accueil">
+            <li><strong>Nouveaux chercheurs (ou fiches actualisées récemment)</strong></li>
         {% for chercheur in chercheurs %}
             <li>
             <a href="{% url chercheurs.views.retrieve chercheur.id %}" class="le-titre">{{ chercheur }}</a>

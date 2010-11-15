@@ -74,13 +74,21 @@ class ActualiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         """Ne conserve que les actualités dans la discipline donnée.
            
         Si ``disicipline`` est None, ce filtre n'a aucun effet."""
-        return self.filter(disciplines=discipline) if discipline is not None else self
+        if discipline is None:
+            return self
+        else:
+            discipline_name = Discipline.objects.get(pk=discipline).nom
+            return self.search(discipline_name)
 
     def filter_region(self, region):
         """Ne conserve que les actualités dans la région donnée.
            
         Si ``region`` est None, ce filtre n'a aucun effet."""
-        return self.filter(regions=region) if region is not None else self
+        if region is None:
+            return self
+        else:
+            region_name = Region.objects.get(pk=region).nom
+            return self.search(region_name)
 
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
@@ -153,13 +161,21 @@ class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         """Ne conserve que les évènements dans la discipline donnée.
            
         Si ``disicipline`` est None, ce filtre n'a aucun effet."""
-        return self.filter(Q(discipline=discipline) | Q(discipline_secondaire=discipline)) if discipline is not None else self
+        if discipline is None:
+            return self
+        else:
+            discipline_name = Discipline.objects.get(pk=discipline).nom
+            return self.search(discipline_name)
 
     def filter_region(self, region):
         """Ne conserve que les évènements dans la région donnée.
            
         Si ``region`` est None, ce filtre n'a aucun effet."""
-        return self.filter(regions=region) if region is not None else self
+        if region is None:
+            return self
+        else:
+            region_name = Region.objects.get(pk=region).nom
+            return self.search(region_name)
 
 def build_time_zone_choices():
     fr_names = set()
@@ -413,13 +429,21 @@ class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         """Ne conserve que les ressources dans la discipline donnée.
            
         Si ``disicipline`` est None, ce filtre n'a aucun effet."""
-        return self.filter(disciplines=discipline) if discipline is not None else self
+        if discipline is None:
+            return self
+        else:
+            discipline_name = Discipline.objects.get(pk=discipline).nom
+            return self.search(discipline_name)
 
     def filter_region(self, region):
         """Ne conserve que les ressources dans la région donnée.
            
         Si ``region`` est None, ce filtre n'a aucun effet."""
-        return self.filter(Q(regions=region) | Q(pays__region=region)) if region is not None else self
+        if region is None:
+            return self
+        else:
+            region_name = Region.objects.get(pk=region).nom
+            return self.search(region_name)
 
     def validated(self):
         """Ne garder que les ressources validées et qui sont soit dans aucun

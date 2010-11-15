@@ -56,13 +56,21 @@ class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         """Ne conserve que les sites dans la discipline donnée.
            
         Si ``disicipline`` est None, ce filtre n'a aucun effet."""
-        return self.filter(discipline=discipline) if discipline is not None else self
+        if discipline is None:
+            return self
+        else:
+            discipline_name = Discipline.objects.get(pk=discipline).nom
+            return self.search(discipline_name)
 
     def filter_region(self, region):
         """Ne conserve que les sites dans la région donnée.
            
         Si ``region`` est None, ce filtre n'a aucun effet."""
-        return self.filter(Q(regions=region) | Q(pays__region=region)) if region is not None else self
+        if region is None:
+            return self
+        else:
+            region_name = Region.objects.get(pk=region).nom
+            return self.search(region_name)
 
 class Site(models.Model):
     """Fiche d'info d'un site web"""

@@ -97,14 +97,21 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         """Ne conserve que les chercheurs dans la discipline donnée.
            
         Si ``disicipline`` est None, ce filtre n'a aucun effet."""
-        return self.filter(discipline=discipline) if discipline is not None else self
+        if discipline is None:
+            return self
+        else:
+            discipline_name = Discipline.objects.get(pk=discipline).nom
+            return self.search(discipline_name)
 
     def filter_region(self, region):
         """Ne conserve que les évènements dans la région donnée.
            
         Si ``region`` est None, ce filtre n'a aucun effet."""
-        return self.filter(Q(etablissement__pays__region=region) | Q(etablissement_autre_pays__region=region)) if region is not None else self
-
+        if region is None:
+            return self
+        else:
+            region_name = Region.objects.get(pk=region).nom
+            return self.search(region_name)
 
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):

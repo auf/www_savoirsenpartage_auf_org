@@ -58,7 +58,16 @@ def legal(request):
 def recherche(request, discipline=None, region=None):
     query = request.GET.get("q", "")
     if not query.strip():
-        return redirect('/')
+        
+        # Si on n'a pas de recherche par mots-clés, on redirige vers
+        # l'accueil.
+        kwargs = {}
+        if discipline:
+            kwargs['discipline'] = discipline
+        if region:
+            kwargs['region'] = region
+        return HttpResponseRedirect(reverse('savoirs.views.index', kwargs=kwargs))
+
     ressources = Record.objects.validated().filter_discipline(discipline).filter_region(region).search(query)
     actualites = Actualite.objects.filter(visible=1).filter_discipline(discipline).filter_region(region).search(query)
     evenements = Evenement.objects.filter(approuve=1).filter_discipline(discipline).filter_region(region).search(query)

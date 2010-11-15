@@ -7,6 +7,12 @@ class SiteSearchForm(forms.Form):
     mots_cles = forms.CharField (required = False, label="Rechercher dans tous les champs")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
 
+    def __init__(self, data=None, region=None):
+        super(SiteSearchForm, self).__init__(data)
+        if region:
+            pays = self.fields['pays']
+            pays.queryset = pays.queryset.filter(region=region)
+
     def get_query_set(self):
         """Retourne l'ensemble des sites qui correspondent aux valeurs
            entrées dans le formulaire."""

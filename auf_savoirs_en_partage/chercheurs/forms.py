@@ -236,7 +236,13 @@ class RepertoireSearchForm (forms.Form):
     membre_instance_auf = forms.BooleanField(required=False, label="Membre d'une instance de l'AUF")
     expert_oif = forms.BooleanField(required=False, label="Expert de l'OIF")
     membre_fipf = forms.BooleanField(required=False, label="Membre de la FIPF")
-      
+
+    def __init__(self, data=None, region=None):
+        super(RepertoireSearchForm, self).__init__(data)
+        if region:
+            pays = self.fields['pays']
+            pays.queryset = pays.queryset.filter(region=region)
+
     def get_query_set(self):
         qs = Chercheur.objects.all()
         if self.is_valid():

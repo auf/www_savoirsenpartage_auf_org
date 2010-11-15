@@ -124,10 +124,9 @@ def chercheur_login(request, discipline=None, region=None):
     return render_to_response('accounts/login.html', dict(form=form),
                               context_instance=RequestContext(request))
     
-    
 def index(request, discipline=None, region=None):
     """Répertoire des chercheurs"""
-    search_form = RepertoireSearchForm(request.GET)
+    search_form = RepertoireSearchForm(request.GET, region=region)
     chercheurs = search_form.get_query_set().filter_discipline(discipline).filter_region(region)
     nb_chercheurs = chercheurs.count()
     return render_to_response("chercheurs/index.html",

@@ -24,11 +24,13 @@
     <table>
         {% form_field forms.chercheur.etablissement %}
     </table>
-    <p>Si l'établissement n'existe pas dans la liste des établissements membres de l'AUF, ci-dessus</p>
-    <table>
-        {% form_field forms.chercheur.etablissement_autre_nom %}
-        {% form_field forms.chercheur.etablissement_autre_pays %}
-    </table>
+    <div id="etablissement_autre">
+        <p>Si l'établissement n'existe pas dans la liste des établissements membres de l'AUF, ci-dessus</p>
+        <table>
+            {% form_field forms.chercheur.etablissement_autre_nom %}
+            {% form_field forms.chercheur.etablissement_autre_pays %}
+        </table>
+    </div>
 </fieldset>
 
 <fieldset>

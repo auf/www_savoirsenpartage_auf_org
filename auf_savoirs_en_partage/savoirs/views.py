@@ -109,7 +109,7 @@ def ressource_retrieve(request, id, discipline=None, region=None):
     ressource = get_object_or_404(Record, id=id)
     return render_to_response(
         "savoirs/ressource_retrieve.html",
-        dict(ressource=ressource, disciplines=resource.disciplines.all(),
+        dict(ressource=ressource, disciplines=ressource.disciplines.all(),
              regions=ressource.regions.all()),
         context_instance=RequestContext(request)
     )

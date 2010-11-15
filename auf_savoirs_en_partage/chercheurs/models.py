@@ -75,7 +75,9 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
                     Q(these__in=matching_publications) |
                     Q(groupes__in=matching_groupes) |
                     Q(expertises__nom__icontains=word) |
-                    Q(mots_cles__icontains=word)
+                    Q(mots_cles__icontains=word) |
+                    Q(membre_association_francophone_details__icontains=word) |
+                    Q(membre_reseau_institutionnel_details__icontains=word)
                    )
             if q is None:
                 q = part

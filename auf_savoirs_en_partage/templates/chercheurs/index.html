@@ -48,14 +48,6 @@
         {% form_field search_form.region %}
         {% form_field search_form.pays %}
         {% form_field search_form.nord_sud %}
-        <tr>
-            <td><label>Activités en francophonie</label></td>
-            <td>
-                {{ search_form.membre_instance_auf }} {{ search_form.membre_instance_auf.label_tag }}<br />
-                {{ search_form.expert_oif }} {{ search_form.expert_oif.label_tag }}<br />
-                {{ search_form.membre_fipf }} {{ search_form.membre_fipf.label_tag }}
-            </td>
-        </tr>
         <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
     </table>
 </form>

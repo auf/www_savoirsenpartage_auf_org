@@ -7,9 +7,9 @@ from savoirs.lib.recherche import build_search_regexp
 class SiteSearchForm(forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
+    pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
     region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
                                     help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
-    pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
 
     def get_query_set(self):
         """Retourne l'ensemble des sites qui correspondent aux valeurs

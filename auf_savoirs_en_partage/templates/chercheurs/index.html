@@ -1,10 +1,8 @@
 {% extends "container_base.html" %}
 {% load pagination_tags %}
-{% load sorting_tags %}
 {% load form_tags %}
 
 {% block contenu %}
-{% autosort chercheurs %}
 {% autopaginate chercheurs 20 %}
 
 <h4>Répertoire des chercheurs</h4>
@@ -58,9 +56,9 @@
 <div class="contenu-wrapper">
     <table id="repertoire">
         <tr>
-            <th>{% anchor personne__nom Nom %}</th>
-            <th>{% anchor etablissement__nom Établissement %}</th>
-            <th>{% anchor etablissement__pays Localisation %}</th>
+            <th>Nom</th>
+            <th>Établissement</th>
+            <th>Localisation</th>
         </tr>
     {% for chercheur in chercheurs %}
         <tr class="{% cycle 'odd' 'notodd' %}">

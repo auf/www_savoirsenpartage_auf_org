@@ -229,12 +229,15 @@ class RepertoireSearchForm (forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     nom = forms.CharField(required=False, label="Nom")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
-    groupe_recherche = forms.CharField(required=False, label="Groupe de recherche")
+    groupe_recherche = forms.CharField(required=False, label="Groupe de recherche",
+                                       help_text="ou Laboratoire, ou Groupement inter-universitaire")
     statut = forms.ChoiceField(choices=(('','Tous'),)+STATUT_CHOICES+(('expert','Expert'),), required=False, label="Statut")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
+                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
-    nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud")
+    nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud",
+                                 help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays les plus développés, par Sud les pays en voie de développement.")
 
     def __init__(self, data=None, region=None):
         super(RepertoireSearchForm, self).__init__(data)

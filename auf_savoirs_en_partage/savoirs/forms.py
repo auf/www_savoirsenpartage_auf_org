@@ -36,7 +36,8 @@ class RecordSearchForm(forms.Form):
     sujet = forms.CharField(required=False, label="Sujet")
     publisher = forms.CharField(required=False, label="Éditeur")
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
+                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -80,7 +81,8 @@ class ActualiteSearchForm(forms.Form):
     date_min = SEPDateField(required=False, label="Depuis le")
     date_max = SEPDateField(required=False, label="Jusqu'au") 
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
+                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
 
     def get_query_set(self):
         """Retourne l'ensemble des actualités qui correspondent aux valeurs
@@ -119,7 +121,8 @@ class EvenementSearchForm(forms.Form):
     date_min = SEPDateField(required=False, label="Depuis le") 
     date_max = SEPDateField(required=False, label="Jusqu'au") 
     discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
+                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
     
     def get_query_set(self):
         """Retourne l'ensemble des évènements qui correspondent aux valeurs

@@ -216,7 +216,6 @@ class ChercheurFormGroup(object):
             if self.publication4.cleaned_data['titre']:
                 chercheur.publication4 = self.publication4.save()
             chercheur.these = self.these.save()
-            self.expertises.save()
 
             # Puis enregistrer le chercheur lui-même.
             self.chercheur.save()
@@ -224,6 +223,8 @@ class ChercheurFormGroup(object):
             # Puis les many-to-many puisqu'on a besoin d'un id.
             self.groupes.chercheur = chercheur
             self.groupes.save()
+            self.expertises.instance = chercheur
+            self.expertises.save()
 
 class RepertoireSearchForm (forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")

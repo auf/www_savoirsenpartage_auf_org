@@ -226,11 +226,13 @@ class ChercheurFormGroup(object):
             self.groupes.save()
 
 class RepertoireSearchForm (forms.Form):
-    mots_cles = forms.CharField(required=False, label="Rechercher dans tous les champs")
+    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     nom = forms.CharField(required=False, label="Nom")
     domaine = forms.ModelChoiceField(queryset=Groupe.objects.all(), required=False, label="Domaine de recherche", empty_label="Tous")
     groupe_recherche = forms.CharField(required=False, label="Groupe de recherche")
     statut = forms.ChoiceField(choices=(('','Tous'),)+STATUT_CHOICES+(('expert','Expert'),), required=False, label="Statut")
+    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
     pays = forms.ModelChoiceField(queryset=Pays.objects.all(), required=False, label="Pays", empty_label="Tous")
     nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud")
     membre_instance_auf = forms.BooleanField(required=False, label="Membre d'une instance de l'AUF")
@@ -256,15 +258,21 @@ class RepertoireSearchForm (forms.Form):
             if groupe_recherche:
                 for word in groupe_recherche.split():
                     qs = qs.filter(groupe_recherche__icontains=word)
-            mots_cles = self.cleaned_data["mots_cles"]
-            if mots_cles:
-                qs = qs.search(mots_cles)
+            q = self.cleaned_data["q"]
+            if q:
+                qs = qs.search(q)
             statut = self.cleaned_data["statut"]
             if statut:
                 if statut == "expert":
                     qs = qs.exclude(expertises=None)
                 else:
                     qs = qs.filter(statut=statut)
+            discipline = self.cleaned_data['discipline']
+            if discipline:
+                qs = qs.filter_discipline(discipline)
+            region = self.cleaned_data['region']
+            if region:
+                qs = qs.filter_region(region)
             pays = self.cleaned_data["pays"]
             if pays:
                 qs = qs.filter(Q(etablissement__pays=pays) | Q(etablissement_autre_pays=pays))

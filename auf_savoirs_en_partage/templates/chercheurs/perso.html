@@ -1,5 +1,4 @@
 {% extends "container_base.html" %}
-{% load sep %}
 
 {% block contenu %}
 
@@ -9,9 +8,9 @@
     
 <h4>{{ chercheur }}</h4>
 <ul class="actions">
-    <li><a href="{% sep_url chercheurs.views.index %}">Tous les chercheurs</a></li>
-    <li><a href="{% sep_url chercheurs.views.edit %}">Éditer votre fiche</a></li>
-    <li><a href="{% sep_url chercheurs.views.change_password %}">Modifier votre mot de passe</a></li>
+    <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
+    <li><a href="{% url chercheurs.views.edit %}">Éditer votre fiche</a></li>
+    <li><a href="{% url chercheurs.views.change_password %}">Modifier votre mot de passe</a></li>
     <li><a href="{% url django.contrib.auth.views.logout %}">Déconnexion</a></li>
 </ul>
 

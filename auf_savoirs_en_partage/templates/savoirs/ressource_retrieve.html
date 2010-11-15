@@ -1,5 +1,4 @@
 {% extends "container_base.html" %}
-{% load sep %}
 
 {% block contenu %}
 <h4>Ressource</h4>
@@ -46,11 +45,8 @@
     <div><span class="lbl">Régions:</span> {{ regions|join:", " }}</div>
     {% endif %}
 
-    <div class="fiche"><span>Fiche: </span><a href="{% sep_url savoirs.views.ressource_retrieve id=ressource.id %}">{% url savoirs.views.ressource_retrieve ressource.id %}</a></div>
     <div class="original"><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>
     <div class="provenance"><span>Provenance: </span><a target="_blank" href="{{ ressource.getServeurURL }}">{{ ressource.getServeurURL }}</a></div>
-
-
 
 </div>
 {% endblock %}

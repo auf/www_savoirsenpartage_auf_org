@@ -28,7 +28,10 @@
         {% include "savoirs/ressource_resultat.html" %} 
     {% endfor %}
     {% ifnotequal ressources|length total_ressources %}
-        <p class="pad"><a href="{% sep_url savoirs.views.ressource_index %}?q={{ q|urlencode }}">Toutes les {{ total_ressources }} ressources pour cette recherche</a></p>
+    <p class="pad">
+    <a href="{% url savoirs.views.ressource_index %}{{ briques_query_string }}"
+        >Toutes les {{ total_ressources }} ressources pour cette recherche</a>
+    </p>
     {% endifnotequal %}
 {% endif %}
 
@@ -38,7 +41,10 @@
         {% include "savoirs/actualite_resultat.html" %} 
     {% endfor %}
     {% ifnotequal actualites|length total_actualites %}
-        <p class="pad"><a href="{% sep_url savoirs.views.actualite_index %}?q={{ q|urlencode }}">Toutes les {{ total_actualites }} actualités pour cette recherche</a></p>
+    <p class="pad">
+    <a href="{% url savoirs.views.actualite_index %}{{ briques_query_string }}"
+        >Toutes les {{ total_actualites }} actualités pour cette recherche</a>
+    </p>
     {% endifnotequal %}
 {% endif %}
 
@@ -48,7 +54,9 @@
         {% include "savoirs/evenement_resultat.html" %}
     {% endfor %}
     {% ifnotequal evenements|length total_evenements %}
-        <p class="pad"><a href="{% sep_url savoirs.views.evenement_index %}?q={{ q|urlencode }}">Tous les {{ total_evenements }} évènements pour cette recherche</a></p>
+    <p class="pad">
+    <a href="{% url savoirs.views.evenement_index %}{{ briques_query_string }}"
+        >Tous les {{ total_evenements }} évènements pour cette recherche</a></p>
     {% endifnotequal %}
 {% endif %}
 
@@ -56,11 +64,14 @@
     <h5>Chercheurs ({{ chercheurs|length }} sur {{ total_chercheurs }})</h5>
     <ul>
     {% for chercheur in chercheurs %}
-        <li><a href="{% sep_url chercheurs.views.retrieve id=chercheur.id %}">{{ chercheur }}</a></li>
+        <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></li>
     {% endfor %}
     </ul>
     {% ifnotequal chercheurs|length total_chercheurs %}
-        <p class="pad"><a href="{% sep_url chercheurs.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_chercheurs }} chercheurs pour cette recherche</a></p>
+    <p class="pad">
+    <a href="{% url chercheurs.views.index %}{{ briques_query_string }}"
+        >Tous les {{ total_chercheurs }} chercheurs pour cette recherche</a>
+    </p>
     {% endifnotequal %}
 {% endif %}
 
@@ -70,7 +81,10 @@
         {% include "sites/resultat.html" %}
     {% endfor %}
     {% ifnotequal sites|length total_sites %}
-        <p class="pad"><a href="{% sep_url sitotheque.views.index %}?mots_cles={{ q|urlencode }}">Tous les {{ total_sites }} sites pour cette recherche</a></p>
+    <p class="pad">
+    <a href="{% url sitotheque.views.index %}{{ briques_query_string }}"
+        >Tous les {{ total_sites }} sites pour cette recherche</a>
+    </p>
     {% endifnotequal %}
 {% endif %}
 
@@ -79,12 +93,12 @@
     {% for r in sites_auf %}
         {% include "savoirs/sites_auf_resultat.html" %}
     {% endfor %}
-    <p class="pad"><a href="{% sep_url savoirs.views.sites_auf %}?q={{ q|urlencode }}">Tous les sites AUF pour cette recherche</a></p>
+    <p class="pad"><a href="{% url savoirs.views.sites_auf %}?q={{ q|urlencode }}">Tous les sites AUF pour cette recherche</a></p>
 {% endif %}
 
 {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
-    <h5>Aucune résultat</h5>
-    <p class="pad"><a href="{% sep_url savoirs.views.index %}">Retour à la page d'accueil</a></p>
+    <h5>Aucun résultat</h5>
+    <p class="pad"><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 {% endif %}
 </div>
 

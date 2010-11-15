@@ -40,28 +40,28 @@
                     {% if user.is_authenticated %}
                     <a href="{% url django.contrib.auth.views.logout %}" class="bout-droit">Déconnexion</a>
                     {% else %}
-                    <a href="{% sep_url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
+                    <a href="{% url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
                     {% endif %}
                     <span>|</span>
-                    <a href="{% sep_url savoirs.views.legal %}">Légal</a>
+                    <a href="{% url savoirs.views.legal %}">Légal</a>
                     <span>|</span>
-                    <a href="{% sep_url savoirs.views.nous_contacter %}">Contact</a>
+                    <a href="{% url savoirs.views.nous_contacter %}">Contact</a>
                     <span>|</span>
-                    <a href="{% sep_url savoirs.views.a_propos %}" class="bout-gauche">À propos</a>
+                    <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos</a>
                 </div>
                 
                 <div class="sous-menu gauche">
-                    <a href="{% sep_url savoirs.views.actualite_index %}" class="bout-droit">Actualités</a>
+                    <a href="{% url savoirs.views.actualite_index %}" class="bout-droit">Actualités</a>
                     <span>|</span>
-                    <a href="{% sep_url savoirs.views.evenement_index %}">Agenda</a>
+                    <a href="{% url savoirs.views.evenement_index %}">Agenda</a>
                     <span>|</span>
-                    <a href="{% sep_url sitotheque.views.index %}">Sites</a>
+                    <a href="{% url sitotheque.views.index %}">Sites</a>
                     <span>|</span>
-                    <a href="{% sep_url savoirs.views.ressource_index %}">Ressources</a>
+                    <a href="{% url savoirs.views.ressource_index %}">Ressources</a>
                     <span>|</span>
-                    <a href="{% sep_url chercheurs.views.index %}">Répertoire</a>
+                    <a href="{% url chercheurs.views.index %}">Répertoire</a>
                     <span>|</span>
-                    <a href="{% sep_url savoirs.views.index %}" class="bout-gauche">Accueil</a>
+                    <a href="{% url savoirs.views.index %}" class="bout-gauche">Accueil</a>
                 </div>
                 
                 <div id="logo" style="clear:both;">

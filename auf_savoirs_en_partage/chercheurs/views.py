@@ -29,7 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 class AuthenticationForm(OriginalAuthenticationForm):
     username = forms.CharField(label='Adresse électronique', max_length=255)
 
-def send_password(request, discipline=None, region=None):
+def send_password(request):
     if request.method == "POST":
         form = SendPasswordForm(data=request.POST)
         if form.is_valid():
@@ -83,7 +83,7 @@ def new_password(request, email, code):
             context_instance = RequestContext(request))
 
 @login_required()            
-def change_password(request, discipline=None, region=None):
+def change_password(request):
     context_instance = RequestContext(request)
     u = context_instance['user_sep']
     message = ""
@@ -103,7 +103,7 @@ def change_password(request, discipline=None, region=None):
             Context (variables), 
             context_instance = RequestContext(request))            
              
-def chercheur_login(request, discipline=None, region=None):
+def chercheur_login(request):
     "Displays the login form and handles the login action."
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -124,16 +124,16 @@ def chercheur_login(request, discipline=None, region=None):
     return render_to_response('accounts/login.html', dict(form=form),
                               context_instance=RequestContext(request))
     
-def index(request, discipline=None, region=None):
+def index(request):
     """Répertoire des chercheurs"""
-    search_form = RepertoireSearchForm(request.GET, region=region)
-    chercheurs = search_form.get_query_set().filter_discipline(discipline).filter_region(region)
+    search_form = RepertoireSearchForm(request.GET)
+    chercheurs = search_form.get_query_set()
     nb_chercheurs = chercheurs.count()
     return render_to_response("chercheurs/index.html",
                               dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, search_form=search_form),
                               context_instance=RequestContext(request))
 
-def inscription(request, discipline=None, region=None):
+def inscription(request):
     if request.method == 'POST':
         forms = ChercheurFormGroup(request.POST)
         if forms.is_valid():
@@ -156,7 +156,7 @@ def inscription(request, discipline=None, region=None):
 
 @login_required()
 @never_cache
-def edit(request, discipline=None, region=None):
+def edit(request):
     """Edition d'un chercheur"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']    
@@ -178,7 +178,7 @@ def edit(request, discipline=None, region=None):
                               context_instance = RequestContext(request))
             
 @login_required()
-def perso(request, discipline=None, region=None):
+def perso(request):
     """Espace chercheur (espace personnel du chercheur)"""
     context_instance = RequestContext(request)
     chercheur = context_instance['user_chercheur']
@@ -194,13 +194,13 @@ def perso(request, discipline=None, region=None):
                               dict(chercheur=chercheur, modification=modification),
                               context_instance=RequestContext(request))
             
-def retrieve(request, id, discipline=None, region=None):
+def retrieve(request, id):
     """Fiche du chercheur"""
     chercheur = get_object_or_404(Chercheur, id=id)
     return render_to_response("chercheurs/retrieve.html",
                               dict(chercheur=chercheur),
                               context_instance=RequestContext(request))
             
-def conversion(request, discipline=None, region=None):
+def conversion(request):
     return render_to_response("chercheurs/conversion.html", {}, 
                               context_instance=RequestContext(request))

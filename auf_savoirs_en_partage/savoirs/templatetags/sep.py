@@ -112,6 +112,8 @@ def change_region(path, region):
     discipline_bit = match.group(1) or ''
     region_bit = '/region/%d' % region if region != 'all' else ''
     rest = path[match.end():]
+    if not rest.startswith('/recherche'):
+        rest = '/'
     return discipline_bit + region_bit + rest
         
 @register.filter
@@ -122,4 +124,6 @@ def change_discipline(path, discipline):
     discipline_bit = '/discipline/%d' % discipline if discipline != 'all' else ''
     region_bit = match.group(2) or ''
     rest = path[match.end():]
+    if not rest.startswith('/recherche'):
+        rest = '/'
     return discipline_bit + region_bit + rest

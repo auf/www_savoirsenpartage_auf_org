@@ -24,19 +24,38 @@ sep_patterns = patterns(
 
     # recherche
     (r'^recherche/$', 'savoirs.views.recherche'),
+)
+
+urlpatterns = sep_patterns + patterns(
+    '',
+
+    (r'^informations/$', 'savoirs.views.informations'),
+
+    # agenda
+    (r'^agenda/$', 'savoirs.views.evenement_index'),
+    (r'^agenda/evenements/(?P<id>\d+)/$', 'savoirs.views.evenement'),
+    (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
+    (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
+    (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
+
+    # sous-menu droite
+    (r'^a-propos/$', 'savoirs.views.a_propos'),
+    (r'^legal/$', 'savoirs.views.legal'),
+    (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
 
     # ressources
     (r'^ressources/$', 'savoirs.views.ressource_index'),
     (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve'),
-    
+
     # actualités
     (r'^actualites/$', 'savoirs.views.actualite_index'),
 
-    # agenda
-    (r'^agenda/$', 'savoirs.views.evenement_index'),
-    (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
-    (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
-    (r'^agenda/evenements/(?P<id>.+)/$', 'savoirs.views.evenement'),
+    # sites
+    (r'^sites/$', 'sitotheque.views.index'),
+    (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
+
+    # sites AUF
+    (r'^sites-auf/$', 'savoirs.views.sites_auf'),
 
     # chercheurs
     (r'^chercheurs/$', 'chercheurs.views.index'),
@@ -49,29 +68,9 @@ sep_patterns = patterns(
     (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
     (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
 
-    # sites
-    (r'^sites/$', 'sitotheque.views.index'),
-    (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
-
-    # sites AUF
-    (r'^sites-auf/$', 'savoirs.views.sites_auf'),
-
-    # sous-menu droite
-    (r'^a-propos/$', 'savoirs.views.a_propos'),
-    (r'^legal/$', 'savoirs.views.legal'),
-    (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
-
-)
-
-urlpatterns = sep_patterns + patterns(
-    '',
-
-    (r'^informations/$', 'savoirs.views.informations'),
-
     # agenda
-    (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
-    (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
-    (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
+    (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
+    (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
 
     # section par discipline et/ou région
     (r'^discipline/(?P<discipline>\d+)/', include(sep_patterns)),

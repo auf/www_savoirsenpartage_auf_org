@@ -1,6 +1,5 @@
 {% extends "container_base.html" %}
 {% load pagination_tags %}
-{% load sep %}
 
 {% block contenu %}
 {% autopaginate evenements 10 %}
@@ -17,7 +16,7 @@
     C'est aussi un outil de communication et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
     </p>
     <p>
-    Consulter les <a href="{% sep_url savoirs.views.evenement_utilisation %}">conditions d'utilisation</a>.
+    Consulter les <a href="{% url savoirs.views.evenement_utilisation %}">conditions d'utilisation</a>.
     </p>
 </div>
 

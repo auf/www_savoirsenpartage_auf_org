@@ -35,6 +35,8 @@ class RecordSearchForm(forms.Form):
     titre = forms.CharField(required=False, label="Titre")
     sujet = forms.CharField(required=False, label="Sujet")
     publisher = forms.CharField(required=False, label="Éditeur")
+    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
 
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
@@ -57,6 +59,12 @@ class RecordSearchForm(forms.Form):
             if publisher:
                 for word in publisher.split():
                     records = records.filter(publisher__icontains=word)
+            discipline = self.cleaned_data['discipline']
+            if discipline:
+                records = records.filter_discipline(discipline)
+            region = self.cleaned_data['region']
+            if region:
+                records = records.filter_region(region)
         return records
 
     def get_search_regexp(self):
@@ -71,6 +79,8 @@ class ActualiteSearchForm(forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
     date_min = SEPDateField(required=False, label="Depuis le")
     date_max = SEPDateField(required=False, label="Jusqu'au") 
+    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
 
     def get_query_set(self):
         """Retourne l'ensemble des actualités qui correspondent aux valeurs
@@ -86,6 +96,12 @@ class ActualiteSearchForm(forms.Form):
             date_max = self.cleaned_data['date_max']
             if date_max:
                 actualites = actualites.filter(date__lte=date_max)
+            discipline = self.cleaned_data['discipline']
+            if discipline:
+                actualites = actualites.filter_discipline(discipline)
+            region = self.cleaned_data['region']
+            if region:
+                actualites = actualites.filter_region(region)
         return actualites
     
     def get_search_regexp(self):
@@ -102,6 +118,8 @@ class EvenementSearchForm(forms.Form):
     type = forms.ChoiceField(required=False, choices=(('', 'Tous'),)+Evenement.TYPE_CHOICES)
     date_min = SEPDateField(required=False, label="Depuis le") 
     date_max = SEPDateField(required=False, label="Jusqu'au") 
+    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes")
     
     def get_query_set(self):
         """Retourne l'ensemble des évènements qui correspondent aux valeurs
@@ -123,6 +141,12 @@ class EvenementSearchForm(forms.Form):
             date_max = self.cleaned_data['date_max']
             if date_max:
                 evenements = evenements.filter(debut__lte=date_max)
+            discipline = self.cleaned_data['discipline']
+            if discipline:
+                evenements = evenements.filter_discipline(discipline)
+            region = self.cleaned_data['region']
+            if region:
+                evenements = evenements.filter_region(region)
         return evenements
 
     def get_search_regexp(self):

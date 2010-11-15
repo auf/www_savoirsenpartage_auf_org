@@ -33,4 +33,4 @@ class SiteSearchForm(forms.Form):
         """Retourne une expression régulière compilée qui peut servir à
            chercher les mot-clés recherchés dans un texte."""
         if self.is_valid():
-            return build_search_regexp(self.cleaned_data['mots_cles'])
+            return build_search_regexp(self.cleaned_data['q'])

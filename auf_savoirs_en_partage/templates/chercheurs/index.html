@@ -39,11 +39,13 @@
 
 <form method="get" action="" class="contenu-wrapper">
     <table id="repertoire_recherche">
-        {% form_field search_form.mots_cles %}
+        {% form_field search_form.q %}
         {% form_field search_form.nom %}
         {% form_field search_form.domaine %}
         {% form_field search_form.groupe_recherche %}
         {% form_field search_form.statut %}
+        {% form_field search_form.discipline %}
+        {% form_field search_form.region %}
         {% form_field search_form.pays %}
         {% form_field search_form.nord_sud %}
         <tr>

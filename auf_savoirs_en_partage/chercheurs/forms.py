@@ -17,13 +17,22 @@ class PersonneForm(forms.ModelForm):
         
 class PersonneInscriptionForm(PersonneForm):
     password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
+    password_confirmation = forms.CharField(widget=forms.PasswordInput(), label="Confirmez votre mot de passe")
 
     class Meta(PersonneForm.Meta):
-        fields = ('nom', 'prenom', 'courriel', 'password', 'genre')
+        fields = ('nom', 'prenom', 'courriel', 'password', 'password_confirmation', 'genre')
         
     def clean_password(self):
         """Encrypter le mot de passe avant de le mettre dans la BD."""
         return hashlib.md5(self.cleaned_data['password']).hexdigest()
+
+    def clean_password_confirmation(self):
+        """S'assurer que le mot de passe et la confirmation sont identiques."""
+        password = self.cleaned_data['password']
+        confirmation = hashlib.md5(self.cleaned_data['password_confirmation']).hexdigest()
+        if password != confirmation:
+            raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')
+        return self.cleaned_data['password_confirmation']
 
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""

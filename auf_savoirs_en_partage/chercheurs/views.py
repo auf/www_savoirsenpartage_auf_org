@@ -112,12 +112,7 @@ def chercheur_login(request):
             login(request, form.get_user())
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
-            kwargs = {}
-            if discipline:
-                kwargs['discipline'] = discipline
-            if region:
-                kwargs['region'] = region
-            return HttpResponseRedirect(url('chercheurs.views.perso', kwargs=kwargs))
+            return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         form = AuthenticationForm(request)
     request.session.set_test_cookie()
@@ -141,12 +136,7 @@ def inscription(request):
             # login automatique
             login(request, authenticate(username=forms.personne.cleaned_data['courriel'], 
                                         password=forms.personne.cleaned_data['password']))
-            kwargs = {}
-            if discipline:
-                kwargs['discipline'] = discipline
-            if region:
-                kwargs['region'] = region
-            return HttpResponseRedirect(url('chercheurs.views.perso', kwargs=kwargs))
+            return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         forms = ChercheurFormGroup()
     
@@ -164,12 +154,7 @@ def edit(request):
         forms = ChercheurFormGroup(request.POST, chercheur=chercheur)
         if forms.is_valid():
             forms.save()
-            kwargs = {}
-            if discipline:
-                kwargs['discipline'] = discipline
-            if region:
-                kwargs['region'] = region
-            return HttpResponseRedirect(url('chercheurs.views.perso', kwargs=kwargs) + '?modification=1')
+            return HttpResponseRedirect(url('chercheurs.views.perso') + '?modification=1')
     else:
         forms = ChercheurFormGroup(chercheur=chercheur)
         
@@ -184,12 +169,7 @@ def perso(request):
     chercheur = context_instance['user_chercheur']
     modification = request.GET.get('modification')
     if not chercheur:
-        kwargs = {}
-        if discipline:
-            kwargs['discipline'] = discipline
-        if region:
-            kwargs['region'] = region
-        return HttpResponseRedirect(url('chercheurs.views.chercheur_login', kwargs=kwargs))
+        return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
     return render_to_response("chercheurs/perso.html",
                               dict(chercheur=chercheur, modification=modification),
                               context_instance=RequestContext(request))

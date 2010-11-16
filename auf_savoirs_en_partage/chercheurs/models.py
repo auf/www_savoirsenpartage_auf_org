@@ -147,7 +147,7 @@ class Chercheur(models.Model):
     thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='thematique')
     mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés')                    
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
-    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thème de recherche')                                    
+    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche')                                    
     groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
     url_site_web = models.URLField(max_length=255, null=True, blank=True, verbose_name='adresse site Internet')
     url_blog = models.URLField(max_length=255, null=True, blank=True, verbose_name='blog')

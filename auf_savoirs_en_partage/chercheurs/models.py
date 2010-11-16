@@ -103,7 +103,21 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(discipline, Discipline):
             discipline = Discipline.objects.get(pk=discipline)
-        return self.search(discipline.nom)
+        return self.filter(Q(discipline=discipline) |
+                           Q(theme_recherche__icontains=discipline.nom) |
+                           Q(groupe_recherche__icontains=discipline.nom) |
+                           Q(publication1__titre__icontains=discipline.nom) |
+                           Q(publication2__titre__icontains=discipline.nom) |
+                           Q(publication3__titre__icontains=discipline.nom) |
+                           Q(publication4__titre__icontains=discipline.nom) |
+                           Q(these__titre__icontains=discipline.nom) |
+                           Q(groupes__nom__icontains=discipline.nom) |
+                           Q(expertises__nom__icontains=discipline.nom) |
+                           Q(mots_cles__icontains=discipline.nom) |
+                           Q(membre_instance_auf_details__icontains=discipline.nom) |
+                           Q(membre_association_francophone_details__icontains=discipline.nom) |
+                           Q(expert_oif_details__icontains=discipline.nom) |
+                           Q(membre_reseau_institutionnel_details__icontains=discipline.nom)).distinct()
 
     def filter_region(self, region):
         """Ne conserve que les évènements dans la région donnée.
@@ -111,9 +125,8 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         Si ``region`` est None, ce filtre n'a aucun effet."""
         if region is None:
             return self
-        if not isinstance(region, Region):
-            region = Region.objects.get(pk=region)
-        return self.search(region.nom)
+        return self.filter(Q(etablissement__pays__region=region) |
+                           Q(etablissement_autre_pays__region=region))
 
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):

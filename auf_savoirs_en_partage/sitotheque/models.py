@@ -60,7 +60,10 @@ class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(discipline, Discipline):
             discipline = Discipline.objects.get(pk=discipline)
-        return self.search(discipline.nom)
+        return self.filter(Q(discipline=discipline) |
+                           Q(titre__icontains=discipline.nom) |
+                           Q(description__icontains=discipline.nom) |
+                           Q(mots_cles__icontains=discipline.nom))
 
     def filter_region(self, region):
         """Ne conserve que les sites dans la région donnée.
@@ -70,7 +73,10 @@ class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(region, Region):
             region = Region.objects.get(pk=region)
-        return self.search(region.nom)
+        return self.filter(Q(pays__region=region) |
+                           Q(titre__icontains=region.nom) |
+                           Q(description__icontains=region.nom) |
+                           Q(mots_cles__icontains=region.nom)).distinct()
 
 class Site(models.Model):
     """Fiche d'info d'un site web"""

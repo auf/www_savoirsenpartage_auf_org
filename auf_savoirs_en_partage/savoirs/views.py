@@ -28,7 +28,7 @@ def index(request, discipline=None, region=None):
     oldest = datetime.date.today() - delta
     actualites = Actualite.objects.filter(visible=True, date__gt=oldest).filter_discipline(discipline).filter_region(region)[:4]
     evenements = Evenement.objects.filter(approuve=True).filter_discipline(discipline).filter_region(region)[:4]
-    ressources = Record.objects.filter_discipline(discipline).filter_region(region).random(4)
+    ressources = Record.objects.validated().filter_discipline(discipline).filter_region(region).random(4)
     chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).order_by('-date_modification')[:10]
     sites = Site.objects.filter_discipline(discipline).filter_region(region).random(4)
     return render_to_response(

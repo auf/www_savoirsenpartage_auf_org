@@ -78,7 +78,9 @@ class ActualiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(discipline, Discipline):
             discipline = Discipline.objects.get(pk=discipline)
-        return self.search(discipline.nom)
+        return self.filter(Q(disciplines=discipline) |
+                           Q(titre__icontains=discipline.nom) |
+                           Q(texte__icontains=discipline.nom)).distinct()
 
     def filter_region(self, region):
         """Ne conserve que les actualités dans la région donnée.
@@ -88,7 +90,9 @@ class ActualiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(region, Region):
             region = Region.objects.get(pk=region)
-        return self.search(region.nom)
+        return self.filter(Q(regions=region) |
+                           Q(titre__icontains=region.nom) |
+                           Q(texte__icontains=region.nom)).distinct()
 
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
@@ -165,7 +169,11 @@ class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(discipline, Discipline):
             discipline = Discipline.objects.get(pk=discipline)
-        return self.search(discipline.nom)
+        return self.filter(Q(discipline=discipline) |
+                           Q(discipline_secondaire=discipline) |
+                           Q(titre__icontains=discipline.nom) |
+                           Q(mots_cles__icontains=discipline.nom) |
+                           Q(description__icontains=discipline.nom))
 
     def filter_region(self, region):
         """Ne conserve que les évènements dans la région donnée.
@@ -175,7 +183,11 @@ class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(region, Region):
             region = Region.objects.get(pk=region)
-        return self.search(region.nom)
+        return self.filter(Q(regions=region) |
+                           Q(titre__icontains=region.nom) |
+                           Q(mots_cles__icontains=region.nom) |
+                           Q(description__icontains=region.nom) |
+                           Q(lieu__icontains=region.nom)).distinct()
 
 def build_time_zone_choices():
     fr_names = set()
@@ -433,7 +445,10 @@ class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(discipline, Discipline):
             discipline = Discipline.objects.get(pk=discipline)
-        return self.search(discipline.nom)
+        return self.filter(Q(disciplines=discipline) |
+                           Q(title__icontains=discipline.nom) |
+                           Q(description__icontains=discipline.nom) |
+                           Q(subject__icontains=discipline.nom)).distinct()
 
     def filter_region(self, region):
         """Ne conserve que les ressources dans la région donnée.
@@ -443,7 +458,11 @@ class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
             return self
         if not isinstance(region, Region):
             region = Region.objects.get(pk=region)
-        return self.search(region.nom)
+        return self.filter(Q(pays__region=region) |
+                           Q(regions=region) |
+                           Q(title__icontains=region.nom) |
+                           Q(description__icontains=region.nom) |
+                           Q(subject__icontains=region.nom)).distinct()
 
     def validated(self):
         """Ne garder que les ressources validées et qui sont soit dans aucun

@@ -6,7 +6,9 @@
         {{publication.editeur}}{% endif %}{% if publication.lieu_edition %}, 
         {{publication.lieu_edition}}{% endif %}{% if publication.nb_pages %}, 
         {{publication.nb_pages}} pages{% endif %}.
-        {% if publication.url %}<br />{{publication.url}}{% endif %}
+        {% if publication.url %}
+        <br /><a href="{{ publication.url }}">{{ publication.url }}</a>
+        {% endif %}
     </td>
 {% else %}
     {% if publication.publication_affichage %}

@@ -44,8 +44,12 @@ class ChercheurForm(forms.ModelForm):
         help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
+    membre_instance_auf_details = forms.CharField(label="Préciser laquelle et votre fonction", required=False)
     membre_instance_auf_dates = forms.CharField(label="Préciser les dates", required=False)
-    expert_oif = forms.ChoiceField(label="Êtes-vous expert de l'OIF?", choices=OUI_NON_CHOICES, widget=forms.RadioSelect())
+    expert_oif = forms.ChoiceField(label="Avez-vous déjà été sollicité par l'OIF?", choices=OUI_NON_CHOICES, widget=forms.RadioSelect())
+    expert_oif_details = forms.CharField(label="Préciser à quel titre", required=False,
+                                         help_text="Fonction dans l'organisation, participation à une étude ou à une action, etc.")
+    expert_oif_dates = forms.CharField(label="Préciser les dates", required=False)
     membre_association_francophone = forms.ChoiceField(
         label="Êtes-vous membre d'une association ou d'une société savante francophone?",
         help_text="e.g. FIPF, Collège international de philosophie, AISLF, etc.",
@@ -68,14 +72,23 @@ class ChercheurForm(forms.ModelForm):
                   'etablissement_autre_nom', 'etablissement_autre_pays',
                   'discipline', 'theme_recherche', 'groupe_recherche', 'mots_cles',
                   'url_site_web', 'url_blog', 'url_reseau_social',
-                  'membre_instance_auf', 'membre_instance_auf_dates',
-                  'expert_oif', 'membre_association_francophone', 'membre_association_francophone_details',
+                  'membre_instance_auf', 'membre_instance_auf_details', 'membre_instance_auf_dates',
+                  'expert_oif', 'expert_oif_details', 'expert_oif_dates',
+                  'membre_association_francophone',
+                  'membre_association_francophone_details',
                   'membre_reseau_institutionnel', 'membre_reseau_institutionnel_details',
                   'membre_reseau_institutionnel_dates')
         
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
     
+    def clean_membre_instance_auf_details(self):
+        membre = self.cleaned_data.get('membre_instance_auf')
+        details = self.cleaned_data.get('membre_instance_auf_details')
+        if membre and not details:
+            raise forms.ValidationError('Veuillez préciser')
+        return details
+
     def clean_membre_instance_auf_dates(self):
         membre = self.cleaned_data.get('membre_instance_auf')
         dates = self.cleaned_data.get('membre_instance_auf_dates')
@@ -85,6 +98,20 @@ class ChercheurForm(forms.ModelForm):
 
     def clean_expert_oif(self):
         return bool(int(self.cleaned_data['expert_oif']))
+
+    def clean_expert_oif_details(self):
+        expert = self.cleaned_data.get('expert_oif')
+        details = self.cleaned_data.get('expert_oif_details')
+        if expert and not details:
+            raise forms.ValidationError('Veuillez préciser')
+        return details
+
+    def clean_expert_oif_dates(self):
+        expert = self.cleaned_data.get('expert_oif')
+        dates = self.cleaned_data.get('expert_oif_dates')
+        if expert and not dates:
+            raise forms.ValidationError('Veuillez préciser les dates')
+        return dates
 
     def clean_membre_association_francophone(self):
         return bool(int(self.cleaned_data['membre_association_francophone']))

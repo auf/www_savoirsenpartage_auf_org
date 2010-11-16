@@ -78,13 +78,13 @@
         {% if chercheur.membre_instance_auf %}
         <tr>
             <td class="label">Membre d'une instance de l'AUF</td>
-            <td>{{ chercheur.membre_instance_auf_dates }}</td>
+            <td>{{ chercheur.membre_instance_auf_details }}, {{ chercheur.membre_instance_auf_dates }}</td>
         </tr>
         {% endif %}
         {% if chercheur.expert_oif %}
         <tr>
             <td class="label">Expert de l'OIF</td>
-            <td>oui</td>
+            <td>{{ chercheur.expert_oif_details }}, {{ chercheur.expert_oif_dates }}</td>
         </tr>
         {% endif %}
         {% if chercheur.membre_association_francophone %}
@@ -96,7 +96,7 @@
         {% if chercheur.membre_reseau_institutionnel %}
         <tr>
             <td class="label">Membre d'instances d'un réseau institutionnel de l'AUF</td>
-            <td>{{ chercheur.membre_reseau_institutionnel_details }}
+            <td>{{ chercheur.membre_reseau_institutionnel_details }},
                 {{ chercheur.membre_reseau_institutionnel_dates }}</td>
         </tr>
         {% endif %}

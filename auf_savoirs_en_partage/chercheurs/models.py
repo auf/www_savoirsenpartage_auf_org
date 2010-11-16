@@ -234,6 +234,13 @@ class Chercheur(models.Model):
     def region(self):
         return self.pays.region
 
+    def save(self):
+        """Si on a donné un établissement membre, on laisse tomber l'autre établissement."""
+        if self.etablissement:
+            self.etablissement_autre_nom = None
+            self.etablissement_autre_pays = None
+        super(Chercheur, self).save()
+
 class Publication(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     titre = models.CharField(max_length=255, db_column='titre', null=True, blank=True, verbose_name = 'Titre')

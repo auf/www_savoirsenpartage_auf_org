@@ -92,7 +92,7 @@ AUTHENTICATION_BACKENDS = (
     'authentification.CascadeBackend',
 )
 
-CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
+CACHE_BACKEND = 'locmem://'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 

@@ -44,7 +44,7 @@ ORIG_LANG       = 'orig_lang'
 
 
 META = {SERVER: {'type': 'text'},
-        TITLE: {'type': 'text', 'text_search': True},
+        TITLE: {'type': 'array', 'text_search': True},
         ALT_TITLE: {'type': 'text', 'text_search': True},
         CREATOR: {'type': 'array', 'text_search': True},
         CONTRIBUTOR: {'type': 'array', 'text_search': True},

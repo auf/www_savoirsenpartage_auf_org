@@ -36,7 +36,7 @@ def send_password(request):
             u = Utilisateur.objects.get(courriel=form.cleaned_data['email'])
             code = hashlib.md5(u.courriel+u.password).hexdigest()
             code = code[0:6]
-            link = "%saccounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
+            link = "%s/accounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
 
             variables = { 'user': u,
                           'link': link,

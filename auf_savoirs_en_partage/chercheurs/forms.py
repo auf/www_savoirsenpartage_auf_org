@@ -29,7 +29,7 @@ class PersonneInscriptionForm(PersonneForm):
 
     def clean_password_confirmation(self):
         """S'assurer que le mot de passe et la confirmation sont identiques."""
-        password = self.cleaned_data['password']
+        password = self.cleaned_data.get('password')
         confirmation = hashlib.md5(self.cleaned_data['password_confirmation']).hexdigest()
         if password != confirmation:
             raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')

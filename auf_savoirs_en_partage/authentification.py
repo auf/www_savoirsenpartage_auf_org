@@ -10,17 +10,14 @@ from chercheurs.models import Utilisateur as RemoteUser
 class CascadeBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
         user = None
-                
         email = username
-        md5pass = hashlib.md5(password).hexdigest ()
 
         # Cherche les comptes roa+locaux
         remoteUser = localUser = None
         try:
-            if settings.AUTH_PASSWORD_REQUIRED:
-                remoteUser = RemoteUser.objects.get (courriel=email, password=md5pass)
-            else:
-                remoteUser = RemoteUser.objects.get (courriel=email)
+            remoteUser = RemoteUser.objects.get(courriel=email)
+            if settings.AUTH_PASSWORD_REQUIRED and not remoteUser.check_password(password):
+                remoteUser = None
         except:
             pass
         try:
@@ -32,12 +29,12 @@ class CascadeBackend(ModelBackend):
         if not settings.AUTH_PASSWORD_REQUIRED:
             if remoteUser and not localUser:
                 localUser = DjangoUser (username = username,
-                        email = email, 
-                        first_name = remoteUser.prenom,
-                        last_name = remoteUser.nom,
-                        is_staff = settings.USERS_AS_STAFF,
-                        is_active = True,
-                        is_superuser = False)
+                                        email = username,
+                                        first_name = remoteUser.prenom,
+                                        last_name = remoteUser.nom,
+                                        is_staff = settings.USERS_AS_STAFF,
+                                        is_active = True,
+                                        is_superuser = False)
                 localUser.set_password (password)
                 localUser.save ()
             user = localUser

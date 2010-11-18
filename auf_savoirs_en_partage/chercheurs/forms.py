@@ -22,18 +22,17 @@ class PersonneInscriptionForm(PersonneForm):
     class Meta(PersonneForm.Meta):
         fields = ('nom', 'prenom', 'courriel', 'password', 'password_confirmation', 'genre')
         
-    def clean_password(self):
-        """Encrypter le mot de passe avant de le mettre dans la BD."""
-        self.clear_password = self.cleaned_data['password']
-        return hashlib.md5(self.cleaned_data['password']).hexdigest()
-
     def clean_password_confirmation(self):
         """S'assurer que le mot de passe et la confirmation sont identiques."""
         password = self.cleaned_data.get('password')
-        confirmation = hashlib.md5(self.cleaned_data['password_confirmation']).hexdigest()
+        confirmation = self.cleaned_data.get('password_confirmation')
         if password != confirmation:
             raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')
-        return self.cleaned_data['password_confirmation']
+        return confirmation
+
+    def save(self):
+        self.instance.set_password(self.cleaned_data['password'])
+        return super(PersonneInscriptionForm, self).save()
 
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
@@ -216,7 +215,7 @@ class ChercheurFormGroup(object):
         personne_form_class = PersonneInscriptionForm if chercheur is None else PersonneForm
         self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
-        self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne)
+        self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne.utilisateur)
         self.publication1 = PublicationForm(data=data, prefix='publication1', instance=chercheur and chercheur.publication1)
         self.publication2 = PublicationForm(data=data, prefix='publication2', instance=chercheur and chercheur.publication2)
         self.publication3 = PublicationForm(data=data, prefix='publication3', instance=chercheur and chercheur.publication3)
@@ -334,6 +333,7 @@ class SendPasswordForm(forms.Form):
 class NewPasswordForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), required=True, label="Mot de passe") 
     password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez mot de passe")
+
     def clean_password_repeat(self):
         cleaned_data = self.cleaned_data
         password = cleaned_data.get("password")

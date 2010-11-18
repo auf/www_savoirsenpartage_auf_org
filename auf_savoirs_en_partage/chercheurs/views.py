@@ -34,8 +34,7 @@ def send_password(request):
         form = SendPasswordForm(data=request.POST)
         if form.is_valid():
             u = Utilisateur.objects.get(courriel=form.cleaned_data['email'])
-            code = hashlib.md5(u.courriel+u.password).hexdigest()
-            code = code[0:6]
+            code = u.get_new_password_code()
             link = "%s/accounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
 
             variables = { 'user': u,
@@ -60,15 +59,13 @@ def send_password(request):
             
 def new_password(request, email, code):
     u = Utilisateur.objects.get(courriel=email)
-    original_code = hashlib.md5(u.courriel+u.password).hexdigest()
-    original_code = original_code[0:6]
+    original_code = u.get_new_password_code()
     message=""
     if(code == original_code):
         if request.method == "POST":
             form = NewPasswordForm(data=request.POST)
             if form.is_valid():
-                new_password = form.cleaned_data['password']
-                u.password = hashlib.md5(new_password).hexdigest()
+                u.set_password(form.cleaned_data['password'])
                 u.save()
                 message = "Votre mot de passe a été modifié."
         else:
@@ -90,8 +87,7 @@ def change_password(request):
     if request.method == "POST":
         form = NewPasswordForm(data=request.POST)
         if form.is_valid():
-            new_password = form.cleaned_data['password']
-            u.password = hashlib.md5(new_password).hexdigest()
+            u.set_password(form.cleaned_data['password'])
             u.save()
             message = "Votre mot de passe a été modifié."
     else:
@@ -135,7 +131,7 @@ def inscription(request):
             forms.save()
             # login automatique
             login(request, authenticate(username=forms.personne.cleaned_data['courriel'], 
-                                        password=forms.personne.clear_password))
+                                        password=forms.personne.cleaned_data['password']))
             return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         forms = ChercheurFormGroup()

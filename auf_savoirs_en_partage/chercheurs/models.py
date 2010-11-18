@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
+import hashlib
 from django.db import models
 from django.db.models import Q
+from django.utils.encoding import smart_str
 from datamaster_modeles.models import *
 #from auf_references_modeles.models import Thematique
 from savoirs.models import Discipline, RandomQuerySetMixin
@@ -31,7 +33,19 @@ class Personne(models.Model):
         ordering = ["prenom", "nom"]
 
 class Utilisateur(Personne):
-    password = models.CharField(max_length=35, verbose_name = 'Mot de passe')
+    encrypted_password = models.CharField(db_column='password', max_length=35, verbose_name = 'Mot de passe')
+
+    def set_password(self, clear_password):
+        self.encrypted_password = self.encrypt_password(clear_password)
+
+    def check_password(self, clear_password):
+        return self.encrypted_password == self.encrypt_password(clear_password)
+    
+    def encrypt_password(self, clear_password):
+        return hashlib.md5(smart_str(clear_password)).hexdigest()
+
+    def get_new_password_code(self):
+        return hashlib.md5(smart_str(u.courriel+u.encrypted_password)).hexdigest()[0:6]
 
 class ChercheurManager(models.Manager):
 

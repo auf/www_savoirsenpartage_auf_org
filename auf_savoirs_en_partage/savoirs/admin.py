@@ -222,7 +222,7 @@ class EvenementAdminForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
         debut = cleaned_data.get("debut")
         fin = cleaned_data.get("fin")
-        if debut > fin:
+        if debut and fin and debut > fin:
             raise forms.ValidationError("La date de fin ne doit pas être antérieure à la date de début")
         return cleaned_data
 

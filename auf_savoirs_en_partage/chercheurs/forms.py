@@ -24,6 +24,7 @@ class PersonneInscriptionForm(PersonneForm):
         
     def clean_password(self):
         """Encrypter le mot de passe avant de le mettre dans la BD."""
+        self.clear_password = self.cleaned_data['password']
         return hashlib.md5(self.cleaned_data['password']).hexdigest()
 
     def clean_password_confirmation(self):

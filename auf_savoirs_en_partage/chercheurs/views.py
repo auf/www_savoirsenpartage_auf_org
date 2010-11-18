@@ -135,7 +135,7 @@ def inscription(request):
             forms.save()
             # login automatique
             login(request, authenticate(username=forms.personne.cleaned_data['courriel'], 
-                                        password=forms.personne.cleaned_data['password']))
+                                        password=forms.personne.clear_password))
             return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         forms = ChercheurFormGroup()

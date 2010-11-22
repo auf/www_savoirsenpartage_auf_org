@@ -3,6 +3,7 @@ import re
 
 from django.core.urlresolvers import reverse as url
 from django.db import models
+from django.db.models.query import QuerySet
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -11,9 +12,8 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
-
-from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog, Profile
 from savoirs.globals import META
+from savoirs.models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog, Profile
 
 admin.site.register(SourceActualite)
 
@@ -82,6 +82,41 @@ class ReadOnlyAdminFields(object):
                     form.base_fields[field_name].required = False
         return form
 
+class RecordAdminQuerySet(QuerySet):
+
+    def filter(self, *args, **kwargs):
+        """Gère des filtres supplémentaires pour l'admin.
+           
+        C'est la seule façon que j'ai trouvée de contourner les mécanismes
+        de recherche de l'admin."""
+        search = kwargs.pop('admin_search', None)
+        search_titre = kwargs.pop('admin_search_titre', None)
+        search_sujet = kwargs.pop('admin_search_sujet', None)
+        search_description = kwargs.pop('admin_search_description', None)
+        search_auteur = kwargs.pop('admin_search_auteur', None)
+
+        if search:
+            qs = self
+            search_all = not (search_titre or search_description or search_sujet or search_auteur)
+            fields = []
+            if search_titre or search_all:
+                fields += ['title', 'alt_title']
+            if search_description or search_all:
+                fields += ['description', 'abstract']
+            if search_sujet or search_all:
+                fields += ['subject']
+            if search_auteur or search_all:
+                fields += ['creator', 'contributor']
+
+            for bit in search.split():
+                or_queries = [Q(**{field + '__icontains': bit}) for field in fields]
+                qs = qs.filter(reduce(operator.or_, or_queries))
+
+            if args or kwargs:
+                qs = super(RecordAdminQuerySet, qs).filter(*args, **kwargs)
+            return qs
+        else:
+            return super(RecordAdminQuerySet, self).filter(*args, **kwargs)
 
 class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     fields = ['server', 'title', 'creator', 'description', 'modified',
@@ -108,7 +143,8 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
 
-    # Recherche par mots-clés
+    def queryset(self):
+        return RecordAdminQuerySet(Record)
 
     # Présentation de l'information
     
@@ -152,7 +188,6 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + ','.join(selected))
     assigner_disciplines.short_description = u'Assigner des disciplines'
-
 admin.site.register(Record, RecordAdmin)
 
 class ListSetAdmin(ReadOnlyAdminFields, admin.ModelAdmin):

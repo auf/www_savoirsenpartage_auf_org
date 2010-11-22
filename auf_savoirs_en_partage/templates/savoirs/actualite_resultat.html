@@ -1,9 +1,9 @@
-{% load search %}
+{% load sep %}
 
 <div class="resultatRecherche">
   <div class="la-date">{{ actualite.date|date:"d F Y" }}</div>
-  <a class="le-titre" href="{{ actualite.url }}">{{ actualite.titre|highlight:search_regexp }}</a>
-  <div class="resultatResume">{{ actualite.texte|highlight:search_regexp }}</div>
+  <a class="le-titre" href="{{ actualite.url }}">{{ actualite.titre|apply:excerpt }}</a>
+  <div class="resultatResume">{{ actualite.texte|apply:excerpt }}</div>
   {% if actualite.source %}
   <div><span class="lbl">Source:</span> {{ actualite.source.nom }}</div>
   {% endif %}

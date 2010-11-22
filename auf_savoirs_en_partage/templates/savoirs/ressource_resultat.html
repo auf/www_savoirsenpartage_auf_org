@@ -1,20 +1,14 @@
-{% load search %}
+{% load sep %}
 
 <div class="resultatRecherche">
-    <a class="le-titre" href="{% url savoirs.views.ressource_retrieve ressource.id %}">{{ ressource.title|highlight:search_regexp }}</a>
+    <a class="le-titre" href="{% url savoirs.views.ressource_retrieve ressource.id %}">{{ ressource.title|apply:excerpt }}</a>
     {% if ressource.creator %}
-    <div><span class="lbl">Auteur:</span> {{ ressource.creator|highlight:search_regexp }}</div>
+    <div><span class="lbl">Auteur:</span> {{ ressource.creator|apply:excerpt }}</div>
     {% endif %}
     {% if ressource.description %}
-    <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description|excerpt:search_regexp|highlight:search_regexp }}</div>
+    <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description|apply:excerpt }}</div>
     {% endif %}
     <div class="fiche"><span>Fiche: </span><a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{% url savoirs.views.ressource_retrieve ressource.id %}</a></div>
     <div class="original"><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>
     <div class="provenance"><span>Provenance: </span><a target="_blank" href="{{ ressource.getServeurURL }}">{{ ressource.getServeurURL }}</a></div>
 </div>
-
-    {% comment %}
-    {% if user.is_authenticated %}
-    <a href="{{ r.admin_url}}" target="_blank">Modifier</a>
-    {% endif %}
-    {% endcomment %}

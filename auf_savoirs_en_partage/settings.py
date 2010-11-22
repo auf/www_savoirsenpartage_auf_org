@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'savoirs',
     'chercheurs',
     'sitotheque',
+    'djangosphinx',
 )
 
 
@@ -101,5 +102,8 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashb
 AUTH_PROFILE_MODULE = 'savoirs.Profile'
 
 CONTACT_EMAIL = 'contact-savoirsenpartage@auf.org'
+
+SPHINX_API_VERSION = 0x116
+SPHINX_PORT = 9312
 
 from auf_references_client.settings import *

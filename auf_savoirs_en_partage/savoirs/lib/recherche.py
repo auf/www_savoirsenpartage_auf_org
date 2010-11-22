@@ -2,6 +2,7 @@
 import urllib, httplib, time, simplejson, pprint, math, re
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from auf_savoirs_en_partage.backend_config import RESOURCES
 from sep import SEP
 from utils import smart_str
@@ -182,7 +183,7 @@ def build_search_regexp(query):
 
         # Faire ceci après avoir traité les caractères accentués...
         part = part.replace('a', u'[aàâÀÂ]')
-        part = part.replace('e', u'[eéèëêÉÊ]')
+        part = part.replace('e', u'[eéèëêÉÊÈ]')
         part = part.replace('i', u'[iïîÎ]')
         part = part.replace('o', u'[oôÔ]')
         part = part.replace('u', u'[uûüù]')
@@ -190,3 +191,14 @@ def build_search_regexp(query):
 
         parts.append(part)
     return re.compile('|'.join(parts), re.I) 
+
+def excerpt_function(manager, words):
+    """Construit une fonction qui extrait la partie pertinente d'un texte
+       suite à une recherche textuelle."""
+    qs = manager.get_sphinx_query_set()
+    client = qs._get_sphinx_client()
+    index = qs._index
+    def excerpt(text):
+        return mark_safe(client.BuildExcerpts([text], index, words)[0])
+    return excerpt
+

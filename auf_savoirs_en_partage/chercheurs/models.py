@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 import hashlib
+from datamaster_modeles.models import *
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
-from datamaster_modeles.models import *
-#from auf_references_modeles.models import Thematique
-from savoirs.models import Discipline, RandomQuerySetMixin
+from djangosphinx.models import SphinxSearch
+from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
@@ -47,100 +47,78 @@ class Utilisateur(Personne):
     def get_new_password_code(self):
         return hashlib.md5(smart_str(u.courriel+u.encrypted_password)).hexdigest()[0:6]
 
-class ChercheurManager(models.Manager):
+class ChercheurQuerySet(SEPQuerySet):
+
+    def filter_groupe(self, groupe):
+        return self.filter(groupes=groupe)
+
+    def filter_pays(self, pays):
+        return self.filter(Q(etablissement__pays=pays) | Q(etablissement_autre_pays=pays))
+
+    def filter_region(self, region):
+        return self.filter(Q(etablissement__pays__region=region) | Q(etablissement_autre_pays__region=region))
+
+    def filter_nord_sud(self, nord_sud):
+        return self.filter(Q(etablissement__pays__nord_sud=nord_sud) | Q(etablissement_autre_pays__nord_sud=nord_sud))
+
+    def filter_statut(self, statut):
+        return self.filter(statut=statut)
+
+    def filter_expert(self):
+        return self.exclude(expertises=None)
+
+class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
+
+    def __init__(self, model=None):
+        return SEPSphinxQuerySet.__init__(self, model=model, index='chercheurs',
+                                          weights=dict(nom=2, prenom=2))
+
+    def filter_region(self, region):
+        return self.filter(region_id=region.id)
+
+    def filter_groupe(self, groupe):
+        return self.filter(groupe_ids=groupe.id)
+
+    def filter_pays(self, pays):
+        return self.filter(pays_id=pays.id)
+
+    NORD_SUD_CODES = {'Nord': 1, 'Sud': 2}
+    def filter_nord_sud(self, nord_sud):
+        return self.filter(nord_sud=self.NORD_SUD_CODES[nord_sud])
+
+    STATUT_CODES = {'enseignant': 1, 'etudiant': 2, 'independant': 3}
+    def filter_statut(self, statut):
+        return self.filter(statut=self.STATUT_CODES[statut])
+
+    def filter_expert(self):
+        return self.filter(expert=1)
+
+class ChercheurManager(SEPManager):
 
     def get_query_set(self):
         return ChercheurQuerySet(self.model)
 
-    def search(self, text):
-        return self.get_query_set().search(text)
-
-    def search_nom(self, nom):
-        return self.get_query_set().search_nom(nom)
+    def get_sphinx_query_set(self):
+        return ChercheurSphinxQuerySet(self.model).order_by('-date_modification')
 
     def filter_region(self, region):
+        """Le filtrage de chercheurs par région n'est pas une recherche texte."""
         return self.get_query_set().filter_region(region)
 
-    def filter_discipline(self, discipline):
-        return self.get_query_set().filter_discipline(discipline)
+    def filter_groupe(self, groupe):
+        return self.get_query_set().filter_groupe(groupe)
 
-class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
+    def filter_pays(self, pays):
+        return self.get_query_set().filter_pays(pays)
 
-    def search(self, text):
-        q = None
-        for word in text.split():
-            matching_pays = list(Pays.objects.filter(Q(nom__icontains=word) | Q(region__nom__icontains=word)).values_list('pk', flat=True))
-            matching_etablissements = list(Etablissement.objects.filter(Q(nom__icontains=word) | Q(pays__in=matching_pays)).values_list('pk', flat=True))
-            matching_publications = list(Publication.objects.filter(titre__icontains=word).values_list('pk', flat=True))
-            matching_groupes = list(Groupe.objects.filter(nom__icontains=word).values_list('pk', flat=True))
-            matching_disciplines = list(Discipline.objects.filter(nom__icontains=word).values_list('pk', flat=True))
-            part = (Q(personne__nom__icontains=word) |
-                    Q(personne__prenom__icontains=word) |
-                    Q(theme_recherche__icontains=word) |
-                    Q(etablissement__in=matching_etablissements) |
-                    Q(etablissement_autre_nom__icontains=word) |
-                    Q(etablissement_autre_pays__in=matching_pays) |
-                    Q(discipline__in=matching_disciplines) |
-                    Q(groupe_recherche__icontains=word) |
-                    Q(publication1__in=matching_publications) |
-                    Q(publication2__in=matching_publications) |
-                    Q(publication3__in=matching_publications) |
-                    Q(publication4__in=matching_publications) |
-                    Q(these__in=matching_publications) |
-                    Q(groupes__in=matching_groupes) |
-                    Q(expertises__nom__icontains=word) |
-                    Q(mots_cles__icontains=word) |
-                    Q(membre_association_francophone_details__icontains=word) |
-                    Q(membre_reseau_institutionnel_details__icontains=word)
-                   )
-            if q is None:
-                q = part
-            else:
-                q = q & part
-        return self.filter(q).distinct() if q is not None else self
+    def filter_nord_sud(self, nord_sud):
+        return self.get_query_set().filter_nord_sud(nord_sud)
 
-    def search_nom(self, nom):
-        q = None
-        for word in nom.split():
-            part = Q(personne__nom__icontains=word) | Q(personne__prenom__icontains=word)
-            if q is None:
-                q = part
-            else:
-                q = q & part
-        return self.filter(q) if q is not None else self
+    def filter_statut(self, statut):
+        return self.get_query_set().filter_statut(statut)
 
-    def filter_discipline(self, discipline):
-        """Ne conserve que les chercheurs dans la discipline donnée.
-           
-        Si ``disicipline`` est None, ce filtre n'a aucun effet."""
-        if discipline is None:
-            return self
-        if not isinstance(discipline, Discipline):
-            discipline = Discipline.objects.get(pk=discipline)
-        return self.filter(Q(discipline=discipline) |
-                           Q(theme_recherche__icontains=discipline.nom) |
-                           Q(groupe_recherche__icontains=discipline.nom) |
-                           Q(publication1__titre__icontains=discipline.nom) |
-                           Q(publication2__titre__icontains=discipline.nom) |
-                           Q(publication3__titre__icontains=discipline.nom) |
-                           Q(publication4__titre__icontains=discipline.nom) |
-                           Q(these__titre__icontains=discipline.nom) |
-                           Q(groupes__nom__icontains=discipline.nom) |
-                           Q(expertises__nom__icontains=discipline.nom) |
-                           Q(mots_cles__icontains=discipline.nom) |
-                           Q(membre_instance_auf_details__icontains=discipline.nom) |
-                           Q(membre_association_francophone_details__icontains=discipline.nom) |
-                           Q(expert_oif_details__icontains=discipline.nom) |
-                           Q(membre_reseau_institutionnel_details__icontains=discipline.nom)).distinct()
-
-    def filter_region(self, region):
-        """Ne conserve que les évènements dans la région donnée.
-           
-        Si ``region`` est None, ce filtre n'a aucun effet."""
-        if region is None:
-            return self
-        return self.filter(Q(etablissement__pays__region=region) |
-                           Q(etablissement_autre_pays__region=region))
+    def filter_expert(self):
+        return self.get_query_set().filter_expert()
 
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):
@@ -223,6 +201,7 @@ class Chercheur(models.Model):
     
     # Manager
     objects = ChercheurManager()
+    all_objects = models.Manager()
 
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())

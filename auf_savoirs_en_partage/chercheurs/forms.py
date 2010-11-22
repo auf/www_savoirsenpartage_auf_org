@@ -283,40 +283,39 @@ class RepertoireSearchForm (forms.Form):
             pays.queryset = pays.queryset.filter(region=region)
 
     def get_query_set(self):
-        qs = Chercheur.objects.all()
+        chercheurs = Chercheur.objects
         if self.is_valid():
-            nom = self.cleaned_data['nom']
-            if nom:
-                qs = qs.search_nom(nom)
-            domaine = self.cleaned_data["domaine"]
-            if domaine:
-                qs = qs.filter(groupes=domaine)
-            groupe_recherche = self.cleaned_data['groupe_recherche']
-            if groupe_recherche:
-                for word in groupe_recherche.split():
-                    qs = qs.filter(groupe_recherche__icontains=word)
             q = self.cleaned_data["q"]
             if q:
-                qs = qs.search(q)
+                chercheurs = chercheurs.search(q)
+            nom = self.cleaned_data['nom']
+            if nom:
+                chercheurs = chercheurs.add_to_query('@(nom,prenom) ' + nom)
+            groupe_recherche = self.cleaned_data['groupe_recherche']
+            if groupe_recherche:
+                chercheurs = chercheurs.add_to_query('@groupe_recherche ' + groupe_recherche)
+            discipline = self.cleaned_data['discipline']
+            if discipline:
+                chercheurs = chercheurs.filter_discipline(discipline)
+            region = self.cleaned_data['region']
+            if region:
+                chercheurs = chercheurs.filter_region(region)
             statut = self.cleaned_data["statut"]
             if statut:
                 if statut == "expert":
-                    qs = qs.exclude(expertises=None)
+                    chercheurs = chercheurs.filter_expert()
                 else:
-                    qs = qs.filter(statut=statut)
-            discipline = self.cleaned_data['discipline']
-            if discipline:
-                qs = qs.filter_discipline(discipline)
-            region = self.cleaned_data['region']
-            if region:
-                qs = qs.filter_region(region)
+                    chercheurs = chercheurs.filter_statut(statut)
+            domaine = self.cleaned_data["domaine"]
+            if domaine:
+                chercheurs = chercheurs.filter_groupe(domaine)
             pays = self.cleaned_data["pays"]
             if pays:
-                qs = qs.filter(Q(etablissement__pays=pays) | Q(etablissement_autre_pays=pays))
+                chercheurs = chercheurs.filter_pays(pays)
             nord_sud = self.cleaned_data['nord_sud']
             if nord_sud:
-                qs = qs.filter(Q(etablissement__pays__nord_sud=nord_sud) | Q(etablissement_autre_pays__nord_sud=nord_sud))
-        return qs
+                chercheurs = chercheurs.filter_nord_sud(nord_sud)
+        return chercheurs.all()
     
 class SendPasswordForm(forms.Form):
     email = forms.EmailField(required=True, label="Adresse électronique")

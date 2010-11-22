@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
+import operator
 import re
-
 from django.core.urlresolvers import reverse as url
 from django.db import models
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -143,7 +144,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
 
-    def queryset(self):
+    def queryset(self, request):
         return RecordAdminQuerySet(Record)
 
     # Présentation de l'information
@@ -224,6 +225,9 @@ class ActualiteAdmin(admin.ModelAdmin):
     list_display = ('titre', 'source', 'date', 'visible')
     actions = ['rendre_visible', 'rendre_invisible', 'assigner_regions', 'assigner_disciplines']
 
+    def queryset(self, request):
+        return Actualite.all_objects.get_query_set()
+
     # actions
     def rendre_visible(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -269,6 +273,9 @@ class EvenementAdmin(admin.ModelAdmin):
               'type', 'fuseau', 'debut', 'fin', 'lieu', 'piece_jointe', 'regions',
               'description', 'contact', 'url', 'approuve']
     actions = ['assigner_regions', 'assigner_disciplines']
+
+    def queryset(self, request):
+        return Evenement.all_objects.get_query_set()
 
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)

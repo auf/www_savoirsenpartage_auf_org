@@ -36,9 +36,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'pagination.middleware.PaginationMiddleware',
@@ -93,7 +91,7 @@ AUTHENTICATION_BACKENDS = (
     'authentification.CascadeBackend',
 )
 
-CACHE_BACKEND = 'locmem://'
+CACHE_BACKEND = 'memcached://localhost:11211'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 

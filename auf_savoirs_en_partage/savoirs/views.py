@@ -43,11 +43,11 @@ def index(request, discipline=None, region=None):
         ressources = ressources.filter_region(region)
         chercheurs = chercheurs.filter_region(region)
         sites = sites.filter_region(region)
-    actualites = actualites.all()[0:4]
-    evenements = evenements.all()[0:4]
-    ressources = ressources.all().random(4)
-    chercheurs = chercheurs.all()[0:10]
-    sites = sites.all().random(4)
+    actualites = actualites.order_by('-date')[0:4]
+    evenements = evenements.order_by('-debut')[0:4]
+    ressources = ressources.order_by('-id')[0:4]
+    chercheurs = chercheurs.order_by('-date_modification')[0:10]
+    sites = sites.order_by('-date_maj')[0:4]
     return render_to_response(
         "savoirs/index.html",
         dict(actualites=actualites, evenements=evenements,

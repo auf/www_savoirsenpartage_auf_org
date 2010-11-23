@@ -205,7 +205,8 @@ emit_source('sites',
                       GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
                       GROUP_CONCAT(DISTINCT p.nom) AS pays,
                       GROUP_CONCAT(DISTINCT p.id) AS pays_ids,
-                      GROUP_CONCAT(DISTINCT r.nom) AS regions
+                      GROUP_CONCAT(DISTINCT r.nom) AS regions,
+                      TO_DAYS(s.date_maj) AS date_maj
                FROM sitotheque_site s
                LEFT JOIN sitotheque_site_discipline sd ON sd.site_id = s.id
                LEFT JOIN discipline d ON d.id_discipline = sd.discipline_id
@@ -213,7 +214,9 @@ emit_source('sites',
                LEFT JOIN ref_region r ON r.id = p.region
                GROUP BY s.id''',
             'SELECT * FROM sitotheque_site WHERE id=$id',
-            sql_attr_multi=['pays_ids'])
+            sql_attr_multi=['pays_ids'],
+            sql_attr_uint=['date_maj']
+           )
 
 emit_index('actualites')
 emit_index('ressources')

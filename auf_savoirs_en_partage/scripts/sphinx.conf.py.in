@@ -231,5 +231,5 @@ searchd
 {
     listen = 127.0.0.1:9312
     pid_file = /var/run/sphinx/sphinx-savoirsenpartage.pid
-    log = /var/log/sphinx/searchd-savoirsenpartage.log
+    log = /dev/null
 }'''

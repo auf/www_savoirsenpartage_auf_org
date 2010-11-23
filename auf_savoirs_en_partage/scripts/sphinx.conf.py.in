@@ -230,7 +230,7 @@ indexer
 searchd
 {
     listen = 127.0.0.1:9312
-    pid_file = %%(pid_file)s
+    pid_file = /var/run/sphinx/sphinx-savoirsenpartage.pid
     log = %%(log)s
 }
-''' %% dict(pid_file=os.path.join(DATA_DIR, 'sphinx.pid'), log=os.path.join(DATA_DIR, 'searchd.log'))
+''' %% dict(log=os.path.join(DATA_DIR, 'searchd.log'))

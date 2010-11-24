@@ -45,7 +45,7 @@ class Utilisateur(Personne):
         return hashlib.md5(smart_str(clear_password)).hexdigest()
 
     def get_new_password_code(self):
-        return hashlib.md5(smart_str(u.courriel+u.encrypted_password)).hexdigest()[0:6]
+        return hashlib.md5(smart_str(self.courriel + self.encrypted_password)).hexdigest()[0:6]
 
 class ChercheurQuerySet(SEPQuerySet):
 

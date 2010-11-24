@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.contrib.syndication.feeds import Feed
-from savoirs.models import Actualite
-from savoirs.lib.calendrier import evenements
+from savoirs.models import Actualite, Evenement
 from datetime import datetime, time
 
 class FilActualite(Feed):
@@ -36,13 +36,13 @@ class FilEvenement(Feed):
     description_template = "savoirs/rss_evenement_description.html"
 
     def items(self):
-        return evenements()
+        return Evenement.objects.filter(approuve=True, debut__gte=datetime.now())
 
     def item_link(self, item):
-        return reverse('savoirs.views.evenement', args=[item.uid.value])
+        return reverse('savoirs.views.evenement', args=[item.id])
 
     def item_pubdate(self,item):
-        return item.dtstart.value
+        return item.debut
 
     def item_author_name(self,item):
         return ""

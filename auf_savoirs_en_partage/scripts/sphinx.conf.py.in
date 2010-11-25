@@ -27,7 +27,7 @@ SQL_HOST = settings.DATABASE_HOST
 SQL_USER = settings.DATABASE_USER
 SQL_PASS = settings.DATABASE_PASSWORD
 SQL_DB = settings.DATABASE_NAME
-DATA_DIR = '%(directory)s/auf_savoirs_en_partage/data/sphinx'
+DATA_DIR = '/var/lib/sphinxsearch/data'
 
 def multiline(s):
     """Place un marqueur de continuation avant chaque saut de ligne."""
@@ -78,7 +78,7 @@ index %%(name)s
     path = %%(path)s
 }''' %% dict(name=name, path=os.path.join(DATA_DIR, name))
 
-emit_source('ressources', 
+emit_source('savoirsenpartage_ressources', 
             '''SELECT r.id AS id, 
                       r.title AS title, 
                       r.description AS description, 
@@ -106,7 +106,7 @@ emit_source('ressources',
             sql_attr_multi=['discipline_ids', 'region_ids']
             )
 
-emit_source('actualites',
+emit_source('savoirsenpartage_actualites',
             '''SELECT a.id_actualite AS id, 
                       a.titre_actualite AS titre, 
                       a.texte_actualite AS texte, 
@@ -124,7 +124,7 @@ emit_source('actualites',
             sql_attr_uint=['date']
            )
 
-emit_source('evenements',
+emit_source('savoirsenpartage_evenements',
             '''SELECT e.id AS id,
                       e.titre AS titre,
                       e.mots_cles AS mots_cles,
@@ -145,7 +145,7 @@ emit_source('evenements',
             sql_query_info='SELECT * from savoirs_evenement WHERE id=$id',
             sql_attr_uint=['debut'])
             
-emit_source('chercheurs',
+emit_source('savoirsenpartage_chercheurs',
             '''SELECT c.id AS id,
                       p.nom AS nom,
                       p.prenom AS prenom,
@@ -195,7 +195,7 @@ emit_source('chercheurs',
             sql_attr_multi=['groupe_ids'],
             sql_attr_uint=['pays_id', 'region_id', 'nord_sud', 'date_modification', 'statut', 'expert'])
                       
-emit_source('sites',
+emit_source('savoirsenpartage_sites',
             '''SELECT s.id AS id,
                       s.titre AS titre,
                       s.description AS description,
@@ -205,7 +205,8 @@ emit_source('sites',
                       GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
                       GROUP_CONCAT(DISTINCT p.nom) AS pays,
                       GROUP_CONCAT(DISTINCT p.id) AS pays_ids,
-                      GROUP_CONCAT(DISTINCT r.nom) AS regions
+                      GROUP_CONCAT(DISTINCT r.nom) AS regions,
+                      TO_DAYS(s.date_maj) AS date_maj
                FROM sitotheque_site s
                LEFT JOIN sitotheque_site_discipline sd ON sd.site_id = s.id
                LEFT JOIN discipline d ON d.id_discipline = sd.discipline_id
@@ -213,23 +214,12 @@ emit_source('sites',
                LEFT JOIN ref_region r ON r.id = p.region
                GROUP BY s.id''',
             'SELECT * FROM sitotheque_site WHERE id=$id',
-            sql_attr_multi=['pays_ids'])
+            sql_attr_multi=['pays_ids'],
+            sql_attr_uint=['date_maj']
+           )
 
-emit_index('actualites')
-emit_index('ressources')
-emit_index('evenements')
-emit_index('chercheurs')
-emit_index('sites')
-
-print '''
-indexer
-{
-    mem_limit = 256M
-}
-
-searchd
-{
-    listen = 127.0.0.1:9312
-    pid_file = /var/run/sphinx/sphinx-savoirsenpartage.pid
-    log = /dev/null
-}'''
+emit_index('savoirsenpartage_actualites')
+emit_index('savoirsenpartage_ressources')
+emit_index('savoirsenpartage_evenements')
+emit_index('savoirsenpartage_chercheurs')
+emit_index('savoirsenpartage_sites')

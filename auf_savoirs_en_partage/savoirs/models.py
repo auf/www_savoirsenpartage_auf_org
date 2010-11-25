@@ -124,7 +124,7 @@ class ActualiteQuerySet(SEPQuerySet):
 class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='actualites',
+        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_actualites',
                                    weights=dict(titre=3))
 
     def filter_date(self, min=None, max=None):
@@ -192,7 +192,7 @@ class EvenementQuerySet(SEPQuerySet):
 class EvenementSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='evenements',
+        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_evenements',
                                    weights=dict(titre=3))
 
     def filter_type(self, type):
@@ -403,7 +403,7 @@ class ListSet(models.Model):
 class RecordSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='ressources',
+        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_ressources',
                                    weights=dict(title=3))
 
 class RecordManager(SEPManager):

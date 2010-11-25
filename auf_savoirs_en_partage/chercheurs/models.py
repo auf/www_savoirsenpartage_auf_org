@@ -70,7 +70,7 @@ class ChercheurQuerySet(SEPQuerySet):
 class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        return SEPSphinxQuerySet.__init__(self, model=model, index='chercheurs',
+        return SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_chercheurs',
                                           weights=dict(nom=2, prenom=2))
 
     def filter_region(self, region):

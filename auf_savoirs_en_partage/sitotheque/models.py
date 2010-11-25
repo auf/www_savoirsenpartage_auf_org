@@ -26,7 +26,7 @@ class SiteQuerySet(SEPQuerySet):
 class SiteSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='sites', weights=dict(titre=3))
+        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_sites', weights=dict(titre=3))
 
     def filter_pays(self, pays):
         return self.filter(pays_ids=pays.id)

@@ -3,19 +3,19 @@
 {% block contenu %}
 
 {% if modification %}
-    <span class="contenu-wrapper message">Votre fiche a bien été enregistrée.</span>
+    <span "message">Votre fiche a bien été enregistrée.</span>
 {% endif %}
     
-<h4>{{ chercheur }}</h4>
 <ul class="actions">
     <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
     <li><a href="{% url chercheurs.views.edit %}">Éditer votre fiche</a></li>
     <li><a href="{% url chercheurs.views.change_password %}">Modifier votre mot de passe</a></li>
-    <li><a href="{% url django.contrib.auth.views.logout %}">Déconnexion</a></li>
+    <li><a href="{% url django.contrib.auth.views.logout %}">Vous déconnecter</a></li>
+    <li><a href="{% url chercheurs.views.desinscription %}">Vous désinscrire du répertoire</a></li>
 </ul>
 
-<div class="contenu-wrapper">
-    {% include "chercheurs/fiche.html" %}
-</div>
+<h4>{{ chercheur }}</h4>
+
+{% include "chercheurs/fiche.html" %}
 
 {% endblock %}

@@ -18,6 +18,7 @@ from models import Personne, Utilisateur, Groupe, ChercheurGroupe
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
+from django.contrib.auth.models import User
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -141,6 +142,26 @@ def inscription(request):
                               context_instance=RequestContext(request))
 
 @login_required()
+def desinscription(request):
+    """Désinscription du chercheur"""
+    try:
+        chercheur = Chercheur.objects.get(personne__courriel=request.user.email)
+    except Chercheur.DoesNotExist:
+        return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
+    if request.method == 'POST':
+        if request.POST.get('confirmer'):
+            chercheur.personne.actif = False
+            chercheur.personne.save()
+            User.objects.filter(username=chercheur.personne.courriel).delete()
+            request.flash['message'] = "Vous avez été désinscrit du répertoire des chercheurs."
+            return HttpResponseRedirect(url('django.contrib.auth.views.logout'))
+        else:
+            request.flash['message'] = "Opération annulée."
+            return HttpResponseRedirect(url('chercheurs.views.perso'))
+    return render_to_response("chercheurs/desinscription.html", {},
+                              context_instance=RequestContext(request))
+
+@login_required()
 @never_cache
 def edit(request):
     """Edition d'un chercheur"""
@@ -168,7 +189,7 @@ def perso(request):
         return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
     return render_to_response("chercheurs/perso.html",
                               dict(chercheur=chercheur, modification=modification),
-                              context_instance=RequestContext(request))
+                              context_instance=context_instance)
             
 def retrieve(request, id):
     """Fiche du chercheur"""
@@ -180,3 +201,4 @@ def retrieve(request, id):
 def conversion(request):
     return render_to_response("chercheurs/conversion.html", {}, 
                               context_instance=RequestContext(request))
+

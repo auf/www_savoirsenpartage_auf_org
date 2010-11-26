@@ -3,10 +3,11 @@
 {% block contenu %}
 <div class="demi-gauche clearfix">
     <div id="actualites" class="box">
-        <h4><a href="{% url savoirs.views.actualite_index %}">Actualités</a></h4>
-        <a id="rss-actualites" href="/rss/actualites"><img src="/media/img/feed.png" /></a>
-        
-        <ul class="sous-menu">
+        <h4>
+            <a href="{% url savoirs.views.actualite_index %}">Actualités</a>
+            <a id="rss-actualites" href="/rss/actualites"><img src="/media/img/feed.png" /></a>
+        </h4> 
+        <ul class="actions">
             <li><a href="{% url savoirs.views.actualite_index %}">Toutes les actualités</a></li>
         </ul>
         
@@ -25,7 +26,7 @@
     <div id="chercheurs" class="box">
         <h4><a href="{% url chercheurs.views.index %}">Répertoire</a></h4>
         
-        <ul class="sous-menu">
+        <ul class="actions">
             <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
             {% include "chercheurs/actions.html" %}
         </ul>
@@ -43,10 +44,11 @@
 </div>
 <div class="demi-droite clearfix">
     <div id="agenda" class="box">
-        <h4><a href="{% url savoirs.views.evenement_index %}">Agenda</a></h4>
-        <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
-
-        <ul class="sous-menu">
+        <h4>
+            <a href="{% url savoirs.views.evenement_index %}">Agenda</a>
+            <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
+        </h4>
+        <ul class="actions">
           <li><a href="{% url savoirs.views.evenement_index %}">Tous les évènements</a></li>
           {% include "savoirs/evenement_actions.html" %}
         </ul>
@@ -64,7 +66,7 @@
     <div  id="ressources" class="box">
         <h4><a href="{% url savoirs.views.ressource_index %}">Ressources</a></h4>
         
-        <ul class="sous-menu">
+        <ul class="actions">
             <li><a href="{% url savoirs.views.ressource_index %}">Toutes les ressources</a></li>
         </ul>
         
@@ -89,7 +91,7 @@
     <div  id="sites" class="box">
         <h4><a href="{% url sitotheque.views.index %}">Sites</a></h4>
         
-        <ul class="sous-menu">
+        <ul class="actions">
             <li><a href="{% url sitotheque.views.index %}">Sitothèque</a></li>
             {% include "sites/actions.html" %}
         </ul>

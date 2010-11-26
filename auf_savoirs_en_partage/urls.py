@@ -61,6 +61,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/$', 'chercheurs.views.index'),
     (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve'),
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
+    (r'^chercheurs/desinscription/$', 'chercheurs.views.desinscription'),
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
     (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),

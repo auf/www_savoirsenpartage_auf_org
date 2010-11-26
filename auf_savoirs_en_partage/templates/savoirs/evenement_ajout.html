@@ -18,16 +18,12 @@
     th { font-weight: normal; padding-right: 10px;}
 </style>
 
-<div class="clearfix">
-    <h4>Soumettre un évènement</h4>
-    <div class="contenu-wrapper">
-        <form method="POST">
-            <table class="form">
-                {% include "render_form.html" %}
-                <tr><td></td><td><input type="submit" value="Ajouter" /></td></tr>
-            </table>
-        </form>
-    </div>
-</div>
+<h4>Soumettre un évènement</h4>
+<form method="POST">
+    <table class="form">
+        {% include "render_form.html" %}
+        <tr><td></td><td><input type="submit" value="Ajouter" /></td></tr>
+    </table>
+</form>
 
 {% endblock %}

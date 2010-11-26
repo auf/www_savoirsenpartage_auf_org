@@ -195,7 +195,6 @@ class Chercheur(models.Model):
     )
 
     #meta
-    actif = models.BooleanField(editable = False)
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
     date_modification = models.DateField(auto_now=True, db_column='date_modification')
     

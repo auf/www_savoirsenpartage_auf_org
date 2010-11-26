@@ -5,14 +5,14 @@
 {% block contenu %}
 {% autopaginate sites 10 %}
 
-<h4>Sites &#8212; Sitothèque</h4>
 <ul class="actions">
     {% include "sites/actions.html" %}
 </ul>
+<h4>Sites &#8212; Sitothèque</h4>
 
 <h5>Recherche</h5>
 
-<form method="get" action="" class="contenu-wrapper">
+<form method="get" action="">
     <table id="repertoire_recherche">
     {{search_form.as_table}}
     <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
@@ -21,11 +21,9 @@
 
 <h5>Résultats : {{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche</h5>
 
-<div class="contenu-wrapper">
-    <div class="centre">{% paginate %}</div>
-    {% for site in sites %}
-        {% include "sites/resultat.html" %}
-    {% endfor %}
-    <div class="centre">{% paginate %}</div>
-</div>
+<div class="centre">{% paginate %}</div>
+{% for site in sites %}
+{% include "sites/resultat.html" %}
+{% endfor %}
+<div class="centre">{% paginate %}</div>
 {% endblock %}

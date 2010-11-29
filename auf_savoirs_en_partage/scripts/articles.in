@@ -12,24 +12,8 @@ for d in glob.glob("%(directory)s/eggs/*"):
 for d in glob.glob("%(directory)s/parts/*"):
     sys.path[0:0] = [d,]
 
-from django.conf import settings
-from savoirs.models import SourceActualite, Actualite
-import feedparser, datetime
+from savoirs.models import SourceActualite
 
 sources = SourceActualite.objects.all()
 for src in sources:
-    d = feedparser.parse(src.url)
-    for entry in d.entries:
-        if len(Actualite.objects.filter(url = entry.link)) == 0:
-            print entry.updated_parsed
-            ts = entry.updated_parsed
-            date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday)
-            print date
-            a = Actualite(titre = entry.title, 
-                          texte = entry.summary_detail.value,
-                          url = entry.link,
-                          date = date,
-                          visible = False,
-                          source = src,
-                          ancienid = 0)
-            print a.save()
+    src.update()

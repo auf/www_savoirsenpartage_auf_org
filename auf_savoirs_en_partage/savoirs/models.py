@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import caldav
 import datetime
+import feedparser
 import operator
 import os
 import pytz
@@ -106,10 +107,25 @@ class Discipline(models.Model):
 
 class SourceActualite(models.Model):
     nom = models.CharField(max_length=255)
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, verbose_name='URL')
     
+    class Meta:
+        verbose_name = u'fil RSS syndiqué'
+        verbose_name_plural = u'fils RSS syndiqués'
+
     def __unicode__(self,):
         return u"%s" % self.nom
+
+    def update(self):
+        """Mise à jour du fil RSS."""
+        feed = feedparser.parse(self.url)
+        for entry in feed.entries:
+            if Actualite.all_objects.filter(url=entry.link).count() == 0:
+                ts = entry.updated_parsed
+                date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday)
+                a = self.actualites.create(titre=entry.title,
+                                           texte=entry.summary_detail.value,
+                                           url=entry.link, date=date)
 
 class ActualiteQuerySet(SEPQuerySet):
 
@@ -152,9 +168,9 @@ class Actualite(models.Model):
     texte = models.TextField(db_column='texte_actualite')
     url = models.CharField(max_length=765, db_column='url_actualite')
     date = models.DateField(db_column='date_actualite')
-    visible = models.BooleanField(db_column='visible_actualite', default = False)
-    ancienid = models.IntegerField(db_column='ancienId_actualite', blank = True, null = True)
-    source = models.ForeignKey(SourceActualite, blank = True, null = True)
+    visible = models.BooleanField(db_column='visible_actualite', default=False)
+    ancienid = models.IntegerField(db_column='ancienId_actualite', blank=True, null=True)
+    source = models.ForeignKey(SourceActualite, blank=True, null=True, related_name='actualites')
     disciplines = models.ManyToManyField(Discipline, blank=True, related_name="actualites")
     regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='régions')
 

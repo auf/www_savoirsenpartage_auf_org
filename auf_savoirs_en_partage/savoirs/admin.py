@@ -16,8 +16,6 @@ from django.http import HttpResponseRedirect
 from savoirs.globals import META
 from savoirs.models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog, Profile
 
-admin.site.register(SourceActualite)
-
 class ListSetFilterSpec(RelatedFilterSpec):
     """
     Filtre custom automatiquement lié à un field nommé 'listsets'. Il a pour but de s'afficher
@@ -249,6 +247,16 @@ class ActualiteAdmin(admin.ModelAdmin):
 
 admin.site.register(Actualite, ActualiteAdmin)
 
+class SourceActualiteAdmin(admin.ModelAdmin):
+    actions = ['update_sources']
+    list_display = ['nom', 'url']
+
+    def update_sources(self, request, queryset):
+        for source in queryset:
+            source.update()
+    update_sources.short_description = u'Mettre à jour les fils sélectionnés'
+
+admin.site.register(SourceActualite, SourceActualiteAdmin)
 
 class EvenementAdminForm(forms.ModelForm):
     mots_cles = forms.CharField(label='Mots-clés', required=False)

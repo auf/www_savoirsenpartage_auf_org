@@ -8,7 +8,7 @@ def user_chercheur(request):
     user_sep = Utilisateur.objects.none()
     if request.user.is_authenticated():
         try:
-            user_chercheur = Chercheur.objects.get(personne__courriel=request.user.email)
+            user_chercheur = Chercheur.objects.get(personne__courriel=request.user.email, personne__actif=True)
             user_sep = Utilisateur.objects.get(id=user_chercheur.personne_id)
         except:
             pass

@@ -10,33 +10,6 @@
 
 <form method="post">
     {% include "chercheurs/chercheur_form.html" %}   
-    <fieldset>
-        <legend>Publications</legend>
-        <div>
-            <div class="publication">
-              {% with forms.publication1 as form %}
-                  {% include "table_form.html" %}
-              {% endwith %}
-            </div>
-            <div style="clear:both"></div>
-        </div>
-        <p id="show_publications">+ Autres publications</p>
-        <div class="publications_autre">
-            <h6>- Publication 2</h6>
-            {% with forms.publication2 as form %}
-                {% include "table_form.html" %}
-            {% endwith %} 
-            <h6>- Publication 3</h6>
-            {% with forms.publication3 as form %}
-                {% include "table_form.html" %}
-            {% endwith %}     
-            <h6>- Publication 4</h6>
-            {% with forms.publication4 as form %}
-                {% include "table_form.html" %}
-            {% endwith %}
-        </div>
-    </fieldset>
-    <br />
     <input type="submit" name="Submit" value="Inscription" class="bouton" />
 </form>
 {% endblock %}

@@ -130,31 +130,42 @@
     {% endfor %}
     {% endif %}
 
+    {% if chercheur.these %}
+    <h5>Thèse ou mémoire</h5>
+    <table>
+        <tr>
+            <td class="label">Thèse ou mémoire:</td>
+            <td>
+                {% if chercheur.these.url %}
+                <i><a href="{{ chercheur.these.url }}">{{ chercheur.these.titre }}</a></i>,
+                {% else %}
+                <i>{{ chercheur.these.titre }}</i>, 
+                {% endif %}
+                {{ chercheur.these.etablissement }},
+                {{ chercheur.these.annee }}{% if chercheur.these.nb_pages %},
+                {{ chercheur.these.nb_pages }} pages{% endif %}.
+            </td>
+        </tr>
+        <tr>
+            <td class="label">Directeur:</td>
+            <td>{{ chercheur.these.directeur }}</td>
+        </tr>
+    </table>
+    {% endif %}
+
+    {% if chercheur.publications %}
     <h5>Publications</h5>
     <table id="publications">
-        {% if chercheur.these %}
-        <tr class="souligne">
-            <td class="label">Thèse ou mémoire:</td>
-            {% with chercheur.these as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
-        </tr>
-        {% endif %}
-        {% if chercheur.publication1 or chercheur.publication2 or chercheur.publication3 or chercheur.publication4 %}
+        {% for publication in chercheur.publications.all %}
         <tr>
+            {% if forloop.first %}
             <td class="label">Publications:</td>
-            {% with chercheur.publication1 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
+            {% else %}
+            <td></td>
+            {% endif %}
+            {% include "chercheurs/publication_display.html" %}
         </tr>
-        <tr>
-            <td class="label"></td>
-            {% with chercheur.publication2 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
-        </tr>
-        <tr>
-            <td class="label"></td>
-            {% with chercheur.publication3 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
-        </tr>
-        <tr>
-            <td class="label"></td>
-            {% with chercheur.publication4 as publication %}{% include "chercheurs/publication_display.html" %}{% endwith %}
-        </tr>
-        {% endif %}
+        {% endfor %}
     </table>
+    {% endif %}
 </div>

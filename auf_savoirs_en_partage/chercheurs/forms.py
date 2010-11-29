@@ -15,6 +15,15 @@ class PersonneForm(forms.ModelForm):
         model = Utilisateur
         fields = ('nom', 'prenom', 'courriel', 'genre')
         
+    def clean_courriel(self):
+        """On veut s'assurer qu'il n'y ait pas d'autre utilisateur actif
+           avec le même courriel."""
+        courriel = self.cleaned_data['courriel']
+        existing = Personne.objects.filter(courriel=courriel, actif=True).count()
+        if existing:
+            raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
+        return courriel
+        
 class PersonneInscriptionForm(PersonneForm):
     password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
     password_confirmation = forms.CharField(widget=forms.PasswordInput(), label="Confirmez votre mot de passe")
@@ -181,16 +190,14 @@ class GroupesForm(forms.Form):
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
-        fields = ('titre', 'revue', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
+        fields = ('titre', 'revue', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url', 'publication_affichage')
         
-class TheseForm(PublicationForm):
-    titre = forms.CharField(required=True, label="Titre de la thèse ou du mémoire")
-    annee = forms.IntegerField(required=True, label="Année de soutenance (réalisée ou prévue)")
-    editeur = forms.CharField(required=True, label="Directeur de thèse ou de mémoire")
-    lieu_edition = forms.CharField(required=True, label="Établissement de soutenance")
+PublicationFormSet = inlineformset_factory(Chercheur, Publication, form=PublicationForm, extra=1)
+
+class TheseForm(forms.ModelForm):
     class Meta:
-        model = Publication
-        fields = ('titre', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
+        model = These
+        fields = ('titre', 'annee', 'directeur', 'etablissement', 'nb_pages', 'url')
         
 class ExpertiseForm(forms.ModelForm):
     organisme_demandeur_visible = forms.ChoiceField(
@@ -216,24 +223,18 @@ class ChercheurFormGroup(object):
         self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
         self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne.utilisateur)
-        self.publication1 = PublicationForm(data=data, prefix='publication1', instance=chercheur and chercheur.publication1)
-        self.publication2 = PublicationForm(data=data, prefix='publication2', instance=chercheur and chercheur.publication2)
-        self.publication3 = PublicationForm(data=data, prefix='publication3', instance=chercheur and chercheur.publication3)
-        self.publication4 = PublicationForm(data=data, prefix='publication4', instance=chercheur and chercheur.publication4)
-        self.these = TheseForm(data=data, prefix='these', instance=chercheur and chercheur.these)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)
+        self.these = TheseForm(data=data, prefix='these', instance=chercheur and chercheur.these)
+        self.publications = PublicationFormSet(data=data, prefix='publication', instance=chercheur)
 
     @property
     def has_errors(self):
         return bool(self.chercheur.errors or self.personne.errors or self.groupes.errors or
-                    self.publication1.errors or self.publication2.errors or self.publication3.errors or
-                    self.publication4.errors or self.these.errors or self.expertises.errors)
+                    self.these.errors or self.publications.errors or self.expertises.errors)
 
     def is_valid(self):
         return self.chercheur.is_valid() and self.personne.is_valid() and self.groupes.is_valid() and \
-               self.publication1.is_valid() and self.publication2.is_valid() and \
-               self.publication3.is_valid() and self.publication4.is_valid() and \
-               self.these.is_valid() and self.expertises.is_valid()
+               self.these.is_valid() and self.publications.is_valid() and self.expertises.is_valid()
 
     def save(self):
         if self.is_valid():
@@ -243,22 +244,18 @@ class ChercheurFormGroup(object):
             # Enregistrer d'abord les clés étrangères car on doit les stocker dans
             # l'objet chercheur.
             chercheur.personne = self.personne.save()
-            if self.publication1.cleaned_data['titre']:
-                chercheur.publication1 = self.publication1.save()
-            if self.publication2.cleaned_data['titre']:
-                chercheur.publication2 = self.publication2.save()
-            if self.publication3.cleaned_data['titre']:
-                chercheur.publication3 = self.publication3.save()
-            if self.publication4.cleaned_data['titre']:
-                chercheur.publication4 = self.publication4.save()
-            chercheur.these = self.these.save()
 
             # Puis enregistrer le chercheur lui-même.
             self.chercheur.save()
 
-            # Puis les many-to-many puisqu'on a besoin d'un id.
+            # Puis les objets qui ont des clés étrangères vers nous
+            # puisqu'on a besoin d'un id.
             self.groupes.chercheur = chercheur
             self.groupes.save()
+            self.these.instance.chercheur = chercheur
+            self.these.save()
+            self.publications.instance = chercheur
+            self.publications.save()
             self.expertises.instance = chercheur
             self.expertises.save()
 
@@ -325,7 +322,7 @@ class SendPasswordForm(forms.Form):
         email = cleaned_data.get("email")
         if email:
             try:
-                Utilisateur.objects.get(courriel=email)
+                Utilisateur.objects.get(courriel=email, actif=True)
             except:
                 raise forms.ValidationError("Cette adresse n'existe pas dans notre base de données.")       
         return email

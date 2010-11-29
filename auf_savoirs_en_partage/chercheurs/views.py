@@ -34,7 +34,7 @@ def send_password(request):
     if request.method == "POST":
         form = SendPasswordForm(data=request.POST)
         if form.is_valid():
-            u = Utilisateur.objects.get(courriel=form.cleaned_data['email'])
+            u = Utilisateur.objects.get(courriel=form.cleaned_data['email'], actif=True)
             code = u.get_new_password_code()
             link = "%s/accounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
 
@@ -59,7 +59,7 @@ def send_password(request):
             context_instance = RequestContext(request))
             
 def new_password(request, email, code):
-    u = Utilisateur.objects.get(courriel=email)
+    u = Utilisateur.objects.get(courriel=email, actif=True)
     original_code = u.get_new_password_code()
     message=""
     if(code == original_code):
@@ -145,7 +145,7 @@ def inscription(request):
 def desinscription(request):
     """Désinscription du chercheur"""
     try:
-        chercheur = Chercheur.objects.get(personne__courriel=request.user.email)
+        chercheur = Chercheur.objects.get(personne__courriel=request.user.email, personne__actif=True)
     except Chercheur.DoesNotExist:
         return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
     if request.method == 'POST':
@@ -177,7 +177,7 @@ def edit(request):
         
     return render_to_response("chercheurs/edit.html",
                               dict(forms=forms, chercheur=chercheur),
-                              context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
             
 @login_required()
 def perso(request):

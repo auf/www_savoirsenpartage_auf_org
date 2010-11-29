@@ -11,20 +11,17 @@ GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
 
     id = models.AutoField(primary_key=True)
-    salutation = models.CharField(max_length=128, null = True, blank = True)
+    salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
-    prenom = models.CharField(max_length=128, verbose_name = 'Prénom')
-    courriel = models.EmailField(max_length=128, unique=True, verbose_name="Adresse électronique")
-    fonction = models.CharField(max_length=128, null = True, blank = True)
+    prenom = models.CharField(max_length=128, verbose_name='prénom')
+    courriel = models.EmailField(max_length=128, verbose_name="adresse électronique")
+    fonction = models.CharField(max_length=128, null=True, blank=True)
     date_naissance = models.DateField(null=True, blank=True)
-    sousfonction = models.CharField(max_length=128, null = True, blank = True,
-                                    verbose_name = 'Sous-fonction')
-    mobile = models.CharField(max_length=32, null = True, blank = True,
-                              verbose_name = 'Numéro de téléphone portable ')
+    sousfonction = models.CharField(max_length=128, null=True, blank=True, verbose_name='sous-fonction')
+    mobile = models.CharField(max_length=32, null=True, blank=True, verbose_name='numéro de téléphone portable')
     genre = models.CharField(max_length=1, choices=GENRE_CHOICES)
-    commentaire = models.TextField(verbose_name = 'Commentaires', null = True, 
-                                   blank = True)
-    actif = models.BooleanField(editable = False)
+    commentaire = models.TextField(verbose_name='commentaires', null=True, blank=True)
+    actif = models.BooleanField(editable=False, default=True)
 
     def __unicode__(self):
         return u"%s %s, %s" % (self.prenom, self.nom, self.courriel)
@@ -150,31 +147,6 @@ class Chercheur(models.Model):
                                     
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name='Domaines de recherche')
     
-    #Refactoring, mettre les publications comme etant des many2many;
-    publication1 = models.ForeignKey('Publication',
-                                     db_column='publication1', null=True,
-                                     blank=True, editable=False,
-                                     related_name='publication1',
-                                     verbose_name='Publication 1')
-    publication2 = models.ForeignKey('Publication',
-                                     db_column='publication2', null=True,
-                                     blank=True, editable=False,
-                                     related_name='publication2',
-                                     verbose_name = 'Publication 2')
-    publication3 = models.ForeignKey('Publication',
-                                     db_column='publication3', null=True,
-                                     blank=True, editable=False,
-                                     related_name='publication3',
-                                     verbose_name = 'Publication 3')
-    publication4 = models.ForeignKey('Publication',
-                                     db_column='publication4', null=True,
-                                     blank=True, editable=False,
-                                     related_name='publication4',
-                                     verbose_name = 'Publication 4')
-    
-    these = models.ForeignKey('Publication', db_column='these', null=True,
-                              blank=True, related_name='These', editable=False)
-    
     # Activités en francophonie
     membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
     membre_instance_auf_details = models.CharField(max_length=255, blank=True, verbose_name="détails")
@@ -234,22 +206,33 @@ class Chercheur(models.Model):
         super(Chercheur, self).save()
 
 class Publication(models.Model):
-    id = models.AutoField(primary_key=True, db_column='id')
-    titre = models.CharField(max_length=255, db_column='titre', null=True, blank=True, verbose_name = 'Titre')
-    revue = models.CharField(max_length=255, db_column='revue', null=True, blank=True, verbose_name = 'Revue')
-    annee = models.IntegerField(db_column='annee', null=True, blank=True, verbose_name='Année de publication')
-    editeur = models.CharField(max_length=255, db_column='editeur', null=True, blank=True, verbose_name = 'Éditeur')
-    lieu_edition = models.CharField(max_length=255, db_column='lieu_edition', null=True, blank=True, verbose_name = 'Lieu d\'édition')
-    nb_pages = models.CharField(max_length=255, db_column='nb_pages', null=True, blank=True, verbose_name = 'Nombre de pages')
-    url = models.CharField(max_length=255, db_column='url', null=True, blank=True, verbose_name = 'Lien vers la publication')
+    chercheur = models.ForeignKey(Chercheur, related_name='publications')
+    titre = models.CharField(max_length=255, null=True, blank=True, verbose_name='titre')
+    revue = models.CharField(max_length=255, null=True, blank=True, verbose_name='Revue')
+    annee = models.IntegerField(null=True, blank=True, verbose_name='Année de publication')
+    editeur = models.CharField(max_length=255, null=True, blank=True, verbose_name='Éditeur')
+    lieu_edition = models.CharField(max_length=255, null=True, blank=True, verbose_name="Lieu d'édition")
+    nb_pages = models.CharField(max_length=255, null=True, blank=True, verbose_name='Nombre de pages')
+    url = models.CharField(max_length=255, null=True, blank=True, verbose_name='Lien vers la publication')
     #Migration des publications depuis l'ancien repertoire de chercheurs
-    publication_affichage = models.TextField(verbose_name = 'Publication', null = True, 
-                                   blank = True)
-    actif = models.BooleanField(editable = False, db_column='actif')
+    publication_affichage = models.TextField(verbose_name='Publication', null=True, blank=True)
+    actif = models.BooleanField(editable=False)
     
     def __unicode__(self):
-        return u"%s" % (self.titre)
+        return self.titre
         
+class These(models.Model):
+    chercheur = models.OneToOneField(Chercheur, primary_key=True)
+    titre = models.CharField(max_length=255, verbose_name='Titre de la thèse ou du mémoire')
+    annee = models.IntegerField(verbose_name='Année de soutenance (réalisée ou prévue)')
+    directeur = models.CharField(max_length=255, verbose_name='Directeur de thèse ou de mémoire')
+    etablissement = models.CharField(max_length=255, verbose_name='Établissement de soutenance')
+    nb_pages = models.IntegerField(verbose_name='Nombre de pages', blank=True, null=True)
+    url = models.CharField(max_length=255, verbose_name='Lien vers la publication', blank=True)
+
+    def __unicode__(self):
+        return self.titre
+
 class Expertise(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey(Chercheur, related_name='expertises')

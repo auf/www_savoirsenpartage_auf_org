@@ -91,3 +91,27 @@
         <div style="clear:both"></div>
     </div>
 </fieldset>
+
+<fieldset id="publications">
+    <legend>Publications</legend>
+    {{ forms.publications.management_form }}
+    {% for form in forms.publications.forms %}
+    <fieldset>
+        <table>
+            {% if form.initial.publication_affichage %}
+            {% form_field form.publication_affichage %}
+            {% else %}
+            {% form_field form.titre %}
+            {% form_field form.revue %}
+            {% form_field form.annee %}
+            {% form_field form.editeur %}
+            {% form_field form.lieu_edition %}
+            {% form_field form.nb_pages %}
+            {% form_field form.url %}
+            {% endif %}
+        </table>
+        {{ form.id }}
+        {{ form.DELETE }}
+    </fieldset>
+    {% endfor %}
+</fieldset>

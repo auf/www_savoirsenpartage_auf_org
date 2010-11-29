@@ -16,6 +16,12 @@
             deleteText: 'supprimer cette expertise',
             formCssClass: 'dynamic-form-expertises'
         });
+        $('#publications fieldset').formset({
+            prefix: 'publication',
+            addText: 'ajouter une publication',
+            deleteText: 'supprimer cette publication',
+            formCssClass: 'dynamic-form-publications'
+        });
         update_etablissement_autre()
         $('#id_chercheur-etablissement').change(update_etablissement_autre)
     });

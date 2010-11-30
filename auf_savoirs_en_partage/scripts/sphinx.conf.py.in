@@ -76,6 +76,7 @@ index %%(name)s
                     U+F9->u, U+FB->u, U+FC->u
     source = %%(name)s
     path = %%(path)s
+    stopwords = %(directory)s/auf_savoirs_en_partage/stopwords.txt
 }''' %% dict(name=name, path=os.path.join(DATA_DIR, name))
 
 emit_source('savoirsenpartage_ressources', 
@@ -162,7 +163,7 @@ emit_source('savoirsenpartage_chercheurs',
                       r.nom AS region,
                       r.id AS region_id,
                       GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
-                      CONCAT_WS(pub1.titre, pub2.titre, pub3.titre, pub4.titre) AS publications,
+                      GROUP_CONCAT(DISTINCT pub.titre) AS publications,
                       t.titre AS these,
                       GROUP_CONCAT(DISTINCT g.nom) AS groupes,
                       GROUP_CONCAT(DISTINCT ex.nom) AS expertises,
@@ -182,11 +183,8 @@ emit_source('savoirsenpartage_chercheurs',
                LEFT JOIN ref_pays pays ON pays.id = IFNULL(et.pays, c.etablissement_autre_pays)
                LEFT JOIN ref_region r ON pays.region = r.id
                LEFT JOIN discipline d ON d.id_discipline = c.discipline
-               LEFT JOIN chercheurs_publication pub1 ON pub1.id = c.publication1
-               LEFT JOIN chercheurs_publication pub2 ON pub2.id = c.publication2
-               LEFT JOIN chercheurs_publication pub3 ON pub3.id = c.publication3
-               LEFT JOIN chercheurs_publication pub4 ON pub4.id = c.publication4
-               LEFT JOIN chercheurs_publication t ON t.id = c.these
+               LEFT JOIN chercheurs_publication pub ON pub.chercheur_id = c.id
+               LEFT JOIN chercheurs_these t ON t.chercheur_id = c.id
                LEFT JOIN chercheurs_chercheurgroupe cg ON cg.chercheur = c.id
                LEFT JOIN chercheurs_groupe g ON g.id = cg.groupe
                LEFT JOIN chercheurs_expertise ex ON ex.chercheur_id = c.id

@@ -44,9 +44,12 @@ ALTER TABLE chercheurs_chercheur
     DROP COLUMN publication3,
     DROP COLUMN publication4;
 
+ANALYZE TABLE chercheurs_chercheur;
+
 -- On ne peut pas à la fois forcer une clé unique sur le courriel et conserver
 -- les comptes inactifs dans la table.
 
 ALTER TABLE chercheurs_personne
     DROP KEY courriel,
     ADD KEY courriel (courriel);
+

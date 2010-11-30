@@ -210,7 +210,7 @@ def evenement_index(request):
              excerpt=excerpt, nb_resultats=evenements.count()),
         context_instance=RequestContext(request)
     )
-                              
+
 def evenement_utilisation(request):
     return render_to_response("savoirs/evenement_utilisation.html", {},
                               context_instance = RequestContext(request))

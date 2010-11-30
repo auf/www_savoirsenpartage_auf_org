@@ -20,7 +20,7 @@ class HarvestStats:
             return "pas d'import"
 
     def ref_importees(self, site):
-        records = Record.objects.filter(server=site)
+        records = Record.all_objects.filter(server=site)
         return str(len(records))
 
     def stats(self,):
@@ -80,7 +80,7 @@ def import_all ():
             sys.exit(-1)
 
     for name in resources.keys ():
-        print "Import:", name
+        print "Import:", name.encode('utf-8')
         options = RESOURCES[name]
         options['server'] = name
 
@@ -100,7 +100,7 @@ def import_all ():
         added = updated = 0
         for node in nodes:
             node['server'] = name
-            status = sep.add (node)
+            status = sep.add(node)
 
             if status['added']:
                 added += 1

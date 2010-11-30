@@ -38,7 +38,7 @@ class RecordDashboard:
     def tout_mes_records(self,):
         """Retourne la liste des références à traiter en fonction du filtre"""
         filtre = self.get_fitre_serveurs()
-        return [r for r in Record.objects.filter(server__in=filtre) if not r.est_complet()]
+        return [r for r in Record.all_objects.filter(server__in=filtre) if not r.est_complet()]
     
     def mes_records(self,):
         """Retourne la liste des références à traiter en fonction du filtre"""
@@ -59,7 +59,7 @@ class RecordDashboard:
 @login_required
 def assigner_pays(request):
     ids = request.GET.get("ids").split(",")
-    records = Record.objects.in_bulk(ids)
+    records = Record.all_objects.in_bulk(ids)
     if request.method == 'POST':
         pays_form = PaysForm(request.POST)
 
@@ -156,7 +156,7 @@ def assigner_disciplines(request, app_name, model_name):
 @login_required
 def assigner_thematiques(request):
     ids = request.GET.get("ids").split(",")
-    records = Record.objects.in_bulk(ids)
+    records = Record.all_objects.in_bulk(ids)
     if request.method == 'POST':
         thematiques_form = ThematiquesForm(request.POST)
 
@@ -196,13 +196,13 @@ def confirmation(request, action):
 
     # determination du contexte de validation
     if action == u'valider':
-        objects = [r for r in Record.objects.in_bulk(ids).values() if r.est_complet()]
+        objects = [r for r in Record.all_objects.in_bulk(ids).values() if r.est_complet()]
         action = ('validated', True)
         desc = u'validées'
         model = u'références'
 
     elif action == u'invalider':
-        objects = Record.objects.in_bulk(ids).values()
+        objects = Record.all_objects.in_bulk(ids).values()
         action = ('validated', False)
         desc = u'invalidées'
         model = u'références'

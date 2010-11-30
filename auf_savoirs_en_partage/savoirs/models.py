@@ -624,7 +624,7 @@ class HarvestLog(models.Model):
     def add(message):
         logger = HarvestLog()
         if message.has_key('record_id'):
-            message['record'] = Record.objects.get(id=message['record_id'])
+            message['record'] = Record.all_objects.get(id=message['record_id'])
             del(message['record_id'])
 
         for k,v in message.items():

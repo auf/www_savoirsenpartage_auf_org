@@ -37,7 +37,7 @@ class SEPEncoder:
     def menage(self,):
         """Applique sur tous les records, la fonction de corrections
         de string sur les données moissonnées"""
-        for r in Record.objects.all():
+        for r in Record.all_objects.all():
             for k in META.keys ():
                 v = getattr (r, k)
                 setattr (r, k, self.propre(v))
@@ -56,7 +56,7 @@ class SEP:
 
     def _load (self, id):
         """Recupérer la structure de métadonnées pour un record selon un `id`."""
-        r = Record.objects.get(id = id)
+        r = Record.all_objects.get(id = id)
         meta = {'id' : id}
         for k in META.keys ():
             if hasattr (r, k):
@@ -99,7 +99,7 @@ class SEP:
         return r.id
 
     def _modify (self, id, metadata):
-        r = Record.objects.get(id = id)
+        r = Record.all_objects.get(id = id)
 
         # test si le fichier a été modifié
         if hashlib.md5(str(metadata)).hexdigest() == r.last_checksum:
@@ -129,7 +129,6 @@ class SEP:
                     matches = s
                 else:
                     matches = set(matches) & s
-            #print "EE", matches
 
         return [(x, scores[x]) for x in matches]
 
@@ -185,7 +184,7 @@ class SEP:
     def delete (self, id):
         """Supprime la ressource identifiée par `id`.
         """
-        r = Record.objects.get(id = id)
+        r = Record.all_objects.get(id = id)
         r.delete()
 
     def update (self, id, metadata):
@@ -216,7 +215,7 @@ class SEP:
 
     def ids (self):
         """ Retourner la liste complète des ids des ressources."""
-        return [x.id for x in Record.objects.all()]
+        return [x.id for x in Record.all_objects.all()]
 
     def search (self, q):
         """Effectue une recherche multi-critères, en fonction du dictionnaire 
@@ -237,9 +236,10 @@ class SEP:
             elif q.get (URI) is not None:
                 s = []
                 try:
-                    s.append((Record.objects.get(uri__iexact = q.get(URI)).id, 1))
+                    s.append((Record.all_objects.get(uri__iexact = q.get(URI)).id, 1))
                     rc.append(s)
-                except: pass
+                except Record.DoesNotExist: 
+                    pass
             # Recherche avancée
             else:
                 creator = q.get ("creator", "")

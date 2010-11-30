@@ -1,54 +1,30 @@
 # -*- encoding: utf-8 -*-
+import re
+from itertools import chain
 from lxml import etree
-import sys, httplib, re, pprint, simplejson
-from urlparse import urlparse, urljoin
+from savoirs.globals import *
+from savoirs.lib.utils import meta_set, smart_str
+from urllib import urlopen
+from urlparse import urljoin
 
-from auf_savoirs_en_partage.savoirs.globals import *
-from auf_savoirs_en_partage.savoirs.lib.utils \
-        import safe_append, print_structure, meta_set, smart_str
+DC_MAP = {'DC.Title': [TITLE,],
+          'DCTERMS.alternative': [ALT_TITLE,],
+          'DC.Creator': [CREATOR,],
+          'DC.Contributor': [CONTRIBUTOR,],
+          'DC.Description': [DESCRIPTION,],
+          'DCTERMS.abstract': [ABSTRACT,],
+          'DC.Subject': [SUBJECT,],
+          'DC.Publisher': [PUBLISHER,],
+          'DCTERMS.issued': [DATE_ISSUED,],
+          'DCTERMS.modified': [DATE_MODIFIED,],
+          'DC.Type': [TYPE,],
+          'DC.Format': [FORMAT,],
+          'DC.Identifier': [URI,],
+          #'DC.Source': [SOURCE,], # ignoré, source pointe vers la recine du site
+          'DC.Language': [LANGUAGE,],
+         }
 
-
-map = {'DC.Title': [TITLE,],
-       'DCTERMS.alternative': [ALT_TITLE,],
-       'DC.Creator': [CREATOR,],
-       'DC.Contributor': [CONTRIBUTOR,],
-       'DC.Description': [DESCRIPTION,],
-       'DCTERMS.abstract': [ABSTRACT,],
-       'DC.Subject': [SUBJECT,],
-       'DC.Publisher': [PUBLISHER,],
-       'DCTERMS.issued': [DATE_ISSUED,],
-       'DCTERMS.modified': [DATE_MODIFIED,],
-       'DC.Type': [TYPE,],
-       'DC.Format': [FORMAT,],
-       'DC.Identifier': [URI,],
-       #'DC.Source': [SOURCE,], # ignoré, source pointe vers la recine du site
-       'DC.Language': [LANGUAGE,],
-       }
-
-
-def load_html (host, base, id):
-    root = None
-    handle = httplib.HTTPConnection (host)
-    uri = base + "document.php?id=%d" % id
-    handle.request ("GET", uri)
-    r = handle.getresponse ()
-    if r.status == 302:
-        del (handle)
-        del (r)
-        handle = httplib.HTTPConnection (host)
-        uri = base + "sommaire.php?id=%d" % id
-        handle.request ("GET", uri)
-        r = handle.getresponse ()
-
-    if r.status == 200:
-        content = smart_str(r.read ())
-        handle.close ()
-        root = etree.HTML (content)
-
-    return ("http://" + host + uri, root)
-
-
-def harvest (options):
+def harvest(options):
     """Méthode de moissonage pour systèmes Lodel < 0.8. Lodel, avant la version 
     0.8 n'offre pas de système d'exportation de données, autre que la 
     présentation des information OAI (Dublin Core) dans les tags *meta* des 
@@ -68,36 +44,79 @@ def harvest (options):
     La méthode retourne une liste d'éléments correspondant au format de 
     metadonnées.
     """
-    url = urlparse(options['url'])
+    BASE_URL = options['url']
 
+    def get_page(path):
+        try:
+            url = urljoin(BASE_URL, path)
+            print "Récupération de la page:", url
+            f = urlopen(url)
+            page = f.read()
+            f.close()
+            return page
+        except:
+            print "Erreur: impossible de récupérer la page:", url
+            return ''
 
-    ## BRUTE FORCE POWER!
-    max_err = 5000
-    err_count = 0
+    SOMMAIRE_ID_RE = re.compile(r'sommaire\.php\?id=(\d+)')
+    def get_sommaire_ids(path):
+        return SOMMAIRE_ID_RE.findall(get_page(path))
+
+    AUTEUR_ID_RE = re.compile(r'personne\.php\?id=(\d+)')
+    def get_auteur_ids(path):
+        return AUTEUR_ID_RE.findall(get_page(path))
+
+    ENTREE_TYPE_RE = re.compile(r'entrees\.php\?type=(\w+)')
+    def get_entree_types(path):
+        return ENTREE_TYPE_RE.findall(get_page(path))
+
+    ENTREE_ID_RE = re.compile(r'entree\.php\?id=(\d+)')
+    def get_entree_ids(path):
+        return ENTREE_ID_RE.findall(get_page(path))
+
+    DOCUMENT_ID_RE = re.compile(r'document\.php\?id=(\d+)')
+    def get_document_ids(path):
+        return DOCUMENT_ID_RE.findall(get_page(path))
     
+    def get_meta(path):
+        page = get_page(path)
+        if not page:
+            return None
+        tree = etree.HTML(page)
+        meta = { IDENTIFIER: urljoin(BASE_URL, path) }
+        fields = tree.findall(".//meta")
+        for field in fields:
+            if field.attrib.get('lang', 'fr') == 'fr': # ignore en
+                match = DC_MAP.get(field.attrib.get('name'))
+                if match is not None:
+                    for k in match:
+                        meta_set(meta, k, smart_str(field.attrib.get('content')))
+        if meta.get("uri") is not None:
+            return meta
+
     nodes = []
-    for i in range(0, 50000):
-        (loc, root) = load_html (url.hostname, url.path, i)
+    sommaire_ids = set(chain(get_sommaire_ids('/'), get_sommaire_ids('/index.php?format=numero')))
+    auteur_ids = get_auteur_ids('/personnes.php?type=auteur')
 
-        if root is not None:
-            err_count = 0
-            meta = {IDENTIFIER: loc}
-            fields = root.findall (".//meta")
-            for field in fields:
-                if field.attrib.get('lang', 'fr') == 'fr': # ignore en
-                    match = map.get (field.attrib.get('name'))
-                    if match is not None:
-                        for k in match:
-                            meta_set (meta, k, smart_str(field.attrib.get('content')))
+    entree_types = get_entree_types('/')
+    entree_ids = set()
+    for type in entree_types:
+        entree_ids.update(get_entree_ids('/entrees.php?type=%s' % type))
 
-            if meta.get("uri") is not None:
-                nodes.append (meta)
-        else:
-            err_count += 1
+    document_ids = set()
+    for id in sommaire_ids:
+        path = '/sommaire.php?id=%s' % id
+        meta = get_meta(path)
+        if meta:
+            nodes.append(meta)
+        document_ids.update(get_document_ids(path))
+    for id in auteur_ids:
+        document_ids.update(get_document_ids('/personne.php?id=%s&type=auteur' % id))
+    for id in entree_ids:
+        document_ids.update(get_document_ids('/entree.php?id=%s' % id))
 
-        if err_count >= max_err:
-            print i, "erreurs:", err_count
-            break
-
-
+    for id in document_ids:
+        meta = get_meta('/document.php?id=%s' % id)
+        if meta:
+            nodes.append(meta)
     return nodes

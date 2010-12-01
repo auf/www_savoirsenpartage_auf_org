@@ -19,8 +19,10 @@ class PersonneForm(forms.ModelForm):
         """On veut s'assurer qu'il n'y ait pas d'autre utilisateur actif
            avec le même courriel."""
         courriel = self.cleaned_data['courriel']
-        existing = Personne.objects.filter(courriel=courriel, actif=True).count()
-        if existing:
+        existing = Personne.objects.filter(courriel=courriel, actif=True)
+        if self.instance and self.instance.id:
+            existing = existing.exclude(id=self.instance.id)
+        if existing.count():
             raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
         return courriel
         

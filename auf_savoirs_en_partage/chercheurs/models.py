@@ -166,6 +166,10 @@ class Chercheur(models.Model):
         max_length=255, blank=True, verbose_name="dates"
     )
 
+    # Expertises
+
+    expertises_auf = models.BooleanField(verbose_name="est disposé à réaliser des expertises pour l'AUF")
+
     #meta
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
     date_modification = models.DateField(auto_now=True, db_column='date_modification')

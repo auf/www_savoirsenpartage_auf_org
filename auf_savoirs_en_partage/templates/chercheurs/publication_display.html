@@ -1,5 +1,6 @@
 {% if publication.titre %}
     <td class="souligne">
+        {% if publication.auteurs %}{{ publication.auteurs }},{% endif %}
         <i>{{publication.titre}}</i>{% if publication.revue %}, 
         {{publication.revue}}{% endif %}{% if publication.annee %}, 
         {{publication.annee}}{% endif %}{% if publication.editeur %}, 

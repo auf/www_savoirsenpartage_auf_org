@@ -58,3 +58,5 @@ UPDATE chercheurs_chercheur SET etablissement_autre_nom = TRIM(etablissement_aut
 UPDATE chercheurs_chercheur SET diplome = '' WHERE diplome = '.';
 UPDATE chercheurs_chercheur SET etablissement_autre_nom = '' WHERE etablissement_autre_nom = '.';
 UPDATE chercheurs_chercheur SET theme_recherche = '' WHERE theme_recherche = '.';
+
+ALTER TABLE `chercheurs_publication` ADD COLUMN `auteurs` varchar(255) NOT NULL AFTER id;

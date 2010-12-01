@@ -117,8 +117,9 @@ div.boite-recherche p a:hover { color:#97012c; text-decoration:none;}
 #contenu .zone-texte blockquote {margin:0 2em 1em; font-style:italic;}
 
 #contenu .texte { font-size:1.2em; }
-#contenu .texte ul li { list-style:disc; margin:0 0 .25em; }
-#contenu .texte ol li { list-style:decimal; margin:0 0 .25em; }
+#contenu .texte ul { padding-left: 3em; margin-bottom: 1em; }
+#contenu .texte ul li { list-style:disc; }
+#contenu .texte ol li { list-style:decimal; }
 #contenu .texte ul ul, #contenu .description ol ol  { margin-top:.25em; margin-bottom:.25em; }
 #contenu .texte a { text-decoration:none; }
 #contenu .texte a:hover { text-decoration:underline; }

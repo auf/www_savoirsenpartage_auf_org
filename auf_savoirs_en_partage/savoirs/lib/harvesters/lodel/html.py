@@ -49,7 +49,6 @@ def harvest(options):
     def get_page(path):
         try:
             url = urljoin(BASE_URL, path)
-            print "Récupération de la page:", url
             f = urlopen(url)
             page = f.read()
             f.close()
@@ -95,7 +94,12 @@ def harvest(options):
             return meta
 
     nodes = []
-    sommaire_ids = set(chain(get_sommaire_ids('/'), get_sommaire_ids('/index.php?format=numero')))
+    meta = get_meta('/')
+    if meta:
+        nodes.append(meta)
+
+    sommaire_ids = set(chain(get_sommaire_ids('/'), get_sommaire_ids('/index.php?format=numero'),
+                             get_sommaire_ids('/index.php?format=numeros')))
     auteur_ids = get_auteur_ids('/personnes.php?type=auteur')
 
     entree_types = get_entree_types('/')

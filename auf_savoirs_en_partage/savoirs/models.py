@@ -53,6 +53,13 @@ class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
 
     def add_to_query(self, query):
         """Ajoute une partie à la requête texte."""
+
+        # Assurons-nous qu'il y a un nombre pair de guillemets
+        if query.count('"') % 2 != 0:
+            # Sinon, on enlève le dernier (faut choisir...)
+            i = query.rindex('"')
+            query = query[:i] + query[i+1:]
+
         new_query = smart_unicode(self._query) + ' ' + query if self._query else query
         return self.query(new_query)
 

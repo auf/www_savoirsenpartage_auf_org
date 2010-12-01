@@ -192,13 +192,28 @@ def build_search_regexp(query):
         parts.append(part)
     return re.compile('|'.join(parts), re.I) 
 
+EXACT_PHRASE_RE = re.compile(r'"([^"]*?)"')
 def excerpt_function(manager, words):
     """Construit une fonction qui extrait la partie pertinente d'un texte
        suite à une recherche textuelle."""
     qs = manager.get_sphinx_query_set()
     client = qs._get_sphinx_client()
     index = qs._index
+    phrases = EXACT_PHRASE_RE.findall(words)
+    keywords = EXACT_PHRASE_RE.sub('', words).strip()
+
     def excerpt(text):
-        return mark_safe(client.BuildExcerpts([text], index, words)[0])
+        # On essaie de gérer à peu près correctement les phrases exactes. La
+        # vraie solution serait d'utiliser Sphinx 1.10 beta1 et son option
+        # "query_mode", mais c'est plus de trouble. Peut-être plus tard?
+        excerpt = text
+        for phrase in phrases:
+            excerpt = client.BuildExcerpts([excerpt], index, phrase, 
+                                           opts=dict(exact_phrase=True, limit=500, single_passage=True))[0]
+        if keywords:
+            excerpt = client.BuildExcerpts([excerpt], index, keywords, 
+                                           opts=dict(limit=500, single_passage=True))[0]
+        return mark_safe(excerpt)
+
     return excerpt
 

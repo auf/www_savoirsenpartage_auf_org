@@ -101,6 +101,7 @@
             {% if form.initial.publication_affichage %}
             {% form_field form.publication_affichage %}
             {% else %}
+            {% form_field form.auteurs %}
             {% form_field form.titre %}
             {% form_field form.revue %}
             {% form_field form.annee %}

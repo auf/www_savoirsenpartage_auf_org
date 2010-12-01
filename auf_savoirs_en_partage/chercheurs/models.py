@@ -207,15 +207,16 @@ class Chercheur(models.Model):
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')
+    auteurs = models.CharField(max_length=255, blank=True, verbose_name='auteur(s)')
     titre = models.CharField(max_length=255, null=True, blank=True, verbose_name='titre')
-    revue = models.CharField(max_length=255, null=True, blank=True, verbose_name='Revue')
-    annee = models.IntegerField(null=True, blank=True, verbose_name='Année de publication')
-    editeur = models.CharField(max_length=255, null=True, blank=True, verbose_name='Éditeur')
-    lieu_edition = models.CharField(max_length=255, null=True, blank=True, verbose_name="Lieu d'édition")
-    nb_pages = models.CharField(max_length=255, null=True, blank=True, verbose_name='Nombre de pages')
-    url = models.CharField(max_length=255, null=True, blank=True, verbose_name='Lien vers la publication')
+    revue = models.CharField(max_length=255, null=True, blank=True, verbose_name='revue')
+    annee = models.IntegerField(null=True, blank=True, verbose_name='année de publication')
+    editeur = models.CharField(max_length=255, null=True, blank=True, verbose_name='éditeur')
+    lieu_edition = models.CharField(max_length=255, null=True, blank=True, verbose_name="lieu d'édition")
+    nb_pages = models.CharField(max_length=255, null=True, blank=True, verbose_name='nombre de pages')
+    url = models.CharField(max_length=255, null=True, blank=True, verbose_name='lien vers la publication')
     #Migration des publications depuis l'ancien repertoire de chercheurs
-    publication_affichage = models.TextField(verbose_name='Publication', null=True, blank=True)
+    publication_affichage = models.TextField(verbose_name='publication', null=True, blank=True)
     actif = models.BooleanField(editable=False)
     
     def __unicode__(self):

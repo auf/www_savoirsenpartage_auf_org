@@ -165,6 +165,12 @@ class ChercheurForm(forms.ModelForm):
                 self._errors['etablissement_autre_pays'] = self.error_class([u"Vous devez renseigner le pays de l'établissement"])
         return self.cleaned_data
 
+class ChercheurInscriptionForm(ChercheurForm):
+    attestation = forms.BooleanField(
+        required=True, 
+        label="J'atteste sur l'honneur l'exactitude des renseignements fournis sur le formulaire d'inscription et j'accepte leur publication en ligne."
+    )
+
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
     groupes = forms.ModelMultipleChoiceField(
@@ -220,7 +226,8 @@ class ChercheurFormGroup(object):
 
     def __init__(self, data=None, chercheur=None):
         personne_form_class = PersonneInscriptionForm if chercheur is None else PersonneForm
-        self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
+        chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
+        self.chercheur = chercheur_form_class(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
         self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne.utilisateur)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)

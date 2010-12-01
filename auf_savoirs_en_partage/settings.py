@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'chercheurs',
     'sitotheque',
     'djangosphinx',
+    'datamaster_modeles'
 )
 
 

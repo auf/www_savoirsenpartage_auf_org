@@ -28,6 +28,9 @@ class SiteSearchForm(forms.Form):
             pays = self.cleaned_data["pays"]
             if pays:
                 sites = sites.filter(pays=pays.pk)
+
+            if not q:
+                sites = sites.order_by('-date_maj')
         return sites
 
     def get_search_regexp(self):

@@ -41,6 +41,12 @@ class PageLoadTest(TestCase):
 
     def test_chercheurs(self):
         self.check_status_200('/chercheurs/')
+        self.check_status_200('/chercheurs/', dict(tri='nom'))
+        self.check_status_200('/chercheurs/', dict(tri='nom_desc'))
+        self.check_status_200('/chercheurs/', dict(tri='etablissement'))
+        self.check_status_200('/chercheurs/', dict(tri='etablissement_desc'))
+        self.check_status_200('/chercheurs/', dict(tri='pays'))
+        self.check_status_200('/chercheurs/', dict(tri='pays_desc'))
 
     def test_sites(self):
         self.check_status_200('/sites/')

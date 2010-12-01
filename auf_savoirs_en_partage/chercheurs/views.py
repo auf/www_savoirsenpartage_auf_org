@@ -119,7 +119,24 @@ def chercheur_login(request):
 def index(request):
     """Répertoire des chercheurs"""
     search_form = RepertoireSearchForm(request.GET)
-    chercheurs = search_form.get_query_set()
+    chercheurs = search_form.get_query_set().select_related('personne', 'etablissement', 'etablissement__pays', 'etablissement_autre_pays')
+    sort = request.GET.get('tri')
+    if sort is not None and sort.endswith('_desc'):
+        sort = sort[:-5]
+        direction = '-'
+    else:
+        direction = ''
+    if sort == 'nom':
+        chercheurs = chercheurs.order_by(direction + 'personne__nom', 'personne__prenom', '-date_modification')
+    elif sort == 'etablissement':
+        chercheurs = chercheurs.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
+                                      order_by=[direction + 'nom_etablissement', '-date_modification'])
+    elif sort == 'pays':
+        chercheurs = chercheurs.extra(select=dict(pays_etablissement='IFNULL(ref_pays.nom, T5.nom)'),
+                                      order_by=[direction + 'pays_etablissement', '-date_modification'])
+    else:
+        chercheurs = chercheurs.order_by('-date_modification')
+
     nb_chercheurs = chercheurs.count()
     return render_to_response("chercheurs/index.html",
                               dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, search_form=search_form),

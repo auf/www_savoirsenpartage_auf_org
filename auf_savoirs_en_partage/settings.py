@@ -41,7 +41,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'djangoflash.middleware.FlashMiddleware',
     'pagination.middleware.PaginationMiddleware',
-    'django_sorting.middleware.SortingMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )
 
@@ -58,7 +57,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'pagination',
-    'django_sorting',
     'compressor',
     'django_roa',
     'savoirs',

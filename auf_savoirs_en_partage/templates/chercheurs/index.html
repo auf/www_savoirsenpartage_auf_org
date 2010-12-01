@@ -1,6 +1,7 @@
 {% extends "container_base.html" %}
 {% load pagination_tags %}
 {% load form_tags %}
+{% load sep %}
 
 {% block contenu %}
 {% autopaginate chercheurs 20 %}
@@ -57,15 +58,15 @@
 <div class="centre">{% paginate %}</div>
 <table id="repertoire">
     <tr>
-        <th>Nom</th>
-        <th>Établissement</th>
-        <th>Localisation</th>
+        <th>{% sort_link "nom" "Nom" %}</th>
+        <th>{% sort_link "etablissement" "Établissement" %}</th>
+        <th>{% sort_link "pays" "Pays" %}</th>
     </tr>
     {% for chercheur in chercheurs %}
     <tr class="{% cycle 'odd' 'notodd' %}">
         <td><a href="{% url chercheurs.views.retrieve id=chercheur.id %}">{{ chercheur }}</a></td>
-        <td>{% firstof chercheur.etablissement chercheur.etablissement_autre_nom %}</td>
-        <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays %}</td>
+        <td>{% firstof chercheur.etablissement.nom chercheur.etablissement_autre_nom %}</td>
+        <td>{% firstof chercheur.etablissement.pays.nom chercheur.etablissement_autre_pays.nom %}</td>
     </tr>
     {% endfor %}
 </table>

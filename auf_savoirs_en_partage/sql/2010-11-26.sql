@@ -50,3 +50,11 @@ ALTER TABLE chercheurs_chercheur
 ALTER TABLE chercheurs_personne
     DROP KEY courriel,
     ADD KEY courriel (courriel);
+
+-- Certains chercheurs ont un nom qui commence par un espace
+
+UPDATE chercheurs_personne SET nom = TRIM(nom), prenom = TRIM(prenom);
+UPDATE chercheurs_chercheur SET etablissement_autre_nom = TRIM(etablissement_autre_nom);
+UPDATE chercheurs_chercheur SET diplome = '' WHERE diplome = '.';
+UPDATE chercheurs_chercheur SET etablissement_autre_nom = '' WHERE etablissement_autre_nom = '.';
+UPDATE chercheurs_chercheur SET theme_recherche = '' WHERE theme_recherche = '.';

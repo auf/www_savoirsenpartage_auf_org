@@ -67,9 +67,9 @@ def recherche(request, discipline=None, region=None):
         return HttpResponseRedirect(reverse('savoirs.views.index', kwargs=kwargs))
 
     ressources = Record.objects.validated().filter_discipline(discipline).filter_region(region).search(query)
-    actualites = Actualite.objects.filter(visible=1).filter_discipline(discipline).filter_region(region).search(query)
-    evenements = Evenement.objects.filter(approuve=1).filter_discipline(discipline).filter_region(region).search(query)
-    chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).search(query)
+    actualites = Actualite.objects.filter(visible=1).filter_discipline(discipline).filter_region(region).search(query).order_by('-date')
+    evenements = Evenement.objects.filter(approuve=1).filter_discipline(discipline).filter_region(region).search(query).order_by('-debut')
+    chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).search(query).order_by('-date_modification')
     sites = Site.objects.filter_discipline(discipline).filter_region(region).search(query)
     try:
         sites_auf = google_search(0, query)['results']

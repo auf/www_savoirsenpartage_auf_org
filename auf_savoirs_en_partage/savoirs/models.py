@@ -133,7 +133,7 @@ class Actualite(models.Model):
 
     class Meta:
         db_table = u'actualite'
-        ordering = ["-date",]
+        ordering = ["-date"]
 
     def __unicode__ (self):
         return "%s" % (self.titre)

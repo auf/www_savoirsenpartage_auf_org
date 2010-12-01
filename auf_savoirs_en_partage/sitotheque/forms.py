@@ -28,4 +28,8 @@ class SiteSearchForm(forms.Form):
             pays = self.cleaned_data["pays"]
             if pays:
                 sites = sites.filter_pays(pays=pays)
+
+            if not q:
+                sites = sites.order_by('-date_maj')
+
         return sites.all()

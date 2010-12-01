@@ -85,10 +85,10 @@ def recherche(request, discipline=None, region=None):
             kwargs['region'] = region
         return HttpResponseRedirect(reverse('savoirs.views.index', kwargs=kwargs))
 
-    actualites = Actualite.objects.search(query)
-    evenements = Evenement.objects.search(query)
+    actualites = Actualite.objects.search(query).order_by('-date')
+    evenements = Evenement.objects.search(query).order_by('-debut')
     ressources = Record.objects.search(query)
-    chercheurs = Chercheur.objects.search(query)
+    chercheurs = Chercheur.objects.search(query).order_by('-date_modification')
     sites = Site.objects.search(query)
     if discipline:
         discipline = Discipline.objects.get(pk=discipline)

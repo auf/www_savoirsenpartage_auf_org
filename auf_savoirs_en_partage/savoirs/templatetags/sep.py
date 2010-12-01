@@ -18,6 +18,25 @@ def sep_menu(context, discipline_active, region_active):
                 discipline_active=discipline_active, region_active=region_active,
                 request=context['request'])
 
+@register.inclusion_tag('sort_link.html', takes_context=True)
+def sort_link(context, field, label):
+    request = context['request']
+    params = request.GET.copy()
+    current_sort = params.get('tri')
+    if current_sort == field:
+        sort = field + '_desc'
+        indicator = u' (croissant)'
+    else:
+        sort = field
+        if current_sort == field + '_desc':
+            indicator = u' (décroissant)'
+        else:
+            indicator = ''
+
+    params['tri'] = sort
+    url = request.path + '?' + params.urlencode()
+    return dict(label=label, url=url, indicator=indicator)
+    
 class URLNode(template.Node):
     def __init__(self, view_name, args, kwargs, asvar):
         self.view_name = view_name

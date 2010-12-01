@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'savoirs',
     'chercheurs',
     'sitotheque',
+    'datamaster_modeles'
 )
 
 

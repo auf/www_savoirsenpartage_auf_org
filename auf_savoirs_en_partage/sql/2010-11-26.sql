@@ -59,4 +59,7 @@ UPDATE chercheurs_chercheur SET diplome = '' WHERE diplome = '.';
 UPDATE chercheurs_chercheur SET etablissement_autre_nom = '' WHERE etablissement_autre_nom = '.';
 UPDATE chercheurs_chercheur SET theme_recherche = '' WHERE theme_recherche = '.';
 
+-- Nouveaux champs
+
 ALTER TABLE `chercheurs_publication` ADD COLUMN `auteurs` varchar(255) NOT NULL AFTER id;
+ALTER TABLE `chercheurs_chercheur` ADD COLUMN `expertises_auf` bool NOT NULL;

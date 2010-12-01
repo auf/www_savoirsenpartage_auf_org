@@ -103,7 +103,6 @@
     </table>
     {% endif %}
 
-    {% if chercheur.expertises.all %}
     <h5>Expertises</h5>
     {% for expertise in chercheur.expertises.all %}
     <table>
@@ -124,11 +123,14 @@
         </tr>
         {% endif %}
     </table>
-    {% if not forloop.last %}
     <hr>
-    {% endif %}
     {% endfor %}
-    {% endif %}
+    <table>
+        <tr>
+            <td class="label">Est disposé à réaliser des expertises pour l'AUF</td>
+            <td>{{ chercheur.expertises_auf|yesno:"Oui,Non" }}</td>
+        </tr>
+    </table>
 
     {% if chercheur.these %}
     <h5>Thèse ou mémoire</h5>

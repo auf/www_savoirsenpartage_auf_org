@@ -77,6 +77,11 @@ class ChercheurForm(forms.ModelForm):
 
     etablissement = forms.ChoiceField(label='Etablissement', required=False, choices=chain([('', '---------')], ETABLISSEMENT_CHOICES))
 
+    expertises_auf = forms.ChoiceField(
+        label="Êtes-vous disposé à réaliser des expertises pour l'AUF?",
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
+    )
+
     class Meta:
         model = Chercheur
         fields = ('statut', 'diplome', 'etablissement',
@@ -88,7 +93,7 @@ class ChercheurForm(forms.ModelForm):
                   'membre_association_francophone',
                   'membre_association_francophone_details',
                   'membre_reseau_institutionnel', 'membre_reseau_institutionnel_details',
-                  'membre_reseau_institutionnel_dates')
+                  'membre_reseau_institutionnel_dates', 'expertises_auf')
         
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
@@ -155,6 +160,9 @@ class ChercheurForm(forms.ModelForm):
         etablissement = self.cleaned_data['etablissement']
         if etablissement:
             return Etablissement.objects.get(id=etablissement)
+
+    def clean_expertises_auf(self):
+        return bool(int(self.cleaned_data['expertises_auf']))
 
     def clean(self):
         etablissement = self.cleaned_data['etablissement']

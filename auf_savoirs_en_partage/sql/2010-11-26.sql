@@ -63,3 +63,7 @@ UPDATE chercheurs_chercheur SET theme_recherche = '' WHERE theme_recherche = '.'
 
 ALTER TABLE `chercheurs_publication` ADD COLUMN `auteurs` varchar(255) NOT NULL AFTER id;
 ALTER TABLE `chercheurs_chercheur` ADD COLUMN `expertises_auf` bool NOT NULL;
+
+-- Assurons-nous que tous les chercheurs soient actifs
+
+UPDATE chercheurs_personne SET actif = TRUE;

@@ -24,6 +24,25 @@
                 </ul>
             </td>
         </tr>
+        {% if chercheur.these %}
+        <tr>
+            <td class="label">Thèse ou mémoire:</td>
+            <td>
+                {% if chercheur.these.url %}
+                <i><a href="{{ chercheur.these.url }}">{{ chercheur.these.titre }}</a></i>,
+                {% else %}
+                <i>{{ chercheur.these.titre }}</i>, 
+                {% endif %}
+                {{ chercheur.these.etablissement }},
+                {{ chercheur.these.annee }}{% if chercheur.these.nb_pages %},
+                {{ chercheur.these.nb_pages }} pages{% endif %}.
+            </td>
+        </tr>
+        <tr>
+            <td class="label">Directeur:</td>
+            <td>{{ chercheur.these.directeur }}</td>
+        </tr>
+        {% endif %}
     </table>
 
     <h5>Discipline, thèmes de recherche</h5>
@@ -131,29 +150,6 @@
             <td>{{ chercheur.expertises_auf|yesno:"Oui,Non" }}</td>
         </tr>
     </table>
-
-    {% if chercheur.these %}
-    <h5>Thèse ou mémoire</h5>
-    <table>
-        <tr>
-            <td class="label">Thèse ou mémoire:</td>
-            <td>
-                {% if chercheur.these.url %}
-                <i><a href="{{ chercheur.these.url }}">{{ chercheur.these.titre }}</a></i>,
-                {% else %}
-                <i>{{ chercheur.these.titre }}</i>, 
-                {% endif %}
-                {{ chercheur.these.etablissement }},
-                {{ chercheur.these.annee }}{% if chercheur.these.nb_pages %},
-                {{ chercheur.these.nb_pages }} pages{% endif %}.
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Directeur:</td>
-            <td>{{ chercheur.these.directeur }}</td>
-        </tr>
-    </table>
-    {% endif %}
 
     {% if chercheur.publications %}
     <h5>Publications</h5>

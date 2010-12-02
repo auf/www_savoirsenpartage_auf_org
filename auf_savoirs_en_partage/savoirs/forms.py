@@ -42,30 +42,37 @@ class RecordSearchForm(forms.Form):
     def get_query_set(self):
         """Retourne l'ensemble des ressources qui correspondent aux valeurs
            entrées dans le formulaire."""
-        records = Record.objects
+        records = Record.objects.validated()
         if self.is_valid():
-            q = self.cleaned_data['q']
-            if q:
-                records = records.search(q)
+            query = self.cleaned_data['q']
+            if query:
+                records = records.search(query)
             auteur = self.cleaned_data['auteur']
             if auteur:
-                records = records.add_to_query('@(creator,contributor) ' + auteur)
+                records = records.search_auteur(auteur)
             titre = self.cleaned_data['titre']
             if titre:
-                records = records.add_to_query('@title ' + titre)
+                records = records.search_titre(titre)
             sujet = self.cleaned_data['sujet']
             if sujet:
-                records = records.add_to_query('@subject ' + sujet)
+                records = records.search_sujet(sujet)
             publisher = self.cleaned_data['publisher']
             if publisher:
-                records = records.add_to_query('@publisher ' + publisher)
+                for word in publisher.split():
+                    records = records.filter(publisher__icontains=word)
             discipline = self.cleaned_data['discipline']
             if discipline:
                 records = records.filter_discipline(discipline)
             region = self.cleaned_data['region']
             if region:
                 records = records.filter_region(region)
-        return records.all()
+        return records
+
+    def get_search_regexp(self):
+        """Retourne une expression régulière compilée qui peut servir à
+           chercher les mot-clés recherchés dans un texte."""
+        if self.is_valid():
+            return build_search_regexp(self.cleaned_data['q'])
 
 class ActualiteSearchForm(forms.Form):
     """Formulaire de recherche pour les actualités."""
@@ -80,25 +87,31 @@ class ActualiteSearchForm(forms.Form):
     def get_query_set(self):
         """Retourne l'ensemble des actualités qui correspondent aux valeurs
            entrées dans le formulaire."""
-        actualites = Actualite.objects
+        actualites = Actualite.objects.filter(visible=True)
         if self.is_valid():
-            q = self.cleaned_data['q']
-            if q:
-                actualites = actualites.search(q)
+            query = self.cleaned_data['q']
+            if query:
+                actualites = actualites.search(query)
+            date_min = self.cleaned_data['date_min']
+            if date_min:
+                actualites = actualites.filter(date__gte=date_min)
+            date_max = self.cleaned_data['date_max']
+            if date_max:
+                actualites = actualites.filter(date__lte=date_max)
             discipline = self.cleaned_data['discipline']
             if discipline:
                 actualites = actualites.filter_discipline(discipline)
             region = self.cleaned_data['region']
             if region:
                 actualites = actualites.filter_region(region)
-            date_min = self.cleaned_data['date_min']
-            if date_min:
-                actualites = actualites.filter_date(min=date_min)
-            date_max = self.cleaned_data['date_max']
-            if date_max:
-                actualites = actualites.filter_date(max=date_max)
-        return actualites.all()
+        return actualites
     
+    def get_search_regexp(self):
+        """Retourne une expression régulière compilée qui peut servir à
+           chercher les mot-clés recherchés dans un texte."""
+        if self.is_valid():
+            return build_search_regexp(self.cleaned_data['q'])
+
 class EvenementSearchForm(forms.Form):
     """Formulaire de recherche pour les évènements."""
 
@@ -114,30 +127,36 @@ class EvenementSearchForm(forms.Form):
     def get_query_set(self):
         """Retourne l'ensemble des évènements qui correspondent aux valeurs
            entrées dans le formulaire."""
-        evenements = Evenement.objects
+        evenements = Evenement.objects.filter(approuve=True)
         if self.is_valid():
             query = self.cleaned_data['q']
             if query:
                 evenements = evenements.search(query)
             titre = self.cleaned_data['titre']
             if titre:
-                evenements = evenements.add_to_query('@titre ' + titre)
+                evenements = evenements.search_titre(titre)
+            type = self.cleaned_data['type']
+            if type:
+                evenements = evenements.filter(type=type)
+            date_min = self.cleaned_data['date_min']
+            if date_min:
+                evenements = evenements.filter(debut__gte=date_min)
+            date_max = self.cleaned_data['date_max']
+            if date_max:
+                evenements = evenements.filter(debut__lte=date_max)
             discipline = self.cleaned_data['discipline']
             if discipline:
                 evenements = evenements.filter_discipline(discipline)
             region = self.cleaned_data['region']
             if region:
                 evenements = evenements.filter_region(region)
-            type = self.cleaned_data['type']
-            if type:
-                evenements = evenements.filter_type(type)
-            date_min = self.cleaned_data['date_min']
-            if date_min:
-                evenements = evenements.filter_debut(min=date_min)
-            date_max = self.cleaned_data['date_max']
-            if date_max:
-                evenements = evenements.filter_debut(max=date_max)
-        return evenements.all()
+        return evenements
+
+    def get_search_regexp(self):
+        """Retourne une expression régulière compilée qui peut servir à
+           chercher les mot-clés recherchés dans un texte."""
+        if self.is_valid():
+            return build_search_regexp(self.cleaned_data['q'])
 
 ###
 

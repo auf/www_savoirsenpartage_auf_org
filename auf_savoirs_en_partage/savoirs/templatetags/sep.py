@@ -127,8 +127,3 @@ def change_discipline(path, discipline):
     if not rest.startswith('/recherche'):
         rest = '/'
     return discipline_bit + region_bit + rest
-
-@register.filter
-def apply(value, func):
-    """Applique une fonction arbitraire à la valeur filtrée."""
-    return func(value)

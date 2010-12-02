@@ -14,7 +14,7 @@ class SiteSearchForm(forms.Form):
     def get_query_set(self):
         """Retourne l'ensemble des sites qui correspondent aux valeurs
            entrées dans le formulaire."""
-        sites = Site.objects
+        sites = Site.objects.order_by("titre")
         if self.is_valid():
             q = self.cleaned_data["q"]
             if q:
@@ -27,5 +27,11 @@ class SiteSearchForm(forms.Form):
                 sites = sites.filter_region(region)
             pays = self.cleaned_data["pays"]
             if pays:
-                sites = sites.filter_pays(pays=pays)
-        return sites.all()
+                sites = sites.filter(pays=pays.pk)
+        return sites
+
+    def get_search_regexp(self):
+        """Retourne une expression régulière compilée qui peut servir à
+           chercher les mot-clés recherchés dans un texte."""
+        if self.is_valid():
+            return build_search_regexp(self.cleaned_data['q'])

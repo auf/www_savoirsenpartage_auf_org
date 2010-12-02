@@ -1,7 +1,7 @@
-{% load sep %}
+{% load search %}
 
 <div class="resultatRecherche">
-  <div><a class="le-titre" href="{% url sitotheque.views.retrieve site.id %}">{{ site.titre|apply:excerpt }}</a></div>
-  <div class="resultatResume">{{ site.description|apply:excerpt }}</div>
+  <div><a class="le-titre" href="{% url sitotheque.views.retrieve site.id %}">{{ site|highlight:search_regexp }}</a></div>
+  <div class="resultatResume">{{ site.description|excerpt:search_regexp|highlight:search_regexp }}</div>
   <div><span class="lbl">URL:</span> <a href="{{ site.url }}">{{ site.url }}</a></div>
 </div>

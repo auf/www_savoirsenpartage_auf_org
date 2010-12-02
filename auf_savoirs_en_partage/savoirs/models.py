@@ -1,29 +1,16 @@
 # -*- encoding: utf-8 -*-
-import caldav
-import datetime
-import operator
-import os
-import pytz
-import random
-import simplejson
-import time
-import uuid
-import vobject
-from backend_config import RESOURCES
+import simplejson, uuid, datetime, caldav, vobject, uuid, random, operator, pytz, os
 from babel.dates import get_timezone_name
-from caldav.lib import error
-from datamaster_modeles.models import Thematique, Pays, Region
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
-from django.utils.encoding import smart_unicode
-from djangosphinx.models import SphinxQuerySet
+from auf_savoirs_en_partage.backend_config import RESOURCES
 from savoirs.globals import META
-from savoirs.lib.calendrier import combine
 from settings import CALENDRIER_URL, SITE_ROOT_URL
-
-# Fonctionnalités communes à tous les query sets
+from datamaster_modeles.models import Thematique, Pays, Region
+from lib.calendrier import combine
+from caldav.lib import error
 
 class RandomQuerySetMixin(object):
     """Mixin pour les modèles.
@@ -38,59 +25,6 @@ class RandomQuerySetMixin(object):
         positions = random.sample(xrange(count), min(n, count))
         return [self[p] for p in positions]
 
-class SEPQuerySet(models.query.QuerySet, RandomQuerySetMixin):
-    pass
-
-class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
-    """Fonctionnalités communes aux query sets de Sphinx."""
-
-    def __init__(self, model=None, index=None, weights=None):
-        SphinxQuerySet.__init__(self, model=model, index=index,
-                                mode='SPH_MATCH_EXTENDED2',
-                                rankmode='SPH_RANK_PROXIMITY_BM25',
-                                weights=weights)
-
-    def add_to_query(self, query):
-        """Ajoute une partie à la requête texte."""
-        new_query = smart_unicode(self._query) + ' ' + query if self._query else query
-        return self.query(new_query)
-
-    def search(self, text):
-        """Recherche ``text`` dans tous les champs."""
-        return self.add_to_query('@* ' + text)
-
-    def filter_discipline(self, discipline):
-        """Par défaut, le filtre par discipline cherche le nom de la
-           discipline dans tous les champs."""
-        return self.search('"%s"' % discipline.nom)
-
-    def filter_region(self, region):
-        """Par défaut, le filtre par région cherche le nom de la région dans
-           tous les champs."""
-        return self.search('"%s"' % region.nom)
-
-class SEPManager(models.Manager):
-    """Lorsque les méthodes ``search``, ``filter_region`` et
-       ``filter_discipline`` sont appelées sur ce manager, le query set
-       Sphinx est créé, sinon, c'est le query set Django qui est créé."""
-
-    def query(self, query):
-        return self.get_sphinx_query_set().query(query)
-
-    def add_to_query(self, query):
-        return self.get_sphinx_query_set().add_to_query(query)
-
-    def search(self, text):
-        return self.get_sphinx_query_set().search(text)
-
-    def filter_region(self, region):
-        return self.get_sphinx_query_set().filter_region(region)
-
-    def filter_discipline(self, discipline):
-        return self.get_sphinx_query_set().filter_discipline(discipline)
-
-# Disciplines
-
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')
     nom = models.CharField(max_length=765, db_column='nom_discipline')
@@ -102,8 +36,6 @@ class Discipline(models.Model):
         db_table = u'discipline'
         ordering = ["nom",]
 
-# Actualités
-
 class SourceActualite(models.Model):
     nom = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
@@ -111,40 +43,56 @@ class SourceActualite(models.Model):
     def __unicode__(self,):
         return u"%s" % self.nom
 
-class ActualiteQuerySet(SEPQuerySet):
-
-    def filter_date(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(date__gte=min)
-        if max:
-            qs = qs.filter(date__lte=max)
-        return qs
-
-class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
-
-    def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_actualites',
-                                   weights=dict(titre=3))
-
-    def filter_date(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(date__gte=min.toordinal()+365)
-        if max:
-            qs = qs.filter(date__lte=max.toordinal()+365)
-        return qs
-
-class ActualiteManager(SEPManager):
+class ActualiteManager(models.Manager):
     
     def get_query_set(self):
-        return ActualiteQuerySet(self.model).filter(visible=True)
+        return ActualiteQuerySet(self.model)
 
-    def get_sphinx_query_set(self):
-        return ActualiteSphinxQuerySet(self.model).order_by('-date')
+    def search(self, text):
+        return self.get_query_set().search(text)
 
-    def filter_date(self, min=None, max=None):
-        return self.get_query_set().filter_date(min=min, max=max)
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
+class ActualiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
+
+    def search(self, text):
+        q = None
+        for word in text.split():
+            part = (Q(titre__icontains=word) | Q(texte__icontains=word) |
+                    Q(regions__nom__icontains=word) | Q(disciplines__nom__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        return self.filter(q).distinct() if q is not None else self
+
+    def filter_discipline(self, discipline):
+        """Ne conserve que les actualités dans la discipline donnée.
+           
+        Si ``disicipline`` est None, ce filtre n'a aucun effet."""
+        if discipline is None:
+            return self
+        if not isinstance(discipline, Discipline):
+            discipline = Discipline.objects.get(pk=discipline)
+        return self.filter(Q(disciplines=discipline) |
+                           Q(titre__icontains=discipline.nom) |
+                           Q(texte__icontains=discipline.nom)).distinct()
+
+    def filter_region(self, region):
+        """Ne conserve que les actualités dans la région donnée.
+           
+        Si ``region`` est None, ce filtre n'a aucun effet."""
+        if region is None:
+            return self
+        if not isinstance(region, Region):
+            region = Region.objects.get(pk=region)
+        return self.filter(Q(regions=region) |
+                           Q(titre__icontains=region.nom) |
+                           Q(texte__icontains=region.nom)).distinct()
 
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
@@ -159,7 +107,6 @@ class Actualite(models.Model):
     regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='régions')
 
     objects = ActualiteManager()
-    all_objects = models.Manager()
 
     class Meta:
         db_table = u'actualite'
@@ -174,51 +121,73 @@ class Actualite(models.Model):
     def assigner_regions(self, regions):
         self.regions.add(*regions)
 
-# Agenda
-
-class EvenementQuerySet(SEPQuerySet):
-
-    def filter_type(self, type):
-        return self.filter(type=type)
-
-    def filter_debut(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(debut__gte=min)
-        if max:
-            qs = qs.filter(debut__lt=max+datetime.timedelta(days=1))
-        return qs
-
-class EvenementSphinxQuerySet(SEPSphinxQuerySet):
-
-    def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_evenements',
-                                   weights=dict(titre=3))
-
-    def filter_type(self, type):
-        return self.add_to_query('@type "%s"' % type)
-    
-    def filter_debut(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(debut__gte=min.toordinal()+365)
-        if max:
-            qs = qs.filter(debut__lte=max.toordinal()+365)
-        return qs
-
-class EvenementManager(SEPManager):
+class EvenementManager(models.Manager):
 
     def get_query_set(self):
-        return EvenementQuerySet(self.model).filter(approuve=True)
+        return EvenementQuerySet(self.model)
 
-    def get_sphinx_query_set(self):
-        return EvenementSphinxQuerySet(self.model).order_by('-debut')
+    def search(self, text):
+        return self.get_query_set().search(text)
 
-    def filter_type(self, type):
-        return self.get_query_set().filter_type(type)
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
 
-    def filter_debut(self, min=None, max=None):
-        return self.get_query_set().filter_debut(min=min, max=max)
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
+class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
+
+    def search(self, text):
+        q = None
+        for word in text.split():
+            part = (Q(titre__icontains=word) | 
+                    Q(mots_cles__icontains=word) |
+                    Q(discipline__nom__icontains=word) | 
+                    Q(discipline_secondaire__nom__icontains=word) |
+                    Q(type__icontains=word) |
+                    Q(lieu__icontains=word) |
+                    Q(description__icontains=word) |
+                    Q(contact__icontains=word) |
+                    Q(regions__nom__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        return self.filter(q).distinct() if q is not None else self
+
+    def search_titre(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(titre__icontains=word)
+        return qs
+
+    def filter_discipline(self, discipline):
+        """Ne conserve que les évènements dans la discipline donnée.
+           
+        Si ``disicipline`` est None, ce filtre n'a aucun effet."""
+        if discipline is None:
+            return self
+        if not isinstance(discipline, Discipline):
+            discipline = Discipline.objects.get(pk=discipline)
+        return self.filter(Q(discipline=discipline) |
+                           Q(discipline_secondaire=discipline) |
+                           Q(titre__icontains=discipline.nom) |
+                           Q(mots_cles__icontains=discipline.nom) |
+                           Q(description__icontains=discipline.nom))
+
+    def filter_region(self, region):
+        """Ne conserve que les évènements dans la région donnée.
+           
+        Si ``region`` est None, ce filtre n'a aucun effet."""
+        if region is None:
+            return self
+        if not isinstance(region, Region):
+            region = Region.objects.get(pk=region)
+        return self.filter(Q(regions=region) |
+                           Q(titre__icontains=region.nom) |
+                           Q(mots_cles__icontains=region.nom) |
+                           Q(description__icontains=region.nom) |
+                           Q(lieu__icontains=region.nom)).distinct()
 
 def build_time_zone_choices():
     fr_names = set()
@@ -243,7 +212,7 @@ class Evenement(models.Model):
                     (u'Conférence', u'Conférence'),
                     (u'Appel à contribution', u'Appel à contribution'),
                     (u'Journée d\'étude', u'Journée d\'étude'),
-                    (u'None', u'Autre'))
+                    (None, u'Autre'))
     TIME_ZONE_CHOICES = build_time_zone_choices()
 
     uid = models.CharField(max_length=255, default=str(uuid.uuid1()))
@@ -267,7 +236,6 @@ class Evenement(models.Model):
     regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions')
 
     objects = EvenementManager()
-    all_objects = models.Manager()
 
     class Meta:
         ordering = ['-debut']
@@ -382,14 +350,15 @@ class Evenement(models.Model):
             self.discipline = disciplines[0]
             self.discipline_secondaire = disciplines[1]
 
-def delete_vevent(sender, instance, *args, **kwargs):
-    # Surcharge du comportement de suppression
-    # La méthode de connexion par signals est préférable à surcharger la méthode delete()
-    # car dans le cas de la suppression par lots, cell-ci n'est pas invoquée
-    instance.delete_vevent()
-pre_delete.connect(delete_vevent, sender=Evenement) 
 
-# Ressources
+# Surcharge du comportement de suppression
+# La méthode de connexion par signals est préférable à surcharger la méthode delete()
+# car dans le cas de la suppression par lots, cell-ci n'est pas invoquée
+def delete_vevent(sender, instance, *args, **kwargs):
+    instance.delete_vevent()
+
+pre_delete.connect(delete_vevent, sender = Evenement) 
+
 
 class ListSet(models.Model):
     spec = models.CharField(primary_key = True, max_length = 255)
@@ -400,24 +369,141 @@ class ListSet(models.Model):
     def __unicode__(self,):
         return self.name
 
-class RecordSphinxQuerySet(SEPSphinxQuerySet):
-
-    def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_ressources',
-                                   weights=dict(title=3))
-
-class RecordManager(SEPManager):
-
+class RecordManager(models.Manager):
+    
     def get_query_set(self):
+        return RecordQuerySet(self.model)
+
+    def search(self, text):
+        return self.get_query_set().search(text)
+
+    def validated(self):
+        return self.get_query_set().validated()
+
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
+class RecordQuerySet(models.query.QuerySet, RandomQuerySetMixin):
+
+    def search(self, text):
+        qs = self
+        words = text.split()
+
+        # Ne garder que les ressources qui contiennent tous les mots
+        # demandés.
+        q = None
+        for word in words:
+            matching_pays = list(Pays.objects.filter(Q(nom__icontains=word) | Q(region__nom__icontains=word)).values_list('pk', flat=True))
+            part = (Q(title__icontains=word) | Q(description__icontains=word) |
+                    Q(creator__icontains=word) | Q(contributor__icontains=word) |
+                    Q(subject__icontains=word) | Q(disciplines__nom__icontains=word) |
+                    Q(regions__nom__icontains=word) | Q(pays__in=matching_pays) |
+                    Q(publisher__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        if q is not None:
+            qs = qs.filter(q).distinct()
+
+        # On donne un point pour chaque mot présent dans le titre.
+        if words:
+            score_expr = ' + '.join(['(title LIKE %s)'] * len(words))
+            score_params = ['%' + word + '%' for word in words]
+            qs = qs.extra(
+                select={'score': score_expr},
+                select_params=score_params
+            ).order_by('-score')
+        return qs
+
+    def search_auteur(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(Q(creator__icontains=word) | Q(contributor__icontains=word))
+        return qs
+
+    def search_sujet(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(subject__icontains=word)
+        return qs
+
+    def search_titre(self, text):
+        qs = self
+        for word in text.split():
+            qs = qs.filter(title__icontains=word)
+        return qs
+            
+    def filter_discipline(self, discipline):
+        """Ne conserve que les ressources dans la discipline donnée.
+           
+        Si ``disicipline`` est None, ce filtre n'a aucun effet."""
+        if discipline is None:
+            return self
+        if not isinstance(discipline, Discipline):
+            discipline = Discipline.objects.get(pk=discipline)
+        return self.filter(Q(disciplines=discipline) |
+                           Q(title__icontains=discipline.nom) |
+                           Q(description__icontains=discipline.nom) |
+                           Q(subject__icontains=discipline.nom)).distinct()
+
+    def filter_region(self, region):
+        """Ne conserve que les ressources dans la région donnée.
+           
+        Si ``region`` est None, ce filtre n'a aucun effet."""
+        if region is None:
+            return self
+        if not isinstance(region, Region):
+            region = Region.objects.get(pk=region)
+        return self.filter(Q(pays__region=region) |
+                           Q(regions=region) |
+                           Q(title__icontains=region.nom) |
+                           Q(description__icontains=region.nom) |
+                           Q(subject__icontains=region.nom)).distinct()
+
+    def validated(self):
         """Ne garder que les ressources validées et qui sont soit dans aucun
            listset ou au moins dans un listset validé."""
-        qs = SEPQuerySet(self.model)
-        qs = qs.filter(validated=True)
+        qs = self.filter(validated=True)
         qs = qs.filter(Q(listsets__isnull=True) | Q(listsets__validated=True))
         return qs.distinct()
 
-    def get_sphinx_query_set(self):
-        return RecordSphinxQuerySet(self.model)
+    def filter(self, *args, **kwargs):
+        """Gère des filtres supplémentaires pour l'admin.
+           
+        C'est la seule façon que j'ai trouvée de contourner les mécanismes
+        de recherche de l'admin."""
+        search = kwargs.pop('admin_search', None)
+        search_titre = kwargs.pop('admin_search_titre', None)
+        search_sujet = kwargs.pop('admin_search_sujet', None)
+        search_description = kwargs.pop('admin_search_description', None)
+        search_auteur = kwargs.pop('admin_search_auteur', None)
+
+        if search:
+            qs = self
+            search_all = not (search_titre or search_description or search_sujet or search_auteur)
+            fields = []
+            if search_titre or search_all:
+                fields += ['title', 'alt_title']
+            if search_description or search_all:
+                fields += ['description', 'abstract']
+            if search_sujet or search_all:
+                fields += ['subject']
+            if search_auteur or search_all:
+                fields += ['creator', 'contributor']
+
+            for bit in search.split():
+                or_queries = [Q(**{field + '__icontains': bit}) for field in fields]
+                qs = qs.filter(reduce(operator.or_, or_queries))
+
+            if args or kwargs:
+                qs = super(RecordQuerySet, qs).filter(*args, **kwargs)
+            return qs
+        else:
+            return super(RecordQuerySet, self).filter(*args, **kwargs)
 
 class Record(models.Model):
     
@@ -459,9 +545,8 @@ class Record(models.Model):
     pays = models.ManyToManyField(Pays, blank=True)
     regions = models.ManyToManyField(Region, blank=True, verbose_name='régions')
 
-    # Managers
+    # Manager
     objects = RecordManager()
-    all_objects = models.Manager()
 
     class Meta:
         verbose_name = 'ressource'

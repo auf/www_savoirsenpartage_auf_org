@@ -12,9 +12,6 @@ class ChercheurAdmin(admin.ModelAdmin):
     actions = ('remove_from_group',)
     search_fields = ('personne__nom', 'personne__prenom')
 
-    def queryset(self, request):
-        return Chercheur.all_objects.get_query_set()
-
     def remove_from_group(self, request, queryset):
         groupe_id = request.GET.get('groupes__id__exact')
         chercheur_ids = queryset.values_list('id', flat=True)

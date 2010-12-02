@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
-from datamaster_modeles.models import *
 from django.db import models
 from django.db.models import Q
-from djangosphinx.models import SphinxSearch
-from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet
+from datamaster_modeles.models import *
+from savoirs.models import Discipline, RandomQuerySetMixin
 
 TYPE_SITE_CHOICES = (
     ('RV', 'Revue en ligne'), 
@@ -18,29 +17,66 @@ TYPE_SITE_CHOICES = (
     ('AU', 'Autre type de site'),
     )
 
-class SiteQuerySet(SEPQuerySet):
-
-    def filter_pays(self, pays):
-        return self.filter(pays=pays)
-
-class SiteSphinxQuerySet(SEPSphinxQuerySet):
-
-    def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_sites', weights=dict(titre=3))
-
-    def filter_pays(self, pays):
-        return self.filter(pays_ids=pays.id)
-
-class SiteManager(SEPManager):
+class SiteManager(models.Manager):
 
     def get_query_set(self):
         return SiteQuerySet(self.model)
 
-    def get_sphinx_query_set(self):
-        return SiteSphinxQuerySet(self.model)
+    def search(self, text):
+        return self.get_query_set().search(text)
 
-    def filter_pays(self, pays):
-        return self.get_query_set().filter_pays(pays)
+    def filter_region(self, region):
+        return self.get_query_set().filter_region(region)
+
+    def filter_discipline(self, discipline):
+        return self.get_query_set().filter_discipline(discipline)
+
+class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
+
+    def search(self, text):
+        qs = self
+        q = None
+        for word in text.split():
+            part = (Q(titre__icontains=word) |
+                    Q(description__icontains=word) |
+                    Q(editeur__icontains=word) |
+                    Q(auteur__icontains=word) |
+                    Q(mots_cles__icontains=word) |
+                    Q(discipline__nom__icontains=word) |
+                    Q(pays__nom__icontains=word))
+            if q is None:
+                q = part
+            else:
+                q = q & part
+        if q is not None:
+            qs = qs.filter(q).distinct()
+        return qs
+
+    def filter_discipline(self, discipline):
+        """Ne conserve que les sites dans la discipline donnée.
+           
+        Si ``disicipline`` est None, ce filtre n'a aucun effet."""
+        if discipline is None:
+            return self
+        if not isinstance(discipline, Discipline):
+            discipline = Discipline.objects.get(pk=discipline)
+        return self.filter(Q(discipline=discipline) |
+                           Q(titre__icontains=discipline.nom) |
+                           Q(description__icontains=discipline.nom) |
+                           Q(mots_cles__icontains=discipline.nom))
+
+    def filter_region(self, region):
+        """Ne conserve que les sites dans la région donnée.
+           
+        Si ``region`` est None, ce filtre n'a aucun effet."""
+        if region is None:
+            return self
+        if not isinstance(region, Region):
+            region = Region.objects.get(pk=region)
+        return self.filter(Q(pays__region=region) |
+                           Q(titre__icontains=region.nom) |
+                           Q(description__icontains=region.nom) |
+                           Q(mots_cles__icontains=region.nom)).distinct()
 
 class Site(models.Model):
     """Fiche d'info d'un site web"""
@@ -70,7 +106,6 @@ class Site(models.Model):
 
     # Manager
     objects = SiteManager()
-    all_objects = models.Manager()
     
     def __unicode__(self):
         return "%s" % (self.titre)

@@ -3,41 +3,39 @@
 {% block contenu %}
 <h4>{{ site }}</h4>
 
-<div class="contenu-wrapper">
-    <a href="{{site.url}}">{{site.url}}</a>
-    <br />
-    <p>{{site.description}}</p>
+<a href="{{site.url}}">{{site.url}}</a>
+<br />
+<p>{{site.description}}</p>
 
-    <table>
-        <tr>
-            <td><strong>Type:</strong></td>
-            <td>{{site.type_display}}</td>
-        </tr>
-        <tr>
-            <td><strong>Éditeur:</strong></td>
-            <td>{{site.editeur}}</td>
-        </tr>
-        <tr>
-            <td><strong>Auteur:</strong></td>
-            <td>{{site.auteur}}</td>
-        </tr>
-        <tr>
-            <td><strong>Mots-clés:</strong></td>
-            <td>{{site.mots_cles}}</td>
-        </tr>
-        <tr>
-            <td><strong>Date de publication:</strong></td>
-            <td>{{site.date_publication|default:"-"}}</td>
-        </tr>
-        <tr>
-            <td><strong>Disciplines:</strong></td>
-            <td>{{ site.discipline.all|join:", " }}</td>
-        </tr>
-        <tr>
-            <td><strong>Thématiques:</strong></td>
-            <td>{{ site.thematique.all|join:", " }}</td>
-        </tr>
-    </table>
-</div>
+<table>
+    <tr>
+        <td><strong>Type:</strong></td>
+        <td>{{site.type_display}}</td>
+    </tr>
+    <tr>
+        <td><strong>Éditeur:</strong></td>
+        <td>{{site.editeur}}</td>
+    </tr>
+    <tr>
+        <td><strong>Auteur:</strong></td>
+        <td>{{site.auteur}}</td>
+    </tr>
+    <tr>
+        <td><strong>Mots-clés:</strong></td>
+        <td>{{site.mots_cles}}</td>
+    </tr>
+    <tr>
+        <td><strong>Date de publication:</strong></td>
+        <td>{{site.date_publication|default:"-"}}</td>
+    </tr>
+    <tr>
+        <td><strong>Disciplines:</strong></td>
+        <td>{{ site.discipline.all|join:", " }}</td>
+    </tr>
+    <tr>
+        <td><strong>Thématiques:</strong></td>
+        <td>{{ site.thematique.all|join:", " }}</td>
+    </tr>
+</table>
 
 {% endblock %}

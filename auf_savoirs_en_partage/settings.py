@@ -41,6 +41,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'djangoflash.middleware.FlashMiddleware',
     'pagination.middleware.PaginationMiddleware',
     'django_sorting.middleware.SortingMiddleware',
     'django.middleware.doc.XViewMiddleware',
@@ -77,6 +78,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "context_processors.user_chercheur",
     "context_processors.discipline_region",
+    "djangoflash.context_processors.flash"
 )
 
 TEMPLATE_LOADERS = (

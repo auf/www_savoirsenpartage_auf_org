@@ -15,7 +15,7 @@ class CascadeBackend(ModelBackend):
         # Cherche les comptes roa+locaux
         remoteUser = localUser = None
         try:
-            remoteUser = RemoteUser.objects.get(courriel=email)
+            remoteUser = RemoteUser.objects.get(courriel=email, actif=True)
             if settings.AUTH_PASSWORD_REQUIRED and not remoteUser.check_password(password):
                 remoteUser = None
         except:

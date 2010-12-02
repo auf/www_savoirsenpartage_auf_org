@@ -5,11 +5,11 @@
 {% block contenu %}
 {% autopaginate chercheurs 20 %}
 
-<h4>Répertoire des chercheurs</h4>
-
 <ul class="actions">
     {% include "chercheurs/actions.html" %}
 </ul>
+
+<h4>Répertoire des chercheurs</h4>
 
 <div class="texte">
     <p>
@@ -37,7 +37,7 @@
 
 <h5>Recherche</h5>
 
-<form method="get" action="" class="contenu-wrapper">
+<form method="get" action="">
     <table id="repertoire_recherche">
         {% form_field search_form.q %}
         {% form_field search_form.nom %}
@@ -55,22 +55,20 @@
 <h5>Résultats : {{nb_chercheurs}} chercheurs correspondant à votre recherche</h5>
 
 <div class="centre">{% paginate %}</div>
-<div class="contenu-wrapper">
-    <table id="repertoire">
-        <tr>
-            <th>Nom</th>
-            <th>Établissement</th>
-            <th>Localisation</th>
-        </tr>
+<table id="repertoire">
+    <tr>
+        <th>Nom</th>
+        <th>Établissement</th>
+        <th>Localisation</th>
+    </tr>
     {% for chercheur in chercheurs %}
-        <tr class="{% cycle 'odd' 'notodd' %}">
-            <td><a href="{% url chercheurs.views.retrieve id=chercheur.id %}">{{ chercheur }}</a></td>
-            <td>{% firstof chercheur.etablissement chercheur.etablissement_autre_nom %}</td>
-            <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays %}</td>
-        </tr>
+    <tr class="{% cycle 'odd' 'notodd' %}">
+        <td><a href="{% url chercheurs.views.retrieve id=chercheur.id %}">{{ chercheur }}</a></td>
+        <td>{% firstof chercheur.etablissement chercheur.etablissement_autre_nom %}</td>
+        <td>{% firstof chercheur.etablissement.pays chercheur.etablissement_autre_pays %}</td>
+    </tr>
     {% endfor %}
-    </table>
-</div>
+</table>
 <div class="centre">{% paginate %}</div>
 
 {% endblock %}

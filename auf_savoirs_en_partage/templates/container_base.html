@@ -104,14 +104,16 @@
                     </div>
                 </div>
                 
-                <div id="contenu" class="clearfix">
-                    <img src="{{ MEDIA_URL }}img/contenu-bkg-top.png" width="744" height="10" alt="top" align="top" class="top" />
-                    <div class="clearfix">
+                <div id="boite-principale">
+                    <img src="{{ MEDIA_URL }}img/contenu-bkg-top.png" width="744" height="10" class="top-border" />
+                    {% if flash.message %}
+                    <div id="flash-message">{{ flash.message }}</div>
+                    {% endif %}
+                    <div id="contenu" class="clearfix">
                         {% block contenu %}
                         {% endblock %}
                     </div>
-                    <!-- Fin block -->
-                    <img src="{{ MEDIA_URL }}img/contenu-bkg-bottom.png" width="744" height="10" alt="bottom" align="bottom" class="bottom" />
+                    <img src="{{ MEDIA_URL }}img/contenu-bkg-bottom.png" width="744" height="10" class="bottom-border" />
                 </div>
 
                 <div class="clear"></div>	

@@ -288,7 +288,7 @@ class RepertoireSearchForm (forms.Form):
     region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
                                     help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
     nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud",
-                                 help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays les plus développés, par Sud les pays en voie de développement.")
+                                 help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays développés, par Sud les pays en développement (pays les moins avancés, pays émergents et pays à économies en transition)")
 
     def __init__(self, data=None, region=None):
         super(RepertoireSearchForm, self).__init__(data)

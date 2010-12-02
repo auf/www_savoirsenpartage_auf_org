@@ -66,7 +66,7 @@ class RecordSearchForm(forms.Form):
             region = self.cleaned_data['region']
             if region:
                 records = records.filter_region(region)
-            if not q:
+            if not query:
                 """Montrer les résultats les plus récents si on n'a pas fait
                    une recherche par mots-clés."""
                 records = records.order_by('-id')

@@ -79,11 +79,8 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
                     Q(etablissement_autre_pays__in=matching_pays) |
                     Q(discipline__in=matching_disciplines) |
                     Q(groupe_recherche__icontains=word) |
-                    Q(publication1__in=matching_publications) |
-                    Q(publication2__in=matching_publications) |
-                    Q(publication3__in=matching_publications) |
-                    Q(publication4__in=matching_publications) |
-                    Q(these__in=matching_publications) |
+                    Q(publications__in=matching_publications) |
+                    Q(these__titre__icontains=word) |
                     Q(groupes__in=matching_groupes) |
                     Q(expertises__nom__icontains=word) |
                     Q(mots_cles__icontains=word) |
@@ -117,10 +114,7 @@ class ChercheurQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         return self.filter(Q(discipline=discipline) |
                            Q(theme_recherche__icontains=discipline.nom) |
                            Q(groupe_recherche__icontains=discipline.nom) |
-                           Q(publication1__titre__icontains=discipline.nom) |
-                           Q(publication2__titre__icontains=discipline.nom) |
-                           Q(publication3__titre__icontains=discipline.nom) |
-                           Q(publication4__titre__icontains=discipline.nom) |
+                           Q(publications__titre__icontains=discipline.nom) |
                            Q(these__titre__icontains=discipline.nom) |
                            Q(groupes__nom__icontains=discipline.nom) |
                            Q(expertises__nom__icontains=discipline.nom) |

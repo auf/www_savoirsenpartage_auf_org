@@ -47,7 +47,7 @@ class Utilisateur(Personne):
 class ChercheurManager(models.Manager):
 
     def get_query_set(self):
-        return ChercheurQuerySet(self.model)
+        return ChercheurQuerySet(self.model).filter(personne__actif=True)
 
     def search(self, text):
         return self.get_query_set().search(text)
@@ -192,6 +192,7 @@ class Chercheur(models.Model):
     
     # Manager
     objects = ChercheurManager()
+    all_objects = models.Manager()
 
     def __unicode__(self):
         return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
@@ -239,7 +240,7 @@ class Publication(models.Model):
     actif = models.BooleanField(editable=False)
     
     def __unicode__(self):
-        return self.titre
+        return self.titre or '(Aucun)'
         
 class These(models.Model):
     chercheur = models.OneToOneField(Chercheur, primary_key=True)

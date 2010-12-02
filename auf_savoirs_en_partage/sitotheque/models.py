@@ -20,7 +20,7 @@ TYPE_SITE_CHOICES = (
 class SiteManager(models.Manager):
 
     def get_query_set(self):
-        return SiteQuerySet(self.model)
+        return SiteQuerySet(self.model).filter(actif=True)
 
     def search(self, text):
         return self.get_query_set().search(text)
@@ -106,6 +106,7 @@ class Site(models.Model):
 
     # Manager
     objects = SiteManager()
+    all_objects = models.Manager()
     
     def __unicode__(self):
         return "%s" % (self.titre)

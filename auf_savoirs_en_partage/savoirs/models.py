@@ -69,7 +69,7 @@ class SourceActualite(models.Model):
 class ActualiteManager(models.Manager):
     
     def get_query_set(self):
-        return ActualiteQuerySet(self.model)
+        return ActualiteQuerySet(self.model).filter(visible=True)
 
     def search(self, text):
         return self.get_query_set().search(text)
@@ -130,6 +130,7 @@ class Actualite(models.Model):
     regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='régions')
 
     objects = ActualiteManager()
+    all_objects = models.Manager()
 
     class Meta:
         db_table = u'actualite'
@@ -147,7 +148,7 @@ class Actualite(models.Model):
 class EvenementManager(models.Manager):
 
     def get_query_set(self):
-        return EvenementQuerySet(self.model)
+        return EvenementQuerySet(self.model).filter(approuve=True)
 
     def search(self, text):
         return self.get_query_set().search(text)
@@ -259,6 +260,7 @@ class Evenement(models.Model):
     regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions')
 
     objects = EvenementManager()
+    all_objects = models.Manager()
 
     class Meta:
         ordering = ['-debut']
@@ -395,7 +397,7 @@ class ListSet(models.Model):
 class RecordManager(models.Manager):
     
     def get_query_set(self):
-        return RecordQuerySet(self.model)
+        return RecordQuerySet(self.model).filter(validated=True)
 
     def search(self, text):
         return self.get_query_set().search(text)
@@ -570,6 +572,7 @@ class Record(models.Model):
 
     # Manager
     objects = RecordManager()
+    all_objects = models.Manager()
 
     class Meta:
         verbose_name = 'ressource'

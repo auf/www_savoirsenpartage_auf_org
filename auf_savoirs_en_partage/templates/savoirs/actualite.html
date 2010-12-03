@@ -1,0 +1,11 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h4>{{ actualite.titre }}</h4>
+<p>{{ actualite.date|date:"d F Y" }}</p>
+<p>{{ actualite.texte }}</p>
+<p><span class="lbl">Source:</span> {{ actualite.source }}<br>
+   <span class="lbl">Disciplines:</span> {{ actualite.disciplines.all|join:", " }}<br>
+   <span class="lbl">Régions:</span> {{ actualite.regions.all|join:", " }}</p>
+<a href="{{ actualite.url }}">Lire la suite...</a>
+{% endblock %}

@@ -159,6 +159,12 @@ def actualite_index(request):
              search_regexp=search_regexp, nb_resultats=actualites.count()),
         context_instance = RequestContext(request))
 
+def actualite(request, id):
+    actualite = get_object_or_404(Actualite, pk=id)
+    return render_to_response("savoirs/actualite.html",
+                              dict(actualite=actualite),
+                              context_instance=RequestContext(request))
+
 # agenda
 def evenement_index(request):
     search_form = EvenementSearchForm(request.GET)

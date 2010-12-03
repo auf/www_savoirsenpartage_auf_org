@@ -49,6 +49,7 @@ urlpatterns = sep_patterns + patterns(
 
     # actualités
     (r'^actualites/$', 'savoirs.views.actualite_index'),
+    (r'^actualites/(?P<id>\d+)/$', 'savoirs.views.actualite'),
 
     # sites
     (r'^sites/$', 'sitotheque.views.index'),

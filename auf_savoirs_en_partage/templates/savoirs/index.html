@@ -33,7 +33,7 @@
         {% for actualite in actualites %}
             <li>
             <span class="la-date">{{ actualite.date|date:"d F Y" }}</span>
-            <a href="{{ actualite.url }}" class="le-titre">{{ actualite.titre|truncatewords:20 }}</a>
+            <a href="{% url savoirs.views.actualite actualite.id %}" class="le-titre">{{ actualite.titre|truncatewords:20 }}</a>
             {% if actualite.source %}
             <span class="la-date">source: {{ actualite.source.nom }}</span>
             {% endif %}

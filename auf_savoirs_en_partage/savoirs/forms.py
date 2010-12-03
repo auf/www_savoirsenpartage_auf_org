@@ -5,6 +5,7 @@ from django import db
 from django.db.models import Q
 from django.db import models
 from django.contrib.admin import widgets
+from django.utils.safestring import mark_safe
 from datamaster_modeles.models import Thematique, Pays, Region
 from models import Evenement, Discipline, Record, Actualite
 from savoirs.lib.recherche import build_search_regexp
@@ -24,6 +25,26 @@ class SEPDateField(forms.DateField):
         format = '%d/%m/%Y'
         self.widget = forms.DateInput(attrs={'class': 'date'}, format=format)
         self.input_formats = [format,]
+
+class SEPSplitDateTimeWidget(forms.MultiWidget):
+    
+    def __init__(self):
+        self.date_format = '%d/%m/%Y'
+        self.time_format = '%H/%M'
+        widgets = (forms.DateInput(attrs={'class': 'date'}, format=self.date_format),
+                   forms.TimeInput(attrs={'class': 'time'}, format=self.time_format))
+        super(SEPSplitDateTimeWidget, self).__init__(widgets)
+
+    def decompress(self, value):
+        if value:
+            return [value.date(), value.time().replace(microsecond=0)]
+        return [None, None]
+
+    def format_output(self, rendered_widgets):
+        return mark_safe(u'Date: %s Heure: %s' % (rendered_widgets[0], rendered_widgets[1]))
+
+class SEPDateTimeField(forms.DateTimeField):
+    widget = SEPSplitDateTimeWidget
 
 # Formulaires de recherche
 
@@ -165,19 +186,9 @@ class EvenementSearchForm(forms.Form):
 
 ###
 
-class FrontEndSplitDateTime(widgets.AdminSplitDateTime):
-    class Media:
-        extend=False
-        js = ("/jsi18n/",
-              settings.ADMIN_MEDIA_PREFIX + "js/core.js",
-              settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
-              settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js",
-              'js/calendrier.js', )
-        css = {'all' : ('css/calendrier.css', )}
-
 class EvenementForm(EvenementAdminForm):
-    debut = forms.DateTimeField(widget=FrontEndSplitDateTime)
-    fin = forms.DateTimeField(widget=FrontEndSplitDateTime)
+    debut = SEPDateTimeField()
+    fin = SEPDateTimeField()
 
     class Meta:
         model = Evenement

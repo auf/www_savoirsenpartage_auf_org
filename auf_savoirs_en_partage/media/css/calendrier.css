@@ -1,7 +1,0 @@
-.clockbox, .calendarbox {border: 1px solid #CDCDCD; background-color: #EEEEEE; padding:6px 12px;}
-.calendarbox th {padding:0}
-.clockbox, .calendarbox a {text-decoration: none;}
-.calendarnav-previous {float: left;}
-.calendarnav-next {float: right;}
-.vDateField {margin-left: 8px;}
-.vDateField, .vTimeField {width: 100px !important;}

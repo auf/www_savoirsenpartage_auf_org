@@ -7,10 +7,10 @@
         <title>Savoirs en partage - Agence universitaire de la Francophonie</title>
         <link rel="icon" type="image/png" href="{{ MEDIA_URL }}img/favicon.ico" />
         {% compress js %}
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/jquery.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/jquery-ui.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/jquery.ui.datepicker-fr.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/tabber.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.timepicker.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/pagination.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/sep.js"></script>
         {% endcompress %}
@@ -18,8 +18,8 @@
 
         {% compress css %}
         <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
-        <link href="{{ MEDIA_URL }}css/tabber.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="{{ MEDIA_URL }}js/jquery/css/smoothness/jquery-ui-1.8rc3.custom.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery-ui/jquery-ui.css" type="text/css" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.timepicker.css" />
         {% endcompress %}
 
         <!--[if lt IE 7]>

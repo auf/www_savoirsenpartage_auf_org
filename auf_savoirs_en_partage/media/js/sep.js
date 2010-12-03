@@ -14,7 +14,17 @@
 
         // Activer le datepicker sur les input de classe "date"
         $.datepicker.setDefaults($.datepicker.regional['fr']);
-        $('input:text.date').datepicker();
+        $('input:text.date').datepicker({
+            autoSize: true,
+            dateFormat: 'dd/mm/yy',
+            showAnim: 'fadeIn',
+            onSelect: function(dateText) {
+                $('input:text.date').datepicker('option', 'defaultDate', dateText);
+            }
+        });
+        $('input:text.time').timepicker({
+            timeFormat: 'HH:mm',
+        });
 
         // S'assurer qu'on tient compte de ce qui se trouve dans le champ de
         // recherche par mots-clés lorsqu'on choisit une région ou une

@@ -1,13 +1,11 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>Ressource</h4>
+<h4>{{ ressource.title }}</h4>
 
 <a class="back" href="javascript:history.go(-1)">Retourner à la page précédente</a>
 
 <div class="zone-texte ressource-retrieve">
-
-    <h3>{{ ressource.title }}</h3>
 
     {% if ressource.subject %}
     <div><span class="lbl">Sujet:</span> {{ ressource.subject }}</div>
@@ -18,7 +16,7 @@
     {% endif %}
 
     {% if ressource.description %}
-    <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description }}</div>
+    <div class="resultatResume"><span class="lbl">Résumé:</span> {{ ressource.description }}</div>
     {% endif %}
 
     {% if ressource.source %}

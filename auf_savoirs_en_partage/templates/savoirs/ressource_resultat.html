@@ -6,7 +6,7 @@
     <div><span class="lbl">Auteur:</span> {{ ressource.creator|highlight:search_regexp }}</div>
     {% endif %}
     {% if ressource.description %}
-    <div class="resultatResume"><span class="lbl">Description:</span> {{ ressource.description|excerpt:search_regexp|highlight:search_regexp }}</div>
+    <div class="resultatResume"><span class="lbl">Résumé:</span> {{ ressource.description|excerpt:search_regexp|highlight:search_regexp }}</div>
     {% endif %}
     <div class="fiche"><span>Fiche: </span><a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{% url savoirs.views.ressource_retrieve ressource.id %}</a></div>
     <div class="original"><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>

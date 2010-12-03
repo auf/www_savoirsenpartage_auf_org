@@ -63,7 +63,7 @@ class SiteQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         return self.filter(Q(discipline=discipline) |
                            Q(titre__icontains=discipline.nom) |
                            Q(description__icontains=discipline.nom) |
-                           Q(mots_cles__icontains=discipline.nom))
+                           Q(mots_cles__icontains=discipline.nom)).distinct()
 
     def filter_region(self, region):
         """Ne conserve que les sites dans la région donnée.

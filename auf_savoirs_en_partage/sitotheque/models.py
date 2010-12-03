@@ -101,7 +101,7 @@ class Site(models.Model):
     regions = models.ManyToManyField(Region, blank=True, related_name="sites", verbose_name='régions')
     
     # meta
-    actif = models.BooleanField()
+    actif = models.BooleanField(default=True)
     date_maj = models.DateField(auto_now=True)
 
     # Manager

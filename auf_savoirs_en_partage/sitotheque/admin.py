@@ -8,6 +8,9 @@ class SiteAdmin(admin.ModelAdmin):
     actions = ('assigner_regions', 'assigner_disciplines')
     list_filter = ('discipline', 'regions')
 
+    def queryset(self, request):
+        return Site.all_objects.all()
+
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='sitotheque', model_name='site')) + '?ids=' + ','.join(selected))

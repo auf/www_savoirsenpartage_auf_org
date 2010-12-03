@@ -82,6 +82,12 @@ class ChercheurForm(forms.ModelForm):
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
 
+    theme_recherche = forms.CharField(
+        max_length=1000, label='Thèmes de recherche', help_text='1000 signes maximum',
+        error_messages=dict(max_length="Veuillez entrer au maximum %(max)d signes (vous en avez entré %(length)d)."),
+        widget=forms.Textarea()
+    )
+
     class Meta:
         model = Chercheur
         fields = ('statut', 'diplome', 'etablissement',

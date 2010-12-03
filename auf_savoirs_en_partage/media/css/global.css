@@ -261,3 +261,7 @@ color:red;
 .demi-gauche { width: 345px; background-color: #f5f5f5; float: left; }
 .demi-droite { width: 345px; float: right; }
 #rss-agenda, #rss-actualites { position: absolute; top: 15px; right: 20px; }
+
+/* Formulaires */
+
+.help { font-size: 90%; }

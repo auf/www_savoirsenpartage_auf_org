@@ -106,7 +106,8 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         self.readonly_fields.append('listsets')
         super(RecordAdmin, self).__init__(*args, **kwargs) 
 
-    # Recherche par mots-clés
+    def queryset(self, request):
+        return Record.all_objects.all()
 
     # Présentation de l'information
     
@@ -187,6 +188,9 @@ class ActualiteAdmin(admin.ModelAdmin):
     list_display = ('titre', 'source', 'date', 'visible')
     actions = ['rendre_visible', 'rendre_invisible', 'assigner_regions', 'assigner_disciplines']
 
+    def queryset(self, request):
+        return Actualite.all_objects.all()
+
     # actions
     def rendre_visible(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -239,9 +243,12 @@ class EvenementAdmin(admin.ModelAdmin):
     list_filter = ('approuve', 'regions', 'discipline', 'discipline_secondaire')
     list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
     fields = ['titre', 'discipline', 'discipline_secondaire', 'mots_cles',
-              'type', 'fuseau', 'debut', 'fin', 'lieu', 'piece_jointe', 'regions',
+              'type', 'pays', 'fuseau', 'debut', 'fin', 'lieu', 'piece_jointe', 'regions',
               'description', 'contact', 'url', 'approuve']
     actions = ['assigner_regions', 'assigner_disciplines']
+
+    def queryset(self, request):
+        return Evenement.all_objects.all()
 
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)

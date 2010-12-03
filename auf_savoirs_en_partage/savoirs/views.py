@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
-import datetime, simplejson, copy, vobject
+import copy
+import pytz
+import simplejson 
 
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext
@@ -14,6 +16,7 @@ from lib.recherche import google_search, build_search_regexp
 from lib import sep
 from lib.calendrier import evenements, evenement_info, combine
 from savoirs.globals import configuration
+from savoirs.models import build_time_zone_choices
 import backend_config
 from forms import *
 from models import *
@@ -199,6 +202,14 @@ def evenement_ajout(request):
     return render_to_response(template, dict(form=form),
                               context_instance=RequestContext(request))
 
+def options_fuseau_horaire(request):
+    pays = request.GET.get('pays')
+    choices = build_time_zone_choices(request.GET.get('pays'))
+    if len(choices) > 1:
+        choices = [('', '---------')] + choices
+    return render_to_response('savoirs/options_fuseau_horaire.html', dict(choices=choices),
+                              context_instance=RequestContext(request))
+
 @login_required
 def evenement_moderation(request):
     events = Evenement.objects.filter(approuve = False)
@@ -218,7 +229,6 @@ def evenement_refuser(request, pk):
     evenement.actif = False
     evenement.save()
     return HttpResponseRedirect(reverse('savoirs.views.evenement_moderation'))
-
 
 @login_required
 def json_get (request):

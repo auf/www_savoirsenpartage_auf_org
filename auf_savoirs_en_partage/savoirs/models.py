@@ -211,13 +211,15 @@ class EvenementQuerySet(models.query.QuerySet, RandomQuerySetMixin):
                            Q(titre__icontains=region.nom) |
                            Q(mots_cles__icontains=region.nom) |
                            Q(description__icontains=region.nom) |
+                           Q(pays__region=region) |
                            Q(lieu__icontains=region.nom)).distinct()
 
-def build_time_zone_choices():
+def build_time_zone_choices(pays=None):
     fr_names = set()
-    tzones = []
+    timezones = pytz.country_timezones[pays] if pays else pytz.common_timezones
+    result = []
     now = datetime.datetime.now()
-    for tzname in pytz.common_timezones:
+    for tzname in timezones:
         tz = pytz.timezone(tzname)
         fr_name = get_timezone_name(tz, locale='fr_FR')
         if fr_name in fr_names:
@@ -227,9 +229,9 @@ def build_time_zone_choices():
         seconds = offset.seconds + offset.days * 86400
         (hours, minutes) = divmod(seconds // 60, 60)
         offset_str = 'UTC%+d:%d' % (hours, minutes) if minutes else 'UTC%+d' % hours
-        tzones.append((seconds, tzname, '%s - %s' % (offset_str, fr_name)))
-    tzones.sort()
-    return [(tz[1], tz[2]) for tz in tzones]
+        result.append((seconds, tzname, '%s - %s' % (offset_str, fr_name)))
+    result.sort()
+    return [(x[1], x[2]) for x in result]
 
 class Evenement(models.Model):
     TYPE_CHOICES = ((u'Colloque', u'Colloque'),
@@ -252,6 +254,7 @@ class Evenement(models.Model):
     lieu = models.TextField()
     debut = models.DateTimeField(default=datetime.datetime.now)
     fin = models.DateTimeField(default=datetime.datetime.now)
+    pays = models.ForeignKey(Pays, related_name='evenements', null=True, blank=True)
     fuseau = models.CharField(max_length=100, choices=TIME_ZONE_CHOICES, verbose_name='fuseau horaire')
     description = models.TextField(blank=True, null=True)
     contact = models.TextField(blank=True, null=True)

@@ -37,6 +37,9 @@ urlpatterns = sep_patterns + patterns(
     (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
     (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
     (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
+    (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
+    (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
+    (r'^agenda/evenements/creer/options_fuseau_horaire/$', 'savoirs.views.options_fuseau_horaire'),
 
     # sous-menu droite
     (r'^a-propos/$', 'savoirs.views.a_propos'),
@@ -70,10 +73,6 @@ urlpatterns = sep_patterns + patterns(
     (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
     (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
 
-    # agenda
-    (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
-    (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
-
     # section par discipline et/ou région
     (r'^discipline/(?P<discipline>\d+)/', include(sep_patterns)),
     (r'^region/(?P<region>\d+)/', include(sep_patterns)),
@@ -98,6 +97,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
+
 )
 
 if settings.DEBUG:

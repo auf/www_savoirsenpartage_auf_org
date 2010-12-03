@@ -2,98 +2,75 @@
 {% load sep %}
 
 {% block contenu %}
-<script>
-  $(document).ready(function(){
-    makePageLinks ({{ page|default:0 }}, {{ data.last_page|default:0 }}, 
-                   '{{ data.more_link }}');
-  });
-
-  {% if user.is_authenticated %}
-  function showEditModal (uri) {
-    $('#jsonsource').load ('{% url savoirs.views.json_get %}?uri='+uri, 
-    function() {
-      __jf = new JSONForm ('schema', 'mainform', 'jsonsource');
-      __jf.setup ();
-      $('#edit-form').dialog({height: 400, width: 650, modal: true});
-    });
-  }
-  {% endif %}
-</script>
 <div class="texte">
-    <h4>Résultats correspondant à « {{ q }} »</h4>
+    <h4>Résultats correspondant à «&nbsp;{{ q }}&nbsp;»</h4>
     
 {% if ressources %}
-    <h5>Ressources ({{ ressources|length }} sur {{ total_ressources }})</h5>
+    <h5>
+        Ressources ({{ ressources|length }} sur {{ total_ressources }})
+        <a class="action" href="{% url savoirs.views.ressource_index %}{{ briques_query_string }}"
+            >(Voir toutes les ressources correspondant à cette recherche)</a>
+    </h5>
     {% for ressource in ressources %}
         {% include "savoirs/ressource_resultat.html" %} 
     {% endfor %}
-    {% ifnotequal ressources|length total_ressources %}
-    <p class="pad">
-    <a href="{% url savoirs.views.ressource_index %}{{ briques_query_string }}"
-        >Toutes les {{ total_ressources }} ressources pour cette recherche</a>
-    </p>
-    {% endifnotequal %}
 {% endif %}
 
 {% if actualites %}
-    <h5>Actualités ({{ actualites|length }} sur {{ total_actualites }})</h5>
+    <h5>
+        Actualités ({{ actualites|length }} sur {{ total_actualites }})
+        <a class="action" href="{% url savoirs.views.actualite_index %}{{ briques_query_string }}"
+            >(Voir toutes les actualités correspondant à cette recherche)</a>
+    </h5>
     {% for actualite in actualites %}
         {% include "savoirs/actualite_resultat.html" %} 
     {% endfor %}
-    {% ifnotequal actualites|length total_actualites %}
-    <p class="pad">
-    <a href="{% url savoirs.views.actualite_index %}{{ briques_query_string }}"
-        >Toutes les {{ total_actualites }} actualités pour cette recherche</a>
-    </p>
-    {% endifnotequal %}
 {% endif %}
 
 {% if evenements %}
-    <h5>Évènements ({{ evenements|length }} sur {{ total_evenements }})</h5>
+    <h5>
+        Évènements ({{ evenements|length }} sur {{ total_evenements }})
+        <a class="action" href="{% url savoirs.views.evenement_index %}{{ briques_query_string }}"
+            >(Voir tous les évènements correspondant à cette recherche)</a>
+    </h5>
     {% for evenement in evenements %}
         {% include "savoirs/evenement_resultat.html" %}
     {% endfor %}
-    {% ifnotequal evenements|length total_evenements %}
-    <p class="pad">
-    <a href="{% url savoirs.views.evenement_index %}{{ briques_query_string }}"
-        >Tous les {{ total_evenements }} évènements pour cette recherche</a></p>
-    {% endifnotequal %}
 {% endif %}
 
 {% if chercheurs %}
-    <h5>Chercheurs ({{ chercheurs|length }} sur {{ total_chercheurs }})</h5>
+    <h5>
+        Chercheurs ({{ chercheurs|length }} sur {{ total_chercheurs }})
+        <a class="action" href="{% url chercheurs.views.index %}{{ briques_query_string }}"
+            >(Voir tous les chercheurs correspondant à cette recherche)</a>
+    </h5>
     <ul>
     {% for chercheur in chercheurs %}
         <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></li>
     {% endfor %}
     </ul>
-    {% ifnotequal chercheurs|length total_chercheurs %}
-    <p class="pad">
-    <a href="{% url chercheurs.views.index %}{{ briques_query_string }}"
-        >Tous les {{ total_chercheurs }} chercheurs pour cette recherche</a>
-    </p>
-    {% endifnotequal %}
 {% endif %}
 
 {% if sites %}
-    <h5>Sites de la sitothèque ({{ sites|length }} sur {{ total_sites }})</h5>
+    <h5>
+        Sites de la sitothèque ({{ sites|length }} sur {{ total_sites }})
+        <a class="action" href="{% url sitotheque.views.index %}{{ briques_query_string }}"
+            >(Voir tous les sites correspondant à cette recherche)</a>
+    </h5>
     {% for site in sites %}
         {% include "sites/resultat.html" %}
     {% endfor %}
-    {% ifnotequal sites|length total_sites %}
-    <p class="pad">
-    <a href="{% url sitotheque.views.index %}{{ briques_query_string }}"
-        >Tous les {{ total_sites }} sites pour cette recherche</a>
-    </p>
-    {% endifnotequal %}
 {% endif %}
 
 {% if sites_auf %}
-    <h5>Sites AUF</h5>
+    <h5>
+        Sites AUF
+        <a class="action" href="{% url savoirs.views.sites_auf %}?q={{ q|urlencode }}"
+            >(Voir tous les sites AUF correspondant à cette recherche)</a>
+    </h5>
     {% for r in sites_auf %}
         {% include "savoirs/sites_auf_resultat.html" %}
     {% endfor %}
-    <p class="pad"><a href="{% url savoirs.views.sites_auf %}?q={{ q|urlencode }}">Tous les sites AUF pour cette recherche</a></p>
 {% endif %}
 
 {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}

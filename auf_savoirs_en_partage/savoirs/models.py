@@ -271,6 +271,26 @@ class Evenement(models.Model):
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)
 
+    def duration_display(self):
+        delta = self.fin - self.debut
+        minutes, seconds = divmod(delta.seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+        days = delta.days
+        parts = []
+        if days == 1:
+            parts.append('1 jour')
+        elif days > 1:
+            parts.append('%d jours' % days)
+        if hours == 1:
+            parts.append('1 heure')
+        elif hours > 1:
+            parts.append('%d heures' % hours)
+        if minutes == 1:
+            parts.append('1 minute')
+        elif minutes > 1:
+            parts.append('%d minutes' % minutes)
+        return ' '.join(parts)
+
     def piece_jointe_display(self):
         return self.piece_jointe and os.path.basename(self.piece_jointe.name)
 

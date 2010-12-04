@@ -154,10 +154,13 @@ class Chercheur(models.Model):
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
     theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche')                                    
     groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
-    url_site_web = models.URLField(max_length=255, null=True, blank=True, verbose_name='adresse site Internet')
-    url_blog = models.URLField(max_length=255, null=True, blank=True, verbose_name='blog')
+    url_site_web = models.URLField(max_length=255, null=True, blank=True, 
+                                   verbose_name='adresse site Internet', verify_exists=False)
+    url_blog = models.URLField(max_length=255, null=True, blank=True, verbose_name='blog',
+                               verify_exists=False)
     url_reseau_social = models.URLField(
         max_length=255, null=True, blank=True, verbose_name='Réseau social',
+        verify_exists=False,
         help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"
     )
                                     

@@ -21,7 +21,7 @@ LIGNES grises -> #e0e0e0 et #d5d5d5
 html { height:100%; }
 body { height:100%; font-size: 85%; line-height:1.4; color:#3a3125; 
        background:#fff url(../img/background-body.jpg) repeat-y 50% 0; 
-       font-family:Verdana, Arial, Sans-Serif; text-align:center; }
+       font-family:Verdana, Arial, Sans-Serif; }
 a, a:active {text-decoration:underline;color:#97012c;}
 a:visited {color:#97012c;}
 a:hover {color:#97012c;}

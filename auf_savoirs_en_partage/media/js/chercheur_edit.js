@@ -1,14 +1,5 @@
 (function() {
 
-    function update_etablissement_autre() {
-        if ($('#id_chercheur-etablissement').val() == '') {
-            $('#etablissement_autre').slideDown('fast');
-        }
-        else {
-            $('#etablissement_autre').slideUp('fast');
-        }
-    }
-
     $(document).ready(function() {
         $('#expertises fieldset').formset({
             prefix: 'expertise',
@@ -22,7 +13,19 @@
             deleteText: 'supprimer cette publication',
             formCssClass: 'dynamic-form-publications'
         });
-        update_etablissement_autre()
-        $('#id_chercheur-etablissement').change(update_etablissement_autre)
+        $('input[name=chercheur-etablissement]').autocomplete({ 
+            source: '/etablissements/autocomplete/',
+            select: function(event, ui) {
+                var etablissement = ui.item.value;
+                $.getJSON(
+                    '/etablissements/pays/', 
+                    { etablissement: etablissement },
+                    function(pays) {
+                        $('select[name=chercheur-pays_etablissement]').val(pays);
+                    }
+                );
+            }
+        });
     });
+
 })();

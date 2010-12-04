@@ -7,6 +7,7 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils import simplejson
 from django.views.decorators.cache import never_cache
 
 from forms import *
@@ -219,3 +220,17 @@ def conversion(request):
     return render_to_response("chercheurs/conversion.html", {}, 
                               context_instance=RequestContext(request))
 
+def etablissements_autocomplete(request):
+    term = request.GET.get('term')
+    noms = list(Etablissement.objects.filter(nom__icontains=term).values_list('nom', flat=True)[:20])
+    json = simplejson.dumps(noms)
+    return HttpResponse(json, mimetype='application/json')
+
+def etablissements_pays(request):
+    etablissement = request.GET.get('etablissement')
+    try:
+        pays = Etablissement.objects.get(nom=etablissement).pays_id
+    except Etablissement.DoesNotExist:
+        pays = None
+    json = simplejson.dumps(pays)
+    return HttpResponse(json, mimetype='application/json')

@@ -47,9 +47,6 @@ class PersonneInscriptionForm(PersonneForm):
 
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
-    ETABLISSEMENT_CHOICES = ((id, nom if len(nom) < 80 else nom[:80] + '...')
-                             for id, nom in Etablissement.objects.filter(membre=True).values_list('id', 'nom'))
-
     membre_instance_auf = forms.ChoiceField(
         label="Êtes-vous (ou avez-vous déjà été) membre d'une instance de l'AUF?",
         help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
@@ -75,7 +72,8 @@ class ChercheurForm(forms.ModelForm):
     membre_reseau_institutionnel_details = forms.CharField(required=False, label="Préciser lesquelles et votre fonction")
     membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
 
-    etablissement = forms.ChoiceField(label='Etablissement', required=False, choices=chain([('', '---------')], ETABLISSEMENT_CHOICES))
+    etablissement = forms.CharField(label='Etablissement', required=True)
+    pays_etablissement = forms.ModelChoiceField(label='Pays', queryset=Pays.objects.all(), required=True)
 
     expertises_auf = forms.ChoiceField(
         label="Êtes-vous disposé à réaliser des expertises pour l'AUF?",
@@ -90,17 +88,45 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('statut', 'diplome', 'etablissement',
-                  'etablissement_autre_nom', 'etablissement_autre_pays',
-                  'discipline', 'theme_recherche', 'groupe_recherche', 'mots_cles',
-                  'url_site_web', 'url_blog', 'url_reseau_social',
-                  'membre_instance_auf', 'membre_instance_auf_details', 'membre_instance_auf_dates',
-                  'expert_oif', 'expert_oif_details', 'expert_oif_dates',
+        fields = ('statut', 'diplome', 'discipline', 'theme_recherche',
+                  'groupe_recherche', 'mots_cles', 'url_site_web',
+                  'url_blog', 'url_reseau_social', 'membre_instance_auf',
+                  'membre_instance_auf_details',
+                  'membre_instance_auf_dates', 'expert_oif',
+                  'expert_oif_details', 'expert_oif_dates',
                   'membre_association_francophone',
                   'membre_association_francophone_details',
-                  'membre_reseau_institutionnel', 'membre_reseau_institutionnel_details',
+                  'membre_reseau_institutionnel',
+                  'membre_reseau_institutionnel_details',
                   'membre_reseau_institutionnel_dates', 'expertises_auf')
         
+    def __init__(self, data=None, prefix=None, instance=None):
+        if instance is not None:
+            initial = {}
+            if instance.etablissement:
+                initial['etablissement'] = instance.etablissement.nom
+                initial['pays_etablissement'] = instance.etablissement.pays_id
+            else:
+                initial['etablissement'] = instance.etablissement_autre_nom
+                initial['pays_etablissement'] = instance.etablissement_autre_pays_id
+        else:
+            initial = None
+        super(ChercheurForm, self).__init__(data=data, prefix=prefix, instance=instance, initial=initial)
+
+    def save(self):
+        nom_etablissement = self.cleaned_data['etablissement']
+        pays_etablissement = self.cleaned_data['pays_etablissement']
+        try:
+            etablissement = Etablissement.objects.get(nom=nom_etablissement, pays=pays_etablissement)
+            self.instance.etablissement = etablissement
+            self.instance.etablissement_autre = ''
+            self.instance.etablissement_autre_pays = None
+        except Etablissement.DoesNotExist:
+            self.instance.etablissement = None
+            self.instance.etablissement_autre_nom = nom_etablissement
+            self.instance.etablissement_autre_pays = pays_etablissement
+        super(ChercheurForm, self).save()
+
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
     
@@ -162,24 +188,8 @@ class ChercheurForm(forms.ModelForm):
             raise forms.ValidationError('Veuillez préciser les dates')
         return dates
 
-    def clean_etablissement(self):
-        etablissement = self.cleaned_data['etablissement']
-        if etablissement:
-            return Etablissement.objects.get(id=etablissement)
-
     def clean_expertises_auf(self):
         return bool(int(self.cleaned_data['expertises_auf']))
-
-    def clean(self):
-        etablissement = self.cleaned_data['etablissement']
-        etablissement_autre_nom = self.cleaned_data['etablissement_autre_nom']
-        etablissement_autre_pays = self.cleaned_data['etablissement_autre_pays']
-        if not etablissement:
-            if not etablissement_autre_nom:
-                self._errors['etablissement'] = self.error_class([u"Vous devez renseigner l'établissement"])
-            elif not etablissement_autre_pays:
-                self._errors['etablissement_autre_pays'] = self.error_class([u"Vous devez renseigner le pays de l'établissement"])
-        return self.cleaned_data
 
 class ChercheurInscriptionForm(ChercheurForm):
     attestation = forms.BooleanField(

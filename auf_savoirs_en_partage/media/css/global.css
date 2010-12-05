@@ -245,7 +245,7 @@ color:red;
 #contenu h5 a:hover { text-decoration:underline; }
 #contenu h5 a.action { color: #97012c; font-size: 60%; }
 
-#fiche_chercheur h5 { border-color: #000000; border-width: 1px 0 0 0; 
+#fiche_chercheur h5 { border-color: #000000; border-width: 1px 0 0 0; clear: right;
                       border-style: solid none none none; margin-top: 20px; padding: 10px; }
 #fiche_chercheur .label { color: grey; font-weight: bold; width: 150px; }
 #fiche_chercheur .souligne { border-bottom: 1px solid #DDD; }

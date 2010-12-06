@@ -85,13 +85,17 @@ class ChercheurForm(forms.ModelForm):
         error_messages=dict(max_length="Veuillez entrer au maximum %(max)d signes (vous en avez entré %(length)d)."),
         widget=forms.Textarea()
     )
+    attestation = forms.BooleanField(
+        required=True,
+        label="J'atteste sur l'honneur l'exactitude des renseignements fournis sur le formulaire d'inscription et j'accepte leur publication en ligne."
+    )
 
     class Meta:
         model = Chercheur
         fields = ('statut', 'diplome', 'discipline', 'theme_recherche',
                   'groupe_recherche', 'mots_cles', 'url_site_web',
-                  'url_blog', 'url_reseau_social', 'membre_instance_auf',
-                  'membre_instance_auf_details',
+                  'url_blog', 'url_reseau_social', 'attestation',
+                  'membre_instance_auf', 'membre_instance_auf_details',
                   'membre_instance_auf_dates', 'expert_oif',
                   'expert_oif_details', 'expert_oif_dates',
                   'membre_association_francophone',
@@ -191,12 +195,6 @@ class ChercheurForm(forms.ModelForm):
     def clean_expertises_auf(self):
         return bool(int(self.cleaned_data['expertises_auf']))
 
-class ChercheurInscriptionForm(ChercheurForm):
-    attestation = forms.BooleanField(
-        required=True, 
-        label="J'atteste sur l'honneur l'exactitude des renseignements fournis sur le formulaire d'inscription et j'accepte leur publication en ligne."
-    )
-
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
     groupes = forms.ModelMultipleChoiceField(
@@ -252,8 +250,7 @@ class ChercheurFormGroup(object):
 
     def __init__(self, data=None, chercheur=None):
         personne_form_class = PersonneInscriptionForm if chercheur is None else PersonneForm
-        chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
-        self.chercheur = chercheur_form_class(data=data, prefix='chercheur', instance=chercheur)
+        self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
         self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne.utilisateur)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)

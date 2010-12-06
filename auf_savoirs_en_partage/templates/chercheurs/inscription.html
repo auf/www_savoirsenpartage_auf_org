@@ -11,15 +11,6 @@
 
 <form method="post">
     {% include "chercheurs/chercheur_form.html" %}   
-    <table>
-        <tr>
-            <td>{{ forms.chercheur.attestation }}</td>
-            <td>
-                {{ forms.chercheur.attestation.label_tag }}
-                {{ forms.chercheur.attestation.errors }}
-            </td>
-        </tr>
-    </table>
     <input type="submit" name="Submit" value="Inscription" class="bouton" />
 </form>
 {% endblock %}

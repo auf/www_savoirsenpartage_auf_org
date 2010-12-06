@@ -147,6 +147,7 @@ class Chercheur(models.Model):
     etablissement_autre_pays = models.ForeignKey(Pays, null = True, blank=True, db_column='etablissement_autre_pays', 
                                                  to_field='code', related_name='etablissement_autre_pays',
                                                  verbose_name = "pays de l'établissement")
+    attestation = models.BooleanField()
 
     #Domaine
     thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='thematique')
@@ -186,7 +187,6 @@ class Chercheur(models.Model):
     )
 
     # Expertises
-
     expertises_auf = models.BooleanField(verbose_name="est disposé à réaliser des expertises pour l'AUF")
 
     #meta

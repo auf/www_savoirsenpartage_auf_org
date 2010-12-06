@@ -28,6 +28,13 @@
 </fieldset>
 
 <fieldset>
+    <legend>Thèse <em>(ou tout autre travail de recherche &#8212; mémoire, HDR, etc. &#8212; encadré par un universitaire)</em></legend>
+    {% with forms.these as form %}
+    {% include "table_form.html" %}
+    {% endwith %}
+</fieldset>
+
+<fieldset>
     <legend>Discipline, thèmes de recherche</legend>
     <table>
         {% form_field forms.chercheur.discipline %}
@@ -75,17 +82,6 @@
     <table>
         {% form_field forms.chercheur.expertises_auf %}
     </table>
-</fieldset>
-
-<fieldset>
-    <legend>Thèse ou mémoire</legend>
-    <div>
-        <div class="publication">
-            {% with forms.these as form %}
-            {% include "table_form.html" %}
-            {% endwith %}
-        </div>
-    </div>
 </fieldset>
 
 <fieldset id="publications">

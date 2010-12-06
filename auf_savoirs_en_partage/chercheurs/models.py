@@ -255,9 +255,9 @@ class Publication(models.Model):
 
 class These(models.Model):
     chercheur = models.OneToOneField(Chercheur, primary_key=True)
-    titre = models.CharField(max_length=255, verbose_name='Titre de la thèse ou du mémoire')
+    titre = models.CharField(max_length=255, verbose_name='Titre')
     annee = models.IntegerField(verbose_name='Année de soutenance (réalisée ou prévue)')
-    directeur = models.CharField(max_length=255, verbose_name='Directeur de thèse ou de mémoire')
+    directeur = models.CharField(max_length=255, verbose_name='Directeur')
     etablissement = models.CharField(max_length=255, verbose_name='Établissement de soutenance')
     nb_pages = models.IntegerField(verbose_name='Nombre de pages', blank=True, null=True)
     url = models.CharField(max_length=255, verbose_name='Lien vers la publication', blank=True)

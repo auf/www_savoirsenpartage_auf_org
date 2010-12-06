@@ -221,17 +221,13 @@ def conversion(request):
     return render_to_response("chercheurs/conversion.html", {}, 
                               context_instance=RequestContext(request))
 
-def etablissements_autocomplete(request):
+def etablissements_autocomplete(request, pays=None):
     term = request.GET.get('term')
-    noms = list(Etablissement.objects.filter(nom__icontains=term).values_list('nom', flat=True)[:20])
+    noms = Etablissement.objects.all()
+    for word in term.split():
+        noms = noms.filter(nom__icontains=word)
+    if pays:
+        noms = noms.filter(pays=pays)
+    noms = list(noms.values_list('nom', flat=True)[:20])
     json = simplejson.dumps(noms)
-    return HttpResponse(json, mimetype='application/json')
-
-def etablissements_pays(request):
-    etablissement = request.GET.get('etablissement')
-    try:
-        pays = Etablissement.objects.get(nom=etablissement).pays_id
-    except Etablissement.DoesNotExist:
-        pays = None
-    json = simplejson.dumps(pays)
     return HttpResponse(json, mimetype='application/json')

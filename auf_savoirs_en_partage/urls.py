@@ -73,7 +73,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
     (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
     (r'^etablissements/autocomplete/$', 'chercheurs.views.etablissements_autocomplete'),
-    (r'^etablissements/pays/$', 'chercheurs.views.etablissements_pays'),
+    (r'^etablissements/autocomplete/(?P<pays>.*)/$', 'chercheurs.views.etablissements_autocomplete'),
 
     # section par discipline et/ou région
     (r'^discipline/(?P<discipline>\d+)/', include(sep_patterns)),

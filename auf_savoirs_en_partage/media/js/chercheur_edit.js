@@ -1,6 +1,8 @@
 (function() {
 
     $(document).ready(function() {
+
+        // Fieldsets
         $('#expertises fieldset').formset({
             prefix: 'expertise',
             addText: 'ajouter une expertise',
@@ -13,19 +15,15 @@
             deleteText: 'supprimer cette publication',
             formCssClass: 'dynamic-form-publications'
         });
-        $('input[name=chercheur-etablissement]').autocomplete({ 
-            source: '/etablissements/autocomplete/',
-            select: function(event, ui) {
-                var etablissement = ui.item.value;
-                $.getJSON(
-                    '/etablissements/pays/', 
-                    { etablissement: etablissement },
-                    function(pays) {
-                        $('select[name=chercheur-pays_etablissement]').val(pays);
-                    }
-                );
-            }
-        });
+
+        // Auto-complete des établissements
+        var $etablissement = $('input[name=chercheur-etablissement]');
+        $etablissement.autocomplete({ source: '/etablissements/autocomplete/' });
+        $('select[name=chercheur-pays_etablissement]').change(function() {
+            $etablissement.autocomplete('option', 'source', '/etablissements/autocomplete/' + $(this).val() + '/');
+        }).change();
+
+        // Publications legacy
         var $edit_publication_link = $('<a class="edit-publication">éditer cette publication</a>');
         var $additional_fields = $('.publication_affichage').next();
         $additional_fields.after($edit_publication_link).hide();

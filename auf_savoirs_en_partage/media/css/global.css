@@ -145,9 +145,9 @@ ul.liste-de-l-accueil .titre { font-weight:bold; margin: 0.25em 0; }
 /* Actions */
 
 ul.actions { font-size: 90%; float: right; text-align: right; list-style: none; 
-             background: #f4f4f4; border: 1px solid #e4e4e4; margin-top: -12px; 
+             background: #f4f4f4; border: 1px solid #e4e4e4; 
              padding: 10px 10px 10px 10px; 
-             -moz-border-radius: 0 0 5px 5px; -webkit-border-radius: 0 0 5px 5px; }
+             -moz-border-radius: 5px; -webkit-border-radius: 5px; }
 
 /* Pages de recherche */
 

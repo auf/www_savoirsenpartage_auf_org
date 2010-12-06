@@ -1,7 +1,7 @@
 {% load form_tags %}
 
 {% if forms.has_errors %}
-<span class="flash-message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</span>
+<div id="flash-message">Votre fiche n'a pas été enregistrée. Veuillez remplir tous les champs obligatoires (*).</div>
 {% endif %}   
 <fieldset class="horizontal-radio-buttons">
     <legend>Informations personnelles</legend>

@@ -1,109 +1,123 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<div class="demi-gauche clearfix">
+<div class="demi-gauche">
     <div id="chercheurs" class="box">
-        <h4><a href="{% url chercheurs.views.index %}">Répertoire</a></h4>
+        <h1><a href="{% url chercheurs.views.index %}">Répertoire</a></h1>
         
-        <ul class="actions">
+        <ul class="actions-accueil">
             <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
             {% include "chercheurs/actions.html" %}
         </ul>
         
+        {% if chercheurs %}
+        <strong>Nouveaux chercheurs<br />(ou fiches actualisées récemment)</strong>
         <ul class="liste-de-l-accueil">
-            <li><strong>Nouveaux chercheurs (ou fiches actualisées récemment)</strong></li>
-        {% for chercheur in chercheurs %}
+            {% for chercheur in chercheurs %}
             <li>
-            <a href="{% url chercheurs.views.retrieve chercheur.id %}" class="le-titre">{{ chercheur }}</a>
-            {% if chercheur.discipline %}<span class="la-date">Discipline : {{ chercheur.discipline }}</span>{% endif %}
+                <div class="titre"><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></div>
+                {% if chercheur.discipline %}
+                <div>Discipline : {{ chercheur.discipline }}</div>
+                {% endif %}
             </li>
-        {% endfor %}
+            {% endfor %}
         </ul>
+        {% endif %}
     </div>
     <div id="actualites" class="box">
-        <h4>
+        <h1>
             <a href="{% url savoirs.views.actualite_index %}">Actualités</a>
             <a id="rss-actualites" href="/rss/actualites"><img src="/media/img/feed.png" /></a>
-        </h4> 
-        <ul class="actions">
+        </h1> 
+        <ul class="actions-accueil">
             <li><a href="{% url savoirs.views.actualite_index %}">Toutes les actualités</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
         {% for actualite in actualites %}
             <li>
-            <span class="la-date">{{ actualite.date|date:"d F Y" }}</span>
-            <a href="{% url savoirs.views.actualite actualite.id %}" class="le-titre">{{ actualite.titre|truncatewords:20 }}</a>
-            {% if actualite.source %}
-            <span class="la-date">source: {{ actualite.source.nom }}</span>
-            {% endif %}
+                <div>{{ actualite.date|date:"d F Y" }}</div>
+                <div class="titre">
+                    <a href="{% url savoirs.views.actualite actualite.id %}">{{ actualite.titre|truncatewords:20 }}</a>
+                </div>
+                {% if actualite.source %}
+                <div>source: {{ actualite.source.nom }}</div>
+                {% endif %}
             </li>
         {% endfor %}
         </ul>
     </div>
 </div>
-<div class="demi-droite clearfix">
+<div class="demi-droite">
     <div  id="ressources" class="box">
-        <h4><a href="{% url savoirs.views.ressource_index %}">Ressources</a></h4>
+        <h1><a href="{% url savoirs.views.ressource_index %}">Ressources</a></h1>
         
-        <ul class="actions">
+        <ul class="actions-accueil">
             <li><a href="{% url savoirs.views.ressource_index %}">Toutes les ressources</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
         {% for ressource in ressources %}
             <li>
-            <a href="{% url savoirs.views.ressource_retrieve ressource.id %}" class="le-titre">{{ ressource.title|safe|truncatewords:20 }}</a>
-            {% if resssource.creator %}
-                Auteur : {{ ressource.creator }}<br />
-            {% endif %}
-                url : {{ ressource.uri|urlizetrunc:40 }}
-            {% comment %}
-                <br />source : {{ ressource.server }}
-            {% endcomment %}
-            {% if ressource.disciplines.all.count %}
-                <br />Disciplines : {{ ressource.disciplines.all|join:", " }}
-            {% endif %}
+                <div class="titre">
+                    <a href="{% url savoirs.views.ressource_retrieve ressource.id %}"
+                        >{{ ressource.title|safe|truncatewords:20 }}</a>
+                </div>
+                {% if resssource.creator %}
+                <div>Auteur : {{ ressource.creator }}</div>
+                {% endif %}
+                <div>url : {{ ressource.uri|urlizetrunc:40 }}</div>
+                {% if ressource.disciplines.all.count %}
+                <div>Disciplines : {{ ressource.disciplines.all|join:", " }}</div>
+                {% endif %}
             </li>
         {% endfor %}
         </ul>
     </div>
     <div id="agenda" class="box">
-        <h4>
+        <h1>
             <a href="{% url savoirs.views.evenement_index %}">Agenda</a>
             <a id="rss-agenda" href="/rss/agenda"><img src="/media/img/feed.png" /></a>
-        </h4>
-        <ul class="actions">
-          <li><a href="{% url savoirs.views.evenement_index %}">Tous les évènements</a></li>
-          {% include "savoirs/evenement_actions.html" %}
+        </h1>
+        <ul class="actions-accueil">
+            <li><a href="{% url savoirs.views.evenement_index %}">Tous les évènements</a></li>
+            {% include "savoirs/evenement_actions.html" %}
         </ul>
 
         <ul class="liste-de-l-accueil">
-          {% for evenement in evenements %}
-          <li>
-          <span class="la-date">{{ evenement.debut|date:"d/m/Y H\hi" }}</span>
-          <a href="{% url savoirs.views.evenement evenement.id %}" class="le-titre">{{ evenement.titre|truncatewords:20 }}</a>
-          <span class="le-resume">{{ evenement.description|truncatewords:20 }}</span>
-          </li>
-          {% endfor %}
+            {% for evenement in evenements %}
+            <li>
+                <div>{{ evenement.debut|date:"d/m/Y H\hi" }}</div>
+                <div class="titre">
+                    <a href="{% url savoirs.views.evenement evenement.id %}"
+                        >{{ evenement.titre|truncatewords:20 }}</a>
+                </div>
+                <div>{{ evenement.description|truncatewords:20 }}</div>
+            </li>
+            {% endfor %}
         </ul>
     </div>
     <div  id="sites" class="box">
-        <h4><a href="{% url sitotheque.views.index %}">Sites</a></h4>
+        <h1><a href="{% url sitotheque.views.index %}">Sites</a></h1>
         
-        <ul class="actions">
+        <ul class="actions-accueil">
             <li><a href="{% url sitotheque.views.index %}">Sitothèque</a></li>
             {% include "sites/actions.html" %}
         </ul>
         
         <ul class="liste-de-l-accueil">
-        {% for site in sites %}
+            {% for site in sites %}
             <li>
-            <a href="{% url sitotheque.views.retrieve site.id %}" class="le-titre">{{ site|truncatewords:20 }}</a>
-            <a href="{{ site.url }}" class="la-date">{{ site.url }}</a>
-            {% if site.discipline.all.count %}<span class="la-date">Disciplines : {{ site.discipline.all|join:", " }}</span>{% endif %}
+                <div class="titre">
+                    <a href="{% url sitotheque.views.retrieve site.id %}"
+                        >{{ site|truncatewords:20 }}</a>
+                </div>
+                <div><a href="{{ site.url }}">{{ site.url }}</a></div>
+                {% if site.discipline.all.count %}
+                <div>Disciplines : {{ site.discipline.all|join:", " }}</div>
+                {% endif %}
             </li>
-        {% endfor %}
+            {% endfor %}
         </ul>
     </div>
 </div>

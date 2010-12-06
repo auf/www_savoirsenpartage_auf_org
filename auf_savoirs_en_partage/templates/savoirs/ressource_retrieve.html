@@ -1,50 +1,46 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>{{ ressource.title }}</h4>
+<h1>{{ ressource.title }}</h1>
 
-<a class="back" href="javascript:history.go(-1)">Retourner à la page précédente</a>
+{% if ressource.subject %}
+<div><span class="label">Sujet:</span> {{ ressource.subject }}</div>
+{% endif %}
 
-<div class="zone-texte ressource-retrieve">
+{% if ressource.creator %}
+<div><span class="label">Auteur:</span> {{ ressource.creator }}</div>
+{% endif %}
 
-    {% if ressource.subject %}
-    <div><span class="lbl">Sujet:</span> {{ ressource.subject }}</div>
-    {% endif %}
+{% if ressource.description %}
+<div><span class="label">Résumé:</span> {{ ressource.description }}</div>
+{% endif %}
 
-    {% if ressource.creator %}
-    <div><span class="lbl">Auteur:</span> {{ ressource.creator }}</div>
-    {% endif %}
+{% if ressource.source %}
+<div><span class="label">Source:</span> {{ ressource.source }}</div>
+{% endif %}
 
-    {% if ressource.description %}
-    <div class="resultatResume"><span class="lbl">Résumé:</span> {{ ressource.description }}</div>
-    {% endif %}
+{% if ressource.publisher %}
+<div><span class="label">Editeur:</span> {{ ressource.publisher }}</div>
+{% endif %}
 
-    {% if ressource.source %}
-    <div><span class="lbl">Source:</span> {{ ressource.source }}</div>
-    {% endif %}
+{% if ressource.format %}
+<div><span class="label">Format:</span> {{ ressource.format }}</div>
+{% endif %}
 
-    {% if ressource.publisher %}
-    <div><span class="lbl">Editeur:</span> {{ ressource.publisher }}</div>
-    {% endif %}
+{% if ressource.type %}
+<div><span class="label">Type:</span> {{ ressource.type }}</div>
+{% endif %}
 
-    {% if ressource.format %}
-    <div><span class="lbl">Format:</span> {{ ressource.format }}</div>
-    {% endif %}
+{% if disciplines %}
+<div><span class="label">Disciplines:</span> {{ disciplines|join:", " }}</div>
+{% endif %}
 
-    {% if ressource.type %}
-    <div><span class="lbl">Type:</span> {{ ressource.type }}</div>
-    {% endif %}
+{% if regions %}
+<div><span class="label">Régions:</span> {{ regions|join:", " }}</div>
+{% endif %}
 
-    {% if disciplines %}
-    <div><span class="lbl">Disciplines:</span> {{ disciplines|join:", " }}</div>
-    {% endif %}
-
-    {% if regions %}
-    <div><span class="lbl">Régions:</span> {{ regions|join:", " }}</div>
-    {% endif %}
-
-    <div class="original"><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>
-    <div class="provenance"><span>Provenance: </span><a target="_blank" href="{{ ressource.getServeurURL }}">{{ ressource.getServeurURL }}</a></div>
-
+<div class="details">
+    <div><span>Contenu original: </span><a target="_blank" href="{{ ressource.uri }}">{{ ressource.uri }}</a></div>
+    <div><span>Provenance: </span><a target="_blank" href="{{ ressource.getServeurURL }}">{{ ressource.getServeurURL }}</a></div>
 </div>
 {% endblock %}

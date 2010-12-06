@@ -3,7 +3,7 @@
 {% block contenu %}
 
 {% if modification %}
-    <span "message">Votre fiche a bien été enregistrée.</span>
+    <span "flash-message">Votre fiche a bien été enregistrée.</span>
 {% endif %}
     
 <ul class="actions">
@@ -15,7 +15,7 @@
     <li><a href="{% url chercheurs.views.desinscription %}">Vous désinscrire du répertoire</a></li>
 </ul>
 
-<h4>{{ chercheur }}</h4>
+<h1>{{ chercheur }}</h1>
 
 {% include "chercheurs/fiche.html" %}
 

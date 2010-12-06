@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block contenu %}
-<h4>{{chercheur.personne.prenom}} {{chercheur.personne.nom}}</h4>
+<h1>{{chercheur.personne.prenom}} {{chercheur.personne.nom}}</h1>
 <form method="post" action="">
     {% include "chercheurs/chercheur_form.html" %}    
     <input type="submit" value="Sauvegarder" />

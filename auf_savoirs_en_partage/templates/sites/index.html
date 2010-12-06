@@ -7,9 +7,9 @@
 <ul class="actions">
     {% include "sites/actions.html" %}
 </ul>
-<h4>Sites &#8212; Sitothèque</h4>
+<h1>Sites &#8212; Sitothèque</h1>
 
-<h5>Recherche</h5>
+<h2>Recherche</h2>
 
 <form method="get" action="">
     <table id="repertoire_recherche">
@@ -18,11 +18,12 @@
     </table>
 </form>
 
-<h5>Résultats : {{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche</h5>
+<h2>Résultats</h2>
+<div class="sous-titre">{{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche</div>
 
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 {% for site in sites %}
 {% include "sites/resultat.html" %}
 {% endfor %}
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 {% endblock %}

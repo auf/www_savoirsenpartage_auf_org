@@ -5,7 +5,7 @@
 {% block contenu %}
 {% autopaginate ressources 15 %}
 
-<h4>Ressources</h4>
+<h1>Ressources</h1>
 
 <div class="texte">
     <p>
@@ -19,7 +19,7 @@
     </p>
 </div>
 
-<h5>Recherche</h5>
+<h2>Recherche</h2>
 
 <form action="" method="get">
     <table>
@@ -28,10 +28,10 @@
     </table>
 </form>
 
-<h5>Résultats : {{ nb_resultats }} ressources correspondant à votre recherche</h5>
+<h2>Résultats</h2>
+<div class="sous-titre">{{ nb_resultats }} ressources correspondant à votre recherche</div>
 
-<div class="centre">{% paginate %}</div>
-<div class="zone-texte">
+<div class="pagination">{% paginate %}</div>
 {% for ressource in ressources %}
     {% include "savoirs/ressource_resultat.html" %}
     {% empty %}
@@ -39,7 +39,6 @@
             <h2>Aucun résultat trouvé</h2>
         </div>
 {% endfor %}
-</div>
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 
 {% endblock %}

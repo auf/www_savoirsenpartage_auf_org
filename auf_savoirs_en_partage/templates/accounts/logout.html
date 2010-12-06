@@ -1,11 +1,7 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-
-<div class="zone-texte">
-  <p>Vous êtes maintenant déconnecté.</p>
-  <p><a href="{% url savoirs.views.index %}">Retour à l'accueil</a>.</p>
-</div>
-
+<p>Vous êtes maintenant déconnecté.</p>
+<p><a href="{% url savoirs.views.index %}">Retour à l'accueil</a>.</p>
 {% endblock %}
 

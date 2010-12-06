@@ -6,31 +6,31 @@
 <ul class="actions">
     {% include "savoirs/evenement_actions.html" %}
 </ul>
-<h4>Agenda <a href="/rss/agenda"><img src="/media/img/feed.png" alt="fil RSS" /></a></h4>
+<h1>Agenda <a href="/rss/agenda"><img src="/media/img/feed.png" alt="fil RSS" /></a></h1>
 
-<div class="texte">
-    <p>
-    La possibilité est offerte aux chercheurs d'annoncer sur ce portail un évènement scientifique en l'inscrivant dans un agenda consultable par tous. 
-    C'est aussi un outil de communication et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
-    </p>
-    <p>
-    Consulter les <a href="{% url savoirs.views.evenement_utilisation %}">conditions d'utilisation</a>.
-    </p>
-</div>
+<p>
+La possibilité est offerte aux chercheurs d'annoncer sur ce portail un évènement scientifique en l'inscrivant dans un agenda consultable par tous. 
+C'est aussi un outil de communication et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
+</p>
+<p>
+Consulter les <a href="{% url savoirs.views.evenement_utilisation %}">conditions d'utilisation</a>.
+</p>
 
-<h5>Recherche</h5>
-    <form action="" method="get">
+<h2>Recherche</h2>
+
+<form action="" method="get">
     <table>
-    {{ search_form.as_table }}
-    <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
+        {{ search_form.as_table }}
+        <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
     </table>
-    </form>
+</form>
 
-<h5>Résultats : {{ nb_resultats }} évènements correspondant à votre recherche</h5>
+<h2>Résultats</h2>
+<div class="sous-titre">{{ nb_resultats }} évènements correspondant à votre recherche</div>
 
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 {% for evenement in evenements %}
 {% include "savoirs/evenement_resultat.html" %}
 {% endfor %}
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 {% endblock %}

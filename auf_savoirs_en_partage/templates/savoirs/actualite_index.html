@@ -5,11 +5,11 @@
 {% block contenu %}
 {% autopaginate actualites 10 %}
 
-<h4>
+<h1>
     Actualités <a href="/rss/actualites"><img src="/media/img/feed.png" alt="fil RSS"/></a>
-</h4>
+</h1>
 
-<h5>Recherche</h5>
+<h2>Recherche</h2>
 
 <form action="" method="get">
     <table>
@@ -18,11 +18,12 @@
     </table>
 </form>
 
-<h5>Résultats : {{ nb_resultats }} actualités correspondant à votre recherche</h5>
+<h2>Résultats</h2>
+<div class="sous-titre">{{ nb_resultats }} actualités correspondant à votre recherche</div>
 
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 {% for actualite in actualites %}
 {% include "savoirs/actualite_resultat.html" %}
 {% endfor %}
-<div class="centre">{% paginate %}</div>
+<div class="pagination">{% paginate %}</div>
 {% endblock %}

@@ -1,11 +1,13 @@
 {% load search %}
 
 <div class="resultatRecherche">
-  <div class="la-date">{{ actualite.date|date:"d F Y" }}</div>
-  <a class="le-titre" href="{% url savoirs.views.actualite actualite.id %}">{{ actualite.titre|highlight:search_regexp }}</a>
-  <div class="resultatResume">{{ actualite.texte|highlight:search_regexp }}</div>
+  <div>{{ actualite.date|date:"d F Y" }}</div>
+  <div class="titre">
+      <a href="{% url savoirs.views.actualite actualite.id %}">{{ actualite.titre|highlight:search_regexp }}</a>
+  </div>
+  <div>{{ actualite.texte|highlight:search_regexp }}</div>
   {% if actualite.source %}
-  <div><span class="lbl">Source:</span> {{ actualite.source.nom }}</div>
+  <div><span class="label">Source:</span> {{ actualite.source.nom }}</div>
   {% endif %}
 </div>
 

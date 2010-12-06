@@ -19,14 +19,14 @@
         {% compress css %}
         <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery-ui/jquery-ui.css" type="text/css" />
-        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.timepicker.css" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.timepicker.css" type="text/css" />
         {% endcompress %}
 
         <!--[if lt IE 7]>
         <link href="{{ MEDIA_URL }}css/ie6.css" rel="stylesheet" type="text/css" media="screen" />
         <script src="{{ MEDIA_URL }}js/DD_belatedPNG.js"></script>
         <script>
-            DD_belatedPNG.fix('.top, .bottom, #col-droite, #contenu, .resultats');
+            DD_belatedPNG.fix('.top, .bottom, #col-droite, #contenu');
         </script>
         <![endif]-->
         {% block extra-style %}{% endblock %}
@@ -47,63 +47,42 @@
 
     <body>
         <div id="fond">
-            <div id="enrobage" class="clearfix">
-                
-                <div class="sous-menu droite">
-                    {% if user.is_authenticated %}
-                    <a href="{% url django.contrib.auth.views.logout %}" class="bout-droit">Déconnexion</a>
-                    {% else %}
-                    <a href="{% url chercheurs.views.chercheur_login %}" class="bout-droit">Connexion</a>
-                    {% endif %}
-                    <span>|</span>
-                    <a href="{% url savoirs.views.legal %}">Légal</a>
-                    <span>|</span>
-                    <a href="{% url savoirs.views.nous_contacter %}">Contact</a>
-                    <span>|</span>
-                    <a href="{% url savoirs.views.a_propos %}" class="bout-gauche">À propos</a>
-                </div>
-                
-                <div class="sous-menu gauche">
-                    <a href="{% url sitotheque.views.index %}" class="bout-droit">Sites</a>
-                    <span>|</span>
-                    <a href="{% url savoirs.views.evenement_index %}">Agenda</a>
-                    <span>|</span>
-                    <a href="{% url savoirs.views.actualite_index %}">Actualités</a>
-                    <span>|</span>
-                    <a href="{% url savoirs.views.ressource_index %}">Ressources</a>
-                    <span>|</span>
-                    <a href="{% url chercheurs.views.index %}">Répertoire</a>
-                    <span>|</span>
-                    <a href="{% url savoirs.views.index %}" class="bout-gauche">Accueil</a>
-                </div>
-                
-                <div id="logo" style="clear:both;">
-                    <h1>
-                        <a href="http://www.auf.org" title="Agence universitaire de la Francophonie">Agence universitaire de la Francophonie</a>
-                    </h1>
-                </div>
-
-                <div id="col-menu">
-                    {% sep_menu discipline_active region_active %}
-                    <img src="{{ MEDIA_URL }}img/col-droite-background-bottom.png" width="190" height="8" alt="bottom" align="bottom" class="bottom" />
-                </div>
-
-                <div id="sep-recherche">
-                    <h2 class="slogan">Savoirs en partage <span style="display:inline; color:#db602f;">version bêta</span>
-                        <span>Le portail des ressources scientifiques<br />et pédagogiques de l'AUF</span>
-                    </h2>
-
-                    <div class="boite-recherche">
-                        <h3>Recherche <span>dans toutes les rubriques</span></h3>
-
-                        <form name="fRecherche" id="fRecherche" action="{% sep_url savoirs.views.recherche %}" method="get">
-                            <input name="q" id="recherche" type="text" value="{{ q|default:"" }}" />
-                            <button title="Lancer la recherche" type="submit">&nbsp;</button>
-                        </form>
-
+            <div id="enrobage">
+                <div id="nav-gauche">
+                    <div>
+                        <a href="{% url savoirs.views.index %}">Accueil</a> |
+                        <a href="{% url chercheurs.views.index %}">Répertoire</a> |
+                        <a href="{% url savoirs.views.ressource_index %}">Ressources</a> |
+                        <a href="{% url savoirs.views.actualite_index %}">Actualités</a> |
+                        <a href="{% url savoirs.views.evenement_index %}">Agenda</a> |
+                        <a href="{% url sitotheque.views.index %}">Sites</a>
                     </div>
                 </div>
-                
+                <div id="nav-droite">
+                    <div>
+                        <a href="{% url savoirs.views.a_propos %}">À propos</a> |
+                        <a href="{% url savoirs.views.nous_contacter %}">Contact</a> |
+                        <a href="{% url savoirs.views.legal %}">Légal</a> |
+                        {% if user.is_authenticated %}
+                        <a href="{% url django.contrib.auth.views.logout %}">Déconnexion</a>
+                        {% else %}
+                        <a href="{% url chercheurs.views.chercheur_login %}">Connexion</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="entete">
+                    <a id="logo" href="http://www.auf.org"
+                        ><img src="{{ MEDIA_URL}}img/logo-agence-universitaire-de-la-francophonie.gif"
+                              alt="Agence universitaire de la Francophonie" /></a>
+                    <h1>Savoirs en partage <em>version bêta</em></h1>
+                    Le portail des ressources scientifiques<br />et pédagogiques de l'AUF
+                    <form action="{% sep_url savoirs.views.recherche %}" method="get">
+                        <label for="q">Recherche <em>dans toutes les rubriques</em></label>
+                        <input name="q" id="recherche" type="text" value="{{ q|default:"" }}" />
+                        <button title="Lancer la recherche" type="submit">&nbsp;</button>
+                    </form>
+                </div>
+
                 <div id="boite-principale">
                     <img src="{{ MEDIA_URL }}img/contenu-bkg-top.png" width="744" height="10" class="top-border" />
                     {% if flash.message %}
@@ -116,7 +95,11 @@
                     <img src="{{ MEDIA_URL }}img/contenu-bkg-bottom.png" width="744" height="10" class="bottom-border" />
                 </div>
 
-                <div class="clear"></div>	
+                <div id="regions_disciplines">
+                    <div>
+                        {% sep_menu discipline_active region_active %}
+                    </div>
+                </div>
             </div>
         </div>	
     </body>

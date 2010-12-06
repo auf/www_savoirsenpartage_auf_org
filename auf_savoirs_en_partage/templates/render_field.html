@@ -2,12 +2,12 @@
     {% if field.is_hidden %}
         {{ field }}
     {% else %}
-        <td{{ field.row_attrs }} class="required" style="width: 150px;">
+        <th{{ field.row_attrs }} class="required" style="width: 150px;">
             {{ field.label_tag }}&nbsp;{% if field.field.required %}<span style="color:red">*</span>{% endif %}
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}
-        </td>
+        </th>
         <td>{{ field }}
         {% if field.field.help_text %}<p class="help">{{ field.field.help_text|safe }}</p>{% endif %}
         </td>

@@ -1,5 +1,5 @@
 {% if publication.titre %}
-    <td class="souligne">
+    <p>
         {% if publication.auteurs %}{{ publication.auteurs }},{% endif %}
         <i>{{publication.titre}}</i>{% if publication.revue %}, 
         {{publication.revue}}{% endif %}{% if publication.annee %}, 
@@ -10,9 +10,9 @@
         {% if publication.url %}
         <br /><a href="{{ publication.url }}">{{ publication.url }}</a>
         {% endif %}
-    </td>
+    </p>
 {% else %}
     {% if publication.publication_affichage %}
-        <td class="souligne">{{publication.publication_affichage}}</td>
+        <p>{{publication.publication_affichage}}</p>
     {% endif %}
 {% endif %}

@@ -3,10 +3,10 @@
 
 {% block contenu %}
 
-<h4>Connexion</h4>
+<h1>Connexion</h1>
 
 {% if form.errors %}
-<p class="message">Login ou mot de passe invalide.</p>
+<p class="flash-message">Login ou mot de passe invalide.</p>
 {% endif %}
 <form method="post" action="{% url chercheurs.views.chercheur_login %}">
   <table>

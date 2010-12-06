@@ -8,26 +8,24 @@
     });
 </script>
 
-<h4>Sites &#8212; Sites AUF</h4>
-<div class="zone-texte">
-    <form method="get" action="">
-        <p style="margin-top: 10px;"><input type="text" size="40" name="q" value="{{ google_q|default:""}}" /><input type="submit" name="" value="Chercher" /></p>
-    </form>
+<h1>Sites &#8212; Sites AUF</h1>
+<form method="get" action="">
+    <p style="margin-top: 10px;"><input type="text" size="40" name="q" value="{{ google_q|default:""}}" /><input type="submit" name="" value="Chercher" /></p>
+</form>
 
-    {% if data %}
-    <div id="results">
-        {% for r in data.results %}
-        {% include "savoirs/sites_auf_resultat.html" %}
-        {% empty %}
-        <div class="resultatRecherche">
-            <h2>Aucun résultat trouvé</h2>
-        </div>
-        {% endfor %}
+{% if data %}
+<div id="results">
+    {% for r in data.results %}
+    {% include "savoirs/sites_auf_resultat.html" %}
+    {% empty %}
+    <div class="resultatRecherche">
+        <h2>Aucun résultat trouvé</h2>
     </div>
-    <div class="resultatPages">
-        <span id="pageLinks">
-        </span>
-    </div>
-    {% endif %}
+    {% endfor %}
 </div>
+<div class="pagination">
+    <span id="pageLinks">
+    </span>
+</div>
+{% endif %}
 {% endblock %}

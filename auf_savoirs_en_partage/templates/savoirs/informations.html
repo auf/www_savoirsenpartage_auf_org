@@ -1,12 +1,7 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>Sources de données</h4>
-	
-		<div class="zone-texte"><!--
-		@page { margin: 2cm }
-		P { margin-bottom: 0.21cm }
--->
+<h1>Sources de données</h1>
 
 {% for site, details in r.items %}
 <p style="margin-top: 15px; margin-bottom: 0px;">
@@ -54,5 +49,4 @@
 </p>
 {% endfor %}
 
-</div>
 {% endblock %}

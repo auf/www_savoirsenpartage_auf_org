@@ -1,66 +1,63 @@
 {% extends "container_base.html" %}
 
 {% block contenu %}
-<h4>{{ evenement.titre }}</h4>
-
-<div class="zone-texte">
-    <table width="100%">
-    <tr>
-        <th>Type</th>
-        <td>{{ evenement.type }}</td>
-    </tr>
-    {% if evenement.discipline %}
-    <tr>
-        <th>Discipline{% if evenement.discipline_secondaire %}s{% endif %}</th>
-        <td>{{ evenement.discipline }}
-            {% if evenement.discipline_secondaire %}, {{ evenement.discipline_secondaire }}{% endif %}
-        </td>
-    </tr>    
-    {% endif %}
-    <tr>
-      <th width="120px">Début</th>
-      <td>{{ evenement.debut|date:"d/m/Y H\hi" }} (UTC)</td>
-    </tr>
-    <tr>
-      <th>Fin</th>
-      <td>{{ evenement.fin|date:"d/m/Y H\hi" }} (UTC)</td>
-    </tr>
-    {% if evenement.description %}
-    <tr>
-      <th>Description</th>
-      <td>{{ evenement.description|linebreaksbr }}</td>
-    </tr>
-    {% endif %}
-    {% if evenement.mots_cles %}
-    <tr>
-      <th>Mots-clés</th>
-      <td>{{ evenement.mots_cles }}</td>
-    </tr>
-    {% endif %}
-    {% if evenement.contact %}
-    <tr>
-      <th>Contact</th>
-      <td>{{ evenement.contact|linebreaksbr }}</td>
-    </tr>
-    {% endif %}
-    {% if evenement.lieu %}
-    <tr>
-      <th>Lieu</th>
-      <td>{{ evenement.lieu|linebreaksbr }}</td>
-    </tr>
-    {% endif %}
-    {% if evenement.piece_jointe %}
-    <tr>
-        <th>Pièce jointe</th>
-        <td><a href="{{ evenement.piece_jointe.url }}">{{ evenement.piece_jointe_display }}</a></td>
-    </tr>
-    {% endif %}
-    {% if evenement.url %}
-    <tr>
-      <th>URL</th>
-      <td><a href="{{ evenement.url }}">{{ evenement.url }}</a></td>
-    </tr>
-    {% endif %}
-  </table>
-</div>
+<h1>{{ evenement.titre }}</h1>
+<table width="100%">
+<tr>
+    <th>Type</th>
+    <td>{{ evenement.type }}</td>
+</tr>
+{% if evenement.discipline %}
+<tr>
+    <th>Discipline{% if evenement.discipline_secondaire %}s{% endif %}</th>
+    <td>{{ evenement.discipline }}
+        {% if evenement.discipline_secondaire %}, {{ evenement.discipline_secondaire }}{% endif %}
+    </td>
+</tr>    
+{% endif %}
+<tr>
+  <th width="120px">Début</th>
+  <td>{{ evenement.debut|date:"d/m/Y H\hi" }} (UTC)</td>
+</tr>
+<tr>
+  <th>Fin</th>
+  <td>{{ evenement.fin|date:"d/m/Y H\hi" }} (UTC)</td>
+</tr>
+{% if evenement.description %}
+<tr>
+  <th>Description</th>
+  <td>{{ evenement.description|linebreaksbr }}</td>
+</tr>
+{% endif %}
+{% if evenement.mots_cles %}
+<tr>
+  <th>Mots-clés</th>
+  <td>{{ evenement.mots_cles }}</td>
+</tr>
+{% endif %}
+{% if evenement.contact %}
+<tr>
+  <th>Contact</th>
+  <td>{{ evenement.contact|linebreaksbr }}</td>
+</tr>
+{% endif %}
+{% if evenement.lieu %}
+<tr>
+  <th>Lieu</th>
+  <td>{{ evenement.lieu|linebreaksbr }}</td>
+</tr>
+{% endif %}
+{% if evenement.piece_jointe %}
+<tr>
+    <th>Pièce jointe</th>
+    <td><a href="{{ evenement.piece_jointe.url }}">{{ evenement.piece_jointe_display }}</a></td>
+</tr>
+{% endif %}
+{% if evenement.url %}
+<tr>
+  <th>URL</th>
+  <td><a href="{{ evenement.url }}">{{ evenement.url }}</a></td>
+</tr>
+{% endif %}
+</table>
 {% endblock %}

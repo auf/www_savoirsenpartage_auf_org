@@ -4,7 +4,7 @@
     <div>{{ chercheur.etablissement_display }}</div>
     <div><span class="label">Région: </span>{{ chercheur.region.nom }}</div>
 
-    <h5>Informations académiques</h5>
+    <h2>Informations académiques</h2>
     <table>
         <tr>
             <td class="label">Statut:</td>
@@ -45,7 +45,7 @@
         {% endif %}
     </table>
 
-    <h5>Discipline, thèmes de recherche</h5>
+    <h2>Discipline, thèmes de recherche</h2>
     <table>
         {% if chercheur.discipline %}
         <tr>
@@ -92,7 +92,7 @@
     </table>
 
     {% if chercheur.membre_instance_auf or chercheur.expert_oif or chercheur.membre_association_francophone or chercheur.membre_reseau_institutionnel %}
-    <h5>Activités en Francophonie</h5>
+    <h2>Activités en Francophonie</h2>
     <table>
         {% if chercheur.membre_instance_auf %}
         <tr>
@@ -122,7 +122,7 @@
     </table>
     {% endif %}
 
-    <h5>Expertises</h5>
+    <h2>Expertises</h2>
     {% for expertise in chercheur.expertises.all %}
     <table>
         <tr>
@@ -152,18 +152,29 @@
     </table>
 
     {% if chercheur.publications %}
-    <h5>Publications</h5>
-    <table id="publications">
+    <h2>Publications</h2>
+    <ul class="publications">
         {% for publication in chercheur.publications.all %}
-        <tr>
-            {% if forloop.first %}
-            <td class="label">Publications:</td>
-            {% else %}
-            <td></td>
+        {% if publication.titre %}
+        <li>
+            <p> {% if publication.auteurs %}{{ publication.auteurs }},{% endif %}
+                <i>{{publication.titre}}</i>{% if publication.revue %}, 
+                {{publication.revue}}{% endif %}{% if publication.annee %}, 
+                {{publication.annee}}{% endif %}{% if publication.editeur %}, 
+                {{publication.editeur}}{% endif %}{% if publication.lieu_edition %}, 
+                {{publication.lieu_edition}}{% endif %}{% if publication.nb_pages %}, 
+                {{publication.nb_pages}} pages{% endif %}.
+                {% if publication.url %}
+                <br /><a href="{{ publication.url }}">{{ publication.url }}</a>
+                {% endif %}
+            </p>
+        </li>
+        {% else %}
+            {% if publication.publication_affichage %}
+            <li><p>{{publication.publication_affichage}}</p></li>
             {% endif %}
-            {% include "chercheurs/publication_display.html" %}
-        </tr>
+        {% endif %}
         {% endfor %}
-    </table>
+    </ul>
     {% endif %}
 </div>

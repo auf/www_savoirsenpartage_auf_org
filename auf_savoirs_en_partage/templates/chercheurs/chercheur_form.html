@@ -93,10 +93,11 @@
     {{ forms.publications.management_form }}
     {% for form in forms.publications.forms %}
     <fieldset>
+        {% if form.instance.publication_affichage %}
+        <p class="publication_affichage"><strong>Renseignements préalablement enregistrés:</strong><br />
+        {{ form.instance.publication_affichage }}</p>
+        {% endif %}
         <table>
-            {% if form.initial.publication_affichage %}
-            {% form_field form.publication_affichage %}
-            {% else %}
             {% form_field form.auteurs %}
             {% form_field form.titre %}
             {% form_field form.revue %}
@@ -105,7 +106,6 @@
             {% form_field form.lieu_edition %}
             {% form_field form.nb_pages %}
             {% form_field form.url %}
-            {% endif %}
         </table>
         {{ form.id }}
         {{ form.DELETE }}

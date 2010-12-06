@@ -111,6 +111,7 @@ form ul.errorlist li { list-style:none; }
 
 .delete-row { font-size: 90%; position:absolute; top:5px; right:5px }
 .add-row { font-size: 90%; float:right; margin-right:16px }
+.edit-publication { font-size: 90%; position: absolute; bottom: 5px; right: 5px; cursor: pointer; }
 
 /* Tables */
 

@@ -245,6 +245,14 @@ class Publication(models.Model):
     def __unicode__(self):
         return self.titre or '(Aucun)'
         
+    def save(self):
+        if self.publication_affichage and (self.auteurs or self.titre or
+                                           self.revue or self.annee or
+                                           self.editeur or self.lieu_edition
+                                           or self.nb_pages or self.url):
+            self.publication_affichage = ''
+        super(Publication, self).save()
+
 class These(models.Model):
     chercheur = models.OneToOneField(Chercheur, primary_key=True)
     titre = models.CharField(max_length=255, verbose_name='Titre de la thèse ou du mémoire')

@@ -220,7 +220,7 @@ class GroupesForm(forms.Form):
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
-        fields = ('auteurs', 'titre', 'revue', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url', 'publication_affichage')
+        fields = ('auteurs', 'titre', 'revue', 'annee', 'editeur', 'lieu_edition', 'nb_pages', 'url')
         
 PublicationFormSet = inlineformset_factory(Chercheur, Publication, form=PublicationForm, extra=1)
 

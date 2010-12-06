@@ -26,6 +26,10 @@
                 );
             }
         });
+        var $edit_publication_link = $('<a class="edit-publication">éditer cette publication</a>');
+        var $additional_fields = $('.publication_affichage').next();
+        $additional_fields.after($edit_publication_link).hide();
+        $edit_publication_link.click(function() { $additional_fields.show(); $(this).hide(); });
     });
 
 })();

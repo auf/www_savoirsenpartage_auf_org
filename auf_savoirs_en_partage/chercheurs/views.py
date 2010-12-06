@@ -120,7 +120,7 @@ def chercheur_login(request):
 def index(request):
     """Répertoire des chercheurs"""
     search_form = RepertoireSearchForm(request.GET)
-    chercheurs = search_form.get_query_set().select_related('personne', 'etablissement', 'etablissement__pays', 'etablissement_autre_pays')
+    chercheurs = search_form.get_query_set().select_related('personne', 'etablissement')
     sort = request.GET.get('tri')
     if sort is not None and sort.endswith('_desc'):
         sort = sort[:-5]
@@ -133,8 +133,9 @@ def index(request):
         chercheurs = chercheurs.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
                                       order_by=[direction + 'nom_etablissement', '-date_modification'])
     elif sort == 'pays':
-        chercheurs = chercheurs.extra(select=dict(pays_etablissement='IFNULL(ref_pays.nom, T5.nom)'),
-                                      order_by=[direction + 'pays_etablissement', '-date_modification'])
+        chercheurs = chercheurs.extra(select=dict(
+            pays_etablissement='(SELECT nom FROM ref_pays WHERE ref_pays.code = IFNULL(ref_etablissement.pays, chercheurs_chercheur.etablissement_autre_pays))' 
+        ), order_by=[direction + 'pays_etablissement', '-date_modification'])
     else:
         chercheurs = chercheurs.order_by('-date_modification')
 

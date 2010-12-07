@@ -218,7 +218,7 @@ class Publication(models.Model):
     editeur = models.CharField(max_length=255, null=True, blank=True, verbose_name='éditeur')
     lieu_edition = models.CharField(max_length=255, null=True, blank=True, verbose_name="lieu d'édition")
     nb_pages = models.CharField(max_length=255, null=True, blank=True, verbose_name='nombre de pages')
-    url = models.CharField(max_length=255, null=True, blank=True, verbose_name='lien vers la publication')
+    url = models.URLField(max_length=255, null=True, blank=True, verbose_name='lien vers la publication', verify_exists=False)
     #Migration des publications depuis l'ancien repertoire de chercheurs
     publication_affichage = models.TextField(verbose_name='publication', null=True, blank=True)
     actif = models.BooleanField(editable=False)
@@ -241,7 +241,7 @@ class These(models.Model):
     directeur = models.CharField(max_length=255, verbose_name='Directeur')
     etablissement = models.CharField(max_length=255, verbose_name='Établissement de soutenance')
     nb_pages = models.IntegerField(verbose_name='Nombre de pages', blank=True, null=True)
-    url = models.CharField(max_length=255, verbose_name='Lien vers la publication', blank=True)
+    url = models.URLField(max_length=255, verbose_name='Lien vers la publication', blank=True, verify_exists=False)
 
     def __unicode__(self):
         return self.titre

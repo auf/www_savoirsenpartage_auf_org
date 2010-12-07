@@ -30,7 +30,7 @@ class SEPSplitDateTimeWidget(forms.MultiWidget):
     
     def __init__(self):
         self.date_format = '%d/%m/%Y'
-        self.time_format = '%H/%M'
+        self.time_format = '%H:%M'
         widgets = (forms.DateInput(attrs={'class': 'date'}, format=self.date_format),
                    forms.TimeInput(attrs={'class': 'time'}, format=self.time_format))
         super(SEPSplitDateTimeWidget, self).__init__(widgets)
@@ -45,6 +45,9 @@ class SEPSplitDateTimeWidget(forms.MultiWidget):
 
 class SEPDateTimeField(forms.DateTimeField):
     widget = SEPSplitDateTimeWidget
+
+    def __init__(self, *args, **kwargs):
+        super(SEPDateTimeField, self).__init__(input_formats=['%d/%m/%Y %H:%M'])
 
 # Formulaires de recherche
 

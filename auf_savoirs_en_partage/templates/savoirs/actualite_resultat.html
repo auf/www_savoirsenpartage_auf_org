@@ -1,11 +1,11 @@
-{% load search %}
+{% load sep %}
 
 <div class="resultatRecherche">
   <div>{{ actualite.date|date:"d F Y" }}</div>
   <div class="titre">
-      <a href="{% url savoirs.views.actualite actualite.id %}">{{ actualite.titre|highlight:search_regexp }}</a>
+      <a href="{% url savoirs.views.actualite actualite.id %}">{{ actualite.titre|apply:excerpt }}</a>
   </div>
-  <div>{{ actualite.texte|highlight:search_regexp }}</div>
+  <div>{{ actualite.texte|apply:excerpt }}</div>
   {% if actualite.source %}
   <div><span class="label">Source:</span> {{ actualite.source.nom }}</div>
   {% endif %}

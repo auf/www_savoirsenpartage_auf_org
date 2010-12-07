@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'savoirs',
     'chercheurs',
     'sitotheque',
+    'djangosphinx',
     'datamaster_modeles'
 )
 
@@ -91,7 +92,7 @@ AUTHENTICATION_BACKENDS = (
     'authentification.CascadeBackend',
 )
 
-CACHE_BACKEND = 'locmem://'
+CACHE_BACKEND = 'memcached://localhost:11211'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 
@@ -100,5 +101,8 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashb
 AUTH_PROFILE_MODULE = 'savoirs.Profile'
 
 CONTACT_EMAIL = 'contact-savoirsenpartage@auf.org'
+
+SPHINX_API_VERSION = 0x116
+SPHINX_PORT = 9312
 
 from auf_references_client.settings import *

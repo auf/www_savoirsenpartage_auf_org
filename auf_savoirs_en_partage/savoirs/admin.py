@@ -1,8 +1,11 @@
 # -*- encoding: utf-8 -*-
+import operator
 import re
 
 from django.core.urlresolvers import reverse as url
 from django.db import models
+from django.db.models import Q
+from django.db.models.query import QuerySet
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -80,6 +83,41 @@ class ReadOnlyAdminFields(object):
                     form.base_fields[field_name].required = False
         return form
 
+class RecordAdminQuerySet(QuerySet):
+
+    def filter(self, *args, **kwargs):
+        """Gère des filtres supplémentaires pour l'admin.
+           
+        C'est la seule façon que j'ai trouvée de contourner les mécanismes
+        de recherche de l'admin."""
+        search = kwargs.pop('admin_search', None)
+        search_titre = kwargs.pop('admin_search_titre', None)
+        search_sujet = kwargs.pop('admin_search_sujet', None)
+        search_description = kwargs.pop('admin_search_description', None)
+        search_auteur = kwargs.pop('admin_search_auteur', None)
+
+        if search:
+            qs = self
+            search_all = not (search_titre or search_description or search_sujet or search_auteur)
+            fields = []
+            if search_titre or search_all:
+                fields += ['title', 'alt_title']
+            if search_description or search_all:
+                fields += ['description', 'abstract']
+            if search_sujet or search_all:
+                fields += ['subject']
+            if search_auteur or search_all:
+                fields += ['creator', 'contributor']
+
+            for bit in search.split():
+                or_queries = [Q(**{field + '__icontains': bit}) for field in fields]
+                qs = qs.filter(reduce(operator.or_, or_queries))
+
+            if args or kwargs:
+                qs = super(RecordAdminQuerySet, qs).filter(*args, **kwargs)
+            return qs
+        else:
+            return super(RecordAdminQuerySet, self).filter(*args, **kwargs)
 
 class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     fields = ['server', 'title', 'creator', 'description', 'modified',
@@ -107,7 +145,7 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         super(RecordAdmin, self).__init__(*args, **kwargs) 
 
     def queryset(self, request):
-        return Record.all_objects.all()
+        return RecordAdminQuerySet(Record)
 
     # Présentation de l'information
     
@@ -189,7 +227,7 @@ class ActualiteAdmin(admin.ModelAdmin):
     actions = ['rendre_visible', 'rendre_invisible', 'assigner_regions', 'assigner_disciplines']
 
     def queryset(self, request):
-        return Actualite.all_objects.all()
+        return Actualite.all_objects.get_query_set()
 
     # actions
     def rendre_visible(self, request, queryset):
@@ -248,7 +286,7 @@ class EvenementAdmin(admin.ModelAdmin):
     actions = ['assigner_regions', 'assigner_disciplines']
 
     def queryset(self, request):
-        return Evenement.all_objects.all()
+        return Evenement.all_objects.get_query_set()
 
     def assigner_regions(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)

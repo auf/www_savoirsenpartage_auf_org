@@ -1,0 +1,223 @@
+#!/usr/bin/python
+# coding: utf-8
+# 
+# Ce script compose dynamiquement une configuration pour Sphinx. Il suffit
+# que le fichier soit exécutable pour que Sphinx exécute le script plutôt
+# que de le lire comme un fichier statique.
+#
+# Le manuel de sphinx se trouve au http://sphinxsearch.com/docs/manual-0.9.9.html
+
+import glob
+import os
+import sys
+
+sys.path[0:0] = [
+  "%(directory)s",
+  "%(directory)s/auf_savoirs_en_partage",
+  ]
+os.environ['DJANGO_SETTINGS_MODULE'] = 'production'
+for d in glob.glob("%(directory)s/eggs/*"):
+    sys.path[0:0] = [d,]
+for d in glob.glob("%(directory)s/parts/*"):
+    sys.path[0:0] = [d,]
+
+from django.conf import settings
+
+SQL_HOST = settings.DATABASE_HOST
+SQL_USER = settings.DATABASE_USER
+SQL_PASS = settings.DATABASE_PASSWORD
+SQL_DB = settings.DATABASE_NAME
+DATA_DIR = '/var/lib/sphinxsearch/data'
+
+def multiline(s):
+    """Place un marqueur de continuation avant chaque saut de ligne."""
+    return s.replace("\n", "\\\n")
+
+def emit_source(name, sql_query, sql_query_info=None, sql_attr_multi=None, sql_attr_uint=None):
+    print '''
+source %%(name)s
+{
+    type = mysql
+    sql_host = %%(sql_host)s
+    sql_user = %%(sql_user)s
+    sql_pass = %%(sql_pass)s
+    sql_db = %%(sql_db)s
+    sql_query_pre = SET NAMES utf8
+    sql_query_pre = SET SESSION query_cache_type=OFF
+    sql_query = %%(sql_query)s
+''' %% dict(name=name, sql_host=SQL_HOST, sql_user=SQL_USER,
+            sql_pass=SQL_PASS, sql_db=SQL_DB, sql_query=multiline(sql_query))
+
+    if sql_query_info:
+        print '    sql_query_info = ' + sql_query_info
+
+    if sql_attr_multi:
+        for attr in sql_attr_multi:
+            print '    sql_attr_multi = uint %%s from field' %% attr
+
+    if sql_attr_uint:
+        for attr in sql_attr_uint:
+            print '    sql_attr_uint = ' + attr
+    
+    print '}'
+
+def emit_index(name):
+    print '''
+index %%(name)s
+{
+    morphology = libstemmer_fr
+    charset_type = utf-8
+    charset_table = 0..9, A..Z->a..z, _, a..z, \\
+                    U+C0->a, U+C2->a, U+E0->a, U+E2->a, \\
+                    U+C7->c, U+E7->c, \\
+                    U+C8->e, U+C9->e, U+CA->e, U+E8->e, U+E9->e, U+EA->e, U+EB->e, \\
+                    U+CE->i, U+EE->i, U+EF->i, \\
+                    U+D4->o, U+F4->o, \\
+                    U+F9->u, U+FB->u, U+FC->u
+    source = %%(name)s
+    path = %%(path)s
+    stopwords = %(directory)s/auf_savoirs_en_partage/stopwords.txt
+}''' %% dict(name=name, path=os.path.join(DATA_DIR, name))
+
+emit_source('savoirsenpartage_ressources', 
+            '''SELECT r.id AS id, 
+                      r.title AS title, 
+                      r.description AS description, 
+                      r.creator AS creator, 
+                      r.contributor AS contributor, 
+                      r.subject AS subject, 
+                      r.publisher AS publisher, 
+                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines, 
+                      GROUP_CONCAT(DISTINCT d.id_discipline) AS discipline_ids,
+                      GROUP_CONCAT(DISTINCT p.nom) AS pays, 
+                      GROUP_CONCAT(DISTINCT reg.nom) AS regions,
+                      GROUP_CONCAT(DISTINCT reg.id) AS region_ids
+                FROM savoirs_record r 
+                LEFT JOIN savoirs_record_disciplines rd ON rd.record_id = r.id 
+                LEFT JOIN discipline d ON d.id_discipline = rd.discipline_id 
+                LEFT JOIN savoirs_record_pays rp ON rp.record_id = r.id 
+                LEFT JOIN ref_pays p ON p.id = rp.pays_id 
+                LEFT JOIN savoirs_record_regions rr ON rr.record_id = r.id 
+                LEFT JOIN ref_region reg ON reg.id = rr.region_id OR reg.id = p.region 
+                LEFT JOIN savoirs_record_listsets rl ON rl.record_id = r.id
+                LEFT JOIN savoirs_listset l ON l.spec = rl.listset_id
+                WHERE r.validated AND (l.spec IS NULL OR l.validated)
+                GROUP BY r.id''',
+            sql_query_info='SELECT * from savoirs_record WHERE id=$id',
+            sql_attr_multi=['discipline_ids', 'region_ids']
+            )
+
+emit_source('savoirsenpartage_actualites',
+            '''SELECT a.id_actualite AS id, 
+                      a.titre_actualite AS titre, 
+                      a.texte_actualite AS texte, 
+                      TO_DAYS(a.date_actualite) AS date,
+                      GROUP_CONCAT(DISTINCT r.nom) AS regions, 
+                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines
+               FROM actualite a 
+               LEFT JOIN actualite_regions ar ON ar.actualite_id = a.id_actualite 
+               LEFT JOIN ref_region r ON r.id = ar.region_id 
+               LEFT JOIN actualite_disciplines ad ON ad.actualite_id = a.id_actualite 
+               LEFT JOIN discipline d ON d.id_discipline = ad.discipline_id
+               WHERE a.visible_actualite
+               GROUP BY a.id_actualite''',
+            sql_query_info='SELECT * from actualite WHERE id_actualite=$id',
+            sql_attr_uint=['date']
+           )
+
+emit_source('savoirsenpartage_evenements',
+            '''SELECT e.id AS id,
+                      e.titre AS titre,
+                      e.mots_cles AS mots_cles,
+                      e.type AS type,
+                      e.lieu AS lieu,
+                      e.description AS description,
+                      e.contact AS contact,
+                      CONCAT_WS(',', d.nom_discipline, d2.nom_discipline) AS disciplines,
+                      GROUP_CONCAT(DISTINCT r.nom) AS regions,
+                      TO_DAYS(DATE(e.debut)) AS debut
+               FROM savoirs_evenement e
+               LEFT JOIN discipline d ON d.id_discipline = e.discipline_id
+               LEFT JOIN discipline d2 ON d2.id_discipline = e.discipline_secondaire_id
+               LEFT JOIN savoirs_evenement_regions er ON er.evenement_id = e.id
+               LEFT JOIN ref_region r ON r.id = er.region_id
+               WHERE e.approuve
+               GROUP BY e.id''',
+            sql_query_info='SELECT * from savoirs_evenement WHERE id=$id',
+            sql_attr_uint=['debut'])
+            
+emit_source('savoirsenpartage_chercheurs',
+            '''SELECT c.id AS id,
+                      p.nom AS nom,
+                      p.prenom AS prenom,
+                      c.theme_recherche AS theme_recherche,
+                      c.groupe_recherche AS groupe_recherche,
+                      c.mots_cles AS mots_cles,
+                      c.membre_association_francophone_details AS membre_association_francophone_details,
+                      c.membre_reseau_institutionnel_details AS membre_reseau_institutionnel_details,
+                      c.expert_oif_details AS expert_oif_details,
+                      c.membre_instance_auf_details AS membre_instance_auf_details,
+                      IFNULL(et.nom, etablissement_autre_nom) AS etablissement,
+                      pays.nom AS pays,
+                      pays.id AS pays_id,
+                      r.nom AS region,
+                      r.id AS region_id,
+                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
+                      GROUP_CONCAT(DISTINCT pub.titre) AS publications,
+                      t.titre AS these,
+                      GROUP_CONCAT(DISTINCT g.nom) AS groupes,
+                      GROUP_CONCAT(DISTINCT ex.nom) AS expertises,
+                      GROUP_CONCAT(DISTINCT g.id) AS groupe_ids,
+                      TO_DAYS(c.date_modification) AS date_modification,
+                      CASE pays WHEN 'Nord' THEN 1 
+                                WHEN 'Sud' THEN 2 
+                                END AS nord_sud,
+                      CASE statut WHEN 'enseignant' THEN 1
+                                  WHEN 'etudiant' THEN 2
+                                  WHEN 'independant' THEN 3
+                                  END AS statut,
+                      (ex.id IS NULL) AS expert
+               FROM chercheurs_chercheur c
+               INNER JOIN chercheurs_personne p ON c.personne = p.id
+               LEFT JOIN ref_etablissement et ON et.id = c.etablissement
+               LEFT JOIN ref_pays pays ON pays.id = IFNULL(et.pays, c.etablissement_autre_pays)
+               LEFT JOIN ref_region r ON pays.region = r.id
+               LEFT JOIN discipline d ON d.id_discipline = c.discipline
+               LEFT JOIN chercheurs_publication pub ON pub.chercheur_id = c.id
+               LEFT JOIN chercheurs_these t ON t.chercheur_id = c.id
+               LEFT JOIN chercheurs_chercheurgroupe cg ON cg.chercheur = c.id
+               LEFT JOIN chercheurs_groupe g ON g.id = cg.groupe
+               LEFT JOIN chercheurs_expertise ex ON ex.chercheur_id = c.id
+               GROUP BY c.id''',
+            sql_query_info='SELECT * from chercheurs_chercheur WHERE id=$id',
+            sql_attr_multi=['groupe_ids'],
+            sql_attr_uint=['pays_id', 'region_id', 'nord_sud', 'date_modification', 'statut', 'expert'])
+                      
+emit_source('savoirsenpartage_sites',
+            '''SELECT s.id AS id,
+                      s.titre AS titre,
+                      s.description AS description,
+                      s.editeur AS editeur,
+                      s.auteur AS auteur,
+                      s.mots_cles AS mots_cles,
+                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
+                      GROUP_CONCAT(DISTINCT p.nom) AS pays,
+                      GROUP_CONCAT(DISTINCT p.id) AS pays_ids,
+                      GROUP_CONCAT(DISTINCT r.nom) AS regions,
+                      TO_DAYS(s.date_maj) AS date_maj
+               FROM sitotheque_site s
+               LEFT JOIN sitotheque_site_discipline sd ON sd.site_id = s.id
+               LEFT JOIN discipline d ON d.id_discipline = sd.discipline_id
+               LEFT JOIN ref_pays p ON p.id = s.pays
+               LEFT JOIN ref_region r ON r.id = p.region
+               GROUP BY s.id''',
+            'SELECT * FROM sitotheque_site WHERE id=$id',
+            sql_attr_multi=['pays_ids'],
+            sql_attr_uint=['date_maj']
+           )
+
+emit_index('savoirsenpartage_actualites')
+emit_index('savoirsenpartage_ressources')
+emit_index('savoirsenpartage_evenements')
+emit_index('savoirsenpartage_chercheurs')
+emit_index('savoirsenpartage_sites')

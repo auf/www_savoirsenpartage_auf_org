@@ -2,6 +2,8 @@
 import urllib, httplib, time, simplejson, pprint, math, re
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils.safestring import mark_safe
+from django.utils.text import truncate_words
 from auf_savoirs_en_partage.backend_config import RESOURCES
 from sep import SEP
 from utils import smart_str
@@ -182,7 +184,7 @@ def build_search_regexp(query):
 
         # Faire ceci après avoir traité les caractères accentués...
         part = part.replace('a', u'[aàâÀÂ]')
-        part = part.replace('e', u'[eéèëêÉÊ]')
+        part = part.replace('e', u'[eéèëêÉÊÈ]')
         part = part.replace('i', u'[iïîÎ]')
         part = part.replace('o', u'[oôÔ]')
         part = part.replace('u', u'[uûüù]')
@@ -190,3 +192,31 @@ def build_search_regexp(query):
 
         parts.append(part)
     return re.compile('|'.join(parts), re.I) 
+
+EXACT_PHRASE_RE = re.compile(r'"([^"]*?)"')
+def excerpt_function(manager, words):
+    """Construit une fonction qui extrait la partie pertinente d'un texte
+       suite à une recherche textuelle."""
+    if not words:
+        return lambda x: truncate_words(x, 50)
+    qs = manager.get_sphinx_query_set()
+    client = qs._get_sphinx_client()
+    index = qs._index
+    phrases = EXACT_PHRASE_RE.findall(words)
+    keywords = EXACT_PHRASE_RE.sub('', words).strip()
+
+    def excerpt(text):
+        # On essaie de gérer à peu près correctement les phrases exactes. La
+        # vraie solution serait d'utiliser Sphinx 1.10 beta1 et son option
+        # "query_mode", mais c'est plus de trouble. Peut-être plus tard?
+        excerpt = text
+        for phrase in phrases:
+            excerpt = client.BuildExcerpts([excerpt], index, phrase, 
+                                           opts=dict(exact_phrase=True, limit=500, single_passage=True))[0]
+        if keywords:
+            excerpt = client.BuildExcerpts([excerpt], index, keywords, 
+                                           opts=dict(limit=500, single_passage=True))[0]
+        return mark_safe(excerpt)
+
+    return excerpt
+

@@ -1,14 +1,14 @@
-{% load search %}
+{% load sep %}
 
 <div class="resultatRecherche">
     <div class="titre">
-        <a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{{ ressource.title|highlight:search_regexp }}</a>
+        <a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{{ ressource.title|apply:excerpt }}</a>
     </div>
     {% if ressource.creator %}
-    <div><span class="label">Auteur:</span> {{ ressource.creator|highlight:search_regexp }}</div>
+    <div><span class="label">Auteur:</span> {{ ressource.creator|apply:excerpt }}</div>
     {% endif %}
     {% if ressource.description %}
-    <div><span class="label">Résumé:</span> {{ ressource.description|excerpt:search_regexp|highlight:search_regexp }}</div>
+    <div><span class="label">Résumé:</span> {{ ressource.description|apply:excerpt }}</div>
     {% endif %}
     <div class="details">
         <div><span>Fiche: </span><a href="{% url savoirs.views.ressource_retrieve ressource.id %}">{% url savoirs.views.ressource_retrieve ressource.id %}</a></div>

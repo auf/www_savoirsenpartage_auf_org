@@ -124,7 +124,7 @@ tr.odd { background:#ddd; }
 
 /* Styles inline */
 
-.label { color: grey; font-weight: bold; width: 150px; }
+.label { font-weight: bold; width: 150px; }
 
 /* Page d'accueil */
 

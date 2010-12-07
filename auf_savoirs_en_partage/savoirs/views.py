@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
 from django import forms
 from django.conf import settings
-from lib.recherche import google_search, build_search_regexp
+from lib.recherche import google_search, excerpt_function
 from lib import sep
 from lib.calendrier import evenements, evenement_info, combine
 from savoirs.globals import configuration
@@ -27,11 +27,30 @@ from sitotheque.models import Site
 
 def index(request, discipline=None, region=None):
     """Page d'accueil"""
-    actualites = Actualite.objects.filter(visible=True).filter_discipline(discipline).filter_region(region).order_by('-date')[:4]
-    evenements = Evenement.objects.filter(approuve=True).filter_discipline(discipline).filter_region(region).order_by('-debut')[:4]
-    ressources = Record.objects.validated().filter_discipline(discipline).filter_region(region).order_by('-id')[:4]
-    chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).order_by('-date_modification')[:10]
-    sites = Site.objects.filter_discipline(discipline).filter_region(region).order_by('-date_maj')[:4]
+    actualites = Actualite.objects
+    evenements = Evenement.objects
+    ressources = Record.objects
+    chercheurs = Chercheur.objects
+    sites = Site.objects
+    if discipline:
+        discipline = Discipline.objects.get(pk=discipline)
+        actualites = actualites.filter_discipline(discipline)
+        evenements = evenements.filter_discipline(discipline)
+        ressources = ressources.filter_discipline(discipline)
+        chercheurs = chercheurs.filter_discipline(discipline)
+        sites = sites.filter_discipline(discipline)
+    if region:
+        region = Region.objects.get(pk=region)
+        actualites = actualites.filter_region(region)
+        evenements = evenements.filter_region(region)
+        ressources = ressources.filter_region(region)
+        chercheurs = chercheurs.filter_region(region)
+        sites = sites.filter_region(region)
+    actualites = actualites.order_by('-date')[0:4]
+    evenements = evenements.order_by('-debut')[0:4]
+    ressources = ressources.order_by('-id')[0:4]
+    chercheurs = chercheurs.order_by('-date_modification')[0:10]
+    sites = sites.order_by('-date_maj')[0:4]
     return render_to_response(
         "savoirs/index.html",
         dict(actualites=actualites, evenements=evenements,
@@ -69,39 +88,54 @@ def recherche(request, discipline=None, region=None):
             kwargs['region'] = region
         return HttpResponseRedirect(reverse('savoirs.views.index', kwargs=kwargs))
 
-    ressources = Record.objects.validated().filter_discipline(discipline).filter_region(region).search(query)
-    actualites = Actualite.objects.filter(visible=1).filter_discipline(discipline).filter_region(region).search(query).order_by('-date')
-    evenements = Evenement.objects.filter(approuve=1).filter_discipline(discipline).filter_region(region).search(query).order_by('-debut')
-    chercheurs = Chercheur.objects.filter_discipline(discipline).filter_region(region).search(query).order_by('-date_modification')
-    sites = Site.objects.filter_discipline(discipline).filter_region(region).search(query)
+    actualites = Actualite.objects.search(query).order_by('-date')
+    evenements = Evenement.objects.search(query).order_by('-debut')
+    ressources = Record.objects.search(query)
+    chercheurs = Chercheur.objects.search(query).order_by('-date_modification')
+    sites = Site.objects.search(query)
+    if discipline:
+        discipline = Discipline.objects.get(pk=discipline)
+        actualites = actualites.filter_discipline(discipline)
+        evenements = evenements.filter_discipline(discipline)
+        ressources = ressources.filter_discipline(discipline)
+        chercheurs = chercheurs.filter_discipline(discipline)
+        sites = sites.filter_discipline(discipline)
+    if region:
+        region = Region.objects.get(pk=region)
+        actualites = actualites.filter_region(region)
+        evenements = evenements.filter_region(region)
+        ressources = ressources.filter_region(region)
+        chercheurs = chercheurs.filter_region(region)
+        sites = sites.filter_region(region)
     try:
         sites_auf = google_search(0, query)['results']
     except:
         sites_auf = []
-    search_regexp = build_search_regexp(query)
 
     # Bâtissons une query string pour les liens vers les briques
     params = {}
     if query:
         params['q'] = query
     if discipline:
-        params['discipline'] = discipline
+        params['discipline'] = unicode(discipline.id)
     if region:
-        params['region'] = region
+        params['region'] = unicode(region.id)
     if params:
         briques_query_string = mark_safe('?' + '&'.join(k + '=' + v.replace('"', '&quot;') for (k, v) in params.iteritems()))
     else:
         briques_query_string = None
         
+    excerpt = excerpt_function(Record.objects, query)
+
     return render_to_response(
         "savoirs/recherche.html",
-        dict(q=query, search_regexp=search_regexp,
-             ressources=ressources[:5], total_ressources=ressources.count(), 
-             evenements=evenements[:5], total_evenements=evenements.count(),
-             chercheurs=chercheurs[:10], total_chercheurs=chercheurs.count(),
-             actualites=actualites[:5], total_actualites=actualites.count(),
-             sites=sites[:5], total_sites=sites.count(),
-             sites_auf=sites_auf[:5], briques_query_string=briques_query_string),
+        dict(q=query, excerpt=excerpt,
+             ressources=ressources[0:5], total_ressources=ressources.count(), 
+             evenements=evenements[0:5], total_evenements=evenements.count(),
+             chercheurs=chercheurs[0:10], total_chercheurs=chercheurs.count(),
+             actualites=actualites[0:5], total_actualites=actualites.count(),
+             sites=sites[0:5], total_sites=sites.count(),
+             sites_auf=sites_auf[0:5], briques_query_string=briques_query_string),
         context_instance = RequestContext(request)
     )
 
@@ -121,12 +155,12 @@ def ressource_index(request):
     search_form = RecordSearchForm(request.GET)
     ressources = search_form.get_query_set()
     nb_resultats = ressources.count()
-    search_regexp = search_form.get_search_regexp()
+    excerpt = excerpt_function(Record.objects, search_form.cleaned_data['q'])
     return render_to_response(
         "savoirs/ressource_index.html", 
-        {'search_form': search_form, 'ressources': ressources,
-         'nb_resultats': nb_resultats, 'search_regexp': search_regexp},
-        context_instance = RequestContext(request)
+        dict(search_form=search_form, ressources=ressources,
+             nb_resultats=nb_resultats, excerpt=excerpt),
+        context_instance=RequestContext(request)
     )
 
 def ressource_retrieve(request, id):
@@ -155,11 +189,11 @@ def informations (request):
 def actualite_index(request):
     search_form = ActualiteSearchForm(request.GET)
     actualites = search_form.get_query_set()
-    search_regexp = search_form.get_search_regexp()
+    excerpt = excerpt_function(Actualite.objects, search_form.cleaned_data['q'])
     return render_to_response(
         "savoirs/actualite_index.html",
         dict(actualites=actualites, search_form=search_form,
-             search_regexp=search_regexp, nb_resultats=actualites.count()),
+             excerpt=excerpt, nb_resultats=actualites.count()),
         context_instance = RequestContext(request))
 
 def actualite(request, id):
@@ -172,11 +206,11 @@ def actualite(request, id):
 def evenement_index(request):
     search_form = EvenementSearchForm(request.GET)
     evenements = search_form.get_query_set()
-    search_regexp = search_form.get_search_regexp()
+    excerpt = excerpt_function(Evenement.objects, search_form.cleaned_data['q'])
     return render_to_response(
         "savoirs/evenement_index.html",
         dict(evenements=evenements, search_form=search_form,
-             search_regexp=search_regexp, nb_resultats=evenements.count()),
+             excerpt=excerpt, nb_resultats=evenements.count()),
         context_instance=RequestContext(request)
     )
 

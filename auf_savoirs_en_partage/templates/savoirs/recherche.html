@@ -6,44 +6,44 @@
     <h1>Résultats correspondant à «&nbsp;{{ q }}&nbsp;»</h1>
     
 {% if ressources %}
-    <h2>
-        Ressources ({{ ressources|length }} sur {{ total_ressources }})
+    <h2>Ressources ({{ ressources|length }} sur {{ total_ressources }})</h2>
+    <div class="sous-titre">
         <a class="action" href="{% url savoirs.views.ressource_index %}{{ briques_query_string }}"
-            >(Voir toutes les ressources correspondant à cette recherche)</a>
-    </h2>
+            >Voir toutes les ressources correspondant à cette recherche</a>
+    </div>
     {% for ressource in ressources %}
         {% include "savoirs/ressource_resultat.html" %} 
     {% endfor %}
 {% endif %}
 
 {% if actualites %}
-    <h2>
-        Actualités ({{ actualites|length }} sur {{ total_actualites }})
+    <h2>Actualités ({{ actualites|length }} sur {{ total_actualites }})</h2>
+    <div class="sous-titre">
         <a class="action" href="{% url savoirs.views.actualite_index %}{{ briques_query_string }}"
-            >(Voir toutes les actualités correspondant à cette recherche)</a>
-    </h2>
+            >Voir toutes les actualités correspondant à cette recherche</a>
+    </div>
     {% for actualite in actualites %}
         {% include "savoirs/actualite_resultat.html" %} 
     {% endfor %}
 {% endif %}
 
 {% if evenements %}
-    <h2>
-        Évènements ({{ evenements|length }} sur {{ total_evenements }})
+    <h2>Évènements ({{ evenements|length }} sur {{ total_evenements }})</h2>
+    <div class="sous-titre">
         <a class="action" href="{% url savoirs.views.evenement_index %}{{ briques_query_string }}"
-            >(Voir tous les évènements correspondant à cette recherche)</a>
-    </h2>
+            >Voir tous les évènements correspondant à cette recherche</a>
+    </div>
     {% for evenement in evenements %}
         {% include "savoirs/evenement_resultat.html" %}
     {% endfor %}
 {% endif %}
 
 {% if chercheurs %}
-    <h2>
-        Chercheurs ({{ chercheurs|length }} sur {{ total_chercheurs }})
+    <h2>Chercheurs ({{ chercheurs|length }} sur {{ total_chercheurs }})</h2>
+    <div class="sous-titre">
         <a class="action" href="{% url chercheurs.views.index %}{{ briques_query_string }}"
-            >(Voir tous les chercheurs correspondant à cette recherche)</a>
-    </h2>
+            >Voir tous les chercheurs correspondant à cette recherche</a>
+    </div>
     <ul>
     {% for chercheur in chercheurs %}
         <li><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></li>
@@ -52,22 +52,22 @@
 {% endif %}
 
 {% if sites %}
-    <h2>
-        Sites de la sitothèque ({{ sites|length }} sur {{ total_sites }})
+    <h2>Sites de la sitothèque ({{ sites|length }} sur {{ total_sites }})</h2>
+    <div class="sous-titre">
         <a class="action" href="{% url sitotheque.views.index %}{{ briques_query_string }}"
-            >(Voir tous les sites correspondant à cette recherche)</a>
-    </h2>
+            >Voir tous les sites correspondant à cette recherche</a>
+    </div>
     {% for site in sites %}
         {% include "sites/resultat.html" %}
     {% endfor %}
 {% endif %}
 
 {% if sites_auf %}
-    <h2>
-        Sites AUF
+    <h2>Sites AUF</h2>
+    <div class="sous-titre">
         <a class="action" href="{% url savoirs.views.sites_auf %}?q={{ q|urlencode }}"
-            >(Voir tous les sites AUF correspondant à cette recherche)</a>
-    </h2>
+            >Voir tous les sites AUF correspondant à cette recherche</a>
+    </div>
     {% for r in sites_auf %}
         {% include "savoirs/sites_auf_resultat.html" %}
     {% endfor %}
@@ -75,7 +75,7 @@
 
 {% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
     <h2>Aucun résultat</h2>
-    <p class="pad"><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
+    <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 {% endif %}
 </div>
 

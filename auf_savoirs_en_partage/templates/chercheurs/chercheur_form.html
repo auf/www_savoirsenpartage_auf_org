@@ -5,9 +5,16 @@
 {% endif %}   
 <fieldset class="horizontal-radio-buttons">
     <legend>Informations personnelles</legend>
-    {% with forms.personne as form %}
-    {% include "table_form.html" %}
-    {% endwith %}
+    <table>
+        {% form_field forms.chercheur.nom %}
+        {% form_field forms.chercheur.prenom %}
+        {% form_field forms.chercheur.courriel %}
+        {% form_field forms.chercheur.genre %}
+        {% if forms.chercheur.password %}
+        {% form_field forms.chercheur.password %}
+        {% form_field forms.chercheur.password_confirmation %}
+        {% endif %}
+    </table>
 </fieldset>
 
 <fieldset>

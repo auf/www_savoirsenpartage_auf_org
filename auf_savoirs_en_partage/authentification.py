@@ -5,7 +5,7 @@ import settings
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User as DjangoUser, check_password
 
-from chercheurs.models import Utilisateur as RemoteUser
+from chercheurs.models import Personne as RemoteUser
 
 class CascadeBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
@@ -15,7 +15,7 @@ class CascadeBackend(ModelBackend):
         # Cherche les comptes roa+locaux
         remoteUser = localUser = None
         try:
-            remoteUser = RemoteUser.objects.get(courriel=email, actif=True)
+            remoteUser = RemoteUser.objects.get(courriel=email)
             if settings.AUTH_PASSWORD_REQUIRED and not remoteUser.check_password(password):
                 remoteUser = None
         except:

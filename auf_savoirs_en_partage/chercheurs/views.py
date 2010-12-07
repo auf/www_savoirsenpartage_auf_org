@@ -14,7 +14,7 @@ from forms import *
 from django.forms.models import inlineformset_factory
 
 from auf_references_client.models import Discipline, TypeImplantation
-from models import Personne, Utilisateur, Groupe, ChercheurGroupe
+from models import Personne, Groupe, ChercheurGroupe
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -35,7 +35,7 @@ def send_password(request):
     if request.method == "POST":
         form = SendPasswordForm(data=request.POST)
         if form.is_valid():
-            u = Utilisateur.objects.get(courriel=form.cleaned_data['email'], actif=True)
+            u = Personne.objects.get(courriel=form.cleaned_data['email'])
             code = u.get_new_password_code()
             link = "%s/accounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
 
@@ -60,7 +60,7 @@ def send_password(request):
             context_instance = RequestContext(request))
             
 def new_password(request, email, code):
-    u = Utilisateur.objects.get(courriel=email, actif=True)
+    u = Personne.objects.get(courriel=email)
     original_code = u.get_new_password_code()
     message=""
     if(code == original_code):
@@ -84,7 +84,7 @@ def new_password(request, email, code):
 @login_required()            
 def change_password(request):
     context_instance = RequestContext(request)
-    u = context_instance['user_sep']
+    u = context_instance['user_chercheur']
     message = ""
     if request.method == "POST":
         form = NewPasswordForm(data=request.POST)
@@ -120,7 +120,7 @@ def chercheur_login(request):
 def index(request):
     """Répertoire des chercheurs"""
     search_form = RepertoireSearchForm(request.GET)
-    chercheurs = search_form.get_query_set().select_related('personne', 'etablissement')
+    chercheurs = search_form.get_query_set().select_related('etablissement')
     sort = request.GET.get('tri')
     if sort is not None and sort.endswith('_desc'):
         sort = sort[:-5]
@@ -128,7 +128,7 @@ def index(request):
     else:
         direction = ''
     if sort == 'nom':
-        chercheurs = chercheurs.order_by(direction + 'personne__nom', 'personne__prenom', '-date_modification')
+        chercheurs = chercheurs.order_by(direction + 'nom', 'prenom', '-date_modification')
     elif sort == 'etablissement':
         chercheurs = chercheurs.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
                                       order_by=[direction + 'nom_etablissement', '-date_modification'])
@@ -150,8 +150,8 @@ def inscription(request):
         if forms.is_valid():
             forms.save()
             # login automatique
-            login(request, authenticate(username=forms.personne.cleaned_data['courriel'], 
-                                        password=forms.personne.cleaned_data['password']))
+            login(request, authenticate(username=forms.chercheur.cleaned_data['courriel'], 
+                                        password=forms.chercheur.cleaned_data['password']))
             return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         forms = ChercheurFormGroup()
@@ -164,14 +164,14 @@ def inscription(request):
 def desinscription(request):
     """Désinscription du chercheur"""
     try:
-        chercheur = Chercheur.objects.get(personne__courriel=request.user.email, personne__actif=True)
+        chercheur = Chercheur.objects.get(courriel=request.user.email, actif=True)
     except Chercheur.DoesNotExist:
         return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
     if request.method == 'POST':
         if request.POST.get('confirmer'):
-            chercheur.personne.actif = False
-            chercheur.personne.save()
-            User.objects.filter(username=chercheur.personne.courriel).delete()
+            chercheur.actif = False
+            chercheur.save()
+            User.objects.filter(username=chercheur.courriel).delete()
             request.flash['message'] = "Vous avez été désinscrit du répertoire des chercheurs."
             return HttpResponseRedirect(url('django.contrib.auth.views.logout'))
         else:

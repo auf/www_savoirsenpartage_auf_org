@@ -9,8 +9,6 @@ from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySe
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
-
-    id = models.AutoField(primary_key=True)
     salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name='prénom')
@@ -22,15 +20,13 @@ class Personne(models.Model):
     genre = models.CharField(max_length=1, choices=GENRE_CHOICES)
     commentaire = models.TextField(verbose_name='commentaires', null=True, blank=True)
     actif = models.BooleanField(editable=False, default=True)
+    encrypted_password = models.CharField(db_column='password', max_length=35, verbose_name='Mot de passe')
 
     def __unicode__(self):
         return u"%s %s, %s" % (self.prenom, self.nom, self.courriel)
 
     class Meta:
-        ordering = ["prenom", "nom"]
-
-class Utilisateur(Personne):
-    encrypted_password = models.CharField(db_column='password', max_length=35, verbose_name = 'Mot de passe')
+        ordering = ["nom", "prenom"]
 
     def set_password(self, clear_password):
         self.encrypted_password = self.encrypt_password(clear_password)
@@ -115,12 +111,9 @@ class ChercheurManager(SEPManager):
         return self.get_query_set().filter_expert()
 
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
-class Chercheur(models.Model):
-    id = models.AutoField(primary_key=True, db_column='id')
-    personne = models.ForeignKey('Personne', db_column='personne', editable=False)
+class Chercheur(Personne):
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
-    #fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
     diplome = models.CharField(max_length=255, null=True, verbose_name = 'diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
@@ -179,7 +172,7 @@ class Chercheur(models.Model):
     all_objects = models.Manager()
 
     def __unicode__(self):
-        return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
+        return u"%s %s" % (self.nom.upper(), self.prenom.title())
         
     def statut_display(self):
         for s in STATUT_CHOICES:

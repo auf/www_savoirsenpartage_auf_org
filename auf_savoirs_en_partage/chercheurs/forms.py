@@ -8,45 +8,9 @@ from models import *
 
 OUI_NON_CHOICES = (('1', 'Oui'), ('0', 'Non'))
 
-class PersonneForm(forms.ModelForm):
-    genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
-
-    class Meta:
-        model = Utilisateur
-        fields = ('nom', 'prenom', 'courriel', 'genre')
-        
-    def clean_courriel(self):
-        """On veut s'assurer qu'il n'y ait pas d'autre utilisateur actif
-           avec le même courriel."""
-        courriel = self.cleaned_data['courriel']
-        existing = Personne.objects.filter(courriel=courriel, actif=True)
-        if self.instance and self.instance.id:
-            existing = existing.exclude(id=self.instance.id)
-        if existing.count():
-            raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
-        return courriel
-        
-class PersonneInscriptionForm(PersonneForm):
-    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
-    password_confirmation = forms.CharField(widget=forms.PasswordInput(), label="Confirmez votre mot de passe")
-
-    class Meta(PersonneForm.Meta):
-        fields = ('nom', 'prenom', 'courriel', 'password', 'password_confirmation', 'genre')
-        
-    def clean_password_confirmation(self):
-        """S'assurer que le mot de passe et la confirmation sont identiques."""
-        password = self.cleaned_data.get('password')
-        confirmation = self.cleaned_data.get('password_confirmation')
-        if password != confirmation:
-            raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')
-        return confirmation
-
-    def save(self):
-        self.instance.set_password(self.cleaned_data['password'])
-        return super(PersonneInscriptionForm, self).save()
-
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
+    genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
     membre_instance_auf = forms.ChoiceField(
         label="Êtes-vous (ou avez-vous déjà été) membre d'une instance de l'AUF?",
         help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
@@ -92,7 +56,8 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('statut', 'diplome', 'discipline', 'theme_recherche',
+        fields = ('nom', 'prenom', 'courriel', 'genre',
+                  'statut', 'diplome', 'discipline', 'theme_recherche',
                   'groupe_recherche', 'mots_cles', 'url_site_web',
                   'url_blog', 'url_reseau_social', 'attestation',
                   'membre_instance_auf', 'membre_instance_auf_details',
@@ -131,6 +96,17 @@ class ChercheurForm(forms.ModelForm):
             self.instance.etablissement_autre_pays = pays_etablissement
         super(ChercheurForm, self).save()
 
+    def clean_courriel(self):
+        """On veut s'assurer qu'il n'y ait pas d'autre utilisateur actif
+           avec le même courriel."""
+        courriel = self.cleaned_data['courriel']
+        existing = Chercheur.objects.filter(courriel=courriel, actif=True)
+        if self.instance and self.instance.id:
+            existing = existing.exclude(id=self.instance.id)
+        if existing.count():
+            raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
+        return courriel
+        
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
     
@@ -195,6 +171,25 @@ class ChercheurForm(forms.ModelForm):
     def clean_expertises_auf(self):
         return bool(int(self.cleaned_data['expertises_auf']))
 
+class ChercheurInscriptionForm(ChercheurForm):
+    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
+    password_confirmation = forms.CharField(widget=forms.PasswordInput(), label="Confirmez votre mot de passe")
+
+    class Meta(ChercheurForm.Meta):
+        fields = ChercheurForm.Meta.fields + ('password',)
+        
+    def clean_password_confirmation(self):
+        """S'assurer que le mot de passe et la confirmation sont identiques."""
+        password = self.cleaned_data.get('password')
+        confirmation = self.cleaned_data.get('password_confirmation')
+        if password != confirmation:
+            raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')
+        return confirmation
+
+    def save(self):
+        self.instance.set_password(self.cleaned_data['password'])
+        return super(ChercheurInscriptionForm, self).save()
+
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
     groupes = forms.ModelMultipleChoiceField(
@@ -249,37 +244,33 @@ class ChercheurFormGroup(object):
        d'un chercheur."""
 
     def __init__(self, data=None, chercheur=None):
-        personne_form_class = PersonneInscriptionForm if chercheur is None else PersonneForm
-        self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
+        chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
+        self.chercheur = chercheur_form_class(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
-        self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne.utilisateur)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)
         self.these = TheseForm(data=data, prefix='these', instance=chercheur and chercheur.these)
         self.publications = PublicationFormSet(data=data, prefix='publication', instance=chercheur)
 
     @property
     def has_errors(self):
-        return bool(self.chercheur.errors or self.personne.errors or self.groupes.errors or
-                    self.these.errors or self.publications.errors or self.expertises.errors)
+        return bool(self.chercheur.errors or self.groupes.errors or
+                    self.these.errors or self.publications.errors or
+                    self.expertises.errors)
 
     def is_valid(self):
-        return self.chercheur.is_valid() and self.personne.is_valid() and self.groupes.is_valid() and \
-               self.these.is_valid() and self.publications.is_valid() and self.expertises.is_valid()
+        return self.chercheur.is_valid() and self.groupes.is_valid() and \
+               self.these.is_valid() and self.publications.is_valid() and \
+               self.expertises.is_valid()
 
     def save(self):
         if self.is_valid():
 
-            chercheur = self.chercheur.instance
-
-            # Enregistrer d'abord les clés étrangères car on doit les stocker dans
-            # l'objet chercheur.
-            chercheur.personne = self.personne.save()
-
-            # Puis enregistrer le chercheur lui-même.
+            # Enregistrer d'abord le chercheur lui-même.
             self.chercheur.save()
 
             # Puis les objets qui ont des clés étrangères vers nous
             # puisqu'on a besoin d'un id.
+            chercheur = self.chercheur.instance
             self.groupes.chercheur = chercheur
             self.groupes.save()
             self.these.instance.chercheur = chercheur
@@ -351,7 +342,7 @@ class SendPasswordForm(forms.Form):
         email = cleaned_data.get("email")
         if email:
             try:
-                Utilisateur.objects.get(courriel=email, actif=True)
+                Personne.objects.get(courriel=email)
             except:
                 raise forms.ValidationError("Cette adresse n'existe pas dans notre base de données.")       
         return email

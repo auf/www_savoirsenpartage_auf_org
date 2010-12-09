@@ -26,7 +26,10 @@
         </tr>
         {% if chercheur.these %}
         <tr>
-            <td class="label">Thèse ou mémoire:</td>
+            <td>
+                <div class="label">Thèse:</div>
+                (ou tout autre travail de recherche &#8212; mémoire, HDR, etc. &#8212; encadré par un universitaire)
+            </td>
             <td>
                 {% if chercheur.these.url %}
                 <i><a href="{{ chercheur.these.url }}">{{ chercheur.these.titre }}</a></i>,

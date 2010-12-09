@@ -128,14 +128,11 @@ def index(request):
     else:
         direction = ''
     if sort == 'nom':
-        chercheurs = chercheurs.order_by(direction + 'nom', 'prenom', '-date_modification')
+        chercheurs = chercheurs.order_by_nom(direction)
     elif sort == 'etablissement':
-        chercheurs = chercheurs.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
-                                      order_by=[direction + 'nom_etablissement', '-date_modification'])
+        chercheurs = chercheurs.order_by_etablissement(direction)
     elif sort == 'pays':
-        chercheurs = chercheurs.extra(select=dict(
-            pays_etablissement='(SELECT nom FROM ref_pays WHERE ref_pays.code = IFNULL(ref_etablissement.pays, chercheurs_chercheur.etablissement_autre_pays))' 
-        ), order_by=[direction + 'pays_etablissement', '-date_modification'])
+        chercheurs = chercheurs.order_by_pays(direction)
     else:
         chercheurs = chercheurs.order_by('-date_modification')
 

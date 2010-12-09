@@ -227,7 +227,7 @@ def evenement(request, id):
 def evenement_ajout(request):
     template = "savoirs/evenement_ajout.html"
     if request.method == "POST":
-        form = EvenementForm(request.POST)
+        form = EvenementForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             template = "savoirs/evenement_confirmation.html"

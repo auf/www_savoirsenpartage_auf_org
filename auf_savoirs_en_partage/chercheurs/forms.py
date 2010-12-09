@@ -245,10 +245,14 @@ class ChercheurFormGroup(object):
 
     def __init__(self, data=None, chercheur=None):
         chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
+        try:
+            these = chercheur and chercheur.these
+        except These.DoesNotExist:
+            these = These()
         self.chercheur = chercheur_form_class(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)
-        self.these = TheseForm(data=data, prefix='these', instance=chercheur and chercheur.these)
+        self.these = TheseForm(data=data, prefix='these', instance=these)
         self.publications = PublicationFormSet(data=data, prefix='publication', instance=chercheur)
 
     @property

@@ -1,0 +1,16 @@
+Ce répertoire contient des migrations datées de la base de données de Savoirs en
+partage. Pour mettre un système à jour, repérez la date de la dernière mise à
+jour dans la liste ci-bas, puis appliquez les migrations en les envoyant
+simplement à un client mysql. Par exemple:
+
+    $ cat migration1.sql migration2.sql migration3.sql | mysql
+
+Finalement, mettez à jour la date de la mise à jour pour votre système dans ce
+fichier.
+
+Dernières mises à jour
+======================
+
+DEV:  2010-12-07
+TEST: 2010-12-06
+PROD: 2010-12-06

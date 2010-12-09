@@ -234,16 +234,12 @@ class EvenementManager(SEPManager):
         return self.get_query_set().filter_debut(min=min, max=max)
 
 def build_time_zone_choices(pays=None):
-    fr_names = set()
     timezones = pytz.country_timezones[pays] if pays else pytz.common_timezones
     result = []
     now = datetime.datetime.now()
     for tzname in timezones:
         tz = pytz.timezone(tzname)
         fr_name = get_timezone_name(tz, locale='fr_FR')
-        if fr_name in fr_names:
-            continue
-        fr_names.add(fr_name)
         offset = tz.utcoffset(now)
         seconds = offset.seconds + offset.days * 86400
         (hours, minutes) = divmod(seconds // 60, 60)
@@ -322,8 +318,8 @@ class Evenement(models.Model):
         """Sauvegarde l'objet dans django et le synchronise avec caldav s'il a été
         approuvé"""
         self.clean()
-        self.update_vevent()
         super(Evenement, self).save(*args, **kwargs)
+        self.update_vevent()
 
     # methodes de commnunications avec CALDAV
     def as_ical(self,):

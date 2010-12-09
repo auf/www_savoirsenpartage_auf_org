@@ -91,10 +91,10 @@ def import_all ():
         try:
             nodes = harvester.harvest (options)
         except:
-            print "Exception:"
-            print '-'*60
-            traceback.print_exc(file=sys.stdout)
-            print '-'*60
+            print >> sys.stderr, "Exception:"
+            print >> sys.stderr, '-'*60
+            traceback.print_exc(file=sys.stderr)
+            print >> sys.stderr, '-'*60
             nodes = []
 
         added = updated = 0

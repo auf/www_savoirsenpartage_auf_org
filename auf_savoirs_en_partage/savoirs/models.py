@@ -322,8 +322,8 @@ class Evenement(models.Model):
         """Sauvegarde l'objet dans django et le synchronise avec caldav s'il a été
         approuvé"""
         self.clean()
-        self.update_vevent()
         super(Evenement, self).save(*args, **kwargs)
+        self.update_vevent()
 
     # methodes de commnunications avec CALDAV
     def as_ical(self,):

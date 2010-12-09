@@ -33,7 +33,8 @@ def multiline(s):
     """Place un marqueur de continuation avant chaque saut de ligne."""
     return s.replace("\n", "\\\n")
 
-def emit_source(name, sql_query, sql_query_info=None, sql_attr_multi=None, sql_attr_uint=None):
+def emit_source(name, sql_query, sql_query_info=None, sql_attr_multi=None, sql_attr_uint=None,
+                sql_attr_str2ordinal=None):
     print '''
 source %%(name)s
 {
@@ -59,6 +60,10 @@ source %%(name)s
         for attr in sql_attr_uint:
             print '    sql_attr_uint = ' + attr
     
+    if sql_attr_str2ordinal:
+        for attr in sql_attr_str2ordinal:
+            print '    sql_attr_str2ordinal = ' + attr
+
     print '}'
 
 def emit_index(name):
@@ -150,6 +155,7 @@ emit_source('savoirsenpartage_chercheurs',
             '''SELECT c.id AS id,
                       p.nom AS nom,
                       p.prenom AS prenom,
+                      CONCAT(p.nom, ' ', p.prenom) AS nom_complet,
                       c.theme_recherche AS theme_recherche,
                       c.groupe_recherche AS groupe_recherche,
                       c.mots_cles AS mots_cles,
@@ -158,7 +164,9 @@ emit_source('savoirsenpartage_chercheurs',
                       c.expert_oif_details AS expert_oif_details,
                       c.membre_instance_auf_details AS membre_instance_auf_details,
                       IFNULL(et.nom, etablissement_autre_nom) AS etablissement,
+                      IFNULL(et.nom, etablissement_autre_nom) AS etablissement_attr,
                       pays.nom AS pays,
+                      pays.nom AS pays_attr,
                       pays.id AS pays_id,
                       r.nom AS region,
                       r.id AS region_id,
@@ -180,7 +188,7 @@ emit_source('savoirsenpartage_chercheurs',
                FROM chercheurs_chercheur c
                INNER JOIN chercheurs_personne p ON c.personne = p.id
                LEFT JOIN ref_etablissement et ON et.id = c.etablissement
-               LEFT JOIN ref_pays pays ON pays.id = IFNULL(et.pays, c.etablissement_autre_pays)
+               LEFT JOIN ref_pays pays ON pays.code = IFNULL(et.pays, c.etablissement_autre_pays)
                LEFT JOIN ref_region r ON pays.region = r.id
                LEFT JOIN discipline d ON d.id_discipline = c.discipline
                LEFT JOIN chercheurs_publication pub ON pub.chercheur_id = c.id
@@ -191,7 +199,8 @@ emit_source('savoirsenpartage_chercheurs',
                GROUP BY c.id''',
             sql_query_info='SELECT * from chercheurs_chercheur WHERE id=$id',
             sql_attr_multi=['groupe_ids'],
-            sql_attr_uint=['pays_id', 'region_id', 'nord_sud', 'date_modification', 'statut', 'expert'])
+            sql_attr_uint=['pays_id', 'region_id', 'nord_sud', 'date_modification', 'statut', 'expert'],
+            sql_attr_str2ordinal=['nom_complet', 'etablissement_attr', 'pays_attr'])
                       
 emit_source('savoirsenpartage_sites',
             '''SELECT s.id AS id,

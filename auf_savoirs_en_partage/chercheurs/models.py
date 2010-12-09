@@ -64,12 +64,24 @@ class ChercheurQuerySet(SEPQuerySet):
     def filter_expert(self):
         return self.exclude(expertises=None)
 
+    def order_by_nom(self, direction=''):
+        return self.order_by(direction + 'personne__nom', direction + 'personne__prenom', '-date_modification')
+
+    def order_by_etablissement(self, direction=''):
+        return self.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
+                                      order_by=[direction + 'nom_etablissement', '-date_modification'])
+
+    def order_by_pays(self, direction=''):
+        return self.extra(select=dict(
+            pays_etablissement='''(SELECT nom FROM ref_pays 
+                                   WHERE ref_pays.code = IFNULL(ref_etablissement.pays, chercheurs_chercheur.etablissement_autre_pays))'''
+        ), order_by=[direction + 'pays_etablissement', '-date_modification'])
+
 class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
         return SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_chercheurs',
-                                          weights=dict(nom=2, prenom=2))
-
+                                          weights=dict(nom=2, prenom=2)) 
     def filter_region(self, region):
         return self.filter(region_id=region.id)
 
@@ -86,6 +98,15 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
     STATUT_CODES = {'enseignant': 1, 'etudiant': 2, 'independant': 3}
     def filter_statut(self, statut):
         return self.filter(statut=self.STATUT_CODES[statut])
+
+    def order_by_nom(self, direction=''):
+        return self.order_by(direction + 'nom_complet', '-date_modification')
+
+    def order_by_etablissement(self, direction=''):
+        return self.order_by(direction + 'etablissement_attr', '-date_modification')
+
+    def order_by_pays(self, direction=''):
+        return self.order_by(direction + 'pays_attr', '-date_modification')
 
 class ChercheurManager(SEPManager):
 
@@ -113,6 +134,15 @@ class ChercheurManager(SEPManager):
 
     def filter_expert(self):
         return self.get_query_set().filter_expert()
+
+    def order_by_nom(self, direction=''):
+        return self.get_query_set().order_by_nom(self, direction=direction)
+
+    def order_by_etablissement(self, direction=''):
+        return self.get_query_set().order_by_etablissement(self, direction=direction)
+
+    def order_by_pays(self, direction=''):
+        return self.get_query_set().order_by_pays(self, direction=direction)
 
 STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
 class Chercheur(models.Model):

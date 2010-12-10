@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import hashlib
+from chercheurs.decorators import chercheur_required
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
@@ -42,22 +43,19 @@ def send_password(request):
             variables = { 'user': u,
                           'link': link,
                           'SITE_ROOT_URL': settings.SITE_ROOT_URL,
-                          'CONTACT_EMAIL': settings.CONTACT_EMAIL,
-                }     
+                          'CONTACT_EMAIL': settings.CONTACT_EMAIL }
             t = get_template('accounts/email_password.html')
-            content = t.render(Context(variables)) 
+            content = t.render(variables)
             
             send_mail('Savoirs en partage: changement de mot de passe',
-                    content, settings.CONTACT_EMAIL,
-                [u.courriel], fail_silently=False)
+                      content, settings.CONTACT_EMAIL,
+                      [u.courriel], fail_silently=False)
     else:
         form = SendPasswordForm()
-    
-    variables = { 'form': form,
-                }
-    return render_to_response ("accounts/send_password.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+
+    return render_to_response("accounts/send_password.html",
+                              dict(form=form), 
+                              context_instance=RequestContext(request))
             
 def new_password(request, email, code):
     u = Personne.objects.get(courriel=email)
@@ -74,23 +72,18 @@ def new_password(request, email, code):
             form = NewPasswordForm()
     else:
         return HttpResponseRedirect('/')
-    variables = { 'form': form,
-                  'message': message,
-                }
-    return render_to_response ("accounts/new_password.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))
+    return render_to_response("accounts/new_password.html",
+                              dict(form=form, message=message),
+                              context_instance=RequestContext(request))
 
-@login_required()            
+@login_required          
 def change_password(request):
-    context_instance = RequestContext(request)
-    u = context_instance['user_chercheur']
     message = ""
     if request.method == "POST":
         form = NewPasswordForm(data=request.POST)
         if form.is_valid():
-            u.set_password(form.cleaned_data['password'])
-            u.save()
+            request.user.set_password(form.cleaned_data['password'])
+            request.user.save()
             message = "Votre mot de passe a été modifié."
     else:
         form = NewPasswordForm()
@@ -101,22 +94,6 @@ def change_password(request):
             Context (variables), 
             context_instance = RequestContext(request))            
              
-def chercheur_login(request):
-    "Displays the login form and handles the login action."
-    if request.method == "POST":
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            from django.contrib.auth import login
-            login(request, form.get_user())
-            if request.session.test_cookie_worked():
-                request.session.delete_test_cookie()
-            return HttpResponseRedirect(url('chercheurs.views.perso'))
-    else:
-        form = AuthenticationForm(request)
-    request.session.set_test_cookie()
-    return render_to_response('accounts/login.html', dict(form=form),
-                              context_instance=RequestContext(request))
-    
 def index(request):
     """Répertoire des chercheurs"""
     search_form = RepertoireSearchForm(request.GET)
@@ -157,13 +134,10 @@ def inscription(request):
                               dict(forms=forms),
                               context_instance=RequestContext(request))
 
-@login_required()
+@chercheur_required
 def desinscription(request):
     """Désinscription du chercheur"""
-    try:
-        chercheur = Chercheur.objects.get(courriel=request.user.email, actif=True)
-    except Chercheur.DoesNotExist:
-        return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
+    chercheur = request.chercheur
     if request.method == 'POST':
         if request.POST.get('confirmer'):
             chercheur.actif = False
@@ -177,12 +151,11 @@ def desinscription(request):
     return render_to_response("chercheurs/desinscription.html", {},
                               context_instance=RequestContext(request))
 
-@login_required()
+@chercheur_required
 @never_cache
 def edit(request):
     """Edition d'un chercheur"""
-    context_instance = RequestContext(request)
-    chercheur = context_instance['user_chercheur']    
+    chercheur = request.chercheur
     if request.method == 'POST':
         forms = ChercheurFormGroup(request.POST, chercheur=chercheur)
         if forms.is_valid():
@@ -195,17 +168,14 @@ def edit(request):
                               dict(forms=forms, chercheur=chercheur),
                               context_instance=RequestContext(request))
             
-@login_required()
+@chercheur_required
 def perso(request):
     """Espace chercheur (espace personnel du chercheur)"""
-    context_instance = RequestContext(request)
-    chercheur = context_instance['user_chercheur']
+    chercheur = request.chercheur
     modification = request.GET.get('modification')
-    if not chercheur:
-        return HttpResponseRedirect(url('chercheurs.views.chercheur_login'))
     return render_to_response("chercheurs/perso.html",
                               dict(chercheur=chercheur, modification=modification),
-                              context_instance=context_instance)
+                              context_instance=RequestContext(request))
             
 def retrieve(request, id):
     """Fiche du chercheur"""

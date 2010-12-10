@@ -69,7 +69,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
     (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),
-    (r'^accounts/login/$', 'chercheurs.views.chercheur_login'),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
     (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
     (r'^etablissements/autocomplete/$', 'chercheurs.views.etablissements_autocomplete'),

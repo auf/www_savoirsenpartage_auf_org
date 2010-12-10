@@ -187,8 +187,9 @@ class ChercheurInscriptionForm(ChercheurForm):
         return confirmation
 
     def save(self):
-        self.instance.set_password(self.cleaned_data['password'])
-        return super(ChercheurInscriptionForm, self).save()
+        super(ChercheurInscriptionForm, self).save()
+        self.instance.user.set_password(self.cleaned_data['password'])
+        self.instance.user.save()
 
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""

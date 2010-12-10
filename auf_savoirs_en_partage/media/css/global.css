@@ -114,6 +114,8 @@ form ul.errorlist li { list-style:none; }
 .add-row { font-size: 90%; float:right; margin-right:16px }
 .edit-publication { font-size: 90%; position: absolute; bottom: 5px; right: 5px; cursor: pointer; }
 
+.form-errors { margin: 10px 0px; background: #f3e3e7; color: #b03d5e; padding: 1em; font-size: 120%;
+               border: 1px solid #b03d5e; }
 /* Tables */
 
 table { width: 100%; }

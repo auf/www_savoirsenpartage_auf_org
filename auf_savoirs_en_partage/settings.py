@@ -39,6 +39,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'chercheurs.middleware.ChercheurMiddleware',
     'djangoflash.middleware.FlashMiddleware',
     'pagination.middleware.PaginationMiddleware',
     'django.middleware.doc.XViewMiddleware',
@@ -66,7 +67,6 @@ INSTALLED_APPS = (
     'datamaster_modeles'
 )
 
-
 TEMPLATE_CONTEXT_PROCESSORS = (
     # default : http://docs.djangoproject.com/en/dev/ref/settings/?from=olddocs#template-context-processors
     "django.core.context_processors.auth",
@@ -74,7 +74,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django.core.context_processors.request",
-    "context_processors.user_chercheur",
     "context_processors.discipline_region",
     "djangoflash.context_processors.flash"
 )
@@ -88,17 +87,14 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
-AUTHENTICATION_BACKENDS = (
-    'authentification.CascadeBackend',
-)
+AUTHENTICATION_BACKENDS = ('authentification.PersonneBackend',)
+LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 
 CACHE_BACKEND = 'memcached://localhost:11211'
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 
 ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashboard'
-
-AUTH_PROFILE_MODULE = 'savoirs.Profile'
 
 CONTACT_EMAIL = 'contact-savoirsenpartage@auf.org'
 

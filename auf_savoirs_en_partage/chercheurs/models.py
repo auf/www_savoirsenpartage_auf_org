@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
 import hashlib
+from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import *
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
@@ -9,6 +11,7 @@ from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySe
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
+    user = models.OneToOneField(User, null=True, editable=False)
     salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name='prénom')
@@ -20,7 +23,6 @@ class Personne(models.Model):
     genre = models.CharField(max_length=1, choices=GENRE_CHOICES)
     commentaire = models.TextField(verbose_name='commentaires', null=True, blank=True)
     actif = models.BooleanField(editable=False, default=True)
-    encrypted_password = models.CharField(db_column='password', max_length=35, verbose_name='Mot de passe')
 
     def __unicode__(self):
         return u"%s %s, %s" % (self.prenom, self.nom, self.courriel)
@@ -28,17 +30,20 @@ class Personne(models.Model):
     class Meta:
         ordering = ["nom", "prenom"]
 
-    def set_password(self, clear_password):
-        self.encrypted_password = self.encrypt_password(clear_password)
-
-    def check_password(self, clear_password):
-        return self.encrypted_password == self.encrypt_password(clear_password)
-    
-    def encrypt_password(self, clear_password):
-        return hashlib.md5(smart_str(clear_password)).hexdigest()
-
-    def get_new_password_code(self):
-        return hashlib.md5(smart_str(self.courriel + self.encrypted_password)).hexdigest()[0:6]
+    def save(self):
+        if self.actif:
+            if self.user:
+                self.user.username = self.courriel
+                self.user.email = self.courriel
+            else:
+                self.user = get_django_user_for_email(self.courriel)
+            self.user.last_name = self.nom
+            self.user.first_name = self.prenom
+        else:
+            if self.user:
+                self.user.is_active = False
+        self.user.save()
+        super(Personne, self).save()
 
 class ChercheurQuerySet(SEPQuerySet):
 
@@ -155,9 +160,9 @@ class Chercheur(Personne):
 
     #Domaine
     thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='thematique')
-    mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés')                    
+    mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés') 
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
-    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche')                                    
+    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche') 
     groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
     url_site_web = models.URLField(max_length=255, null=True, blank=True, 
                                    verbose_name='adresse site Internet', verify_exists=False)

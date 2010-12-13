@@ -87,7 +87,7 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
-AUTHENTICATION_BACKENDS = ('authentification.PersonneBackend',)
+AUTHENTICATION_BACKENDS = ('authentification.AUFBackend', 'authentification.EmailBackend')
 LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 
 CACHE_BACKEND = 'memcached://localhost:11211'

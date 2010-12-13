@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import hashlib
-from chercheurs.utils import get_django_user_for_email
+from authentification import get_django_user_for_email
 from datamaster_modeles.models import *
 from django.contrib.auth.models import User
 from django.db import models

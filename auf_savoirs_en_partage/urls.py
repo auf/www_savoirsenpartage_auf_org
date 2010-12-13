@@ -69,9 +69,33 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
     (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),
-    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-    (r'^accounts/change_password/$', 'chercheurs.views.change_password'),
-    (r'^accounts/send_password/$', 'chercheurs.views.send_password'),
+    (r'^chercheurs/connexion/$', 'django.contrib.auth.views.login', dict(
+        template_name='chercheurs/login.html'
+    ), 'chercheurs-login'),
+    (r'^chercheurs/deconnexion/$', 'django.contrib.auth.views.logout', dict(
+        template_name='chercheurs/logged_out.html'
+    ), 'chercheurs-logout'),
+    (r'^chercheurs/changement-mdp/$', 'django.contrib.auth.views.password_change', dict(
+        template_name='chercheurs/password_change_form.html',
+        post_change_redirect='/chercheurs/changement-mdp-fini/'
+    ), 'chercheurs-password-change'),
+    (r'^chercheurs/changement-mdp-fini/$', 'django.contrib.auth.views.password_change_done', dict(
+        template_name='chercheurs/password_change_done.html'
+    ), 'chercheurs-password-change-done'),
+    (r'^chercheurs/oubli-mdp/$', 'django.contrib.auth.views.password_reset', dict(
+        template_name='chercheurs/password_reset_form.html',
+        email_template_name='chercheurs/password_reset_email.txt',
+        post_reset_redirect='/chercheurs/oubli-mdp-envoye/'
+    ), 'chercheurs-password-reset'),
+    (r'^chercheurs/oubli-mdp-envoye/$', 'django.contrib.auth.views.password_reset_done', dict(
+        template_name='chercheurs/password_reset_done.html'
+    ), 'chercheurs-password-reset-done'),
+    (r'^chercheurs/oubli-mdp-retour/(?P<uidb36>.*)/(?P<token>.*)/$', 'django.contrib.auth.views.password_reset_confirm', dict(
+        template_name='chercheurs/password_reset_confirm.html'
+    ), 'chercheurs-password-reset-confirm'),
+    (r'^chercheurs/oubli-mdp-fini/$', 'django.contrib.auth.views.password_reset_complete', dict(
+        template_name='chercheurs/password_reset_complete.html'
+    )),
     (r'^etablissements/autocomplete/$', 'chercheurs.views.etablissements_autocomplete'),
     (r'^etablissements/autocomplete/(?P<pays>.*)/$', 'chercheurs.views.etablissements_autocomplete'),
 
@@ -92,8 +116,6 @@ urlpatterns = sep_patterns + patterns(
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
 
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout'),
-    (r'^accounts/new_password/(.+)/(.+)/$', 'chercheurs.views.new_password'),
 
     # rss
     (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),

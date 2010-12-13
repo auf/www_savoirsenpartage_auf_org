@@ -64,9 +64,9 @@
                         <a href="{% url savoirs.views.nous_contacter %}">Contact</a> |
                         <a href="{% url savoirs.views.legal %}">Légal</a> |
                         {% if user.is_authenticated %}
-                        <a href="{% url django.contrib.auth.views.logout %}">Déconnexion</a>
+                        <a href="{% url chercheurs-logout %}">Déconnexion</a>
                         {% else %}
-                        <a href="{% url django.contrib.auth.views.login %}">Connexion</a>
+                        <a href="{% url chercheurs-login %}">Connexion</a>
                         {% endif %}
                     </div>
                 </div>

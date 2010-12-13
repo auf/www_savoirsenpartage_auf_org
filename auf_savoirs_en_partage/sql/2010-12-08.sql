@@ -26,3 +26,8 @@ SET p.user_id = u.id
 WHERE p.actif;
 
 ALTER TABLE chercheurs_personne DROP COLUMN password;
+
+-- On a viré le CascadeBackend, alors on doit virer toutes les sessions, car le
+-- backend d'authentification est stocké dans la session.
+
+TRUNCATE django_session;

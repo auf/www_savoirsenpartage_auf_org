@@ -1,0 +1,29 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<div class="cadre">
+    <h1>Connexion</h1>
+    {% if form.errors %}
+    <p class="form-errors">Login ou mot de passe invalide.</p>
+    {% endif %}
+
+    <form method="post">
+        <table>
+            <tr>
+                <td>Adresse électronique</td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+                <td>Mot de passe</td>
+                <td>{{ form.password }}</td>
+            </tr>
+        </table>
+        <input type="submit" value="Connexion" />
+    </form>
+    <p><a href="{% url chercheurs-password-reset %}">Mot de passe oublié ?</a></p>
+    <p>Vous n'avez pas encore de compte? 
+    <a href="{% url chercheurs.views.inscription %}">Inscrivez-vous</a>.</p>
+</div>
+
+{% endblock %}
+

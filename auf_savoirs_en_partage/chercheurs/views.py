@@ -19,7 +19,6 @@ from models import Personne, Groupe, ChercheurGroupe
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm as OriginalAuthenticationForm
 from django.contrib.auth.models import User
 
 from django.db.models import Q
@@ -27,73 +26,6 @@ from django.shortcuts import get_object_or_404
 
 from django.utils.translation import ugettext_lazy as _
 
-#TODO: Migrer tout ce qui a rapport aux users dans une nouvelle app
-
-class AuthenticationForm(OriginalAuthenticationForm):
-    username = forms.CharField(label='Adresse électronique', max_length=255)
-
-def send_password(request):
-    if request.method == "POST":
-        form = SendPasswordForm(data=request.POST)
-        if form.is_valid():
-            u = Personne.objects.get(courriel=form.cleaned_data['email'])
-            code = u.get_new_password_code()
-            link = "%s/accounts/new_password/%s/%s/" % (settings.SITE_ROOT_URL, u.courriel, code)
-
-            variables = { 'user': u,
-                          'link': link,
-                          'SITE_ROOT_URL': settings.SITE_ROOT_URL,
-                          'CONTACT_EMAIL': settings.CONTACT_EMAIL }
-            t = get_template('accounts/email_password.html')
-            content = t.render(variables)
-            
-            send_mail('Savoirs en partage: changement de mot de passe',
-                      content, settings.CONTACT_EMAIL,
-                      [u.courriel], fail_silently=False)
-    else:
-        form = SendPasswordForm()
-
-    return render_to_response("accounts/send_password.html",
-                              dict(form=form), 
-                              context_instance=RequestContext(request))
-            
-def new_password(request, email, code):
-    u = Personne.objects.get(courriel=email)
-    original_code = u.get_new_password_code()
-    message=""
-    if(code == original_code):
-        if request.method == "POST":
-            form = NewPasswordForm(data=request.POST)
-            if form.is_valid():
-                u.set_password(form.cleaned_data['password'])
-                u.save()
-                message = "Votre mot de passe a été modifié."
-        else:
-            form = NewPasswordForm()
-    else:
-        return HttpResponseRedirect('/')
-    return render_to_response("accounts/new_password.html",
-                              dict(form=form, message=message),
-                              context_instance=RequestContext(request))
-
-@login_required          
-def change_password(request):
-    message = ""
-    if request.method == "POST":
-        form = NewPasswordForm(data=request.POST)
-        if form.is_valid():
-            request.user.set_password(form.cleaned_data['password'])
-            request.user.save()
-            message = "Votre mot de passe a été modifié."
-    else:
-        form = NewPasswordForm()
-    variables = { 'form': form,
-                  'message': message,
-                }
-    return render_to_response ("accounts/new_password.html", \
-            Context (variables), 
-            context_instance = RequestContext(request))            
-             
 def index(request):
     """Répertoire des chercheurs"""
     search_form = RepertoireSearchForm(request.GET)

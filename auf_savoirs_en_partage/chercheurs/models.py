@@ -69,7 +69,7 @@ class ChercheurQuerySet(SEPQuerySet):
         return self.exclude(expertises=None)
 
     def order_by_nom(self, direction=''):
-        return self.order_by(direction + 'personne__nom', direction + 'personne__prenom', '-date_modification')
+        return self.order_by(direction + 'nom', direction + 'prenom', '-date_modification')
 
     def order_by_etablissement(self, direction=''):
         return self.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),

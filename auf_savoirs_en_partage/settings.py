@@ -88,6 +88,7 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = ('authentification.AUFBackend', 'authentification.EmailBackend')
+LOGIN_URL = '/chercheurs/connexion/'
 LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 
 CACHE_BACKEND = 'memcached://localhost:11211'

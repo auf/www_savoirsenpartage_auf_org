@@ -38,7 +38,7 @@ class AUFBackend(ModelBackend):
             auf_user = AUFUser.objects.get(courriel=username, actif=True)
         except AUFUser.DoesNotExist:
             return None
-        if not settings.AUTH_PASSWORD_REQUIRED or md5(password).hexdigest() == auf_user.password:
+        if not settings.AUTH_PASSWORD_REQUIRED or md5(password).hexdigest() == auf_user.motdepasse:
             return get_django_user_for_email(username)
 
 class EmailBackend(ModelBackend):

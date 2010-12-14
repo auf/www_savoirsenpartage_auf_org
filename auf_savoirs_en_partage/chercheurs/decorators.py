@@ -9,10 +9,12 @@ def chercheur_required(func):
     """Décorateur qui vérifie si un chercheur est connecté."""
 
     def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect(settings.LOGIN_URL)
         chercheur = request.chercheur
         if chercheur: 
             return func(request, *args, **kwargs)
         else:
-            return HttpResponseRedirect(settings.LOGIN_URL)
+            return HttpResponseRedirect('/')
 
     return wrapper

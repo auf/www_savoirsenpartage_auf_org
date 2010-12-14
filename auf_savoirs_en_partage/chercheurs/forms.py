@@ -307,6 +307,13 @@ class RepertoireSearchForm (forms.Form):
                                     help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
     nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud",
                                  help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays développés, par Sud les pays en développement (pays les moins avancés, pays émergents et pays à économies en transition)")
+    activites_francophonie = forms.ChoiceField(required=False, label="Activités en Francophonie", choices=(
+        ('', '---------'),
+        ('instance_auf', "Membre d'une instance de l'AUF"),
+        ('expert_oif', "Sollicité par l'OIF"),
+        ('association_francophone', "Membre d'une association ou d'une société savante francophone"),
+        ('reseau_institutionnel', "Membre des instances d'un réseau institutionnel de l'AUF")
+    ))
 
     def __init__(self, data=None, region=None):
         super(RepertoireSearchForm, self).__init__(data)
@@ -347,6 +354,15 @@ class RepertoireSearchForm (forms.Form):
             nord_sud = self.cleaned_data['nord_sud']
             if nord_sud:
                 chercheurs = chercheurs.filter_nord_sud(nord_sud)
+            activites_francophonie = self.cleaned_data['activites_francophonie']
+            if activites_francophonie == 'instance_auf':
+                chercheurs = chercheurs.filter(membre_instance_auf=True)
+            elif activites_francophonie == 'expert_oif':
+                chercheurs = chercheurs.filter(expert_oif=True)
+            elif activites_francophonie == 'association_francophone':
+                chercheurs = chercheurs.filter(membre_association_francophone=True)
+            elif activites_francophonie == 'reseau_institutionnel':
+                chercheurs = chercheurs.filter(membre_reseau_institutionnel=True)
         return chercheurs.all()
     
 class SendPasswordForm(forms.Form):

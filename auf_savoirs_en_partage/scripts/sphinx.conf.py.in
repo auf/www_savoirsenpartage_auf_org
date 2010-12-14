@@ -152,17 +152,17 @@ emit_source('savoirsenpartage_evenements',
             sql_attr_uint=['debut'])
             
 emit_source('savoirsenpartage_chercheurs',
-            '''SELECT c.id AS id,
+            '''SELECT c.personne_ptr_id AS id,
                       p.nom AS nom,
                       p.prenom AS prenom,
                       CONCAT(p.nom, ' ', p.prenom) AS nom_complet,
                       c.theme_recherche AS theme_recherche,
                       c.groupe_recherche AS groupe_recherche,
                       c.mots_cles AS mots_cles,
-                      c.membre_association_francophone_details AS membre_association_francophone_details,
-                      c.membre_reseau_institutionnel_details AS membre_reseau_institutionnel_details,
-                      c.expert_oif_details AS expert_oif_details,
-                      c.membre_instance_auf_details AS membre_instance_auf_details,
+                      c.membre_instance_auf AS membre_instance_auf,
+                      c.expert_oif AS expert_oif,
+                      c.membre_association_francophone AS membre_association_francophone,
+                      c.membre_reseau_institutionnel AS membre_reseau_institutionnel,
                       IFNULL(et.nom, etablissement_autre_nom) AS etablissement,
                       IFNULL(et.nom, etablissement_autre_nom) AS etablissement_attr,
                       pays.nom AS pays,
@@ -186,20 +186,24 @@ emit_source('savoirsenpartage_chercheurs',
                                   END AS statut,
                       (ex.id IS NOT NULL) AS expert
                FROM chercheurs_chercheur c
-               INNER JOIN chercheurs_personne p ON c.personne = p.id
+               INNER JOIN chercheurs_personne p ON c.personne_ptr_id = p.id
                LEFT JOIN ref_etablissement et ON et.id = c.etablissement
                LEFT JOIN ref_pays pays ON pays.code = IFNULL(et.pays, c.etablissement_autre_pays)
                LEFT JOIN ref_region r ON pays.region = r.id
                LEFT JOIN discipline d ON d.id_discipline = c.discipline
-               LEFT JOIN chercheurs_publication pub ON pub.chercheur_id = c.id
-               LEFT JOIN chercheurs_these t ON t.chercheur_id = c.id
-               LEFT JOIN chercheurs_chercheurgroupe cg ON cg.chercheur = c.id
+               LEFT JOIN chercheurs_publication pub ON pub.chercheur_id = c.personne_ptr_id
+               LEFT JOIN chercheurs_these t ON t.chercheur_id = c.personne_ptr_id
+               LEFT JOIN chercheurs_chercheurgroupe cg ON cg.chercheur = c.personne_ptr_id
                LEFT JOIN chercheurs_groupe g ON g.id = cg.groupe
-               LEFT JOIN chercheurs_expertise ex ON ex.chercheur_id = c.id
-               GROUP BY c.id''',
+               LEFT JOIN chercheurs_expertise ex ON ex.chercheur_id = c.personne_ptr_id
+               GROUP BY c.personne_ptr_id''',
             sql_query_info='SELECT * from chercheurs_chercheur WHERE id=$id',
             sql_attr_multi=['groupe_ids'],
-            sql_attr_uint=['pays_id', 'region_id', 'nord_sud', 'date_modification', 'statut', 'expert'],
+            sql_attr_uint=['pays_id', 'region_id', 'nord_sud',
+                           'date_modification', 'statut', 'expert',
+                           'membre_instance_auf', 'expert_oif',
+                           'membre_association_francophone',
+                           'membre_reseau_institutionnel'],
             sql_attr_str2ordinal=['nom_complet', 'etablissement_attr', 'pays_attr'])
                       
 emit_source('savoirsenpartage_sites',

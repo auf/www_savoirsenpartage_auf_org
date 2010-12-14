@@ -56,7 +56,7 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('nom', 'prenom', 'courriel', 'genre',
+        fields = ('nom', 'prenom', 'genre',
                   'statut', 'diplome', 'discipline', 'theme_recherche',
                   'groupe_recherche', 'mots_cles', 'url_site_web',
                   'url_blog', 'url_reseau_social', 'attestation',
@@ -172,24 +172,9 @@ class ChercheurForm(forms.ModelForm):
         return bool(int(self.cleaned_data['expertises_auf']))
 
 class ChercheurInscriptionForm(ChercheurForm):
-    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
-    password_confirmation = forms.CharField(widget=forms.PasswordInput(), label="Confirmez votre mot de passe")
 
     class Meta(ChercheurForm.Meta):
-        fields = ChercheurForm.Meta.fields + ('password',)
-        
-    def clean_password_confirmation(self):
-        """S'assurer que le mot de passe et la confirmation sont identiques."""
-        password = self.cleaned_data.get('password')
-        confirmation = self.cleaned_data.get('password_confirmation')
-        if password != confirmation:
-            raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')
-        return confirmation
-
-    def save(self):
-        super(ChercheurInscriptionForm, self).save()
-        self.instance.user.set_password(self.cleaned_data['password'])
-        self.instance.user.save()
+        fields = ChercheurForm.Meta.fields + ('courriel',)
 
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
@@ -245,11 +230,11 @@ class ChercheurFormGroup(object):
        d'un chercheur."""
 
     def __init__(self, data=None, chercheur=None):
-        chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
         try:
             these = chercheur and chercheur.these
         except These.DoesNotExist:
             these = These()
+        chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
         self.chercheur = chercheur_form_class(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)
@@ -284,6 +269,7 @@ class ChercheurFormGroup(object):
             self.publications.save()
             self.expertises.instance = chercheur
             self.expertises.save()
+            return self.chercheur.instance
 
 class RepertoireSearchForm (forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
@@ -352,9 +338,9 @@ class SendPasswordForm(forms.Form):
                 raise forms.ValidationError("Cette adresse n'existe pas dans notre base de données.")       
         return email
 
-class NewPasswordForm(forms.Form):
+class SetPasswordForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), required=True, label="Mot de passe") 
-    password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez mot de passe")
+    password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez votre mot de passe")
 
     def clean_password_repeat(self):
         cleaned_data = self.cleaned_data
@@ -364,4 +350,3 @@ class NewPasswordForm(forms.Form):
             if password != password_repeat:
                 raise forms.ValidationError("Les mots de passe ne concordent pas")
         return password_repeat   
-

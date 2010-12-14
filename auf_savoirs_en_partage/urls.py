@@ -65,6 +65,10 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/$', 'chercheurs.views.index'),
     (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve'),
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
+    (r'^chercheurs/inscription_faite/$', 'django.views.generic.simple.direct_to_template', dict(
+        template='chercheurs/inscription_faite.html'
+    ), 'chercheurs-inscription-faite'),
+    (r'^chercheurs/activation/(?P<id_base36>.*)/(?P<token>.*)/$', 'chercheurs.views.activation', {}, 'chercheurs-activation'),
     (r'^chercheurs/desinscription/$', 'chercheurs.views.desinscription'),
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),

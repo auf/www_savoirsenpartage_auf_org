@@ -2,10 +2,12 @@
 import hashlib
 from authentification import get_django_user_for_email
 from datamaster_modeles.models import *
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
+from django.utils.hashcompat import sha_constructor
 from djangosphinx.models import SphinxSearch
 from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet
 
@@ -42,7 +44,8 @@ class Personne(models.Model):
         else:
             if self.user:
                 self.user.is_active = False
-        self.user.save()
+        if self.user:
+            self.user.save()
         super(Personne, self).save()
 
 class ChercheurQuerySet(SEPQuerySet):
@@ -240,6 +243,9 @@ class Chercheur(Personne):
             self.etablissement_autre_nom = None
             self.etablissement_autre_pays = None
         super(Chercheur, self).save()
+
+    def activation_token(self):
+        return sha_constructor(settings.SECRET_KEY + unicode(self.id)).hexdigest()[::2]
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')

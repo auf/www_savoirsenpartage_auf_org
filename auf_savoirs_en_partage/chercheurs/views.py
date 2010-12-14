@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 from chercheurs.decorators import chercheur_required
+from chercheurs.forms import RepertoireSearchForm, SetPasswordForm, ChercheurFormGroup 
+from chercheurs.models import Chercheur
+from datamaster_modeles.models import Etablissement
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
@@ -8,10 +11,12 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator as token_generator
+from django.contrib.sites.models import RequestSite
 from django.utils import simplejson
+from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
 
-from forms import *
 from django.forms.models import inlineformset_factory
 
 from auf_references_client.models import Discipline, TypeImplantation
@@ -54,16 +59,46 @@ def inscription(request):
     if request.method == 'POST':
         forms = ChercheurFormGroup(request.POST)
         if forms.is_valid():
-            forms.save()
-            # login automatique
-            login(request, authenticate(username=forms.chercheur.cleaned_data['courriel'], 
-                                        password=forms.chercheur.cleaned_data['password']))
-            return HttpResponseRedirect(url('chercheurs.views.perso'))
+            chercheur = forms.save()
+            id_base36 = int_to_base36(chercheur.id)
+            token = chercheur.activation_token()
+            template = get_template('chercheurs/activation_email.txt')
+            domain = RequestSite(request).domain
+            message = template.render(Context(dict(chercheur=chercheur, id_base36=id_base36, token=token, domain=domain)))
+            send_mail('Votre inscription à Savoirs en partage', message, None, [chercheur.courriel])
+            return HttpResponseRedirect(url('chercheurs-inscription-faite'))
     else:
         forms = ChercheurFormGroup()
     
     return render_to_response("chercheurs/inscription.html",
                               dict(forms=forms),
+                              context_instance=RequestContext(request))
+
+def activation(request, id_base36, token):
+    """Activation d'un chercheur"""
+    id = base36_to_int(id_base36)
+    chercheur = get_object_or_404(Chercheur, id=id)
+    if token == chercheur.activation_token():
+        validlink = True
+        if request.method == 'POST':
+            form = SetPasswordForm(request.POST)
+            if form.is_valid():
+                password = form.cleaned_data['password']
+                email = chercheur.courriel
+                chercheur.actif = True
+                chercheur.save()
+                chercheur.user.set_password(password)
+                chercheur.user.save()
+
+                # Auto-login
+                login(request, authenticate(username=email, password=password))
+                return HttpResponseRedirect(url('chercheurs.views.perso'))
+        else:
+            form = SetPasswordForm()
+    else:
+        form = None
+        validlink = False
+    return render_to_response('chercheurs/activation.html', dict(form=form, validlink=validlink),
                               context_instance=RequestContext(request))
 
 @chercheur_required

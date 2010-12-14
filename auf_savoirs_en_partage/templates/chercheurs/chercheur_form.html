@@ -8,12 +8,10 @@
     <table>
         {% form_field forms.chercheur.nom %}
         {% form_field forms.chercheur.prenom %}
+        {% if forms.chercheur.courriel %}
         {% form_field forms.chercheur.courriel %}
-        {% form_field forms.chercheur.genre %}
-        {% if forms.chercheur.password %}
-        {% form_field forms.chercheur.password %}
-        {% form_field forms.chercheur.password_confirmation %}
         {% endif %}
+        {% form_field forms.chercheur.genre %}
     </table>
 </fieldset>
 

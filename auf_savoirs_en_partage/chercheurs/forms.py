@@ -16,7 +16,11 @@ class ChercheurForm(forms.ModelForm):
         help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
-    membre_instance_auf_details = forms.CharField(label="Préciser laquelle et votre fonction", required=False)
+    membre_instance_auf_nom = forms.ChoiceField(
+        choices = (('', '---------'),) + Chercheur.INSTANCE_AUF_CHOICES,
+        label="Préciser laquelle", required=False
+    )
+    membre_instance_auf_fonction = forms.CharField(label="Préciser votre fonction", required=False)
     membre_instance_auf_dates = forms.CharField(label="Préciser les dates", required=False)
     expert_oif = forms.ChoiceField(label="Avez-vous déjà été sollicité par l'OIF?", choices=OUI_NON_CHOICES, widget=forms.RadioSelect())
     expert_oif_details = forms.CharField(label="Préciser à quel titre", required=False,
@@ -30,10 +34,14 @@ class ChercheurForm(forms.ModelForm):
     membre_association_francophone_details = forms.CharField(label="Préciser laquelle", required=False)
     membre_reseau_institutionnel = forms.ChoiceField(
         label="Avez-vous fait partie des instances d'un réseau institutionnel de l'AUF?",
-        help_text="e.g. AFELSH, RIFFEF, CIDMEF, etc.",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
-    membre_reseau_institutionnel_details = forms.CharField(required=False, label="Préciser lesquelles et votre fonction")
+    membre_reseau_institutionnel_nom = forms.ChoiceField(
+        label="Préciser le réseau institutionnel",
+        choices=(('', '---------'),) + Chercheur.RESEAU_INSTITUTIONNEL_CHOICES,
+        required=False
+    )
+    membre_reseau_institutionnel_fonction = forms.CharField(required=False, label="Préciser votre fonction")
     membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
 
     pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), required=True)
@@ -56,17 +64,18 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('nom', 'prenom', 'genre',
-                  'statut', 'diplome', 'discipline', 'theme_recherche',
-                  'groupe_recherche', 'mots_cles', 'url_site_web',
-                  'url_blog', 'url_reseau_social', 'attestation',
-                  'membre_instance_auf', 'membre_instance_auf_details',
+        fields = ('nom', 'prenom', 'genre', 'statut', 'diplome',
+                  'discipline', 'theme_recherche', 'groupe_recherche',
+                  'mots_cles', 'url_site_web', 'url_blog',
+                  'url_reseau_social', 'attestation', 'membre_instance_auf',
+                  'membre_instance_auf_nom', 'membre_instance_auf_fonction',
                   'membre_instance_auf_dates', 'expert_oif',
                   'expert_oif_details', 'expert_oif_dates',
                   'membre_association_francophone',
                   'membre_association_francophone_details',
                   'membre_reseau_institutionnel',
-                  'membre_reseau_institutionnel_details',
+                  'membre_reseau_institutionnel_nom',
+                  'membre_reseau_institutionnel_fonction',
                   'membre_reseau_institutionnel_dates', 'expertises_auf')
         
     def __init__(self, data=None, prefix=None, instance=None):
@@ -110,12 +119,19 @@ class ChercheurForm(forms.ModelForm):
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
     
-    def clean_membre_instance_auf_details(self):
+    def clean_membre_instance_auf_nom(self):
         membre = self.cleaned_data.get('membre_instance_auf')
-        details = self.cleaned_data.get('membre_instance_auf_details')
-        if membre and not details:
+        nom = self.cleaned_data.get('membre_instance_auf_nom')
+        if membre and not nom:
             raise forms.ValidationError('Veuillez préciser')
-        return details
+        return nom
+
+    def clean_membre_instance_auf_fonction(self):
+        membre = self.cleaned_data.get('membre_instance_auf')
+        fonction = self.cleaned_data.get('membre_instance_auf_fonction')
+        if membre and not fonction:
+            raise forms.ValidationError('Veuillez préciser')
+        return fonction
 
     def clean_membre_instance_auf_dates(self):
         membre = self.cleaned_data.get('membre_instance_auf')
@@ -154,12 +170,19 @@ class ChercheurForm(forms.ModelForm):
     def clean_membre_reseau_institutionnel(self):
         return bool(int(self.cleaned_data['membre_reseau_institutionnel']))
 
-    def clean_membre_reseau_institutionnel_details(self):
+    def clean_membre_reseau_institutionnel_nom(self):
         membre = self.cleaned_data.get('membre_reseau_institutionnel')
-        details = self.cleaned_data.get('membre_reseau_institutionnel_details')
-        if membre and not details:
+        nom = self.cleaned_data.get('membre_reseau_institutionnel_nom')
+        if membre and not nom:
             raise forms.ValidationError('Veuillez préciser')
-        return details
+        return nom
+
+    def clean_membre_reseau_institutionnel_fonction(self):
+        membre = self.cleaned_data.get('membre_reseau_institutionnel')
+        fonction = self.cleaned_data.get('membre_reseau_institutionnel_fonction')
+        if membre and not fonction:
+            raise forms.ValidationError('Veuillez préciser')
+        return fonction
 
     def clean_membre_reseau_institutionnel_dates(self):
         membre = self.cleaned_data.get('membre_reseau_institutionnel')

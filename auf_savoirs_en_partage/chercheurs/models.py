@@ -152,8 +152,34 @@ class ChercheurManager(SEPManager):
     def order_by_pays(self, direction=''):
         return self.get_query_set().order_by_pays(self, direction=direction)
 
-STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
+STATUT_CHOICES = (
+    ('enseignant', 'Enseignant-chercheur dans un établissement'), 
+    ('etudiant', 'Étudiant-chercheur doctorant'), 
+    ('independant', 'Chercheur indépendant docteur')
+)
+
 class Chercheur(Personne):
+    RESEAU_INSTITUTIONNEL_CHOICES = (
+        ('AFELSH', 'Association des facultés ou établissements de lettres et sciences humaines des universités d’expression française (AFELSH)'),
+        ('CIDEGEF', 'Conférence internationale des dirigeants des institutions d’enseignement supérieur et de recherche de gestion d’expression française (CIDEGEF)'),
+        ('RIFEFF', 'Réseau international francophone des établissements de formation de formateurs (RIFEFF)'),
+        ('CIDMEF', 'Conférence internationale des doyens des facultés de médecine d’expression française (CIDMEF)'),
+        ('CIDCDF', 'Conférence internationale des doyens des facultés de chirurgie dentaire d’expression totalement ou partiellement française (CIDCDF)'),
+        ('CIFDUF', 'Conférence internationale des facultés de droit ayant en commun l’usage du français (CIFDUF)'),
+        ('CIRUISEF', 'Conférence internationale des responsables des universités et institutions à dominante scientifique et technique d’expression française (CIRUISEF)'),
+        ('Theophraste', 'Réseau Théophraste (Réseau de centres francophones de formation au journalisme)'),
+        ('CIDPHARMEF', 'Conférence internationale des doyens des facultés de pharmacie d’expression française (CIDPHARMEF)'),
+        ('CIDEFA', 'Conférence internationale des directeurs et doyens des établissements supérieurs d’expression française des sciences de l’agriculture et de l’alimentation (CIDEFA)'),
+        ('CITEF', 'Conférence internationale des formations d’ingénieurs et techniciens d’expression française (CITEF)'),
+        ('APERAU', 'Association pour la promotion de l’enseignement et de la recherche en aménagement et urbanisme (APERAU)'),
+    )
+    INSTANCE_AUF_CHOICES = (
+        ('CASSOC', 'Conseil associatif'),
+        ('CA', "Conseil d'administration"),
+        ('CS', 'Conseil scientifique'),
+        ('CRE', "Commission régionale d'experts")
+    )
+
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
@@ -185,7 +211,8 @@ class Chercheur(Personne):
     
     # Activités en francophonie
     membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
-    membre_instance_auf_details = models.CharField(max_length=255, blank=True, verbose_name="détails")
+    membre_instance_auf_nom = models.CharField(max_length=10, blank=True, choices=INSTANCE_AUF_CHOICES, verbose_name="instance")
+    membre_instance_auf_fonction = models.CharField(max_length=255, blank=True, verbose_name="fonction")
     membre_instance_auf_dates = models.CharField(max_length=255, blank=True, verbose_name="dates")
     expert_oif = models.BooleanField(default=False, verbose_name="a été sollicité par l'OIF")
     expert_oif_details = models.CharField(max_length=255, blank=True, verbose_name="détails")
@@ -193,10 +220,14 @@ class Chercheur(Personne):
     membre_association_francophone = models.BooleanField(default=False, verbose_name="est membre d'une association francophone")
     membre_association_francophone_details = models.CharField(max_length=255, blank=True, verbose_name="nom de l'association")
     membre_reseau_institutionnel = models.BooleanField(
-        default=False, verbose_name="a fait partie des instances d'un réseau institutionnel de l'AUF"
+        default=False, verbose_name="est membre des instances d'un réseau institutionnel de l'AUF"
     )
-    membre_reseau_institutionnel_details = models.CharField(
-        max_length=255, blank=True, verbose_name="instances et fonction"
+    membre_reseau_institutionnel_nom = models.CharField(
+        max_length=15, choices=RESEAU_INSTITUTIONNEL_CHOICES, blank=True,
+        verbose_name="réseau institutionnel"
+    )
+    membre_reseau_institutionnel_fonction = models.CharField(
+        max_length=255, blank=True, verbose_name="fonction"
     )
     membre_reseau_institutionnel_dates = models.CharField(
         max_length=255, blank=True, verbose_name="dates"

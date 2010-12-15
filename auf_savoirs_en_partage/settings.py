@@ -95,6 +95,8 @@ AUTHENTICATION_BACKENDS = (
     'authentification.PersonneBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+AUTH_PROFILE_MODULE = 'savoirs.Profile'
+
 LOGIN_URL = '/chercheurs/connexion/'
 LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 

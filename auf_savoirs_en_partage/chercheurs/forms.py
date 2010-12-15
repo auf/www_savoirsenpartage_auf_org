@@ -13,7 +13,6 @@ class ChercheurForm(forms.ModelForm):
     genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
     membre_instance_auf = forms.ChoiceField(
         label="Êtes-vous (ou avez-vous déjà été) membre d'une instance de l'AUF?",
-        help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
     membre_instance_auf_nom = forms.ChoiceField(
@@ -33,7 +32,7 @@ class ChercheurForm(forms.ModelForm):
     )
     membre_association_francophone_details = forms.CharField(label="Préciser laquelle", required=False)
     membre_reseau_institutionnel = forms.ChoiceField(
-        label="Avez-vous fait partie des instances d'un réseau institutionnel de l'AUF?",
+        label="Êtes-vous (ou avez-vous déjà été) membre des instances d'un réseau institutionnel de l'AUF?",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
     membre_reseau_institutionnel_nom = forms.ChoiceField(

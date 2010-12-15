@@ -157,7 +157,7 @@ def conversion(request):
 
 def etablissements_autocomplete(request, pays=None):
     term = request.GET.get('term')
-    noms = Etablissement.objects.all()
+    noms = Etablissement.objects.all().filter(membre=True)
     for word in term.split():
         noms = noms.filter(nom__icontains=word)
     if pays:

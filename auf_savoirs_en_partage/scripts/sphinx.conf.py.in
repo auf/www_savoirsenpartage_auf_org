@@ -171,15 +171,15 @@ emit_source('savoirsenpartage_chercheurs',
                       r.nom AS region,
                       r.id AS region_id,
                       GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
-                      GROUP_CONCAT(DISTINCT pub.titre) AS publications,
+                      GROUP_CONCAT(DISTINCT IFNULL(pub.titre, pub.publication_affichage)) AS publications,
                       t.titre AS these,
                       GROUP_CONCAT(DISTINCT g.nom) AS groupes,
                       GROUP_CONCAT(DISTINCT ex.nom) AS expertises,
                       GROUP_CONCAT(DISTINCT g.id) AS groupe_ids,
                       TO_DAYS(c.date_modification) AS date_modification,
-                      CASE pays WHEN 'Nord' THEN 1 
-                                WHEN 'Sud' THEN 2 
-                                END AS nord_sud,
+                      CASE pays.nord_sud WHEN 'Nord' THEN 1 
+                                         WHEN 'Sud' THEN 2 
+                                         END AS nord_sud,
                       CASE statut WHEN 'enseignant' THEN 1
                                   WHEN 'etudiant' THEN 2
                                   WHEN 'independant' THEN 3

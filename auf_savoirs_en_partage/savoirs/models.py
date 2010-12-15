@@ -148,6 +148,14 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
         SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_actualites',
                                    weights=dict(titre=3))
 
+    def filter_date(self, min=None, max=None):
+        qs = self
+        if min:
+            qs = qs.filter(date__gte=min.toordinal()+365)
+        if max:
+            qs = qs.filter(date__lte=max.toordinal()+365)
+        return qs
+        
 class ActualiteManager(SEPManager):
     
     def get_query_set(self):

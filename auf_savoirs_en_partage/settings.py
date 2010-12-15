@@ -36,9 +36,12 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'chercheurs.middleware.ChercheurMiddleware',
     'djangoflash.middleware.FlashMiddleware',
     'pagination.middleware.PaginationMiddleware',
@@ -92,6 +95,7 @@ LOGIN_URL = '/chercheurs/connexion/'
 LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 
 CACHE_BACKEND = 'memcached://localhost:11211'
+CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 

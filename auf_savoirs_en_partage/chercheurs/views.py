@@ -127,7 +127,8 @@ def edit(request):
         forms = ChercheurFormGroup(request.POST, chercheur=chercheur)
         if forms.is_valid():
             forms.save()
-            return HttpResponseRedirect(url('chercheurs.views.perso') + '?modification=1')
+            request.flash['message'] = "Votre fiche a bien été enregistrée."
+            return HttpResponseRedirect(url('chercheurs.views.perso'))
     else:
         forms = ChercheurFormGroup(chercheur=chercheur)
         

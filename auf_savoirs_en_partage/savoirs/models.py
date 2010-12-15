@@ -18,7 +18,7 @@ from django.db import models
 from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
 from django.utils.encoding import smart_unicode
-from djangosphinx.models import SphinxQuerySet
+from djangosphinx.models import SphinxQuerySet, SearchError
 from savoirs.globals import META
 from settings import CALENDRIER_URL, SITE_ROOT_URL
 
@@ -74,6 +74,22 @@ class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
         """Par défaut, le filtre par région cherche le nom de la région dans
            tous les champs."""
         return self.search('"%s"' % region.nom)
+
+    def _get_sphinx_results(self):
+        try:
+            return SphinxQuerySet._get_sphinx_results(self)
+        except SearchError:
+            # Essayons d'enlever les caractères qui peuvent poser problème.
+            for c in '|!@()~/<=^$':
+                self._query = self._query.replace(c, ' ')
+            try:
+                return SphinxQuerySet._get_sphinx_results(self)
+            except SearchError:
+                # Ça ne marche toujours pas. Enlevons les guillemets et les
+                # tirets.
+                for c in '"-':
+                    self._query = self._query.replace(c, ' ')
+                return SphinxQuerySet._get_sphinx_results(self)
 
 class SEPManager(models.Manager):
     """Lorsque les méthodes ``search``, ``filter_region`` et
@@ -148,6 +164,14 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
         SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_actualites',
                                    weights=dict(titre=3))
 
+    def filter_date(self, min=None, max=None):
+        qs = self
+        if min:
+            qs = qs.filter(date__gte=min.toordinal()+365)
+        if max:
+            qs = qs.filter(date__lte=max.toordinal()+365)
+        return qs
+        
 class ActualiteManager(SEPManager):
     
     def get_query_set(self):

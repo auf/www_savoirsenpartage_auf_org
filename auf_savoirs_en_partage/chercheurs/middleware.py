@@ -7,7 +7,7 @@ class LazyChercheur(object):
             request._cached_chercheur = None
             if request.user.is_authenticated():
                 try:
-                    request._cached_chercheur = request.user.personne.chercheur
+                    request._cached_chercheur = Chercheur.objects.get(actif=True, courriel=request.user.email)
                 except (Personne.DoesNotExist, Chercheur.DoesNotExist):
                     pass
         return request._cached_chercheur

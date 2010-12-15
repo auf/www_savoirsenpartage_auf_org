@@ -1,9 +1,7 @@
 # -*- encoding: utf-8 -*-
 import hashlib
-from authentification import get_django_user_for_email
 from datamaster_modeles.models import *
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
@@ -13,7 +11,6 @@ from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySe
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
-    user = models.OneToOneField(User, null=True, editable=False)
     salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name='prénom')
@@ -31,22 +28,6 @@ class Personne(models.Model):
 
     class Meta:
         ordering = ["nom", "prenom"]
-
-    def save(self):
-        if self.actif:
-            if self.user:
-                self.user.username = self.courriel
-                self.user.email = self.courriel
-            else:
-                self.user = get_django_user_for_email(self.courriel)
-            self.user.last_name = self.nom
-            self.user.first_name = self.prenom
-        else:
-            if self.user:
-                self.user.is_active = False
-        if self.user:
-            self.user.save()
-        super(Personne, self).save()
 
 class ChercheurQuerySet(SEPQuerySet):
 
@@ -119,7 +100,7 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
 class ChercheurManager(SEPManager):
 
     def get_query_set(self):
-        return ChercheurQuerySet(self.model)
+        return ChercheurQuerySet(self.model).filter(actif=True)
 
     def get_sphinx_query_set(self):
         return ChercheurSphinxQuerySet(self.model).order_by('-date_modification')

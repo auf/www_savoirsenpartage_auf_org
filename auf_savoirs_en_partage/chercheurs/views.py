@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-import hashlib
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import RepertoireSearchForm, SetPasswordForm, ChercheurFormGroup 
 from chercheurs.models import Chercheur
+from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
@@ -10,26 +10,12 @@ from django.template import Context, RequestContext
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.contrib.sites.models import RequestSite
 from django.utils import simplejson
 from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
-
-from django.forms.models import inlineformset_factory
-
-from auf_references_client.models import Discipline, TypeImplantation
-from models import Personne, Groupe, ChercheurGroupe
-
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
-
-from django.utils.translation import ugettext_lazy as _
 
 def index(request):
     """Répertoire des chercheurs"""
@@ -87,8 +73,9 @@ def activation(request, id_base36, token):
                 email = chercheur.courriel
                 chercheur.actif = True
                 chercheur.save()
-                chercheur.user.set_password(password)
-                chercheur.user.save()
+                user = get_django_user_for_email(email)
+                user.set_password(password)
+                user.save()
 
                 # Auto-login
                 login(request, authenticate(username=email, password=password))
@@ -109,7 +96,6 @@ def desinscription(request):
         if request.POST.get('confirmer'):
             chercheur.actif = False
             chercheur.save()
-            User.objects.filter(username=chercheur.courriel).delete()
             request.flash['message'] = "Vous avez été désinscrit du répertoire des chercheurs."
             return HttpResponseRedirect(url('django.contrib.auth.views.logout'))
         else:

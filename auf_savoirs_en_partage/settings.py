@@ -90,7 +90,11 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
-AUTHENTICATION_BACKENDS = ('authentification.AUFBackend', 'authentification.EmailBackend')
+AUTHENTICATION_BACKENDS = (
+    'authentification.AUFBackend', 
+    'authentification.PersonneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 LOGIN_URL = '/chercheurs/connexion/'
 LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 

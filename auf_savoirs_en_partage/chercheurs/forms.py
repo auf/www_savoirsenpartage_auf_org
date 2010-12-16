@@ -93,12 +93,12 @@ class ChercheurForm(forms.ModelForm):
     def save(self):
         nom_etablissement = self.cleaned_data['etablissement']
         pays_etablissement = self.cleaned_data['pays_etablissement']
-        try:
-            etablissement = Etablissement.objects.get(nom=nom_etablissement, pays=pays_etablissement)
-            self.instance.etablissement = etablissement
+        etablissements = Etablissement.objects.filter(nom=nom_etablissement, pays=pays_etablissement, actif=True)
+        if etablissements.count() > 0:
+            self.instance.etablissement = etablissements[0]
             self.instance.etablissement_autre = ''
             self.instance.etablissement_autre_pays = None
-        except Etablissement.DoesNotExist:
+        else:
             self.instance.etablissement = None
             self.instance.etablissement_autre_nom = nom_etablissement
             self.instance.etablissement_autre_pays = pays_etablissement

@@ -191,17 +191,17 @@ class Chercheur(Personne):
     groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name='Domaines de recherche')
     
     # Activités en francophonie
-    membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
+    membre_instance_auf = models.NullBooleanField(verbose_name="est ou a déjà été membre d'une instance de l'AUF")
     membre_instance_auf_nom = models.CharField(max_length=10, blank=True, choices=INSTANCE_AUF_CHOICES, verbose_name="instance")
     membre_instance_auf_fonction = models.CharField(max_length=255, blank=True, verbose_name="fonction")
     membre_instance_auf_dates = models.CharField(max_length=255, blank=True, verbose_name="dates")
-    expert_oif = models.BooleanField(default=False, verbose_name="a été sollicité par l'OIF")
+    expert_oif = models.NullBooleanField(verbose_name="a été sollicité par l'OIF")
     expert_oif_details = models.CharField(max_length=255, blank=True, verbose_name="détails")
     expert_oif_dates = models.CharField(max_length=255, blank=True, verbose_name="dates")
-    membre_association_francophone = models.BooleanField(default=False, verbose_name="est membre d'une association francophone")
+    membre_association_francophone = models.NullBooleanField(verbose_name="est membre d'une association francophone")
     membre_association_francophone_details = models.CharField(max_length=255, blank=True, verbose_name="nom de l'association")
-    membre_reseau_institutionnel = models.BooleanField(
-        default=False, verbose_name="est membre des instances d'un réseau institutionnel de l'AUF"
+    membre_reseau_institutionnel = models.NullBooleanField(
+        verbose_name="est membre des instances d'un réseau institutionnel de l'AUF"
     )
     membre_reseau_institutionnel_nom = models.CharField(
         max_length=15, choices=RESEAU_INSTITUTIONNEL_CHOICES, blank=True,
@@ -215,7 +215,7 @@ class Chercheur(Personne):
     )
 
     # Expertises
-    expertises_auf = models.BooleanField(verbose_name="est disposé à réaliser des expertises pour l'AUF")
+    expertises_auf = models.NullBooleanField(verbose_name="est disposé à réaliser des expertises pour l'AUF")
 
     #meta
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')

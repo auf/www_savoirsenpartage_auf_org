@@ -73,7 +73,7 @@
     {% endfor %}
 {% endif %}
 
-{% if not ressources and not actualites and not evenements and not chercheurs and not sites %}
+{% if not ressources and not actualites and not evenements and not chercheurs and not sites and not sites_auf %}
     <h2>Aucun résultat</h2>
     <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 {% endif %}

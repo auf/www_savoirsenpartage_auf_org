@@ -36,16 +36,10 @@ pour affiner leur profil scientifique.
 <h2>Recherche</h2>
 
 <form method="get" action="">
-    <table id="repertoire_recherche">
-        {% form_field search_form.q %}
-        {% form_field search_form.nom %}
-        {% form_field search_form.domaine %}
-        {% form_field search_form.groupe_recherche %}
-        {% form_field search_form.statut %}
-        {% form_field search_form.discipline %}
-        {% form_field search_form.pays %}
-        {% form_field search_form.region %}
-        {% form_field search_form.nord_sud %}
+    <table>
+        {% with search_form as form %}
+        {% include "render_form.html" %}
+        {% endwith %}
         <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
     </table>
 </form>

@@ -277,7 +277,7 @@ class Evenement(models.Model):
                     (u'Conférence', u'Conférence'),
                     (u'Appel à contribution', u'Appel à contribution'),
                     (u'Journée d\'étude', u'Journée d\'étude'),
-                    (u'None', u'Autre'))
+                    (u'Autre', u'Autre'))
     TIME_ZONE_CHOICES = build_time_zone_choices()
 
     uid = models.CharField(max_length=255, default=str(uuid.uuid1()))

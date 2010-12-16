@@ -70,13 +70,8 @@ def load_xml (url):
 
     # Other crap
     content.replace("&", "&amp;")
-    
-    try:
-        return etree.XML (content.encode("utf-8"))
-    except:
-        print "Erreur parser"
-        print original
-        sys.exit()
+
+    return etree.XML(content.encode("utf-8"))
 
 def store_listsets(options):
     """interroge le serveur pour récupérer tous les listsets et les stocke en bd."""
@@ -126,7 +121,8 @@ def harvest (options):
     root = load_xml (url.geturl() + "?verb=ListRecords&metadataPrefix=oai_dc")
     records.extend (root.findall (".//%srecord" % oai2ns))
     token = root.find (".//%sresumptiontoken" % oai2ns)
-    print "total du serveur %s " % token.get("completeListSize")
+    if token is not None:
+        print "total du serveur %s " % token.get("completeListSize")
 
     while token is not None:
         root = load_xml (url.geturl() + "?verb=ListRecords&resumptionToken=%s" % token.text)

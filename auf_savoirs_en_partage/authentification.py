@@ -1,64 +1,31 @@
 # -*- encoding: utf-8 -*-
-import hashlib, sys
-
-import settings
+import re
+from chercheurs.models import Personne
+from chercheurs.utils import get_django_user_for_email
+from datamaster_modeles.models import Authentification as AUFUser, Employe
+from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import User as DjangoUser, check_password
+from hashlib import md5
 
-from chercheurs.models import Utilisateur as RemoteUser
+class AUFBackend(ModelBackend):
+    """Authentifie un employé de l'AUF."""
 
-class CascadeBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
-        user = None
-        email = username
-
-        # Cherche les comptes roa+locaux
-        remoteUser = localUser = None
         try:
-            remoteUser = RemoteUser.objects.get(courriel=email, actif=True)
-            if settings.AUTH_PASSWORD_REQUIRED and not remoteUser.check_password(password):
-                remoteUser = None
-        except:
-            pass
+            auf_user = AUFUser.objects.get(courriel=username, actif=True)
+        except AUFUser.DoesNotExist:
+            return None
+        if not settings.AUTH_PASSWORD_REQUIRED or md5(password).hexdigest() == auf_user.motdepasse:
+            return get_django_user_for_email(username)
+
+class PersonneBackend(ModelBackend):
+    """Authentifie un chercheur de Savoirs en partage."""
+
+    def authenticate(self, username=None, password=None):
         try:
-            localUser = DjangoUser.objects.get (username=username)
-        except: pass
-
-        # Si on a pas besoin du mdp, on doit copier qd meme,
-        # il ne faut jamais retourner un "RemoteUser" ici
-        if not settings.AUTH_PASSWORD_REQUIRED:
-            if remoteUser and not localUser:
-                localUser = DjangoUser (username = username,
-                                        email = username,
-                                        first_name = remoteUser.prenom,
-                                        last_name = remoteUser.nom,
-                                        is_staff = settings.USERS_AS_STAFF,
-                                        is_active = True,
-                                        is_superuser = False)
-                localUser.set_password (password)
-                localUser.save ()
-            user = localUser
-        # Gestion des comptes roa vs. local
-        else:
-            # Local existe pas, on doit de tte facon le creer
-            if not localUser:
-                localUser = DjangoUser (username = username,
-                        email = email, 
-                        is_staff = settings.USERS_AS_STAFF,
-                        is_active = True,
-                        is_superuser = False)
-            # Cas du compte local seul, on verifie le mot de passe
-            elif not remoteUser:
-                if localUser.check_password (password):
-                    user = localUser
-            # Compte roa, on valide le mot de passe distant et on
-            # met a jour la copie locale
-            if remoteUser:
-                localUser.first_name = remoteUser.prenom
-                localUser.last_name = remoteUser.nom
-                # pass distant en md5
-                localUser.set_password (password)
-                localUser.save ()
-                user = localUser
-
-        return user
+            personne = Personne.objects.get(courriel=username, actif=True)
+        except Personne.DoesNotExist:
+            return None
+        user = get_django_user_for_email(username)
+        if not settings.AUTH_PASSWORD_REQUIRED or user.check_password(password):
+            return user

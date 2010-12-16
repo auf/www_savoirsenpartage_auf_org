@@ -114,6 +114,8 @@ form ul.errorlist li { list-style:none; }
 .add-row { font-size: 90%; float:right; margin-right:16px }
 .edit-publication { font-size: 90%; position: absolute; bottom: 5px; right: 5px; cursor: pointer; }
 
+.form-errors { margin: 10px 0px; background: #f3e3e7; color: #b03d5e; padding: 1em; font-size: 120%;
+               border: 1px solid #b03d5e; }
 /* Tables */
 
 table { width: 100%; }
@@ -164,6 +166,8 @@ ul.actions { font-size: 90%; float: right; text-align: right; list-style: none;
 * html .clearfix { height:1%; }
 .clearfix { display:block; }
 
+/* Cadre */
+
 .cadre { width: 60%; margin: 100px auto; padding: 20px; background: #f9f9f9; border: 1px solid #aaa }
-.souligne { border-bottom: 1px solid #DDD; }
+.cadre h1 { margin: -20px -20px 0 -20px; padding: 5px; background: #aaa; color: white; font-size: 120%; font-weight: bold; text-align: center; }
 

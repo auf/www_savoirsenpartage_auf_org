@@ -6,6 +6,16 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Savoirs en partage - Agence universitaire de la Francophonie</title>
         <link rel="icon" type="image/png" href="{{ MEDIA_URL }}img/favicon.ico" />
+        {% compress css %}
+        <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery-ui/jquery-ui.css" type="text/css" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.timepicker.css" type="text/css" />
+        {% endcompress %}
+        <!--[if lt IE 7]>
+        <link href="{{ MEDIA_URL }}css/ie6.css" rel="stylesheet" type="text/css" media="screen" />
+        <![endif]-->
+        {% block extra-style %}{% endblock %}
+
         {% compress js %}
         <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui.js"></script>
@@ -16,20 +26,12 @@
         {% endcompress %}
         {% block extra-script %}{% endblock %}
 
-        {% compress css %}
-        <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery-ui/jquery-ui.css" type="text/css" />
-        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.timepicker.css" type="text/css" />
-        {% endcompress %}
-
         <!--[if lt IE 7]>
-        <link href="{{ MEDIA_URL }}css/ie6.css" rel="stylesheet" type="text/css" media="screen" />
         <script src="{{ MEDIA_URL }}js/DD_belatedPNG.js"></script>
         <script>
             DD_belatedPNG.fix('.top, .bottom, #col-droite, #contenu');
         </script>
         <![endif]-->
-        {% block extra-style %}{% endblock %}
 
         <!-- Google Analytics -->
         <script type="text/javascript">
@@ -42,7 +44,7 @@
              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
              })();
-         </script>
+        </script>
     </head>
 
     <body>
@@ -64,9 +66,9 @@
                         <a href="{% url savoirs.views.nous_contacter %}">Contact</a> |
                         <a href="{% url savoirs.views.legal %}">Légal</a> |
                         {% if user.is_authenticated %}
-                        <a href="{% url django.contrib.auth.views.logout %}">Déconnexion</a>
+                        <a href="{% url chercheurs-logout %}">Déconnexion</a>
                         {% else %}
-                        <a href="{% url chercheurs.views.chercheur_login %}">Connexion</a>
+                        <a href="{% url chercheurs-login %}">Connexion</a>
                         {% endif %}
                     </div>
                 </div>

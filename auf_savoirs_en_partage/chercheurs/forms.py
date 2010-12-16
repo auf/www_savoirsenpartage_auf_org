@@ -8,51 +8,18 @@ from models import *
 
 OUI_NON_CHOICES = (('1', 'Oui'), ('0', 'Non'))
 
-class PersonneForm(forms.ModelForm):
-    genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
-
-    class Meta:
-        model = Utilisateur
-        fields = ('nom', 'prenom', 'courriel', 'genre')
-        
-    def clean_courriel(self):
-        """On veut s'assurer qu'il n'y ait pas d'autre utilisateur actif
-           avec le même courriel."""
-        courriel = self.cleaned_data['courriel']
-        existing = Personne.objects.filter(courriel=courriel, actif=True)
-        if self.instance and self.instance.id:
-            existing = existing.exclude(id=self.instance.id)
-        if existing.count():
-            raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
-        return courriel
-        
-class PersonneInscriptionForm(PersonneForm):
-    password = forms.CharField(widget=forms.PasswordInput(), label="Mot de passe") 
-    password_confirmation = forms.CharField(widget=forms.PasswordInput(), label="Confirmez votre mot de passe")
-
-    class Meta(PersonneForm.Meta):
-        fields = ('nom', 'prenom', 'courriel', 'password', 'password_confirmation', 'genre')
-        
-    def clean_password_confirmation(self):
-        """S'assurer que le mot de passe et la confirmation sont identiques."""
-        password = self.cleaned_data.get('password')
-        confirmation = self.cleaned_data.get('password_confirmation')
-        if password != confirmation:
-            raise forms.ValidationError('Les deux mots de passe ne correspondent pas.')
-        return confirmation
-
-    def save(self):
-        self.instance.set_password(self.cleaned_data['password'])
-        return super(PersonneInscriptionForm, self).save()
-
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
+    genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
     membre_instance_auf = forms.ChoiceField(
         label="Êtes-vous (ou avez-vous déjà été) membre d'une instance de l'AUF?",
-        help_text="e.g. conseil scientifique, conseil associatif, commission régionale d'experts",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
-    membre_instance_auf_details = forms.CharField(label="Préciser laquelle et votre fonction", required=False)
+    membre_instance_auf_nom = forms.ChoiceField(
+        choices = (('', '---------'),) + Chercheur.INSTANCE_AUF_CHOICES,
+        label="Préciser laquelle", required=False
+    )
+    membre_instance_auf_fonction = forms.CharField(label="Préciser votre fonction", required=False)
     membre_instance_auf_dates = forms.CharField(label="Préciser les dates", required=False)
     expert_oif = forms.ChoiceField(label="Avez-vous déjà été sollicité par l'OIF?", choices=OUI_NON_CHOICES, widget=forms.RadioSelect())
     expert_oif_details = forms.CharField(label="Préciser à quel titre", required=False,
@@ -65,11 +32,15 @@ class ChercheurForm(forms.ModelForm):
     )
     membre_association_francophone_details = forms.CharField(label="Préciser laquelle", required=False)
     membre_reseau_institutionnel = forms.ChoiceField(
-        label="Avez-vous fait partie des instances d'un réseau institutionnel de l'AUF?",
-        help_text="e.g. AFELSH, RIFFEF, CIDMEF, etc.",
+        label="Êtes-vous (ou avez-vous déjà été) membre des instances d'un réseau institutionnel de l'AUF?",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
     )
-    membre_reseau_institutionnel_details = forms.CharField(required=False, label="Préciser lesquelles et votre fonction")
+    membre_reseau_institutionnel_nom = forms.ChoiceField(
+        label="Préciser le réseau institutionnel",
+        choices=(('', '---------'),) + Chercheur.RESEAU_INSTITUTIONNEL_CHOICES,
+        required=False
+    )
+    membre_reseau_institutionnel_fonction = forms.CharField(required=False, label="Préciser votre fonction")
     membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
 
     pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), required=True)
@@ -92,16 +63,18 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('statut', 'diplome', 'discipline', 'theme_recherche',
-                  'groupe_recherche', 'mots_cles', 'url_site_web',
-                  'url_blog', 'url_reseau_social', 'attestation',
-                  'membre_instance_auf', 'membre_instance_auf_details',
+        fields = ('nom', 'prenom', 'genre', 'statut', 'diplome',
+                  'discipline', 'theme_recherche', 'groupe_recherche',
+                  'mots_cles', 'url_site_web', 'url_blog',
+                  'url_reseau_social', 'attestation', 'membre_instance_auf',
+                  'membre_instance_auf_nom', 'membre_instance_auf_fonction',
                   'membre_instance_auf_dates', 'expert_oif',
                   'expert_oif_details', 'expert_oif_dates',
                   'membre_association_francophone',
                   'membre_association_francophone_details',
                   'membre_reseau_institutionnel',
-                  'membre_reseau_institutionnel_details',
+                  'membre_reseau_institutionnel_nom',
+                  'membre_reseau_institutionnel_fonction',
                   'membre_reseau_institutionnel_dates', 'expertises_auf')
         
     def __init__(self, data=None, prefix=None, instance=None):
@@ -120,26 +93,44 @@ class ChercheurForm(forms.ModelForm):
     def save(self):
         nom_etablissement = self.cleaned_data['etablissement']
         pays_etablissement = self.cleaned_data['pays_etablissement']
-        try:
-            etablissement = Etablissement.objects.get(nom=nom_etablissement, pays=pays_etablissement)
-            self.instance.etablissement = etablissement
+        etablissements = Etablissement.objects.filter(nom=nom_etablissement, pays=pays_etablissement, actif=True)
+        if etablissements.count() > 0:
+            self.instance.etablissement = etablissements[0]
             self.instance.etablissement_autre = ''
             self.instance.etablissement_autre_pays = None
-        except Etablissement.DoesNotExist:
+        else:
             self.instance.etablissement = None
             self.instance.etablissement_autre_nom = nom_etablissement
             self.instance.etablissement_autre_pays = pays_etablissement
         super(ChercheurForm, self).save()
 
+    def clean_courriel(self):
+        """On veut s'assurer qu'il n'y ait pas d'autre utilisateur actif
+           avec le même courriel."""
+        courriel = self.cleaned_data['courriel']
+        existing = Chercheur.objects.filter(courriel=courriel, actif=True)
+        if self.instance and self.instance.id:
+            existing = existing.exclude(id=self.instance.id)
+        if existing.count():
+            raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
+        return courriel
+        
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
     
-    def clean_membre_instance_auf_details(self):
+    def clean_membre_instance_auf_nom(self):
         membre = self.cleaned_data.get('membre_instance_auf')
-        details = self.cleaned_data.get('membre_instance_auf_details')
-        if membre and not details:
+        nom = self.cleaned_data.get('membre_instance_auf_nom')
+        if membre and not nom:
             raise forms.ValidationError('Veuillez préciser')
-        return details
+        return nom
+
+    def clean_membre_instance_auf_fonction(self):
+        membre = self.cleaned_data.get('membre_instance_auf')
+        fonction = self.cleaned_data.get('membre_instance_auf_fonction')
+        if membre and not fonction:
+            raise forms.ValidationError('Veuillez préciser')
+        return fonction
 
     def clean_membre_instance_auf_dates(self):
         membre = self.cleaned_data.get('membre_instance_auf')
@@ -178,12 +169,19 @@ class ChercheurForm(forms.ModelForm):
     def clean_membre_reseau_institutionnel(self):
         return bool(int(self.cleaned_data['membre_reseau_institutionnel']))
 
-    def clean_membre_reseau_institutionnel_details(self):
+    def clean_membre_reseau_institutionnel_nom(self):
         membre = self.cleaned_data.get('membre_reseau_institutionnel')
-        details = self.cleaned_data.get('membre_reseau_institutionnel_details')
-        if membre and not details:
+        nom = self.cleaned_data.get('membre_reseau_institutionnel_nom')
+        if membre and not nom:
             raise forms.ValidationError('Veuillez préciser')
-        return details
+        return nom
+
+    def clean_membre_reseau_institutionnel_fonction(self):
+        membre = self.cleaned_data.get('membre_reseau_institutionnel')
+        fonction = self.cleaned_data.get('membre_reseau_institutionnel_fonction')
+        if membre and not fonction:
+            raise forms.ValidationError('Veuillez préciser')
+        return fonction
 
     def clean_membre_reseau_institutionnel_dates(self):
         membre = self.cleaned_data.get('membre_reseau_institutionnel')
@@ -194,6 +192,11 @@ class ChercheurForm(forms.ModelForm):
 
     def clean_expertises_auf(self):
         return bool(int(self.cleaned_data['expertises_auf']))
+
+class ChercheurInscriptionForm(ChercheurForm):
+
+    class Meta(ChercheurForm.Meta):
+        fields = ChercheurForm.Meta.fields + ('courriel',)
 
 class GroupesForm(forms.Form):
     """Formulaire qui associe des groupes à un chercheur."""
@@ -249,41 +252,37 @@ class ChercheurFormGroup(object):
        d'un chercheur."""
 
     def __init__(self, data=None, chercheur=None):
-        personne_form_class = PersonneInscriptionForm if chercheur is None else PersonneForm
         try:
             these = chercheur and chercheur.these
         except These.DoesNotExist:
             these = These()
-        self.chercheur = ChercheurForm(data=data, prefix='chercheur', instance=chercheur)
+        chercheur_form_class = ChercheurInscriptionForm if chercheur is None else ChercheurForm
+        self.chercheur = chercheur_form_class(data=data, prefix='chercheur', instance=chercheur)
         self.groupes = GroupesForm(data=data, prefix='chercheur', chercheur=chercheur)
-        self.personne = personne_form_class(data=data, prefix='personne', instance=chercheur and chercheur.personne.utilisateur)
         self.expertises = ExpertiseFormSet(data=data, prefix='expertise', instance=chercheur)
         self.these = TheseForm(data=data, prefix='these', instance=these)
         self.publications = PublicationFormSet(data=data, prefix='publication', instance=chercheur)
 
     @property
     def has_errors(self):
-        return bool(self.chercheur.errors or self.personne.errors or self.groupes.errors or
-                    self.these.errors or self.publications.errors or self.expertises.errors)
+        return bool(self.chercheur.errors or self.groupes.errors or
+                    self.these.errors or self.publications.errors or
+                    self.expertises.errors)
 
     def is_valid(self):
-        return self.chercheur.is_valid() and self.personne.is_valid() and self.groupes.is_valid() and \
-               self.these.is_valid() and self.publications.is_valid() and self.expertises.is_valid()
+        return self.chercheur.is_valid() and self.groupes.is_valid() and \
+               self.these.is_valid() and self.publications.is_valid() and \
+               self.expertises.is_valid()
 
     def save(self):
         if self.is_valid():
 
-            chercheur = self.chercheur.instance
-
-            # Enregistrer d'abord les clés étrangères car on doit les stocker dans
-            # l'objet chercheur.
-            chercheur.personne = self.personne.save()
-
-            # Puis enregistrer le chercheur lui-même.
+            # Enregistrer d'abord le chercheur lui-même.
             self.chercheur.save()
 
             # Puis les objets qui ont des clés étrangères vers nous
             # puisqu'on a besoin d'un id.
+            chercheur = self.chercheur.instance
             self.groupes.chercheur = chercheur
             self.groupes.save()
             self.these.instance.chercheur = chercheur
@@ -292,6 +291,7 @@ class ChercheurFormGroup(object):
             self.publications.save()
             self.expertises.instance = chercheur
             self.expertises.save()
+            return self.chercheur.instance
 
 class RepertoireSearchForm (forms.Form):
     q = forms.CharField(required=False, label="Rechercher dans tous les champs")
@@ -306,6 +306,13 @@ class RepertoireSearchForm (forms.Form):
                                     help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
     nord_sud = forms.ChoiceField(choices=(('', 'Tous'), ('Nord', 'Nord'), ('Sud', 'Sud')), required=False, label="Nord/Sud",
                                  help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays développés, par Sud les pays en développement (pays les moins avancés, pays émergents et pays à économies en transition)")
+    activites_francophonie = forms.ChoiceField(required=False, label="Activités en Francophonie", choices=(
+        ('', '---------'),
+        ('instance_auf', "Membre d'une instance de l'AUF"),
+        ('expert_oif', "Sollicité par l'OIF"),
+        ('association_francophone', "Membre d'une association ou d'une société savante francophone"),
+        ('reseau_institutionnel', "Membre des instances d'un réseau institutionnel de l'AUF")
+    ))
 
     def __init__(self, data=None, region=None):
         super(RepertoireSearchForm, self).__init__(data)
@@ -346,6 +353,15 @@ class RepertoireSearchForm (forms.Form):
             nord_sud = self.cleaned_data['nord_sud']
             if nord_sud:
                 chercheurs = chercheurs.filter_nord_sud(nord_sud)
+            activites_francophonie = self.cleaned_data['activites_francophonie']
+            if activites_francophonie == 'instance_auf':
+                chercheurs = chercheurs.filter(membre_instance_auf=True)
+            elif activites_francophonie == 'expert_oif':
+                chercheurs = chercheurs.filter(expert_oif=True)
+            elif activites_francophonie == 'association_francophone':
+                chercheurs = chercheurs.filter(membre_association_francophone=True)
+            elif activites_francophonie == 'reseau_institutionnel':
+                chercheurs = chercheurs.filter(membre_reseau_institutionnel=True)
         return chercheurs.all()
     
 class SendPasswordForm(forms.Form):
@@ -355,14 +371,14 @@ class SendPasswordForm(forms.Form):
         email = cleaned_data.get("email")
         if email:
             try:
-                Utilisateur.objects.get(courriel=email, actif=True)
+                Personne.objects.get(courriel=email)
             except:
                 raise forms.ValidationError("Cette adresse n'existe pas dans notre base de données.")       
         return email
 
-class NewPasswordForm(forms.Form):
+class SetPasswordForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), required=True, label="Mot de passe") 
-    password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez mot de passe")
+    password_repeat = forms.CharField(widget=forms.PasswordInput(), required=True, label="Confirmez votre mot de passe")
 
     def clean_password_repeat(self):
         cleaned_data = self.cleaned_data
@@ -372,4 +388,3 @@ class NewPasswordForm(forms.Form):
             if password != password_repeat:
                 raise forms.ValidationError("Les mots de passe ne concordent pas")
         return password_repeat   
-

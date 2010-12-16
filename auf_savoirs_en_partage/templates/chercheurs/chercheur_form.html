@@ -5,9 +5,14 @@
 {% endif %}   
 <fieldset class="horizontal-radio-buttons">
     <legend>Informations personnelles</legend>
-    {% with forms.personne as form %}
-    {% include "table_form.html" %}
-    {% endwith %}
+    <table>
+        {% form_field forms.chercheur.nom %}
+        {% form_field forms.chercheur.prenom %}
+        {% if forms.chercheur.courriel %}
+        {% form_field forms.chercheur.courriel %}
+        {% endif %}
+        {% form_field forms.chercheur.genre %}
+    </table>
 </fieldset>
 
 <fieldset>
@@ -47,21 +52,37 @@
     </table>
 </fieldset>
 
-<fieldset>
+<fieldset class="horizontal-radio-buttons">
     <legend>Activités en Francophonie</legend>
-    <table class="horizontal-radio-buttons">
-        {% form_field forms.chercheur.membre_instance_auf %}
-        {% form_field forms.chercheur.membre_instance_auf_details %}
-        {% form_field forms.chercheur.membre_instance_auf_dates %}
-        {% form_field forms.chercheur.expert_oif %}
-        {% form_field forms.chercheur.expert_oif_details %}
-        {% form_field forms.chercheur.expert_oif_dates %}
-        {% form_field forms.chercheur.membre_association_francophone %}
-        {% form_field forms.chercheur.membre_association_francophone_details %}
-        {% form_field forms.chercheur.membre_reseau_institutionnel %}
-        {% form_field forms.chercheur.membre_reseau_institutionnel_details %}
-        {% form_field forms.chercheur.membre_reseau_institutionnel_dates %}
-    </table>
+    <fieldset>
+        <table>
+            {% form_field forms.chercheur.membre_instance_auf %}
+            {% form_field forms.chercheur.membre_instance_auf_nom %}
+            {% form_field forms.chercheur.membre_instance_auf_fonction %}
+            {% form_field forms.chercheur.membre_instance_auf_dates %}
+        </table>
+    </fieldset>
+    <fieldset>
+        <table>
+            {% form_field forms.chercheur.expert_oif %}
+            {% form_field forms.chercheur.expert_oif_details %}
+            {% form_field forms.chercheur.expert_oif_dates %}
+        </table>
+    </fieldset>
+    <fieldset>
+        <table>
+            {% form_field forms.chercheur.membre_association_francophone %}
+            {% form_field forms.chercheur.membre_association_francophone_details %}
+        </table>
+    </fieldset>
+    <fieldset>
+        <table>
+            {% form_field forms.chercheur.membre_reseau_institutionnel %}
+            {% form_field forms.chercheur.membre_reseau_institutionnel_nom %}
+            {% form_field forms.chercheur.membre_reseau_institutionnel_fonction %}
+            {% form_field forms.chercheur.membre_reseau_institutionnel_dates %}
+        </table>
+    </fieldset>
 </fieldset>
 
 <fieldset id="expertises" class="horizontal-radio-buttons">
@@ -112,7 +133,7 @@
     <tr>
         <td>{{ forms.chercheur.attestation }}</td>
         <td>
-            {{ forms.chercheur.attestation.label_tag }}
+            {{ forms.chercheur.attestation.label_tag }} <span style="color:red">*</span>
             {{ forms.chercheur.attestation.errors }}
         </td>
     </tr>

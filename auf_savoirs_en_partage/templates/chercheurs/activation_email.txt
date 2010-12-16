@@ -1,0 +1,17 @@
+Bonjour,
+
+Nous avons enregistré votre inscription à Savoirs en partage.
+
+Veuillez maintenant confirmer votre adresse électronique en suivant le lien
+suivant:
+
+  http://{{ domain }}{% url chercheurs-activation id_base36=id_base36, token=token %}
+
+Si vous rencontrez des difficultés, vous pouvez écrire à : contact-savoirsenpartage@auf.org
+
+Avec nos meilleures salutations.
+
+-- 
+Savoirs en partage
+http://{{ domain }}
+contact-savoirsenpartage@auf.org

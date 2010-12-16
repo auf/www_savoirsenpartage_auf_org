@@ -2,16 +2,12 @@
 
 {% block contenu %}
 
-{% if modification %}
-    <div id="flash-message">Votre fiche a bien été enregistrée.</div>
-{% endif %}
-    
 <ul class="actions">
     <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
     <li><a href="{% url chercheurs.views.edit %}">Éditer votre fiche</a></li>
-    <li><a href="{% url chercheurs.views.change_password %}">Modifier votre mot de passe</a></li>
+    <li><a href="{% url chercheurs-password-change %}">Modifier votre mot de passe</a></li>
     <li><a href="{% url savoirs.views.evenement_ajout %}">Ajouter un événement à l'agenda</a></li>
-    <li><a href="{% url django.contrib.auth.views.logout %}">Vous déconnecter</a></li>
+    <li><a href="{% url chercheurs-logout %}">Vous déconnecter</a></li>
     <li><a href="{% url chercheurs.views.desinscription %}">Vous désinscrire du répertoire</a></li>
 </ul>
 

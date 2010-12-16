@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 from datamaster_modeles.models import *
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
+from django.utils.hashcompat import sha_constructor
 from djangosphinx.models import SphinxSearch
 from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
-
-    id = models.AutoField(primary_key=True)
     salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name='prénom')
@@ -27,22 +27,7 @@ class Personne(models.Model):
         return u"%s %s, %s" % (self.prenom, self.nom, self.courriel)
 
     class Meta:
-        ordering = ["prenom", "nom"]
-
-class Utilisateur(Personne):
-    encrypted_password = models.CharField(db_column='password', max_length=35, verbose_name = 'Mot de passe')
-
-    def set_password(self, clear_password):
-        self.encrypted_password = self.encrypt_password(clear_password)
-
-    def check_password(self, clear_password):
-        return self.encrypted_password == self.encrypt_password(clear_password)
-    
-    def encrypt_password(self, clear_password):
-        return hashlib.md5(smart_str(clear_password)).hexdigest()
-
-    def get_new_password_code(self):
-        return hashlib.md5(smart_str(self.courriel + self.encrypted_password)).hexdigest()[0:6]
+        ordering = ["nom", "prenom"]
 
 class ChercheurQuerySet(SEPQuerySet):
 
@@ -65,7 +50,7 @@ class ChercheurQuerySet(SEPQuerySet):
         return self.exclude(expertises=None)
 
     def order_by_nom(self, direction=''):
-        return self.order_by(direction + 'personne__nom', direction + 'personne__prenom', '-date_modification')
+        return self.order_by(direction + 'nom', direction + 'prenom', '-date_modification')
 
     def order_by_etablissement(self, direction=''):
         return self.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
@@ -115,7 +100,7 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
 class ChercheurManager(SEPManager):
 
     def get_query_set(self):
-        return ChercheurQuerySet(self.model)
+        return ChercheurQuerySet(self.model).filter(actif=True)
 
     def get_sphinx_query_set(self):
         return ChercheurSphinxQuerySet(self.model).order_by('-date_modification')
@@ -148,13 +133,36 @@ class ChercheurManager(SEPManager):
     def order_by_pays(self, direction=''):
         return self.get_query_set().order_by_pays(self, direction=direction)
 
-STATUT_CHOICES = (('enseignant', 'Enseignant-chercheur dans un établissement'), ('etudiant', 'Étudiant-chercheur doctorant'), ('independant', 'Chercheur indépendant docteur'))
-class Chercheur(models.Model):
-    id = models.AutoField(primary_key=True, db_column='id')
-    personne = models.ForeignKey('Personne', db_column='personne', editable=False)
+STATUT_CHOICES = (
+    ('enseignant', 'Enseignant-chercheur dans un établissement'), 
+    ('etudiant', 'Étudiant-chercheur doctorant'), 
+    ('independant', 'Chercheur indépendant docteur')
+)
+
+class Chercheur(Personne):
+    RESEAU_INSTITUTIONNEL_CHOICES = (
+        ('AFELSH', 'Association des facultés ou établissements de lettres et sciences humaines des universités d’expression française (AFELSH)'),
+        ('CIDEGEF', 'Conférence internationale des dirigeants des institutions d’enseignement supérieur et de recherche de gestion d’expression française (CIDEGEF)'),
+        ('RIFEFF', 'Réseau international francophone des établissements de formation de formateurs (RIFEFF)'),
+        ('CIDMEF', 'Conférence internationale des doyens des facultés de médecine d’expression française (CIDMEF)'),
+        ('CIDCDF', 'Conférence internationale des doyens des facultés de chirurgie dentaire d’expression totalement ou partiellement française (CIDCDF)'),
+        ('CIFDUF', 'Conférence internationale des facultés de droit ayant en commun l’usage du français (CIFDUF)'),
+        ('CIRUISEF', 'Conférence internationale des responsables des universités et institutions à dominante scientifique et technique d’expression française (CIRUISEF)'),
+        ('Theophraste', 'Réseau Théophraste (Réseau de centres francophones de formation au journalisme)'),
+        ('CIDPHARMEF', 'Conférence internationale des doyens des facultés de pharmacie d’expression française (CIDPHARMEF)'),
+        ('CIDEFA', 'Conférence internationale des directeurs et doyens des établissements supérieurs d’expression française des sciences de l’agriculture et de l’alimentation (CIDEFA)'),
+        ('CITEF', 'Conférence internationale des formations d’ingénieurs et techniciens d’expression française (CITEF)'),
+        ('APERAU', 'Association pour la promotion de l’enseignement et de la recherche en aménagement et urbanisme (APERAU)'),
+    )
+    INSTANCE_AUF_CHOICES = (
+        ('CASSOC', 'Conseil associatif'),
+        ('CA', "Conseil d'administration"),
+        ('CS', 'Conseil scientifique'),
+        ('CRE', "Commission régionale d'experts")
+    )
+
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
-    #fonction = models.CharField(max_length=36, choices=FONCTION_CHOICES)
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
     diplome = models.CharField(max_length=255, null=True, verbose_name = 'diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
@@ -166,9 +174,9 @@ class Chercheur(models.Model):
 
     #Domaine
     thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='thematique')
-    mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés')                    
+    mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés') 
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
-    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche')                                    
+    theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche') 
     groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
     url_site_web = models.URLField(max_length=255, null=True, blank=True, 
                                    verbose_name='adresse site Internet', verify_exists=False)
@@ -184,7 +192,8 @@ class Chercheur(models.Model):
     
     # Activités en francophonie
     membre_instance_auf = models.BooleanField(default=False, verbose_name="est ou a déjà été membre d'une instance de l'AUF")
-    membre_instance_auf_details = models.CharField(max_length=255, blank=True, verbose_name="détails")
+    membre_instance_auf_nom = models.CharField(max_length=10, blank=True, choices=INSTANCE_AUF_CHOICES, verbose_name="instance")
+    membre_instance_auf_fonction = models.CharField(max_length=255, blank=True, verbose_name="fonction")
     membre_instance_auf_dates = models.CharField(max_length=255, blank=True, verbose_name="dates")
     expert_oif = models.BooleanField(default=False, verbose_name="a été sollicité par l'OIF")
     expert_oif_details = models.CharField(max_length=255, blank=True, verbose_name="détails")
@@ -192,10 +201,14 @@ class Chercheur(models.Model):
     membre_association_francophone = models.BooleanField(default=False, verbose_name="est membre d'une association francophone")
     membre_association_francophone_details = models.CharField(max_length=255, blank=True, verbose_name="nom de l'association")
     membre_reseau_institutionnel = models.BooleanField(
-        default=False, verbose_name="a fait partie des instances d'un réseau institutionnel de l'AUF"
+        default=False, verbose_name="est membre des instances d'un réseau institutionnel de l'AUF"
     )
-    membre_reseau_institutionnel_details = models.CharField(
-        max_length=255, blank=True, verbose_name="instances et fonction"
+    membre_reseau_institutionnel_nom = models.CharField(
+        max_length=15, choices=RESEAU_INSTITUTIONNEL_CHOICES, blank=True,
+        verbose_name="réseau institutionnel"
+    )
+    membre_reseau_institutionnel_fonction = models.CharField(
+        max_length=255, blank=True, verbose_name="fonction"
     )
     membre_reseau_institutionnel_dates = models.CharField(
         max_length=255, blank=True, verbose_name="dates"
@@ -213,7 +226,7 @@ class Chercheur(models.Model):
     all_objects = models.Manager()
 
     def __unicode__(self):
-        return u"%s %s" % (self.personne.nom.upper(), self.personne.prenom.title())
+        return u"%s %s" % (self.nom.upper(), self.prenom.title())
         
     def statut_display(self):
         for s in STATUT_CHOICES:
@@ -242,6 +255,9 @@ class Chercheur(models.Model):
             self.etablissement_autre_nom = None
             self.etablissement_autre_pays = None
         super(Chercheur, self).save()
+
+    def activation_token(self):
+        return sha_constructor(settings.SECRET_KEY + unicode(self.id)).hexdigest()[::2]
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')

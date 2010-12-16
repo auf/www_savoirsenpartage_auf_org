@@ -1,0 +1,18 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<div class="cadre">
+    <h1>Activation de votre compte</h1>
+    {% if validlink %}
+    <form method="post">
+        <p>Veuillez choisir un mot de passe.</p>
+        <table>
+            {% include "render_form.html" %}
+            <tr><th></th><td><input type="submit" value="Envoyer" /></td></tr>
+        </table>
+    </form>
+    {% else %}
+    <p>Cette clé d'activation est invalide. Assurez-vous de bien copier le lien qui vous a été envoyé par courriel.</p>
+    {% endif %}
+</div>
+{% endblock %}

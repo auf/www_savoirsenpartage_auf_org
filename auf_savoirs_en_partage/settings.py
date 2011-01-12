@@ -67,7 +67,8 @@ INSTALLED_APPS = (
     'chercheurs',
     'sitotheque',
     'djangosphinx',
-    'datamaster_modeles'
+    'datamaster_modeles',
+    'south'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

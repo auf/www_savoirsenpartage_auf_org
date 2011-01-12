@@ -132,7 +132,7 @@
     </table>
     {% endif %}
 
-    {% if chercheurs.expertises.count or chercheur.expertises_auf %}
+    {% if chercheur.expertises.count or chercheur.expertises_auf %}
     <h2>Expertises</h2>
     {% for expertise in chercheur.expertises.all %}
     <table>

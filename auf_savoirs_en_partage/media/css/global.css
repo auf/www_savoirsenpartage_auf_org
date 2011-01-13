@@ -124,6 +124,10 @@ td, th { vertical-align: middle; padding: 5px }
 td ul, td ol { padding: 0; margin: 0; list-style: none; }
 tr.odd { background:#ddd; }
 
+/* Listes */
+
+dt { font-weight: bold; }
+dd { padding: 0; margin: 0 0 1em 0; }
 
 /* Styles inline */
 

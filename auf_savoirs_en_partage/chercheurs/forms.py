@@ -44,7 +44,10 @@ class ChercheurForm(forms.ModelForm):
     membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
 
     pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), required=True)
-    etablissement = forms.CharField(label="Nom de l'établissement", required=True)
+    etablissement = forms.CharField(
+        label="Nom de l'établissement", required=True,
+        help_text="Après avoir sélectionné un pays, une liste d'établissement apparaît dès la saisie partielle du nom de l'établissement."
+    )
 
     expertises_auf = forms.ChoiceField(
         label="Êtes-vous disposé à réaliser des expertises pour l'AUF?",
@@ -59,6 +62,19 @@ class ChercheurForm(forms.ModelForm):
     attestation = forms.BooleanField(
         required=True,
         label="J'atteste sur l'honneur l'exactitude des renseignements fournis sur le formulaire d'inscription et j'accepte leur publication en ligne."
+    )
+    discipline = forms.ModelChoiceField(
+        label="Discipline", required=True,
+        queryset=Discipline.objects.all(),
+        help_text="La liste des disciplines procède d'un choix fait par le conseil scientifique de l'AUF."
+    )
+    groupe_recherche = forms.CharField(
+        max_length=255, label='Groupe de recherche', required=False,
+        help_text="Indiquer l'appartenance à un groupe de recherche universitaire ou laboratoire ou groupement inter-universitaire"
+    )
+    url_site_web = forms.URLField(
+        label='Adresse site Internet', required=False,
+        help_text="Si vous le souhaitez, vous pouvez y indiquer le lien qui renvoie vers une page personnelle (sur le site de votre établissement par exemple) plus complète."
     )
 
     class Meta:
@@ -203,7 +219,7 @@ class GroupesForm(forms.Form):
     groupes = forms.ModelMultipleChoiceField(
         queryset=Groupe.objects.all(), 
         label='Domaines de recherche', required=False,
-        help_text="Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
+        help_text="Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
     )
 
     def __init__(self, data=None, prefix=None, chercheur=None):

@@ -71,3 +71,6 @@ class PageLoadTest(TestCase):
 
     def test_a_propos(self):
         self.check_status_200('/a-propos/')
+
+    def test_aide(self):
+        self.check_status_200('/aide/')

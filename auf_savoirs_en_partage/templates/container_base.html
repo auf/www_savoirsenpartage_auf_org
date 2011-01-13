@@ -64,6 +64,7 @@
                 <div id="nav-droite">
                     <div>
                         <a href="{% url savoirs.views.a_propos %}">À propos</a> |
+                        <a href="{% url aide %}">Aide</a> |
                         <a href="{% url savoirs.views.nous_contacter %}">Contact</a> |
                         <a href="{% url savoirs.views.legal %}">Légal</a> |
                         {% if user.is_authenticated %}

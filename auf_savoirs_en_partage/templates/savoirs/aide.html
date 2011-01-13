@@ -1,0 +1,359 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h1>Mode d'emploi</h1>
+
+<ul> 
+    <li><a href="#principes-navigation">Principes de navigation</a></li> 
+    <li><a href="#repertoire">Répertoire des chercheurs</a></li>
+    <ul> 
+        <li><a href="#recherche-repertoire">Recherche dans le répertoire</a></li> 
+    </ul> 
+    </li> 
+    <li><a href="#ressources">Ressources</a></li> 
+    <li><a href="#actualites">Actualités</a></li> 
+    <li><a href="#agenda">Agenda</a>
+    <ul> 
+        <li><a href="#soumettre-evenement">Soumettre un évènement</a></li> 
+    </ul> 
+    </li> 
+    <li><a href="#sitotheque">Sitothèque</a></li> 
+</ul> 
+
+<h2 id="principes-navigation">Principes de navigation sur Savoirs en partage</h2> 
+
+<p>Vous retrouvez sur la <a href="{% url accueil %}">page d'accueil</a>
+l'ensemble des rubriques du portail. Pour chaque rubrique sont présentées les
+derniers enregistrements dans l'ordre antéchronologique.</p> 
+
+<p>Vous pouvez accéder à la rubrique en cliquant sur son titre.</p> 
+
+Le portail Savoirs en partage vous permet l'accès&nbsp;: 
+<ul> 
+    <li>au <a href="{% url chercheurs %}">répertoire des chercheurs</a></li> 
+    <li>à des <a href="{% url ressources %}">ressources scientifiques</a></li> 
+    <li>à des <a href="{% url actualites %}">actualités</a></li> 
+    <li>à des <a href="{% url appels %}">appels d'offres scientifiques</a></li>
+    <li>à un <a href="{% url agenda %}">agenda scientifique</a></li> 
+    <li>à une <a href="{% url sites %}">sitothèque</a></li> 
+</ul> 
+
+<p>Toutes ces rubriques sont accessibles <strong>par une double entrée</strong>, par région ou par discipline.</p> 
+
+<h3>Barre de recherche</h3> 
+
+<p>La barre de recherche permet une <strong>recherche dans toutes les rubriques
+    du portail</strong>. Vous pouvez rechercher indifféremment un nom commun ou
+un nom propre, ou tout autre terme. La recherche est lancée dans les
+différentes rubriques et les résultats apparaissent sous forme d'une liste pour
+chaque rubrique.</p> 
+
+<p>Pour une recherche contenant plusieurs termes, les résultats contenant tous
+ces termes vous sont proposés. Un calcul de pertinence fait remonter les
+résultats dans lesquels ces termes ou un de ces termes apparaissent dans le
+titre, et selon le nombre d'occurrence de vos termes de recherche dans la
+notice.</p> 
+
+<p>Vous pouvez également rechercher une expression complète en la mettant entre
+guillemets.</p> 
+
+<p>Les caractères accentués et les marques du pluriel sont ignorés lors de la
+recherche.</p> 
+
+<h3>Barre de menu principale</h3> 
+
+<p>En haut du site, et sur toutes ses pages, vous retrouvez notre barre de menu
+qui vous permet d'entrer directement, par un simple clic, dans une rubrique et
+de passer d'une rubrique à une autre.</p> 
+
+<p>Vous y retrouvez également les liens vers une page de présentation du portail 
+<a href="{% url a-propos %}">À propos</a>, une page <a href="{% url contact %}">Contact</a> 
+avec nos coordonnées, les <a href="{% url legal %}">Mentions légales</a> 
+du site, et le bouton <a href="{% url chercheurs-login %}">Connexion</a> qui permet aux chercheurs inscrits dans le
+répertoire des chercheurs d'accéder immédiatement à leur espace personnalisé.</p> 
+
+
+<h3>Menu latéral à droite</h3>
+
+<p>Les deux menus latéraux (Région, Discipline), à droite des pages du
+portail, vous permettent de sélectionner une région et/ou une discipline pour
+trouver rapidement les informations pertinentes sur cette région et/ou une
+discipline dans l'ensemble des rubriques du portail.</p> 
+
+<p>Pour cela, il vous suffit de cliquer sur une région, et ou une discipline,
+qui apparaissent alors sur un fond grisé&nbsp;; un nouveau clic vous permet de
+sélectionner une autre région ou discipline ou de rechercher sur « toutes les
+régions » ou « toutes les disciplines ».</p> 
+
+<h2 id="repertoire"><a href="{% url chercheurs %}">Répertoire des chercheurs</a></h2> 
+
+<p>Cet outil recense les universitaires (enseignants, chercheurs, doctorants)
+impliqués, ou souhaitant s'impliquer, dans les projets scientifiques appuyés
+par l'AUF. Il permet à la communauté scientifique de se mobiliser sur des
+projets en fonction de repères thématiques et/ou régionaux.</p> 
+
+<p>Dans le cadre de la programmation quadriennale, la politique scientifique de
+l'AUF s'appuie sur la mise en œuvre de projets inter-universitaires régionaux
+ou internationaux. Les réseaux de chercheurs ne sont plus le critère
+d'organisation du répertoire (consulter la
+<a href="{% url conversion %}">table de passage</a>). Les chercheurs précisent
+leur <a href="{% url domaines-de-recherche %}">domaine de recherche</a>,
+discipline, thème(s) et groupe(s) de recherche, et ajoutent des mots-clés pour
+affiner leur profil scientifique.</p> 
+
+<p>Pour <strong>compléter</strong> une nouvelle fiche d'inscription, cliquez
+sur le lien suivant:<br />
+<a href="{% url inscription %}">http://www.savoirsenpartage.auf.org{% url inscription %}</a></p> 
+
+<p>Tous les champs obligatoires sont indiqués par un astérisque (<span style="color: red">*</span>) rouge.</p> 
+
+<p>Pour <strong>mettre à jour</strong> votre fiche (chercheur déjà inscrit),
+cliquez sur le lien suivant:<br />
+<a href="{% url chercheurs-login %}">http://www.savoirsenpartage.auf.org{% url chercheurs-login %}</a></p> 
+
+<p>Pour se <strong>désinscrire du répertoire</strong> (supprimer sa fiche
+chercheur),
+<ul>
+    <li>cliquez sur le lien suivant: <a href="{% url chercheurs-login %}">http://www.savoirsenpartage.auf.org{% url chercheurs-login %}</a></li>
+    <li>saisissez votre adresse courriel et votre mot de passe (avec lesquels vous avez créé la fiche)</li>
+    <li>cliquez sur "Vous désinscrire du répertoire" (en rouge, dans le coin droit de la fiche).</li> 
+</ul>
+
+<p>Si vous avez oublié votre mot de passe, vous pouvez le réinitialiser à l'adresse suivante:<br />
+<a href="{% url chercheurs-password-reset %}">http://www.savoirsenpartage.auf.org{% url chercheurs-password-reset %}</a></p> 
+
+<p><strong>Attention:</strong> Le système ne permet pas la création de deux
+fiches associées à la même adresse de courrier électronique (doublon). Avant de
+compléter une nouvelle fiche, veuillez vous assurer qu'une fiche correspondant
+à votre nom et à votre profil ne figure pas déjà dans le répertoire des
+chercheurs.</p> 
+
+<p>Les données de l'ancien répertoire (autrefois accessible depuis le lien 
+<a href="http://www.chercheurs.auf.org">http://www.chercheurs.auf.org</a>)
+ont été importées sans modification dans ce nouveau Répertoire, qui prend
+maintenant place sur le portail Savoirs en partage.</p> 
+
+<p>Il est de votre responsabilité de vous assurer que les renseignements
+contenus sur votre fiche sont exacts et à jour. Vous seul pouvez apporter des
+modifications à votre fiche ou supprimer votre fiche du répertoire (voir
+procédure décrite ci-dessus). Les données enregistrées sont immédiatement
+publiées en ligne et visibles par tous les utilisateurs du site, que ces
+derniers soient inscrits ou non au répertoire des chercheurs.</p> 
+
+<h3>Durée de conservation des données</h3> 
+
+<p>Nous attirons votre attention sur le fait que les informations communiquées
+sont enregistrées dans la base pour une période initiale de <strong>12
+    mois</strong> au-delà de laquelle une revalidation ou une mise à jour de
+votre fiche est nécessaire pour qu'elle reste active. Un message de rappel vous
+sera adressé à ce sujet par courriel. Sans réponse de votre part, l'Agence
+procédera à la suppression de votre fiche.</p> 
+
+<p>Voici des précisions concernant certains champs du 
+<a href="{% url inscription %}">formulaire d'inscription</a> au répertoire des chercheurs.</p> 
+
+<p><strong>Domaines de recherche</strong>: Ce champ est proposé à titre
+d'indication complémentaire, mais il n'est pas obligatoire. Cette liste de
+domaines est inspirée des anciens réseaux où le passage selon la 
+<a href="{% url conversion %}">table de passage</a> a été fait de manière automatique.
+On peut décocher la sélection en faisant « Ctrl + clique » ou « Commande
+(touche pomme) » sur un Mac + clique ». Pour en sélectionner plusieurs,
+maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac.</p> 
+
+<p><strong>Établissement de rattachement</strong>: Après avoir sélectionné un
+pays, une liste d'établissement apparaît dès la saisie partielle du nom de
+l'établissement. Par exemple, si on choisit « Sénégal » et qu'on écrit « ins »,
+on voit apparaître, dans un menu déroulant limité au pays présélectionné, «
+Institut africain de management », « Institut sénégalais de recherches
+agricoles » et « Institut supérieur de management ». Ne reste plus qu'à
+sélectionner l'établissement approprié dans la liste suggérée.</p> 
+
+<p>Il est à noter que la liste est limitée aux établissements membres de l'AUF.
+En revanche, tout chercheur peut s'inscrire au répertoire, que son
+établissement de rattachement soit membre ou non de l'AUF.</p> 
+
+<p>Le répertoire attribue automatiquement une <strong>région</strong>, qui est
+liée au pays de l'établissement de rattachement du chercheur, indépendamment du
+lieu où se trouve le chercheur ou de la région sur laquelle portent ses travaux
+de recherche. Comme il est indiqué sur la page 
+<a href="{% url chercheurs %}">http://www.savoirsenpartage.auf.org{% url chercheurs %}</a>,
+la région est ici définie au sens, non strictement géographique, du Bureau
+régional de l'AUF de référence.</p> 
+
+<p><strong>Discipline:</strong> La liste des disciplines procède d'un choix
+fait par le conseil scientifique de l'AUF. Le mélange entre disciplines
+académiques classiques, phénomènes et objectifs relève d'une tentative de
+rendre mieux compte de possibles liens interdisciplinaires,
+plusridisciplinaires et transdisciplinaires sur la base des priorités de l'AUF.
+Si la liste est limitative, les mots clés (qui sont indexés dans la base de
+données) permettent d'apporter les précisions nécessaires.</p> 
+
+<p><strong>Thèmes de recherche</strong>: La description des thèmes de recherche
+est limitée à 1000 signes.</p> 
+
+<p><strong>Groupe de recherche</strong>: Indiquer l'appartenance à un groupe de
+recherche universitaire ou laboratoire ou groupement inter-universitaire.</p> 
+
+<p><strong>Adresse site Internet</strong>: Si vous le souhaitez, vous pouvez y
+indiquer le lien qui renvoie vers une page personnelle (sur le site de votre
+établissement par exemple) plus complète.</p> 
+
+<p><strong>Expertises:</strong> Le nombre d'expertises qu'il est possible
+d'ajouter n'est pas limité.</p> 
+
+<p><strong>Publications:</strong> Le nombre de publications qu'il est possible
+d'ajouter n'est pas limité.</p> 
+
+<p><strong>Enregistrement de l'inscription:</strong> Après avoir cliqué sur «
+Enregistrer l'inscription », le message suivant s'affiche: <br />« Un courriel
+contenant un lien d'activation vous a été envoyé. »</p> 
+
+<p>Le courriel est envoyé par <a href="mailto:contact-savoirsenpartage@auf.org">contact-savoirsenpartage@auf.org</a>
+(pensez à vérifier vos courriers indésirables ou à ajouter cette adresse dans
+votre carnet d'adresse). On vous demande de confirmer votre adresse
+électronique en cliquant sur le lien indiqué dans le courriel.</p> 
+
+<p>Si vous rencontrez des difficultés, vous pouvez écrire à 
+<a class="email" href="mailto:contact-savoirsenpartage@auf.org">contact-savoirsenpartage@auf.org</a></p> 
+
+<h3 id="recherche-repertoire">Recherche dans le répertoire</h3> 
+
+<p>Le répertoire des chercheurs est librement consultable par tous. Les fiches
+sont remplies par les chercheurs eux-mêmes qui, en plus d'informations
+personnelles et académiques, signalent ici leurs sujets de thèses et leurs
+publications et/ou expertises éventuelles. Ils indiquent également leurs
+domaines et thématiques de recherche.</p> 
+
+<ul> 
+    <li><p>Une <strong>recherche simple</strong> vous est proposée en entrant vos
+    termes de recherche dans la fenêtre « Rechercher dans tous les champs
+    »&nbsp;: vous pourrez entrer ici soit le nom et/ou prénom d'un chercheur
+    soit un mot susceptible d'apparaitre sur sa fiche, une discipline, une
+    région, un pays ou encore une expression exacte (entre guillemets).</p></li> 
+
+    <li><p>Une <strong>recherche plus complexe</strong> est également possible en
+    précisant dans quel(s) champ(s) vous souhaitez rechercher&nbsp;; vous
+    pouvez entrer vos critères dans un ou plusieurs de ces champs pour
+    permettre des recoupement.</p></li> 
+</ul> 
+
+<p>Les deux derniers champs (Discipline / Région), sous forme de listes
+déroulantes, correspondent à ce qui apparaît dans le menu latéral à droite. Ils
+vous permettent d'identifier rapidement les chercheurs de votre région et/ou
+intéressés par une discipline précise.</p> 
+
+<p>La liste de résultats qui vous est proposée fait apparaître les chercheurs
+par ordre d'inscription ou de fiches actualisées récemment, les dernières
+inscriptions ou mises à jour apparaissant en tête de liste.</p> 
+
+<p>Vous pouvez choisir de trier cette liste par ordre alphabétique de nom,
+d'établissement, ou de pays (en cliquant sur le champ correspondant, en haut de
+la colonne). Un premier clic vous présente cette liste par un ordre
+croissant&nbsp;; un second clic la range en ordre décroissant.</p> 
+
+<h2 id="ressources"><a href="{% url ressources %}">Ressources</a></h2> 
+
+<p>La rubrique Ressources vous donne accès à des documents, articles, ouvrages,
+cours en ligne, etc. déposés sur différents sites et qui ont reçu le soutien de
+l'AUF. Un moissonneur OAI nous permet de regrouper ces contenus pour les
+interroger simultanément.</p> 
+
+<p>La recherche se fait sur <strong>tous les champs des notices des
+    documents</strong> telles qu'elles ont été créées dans ces différents sites
+(et non pas sur le texte intégral des documents). Pour chaque ressources, un
+lien hypertexte (derrière la mention&nbsp;: Contenu original) vous renvoie vers
+le document en ligne sur des sites extérieurs.</p> 
+
+<ul> 
+    <li><p>Une <strong>recherche simple</strong> vous est proposée en entrant vos
+    termes de recherche dans la fenêtre « Rechercher dans tous les champs
+    »&nbsp;: vous pouvez entrer ici un nom commun ou un nom propre, une
+    discipline, une région, un pays ou encore une expression exacte (entre
+    guillemets).</p></li> 
+
+    <li><p>Une <strong>recherche plus complexe</strong> est également possible
+    en précisant dans quel(s) champ(s) vous souhaitez rechercher&nbsp;; vous
+    pouvez entrer vos critères dans un ou plusieurs de ces champs pour
+    permettre des recoupement.</p></li> 
+</ul> 
+
+<p>Pour une recherche contenant plusieurs termes, les résultats contenant tous
+ces termes vous seront proposés. Un <strong>calcul de pertinence</strong> fait
+remonter les résultats dans lesquels ces termes ou un de ces termes apparaît
+dans le titre, et selon le nombre d'occurrence de vos termes de recherche dans
+la notice.</p> 
+
+<p>Vous pouvez également rechercher une expression complète en la mettant entre
+guillemets. Les caractères accentués et les marques du pluriel sont ignorés
+lors de la recherche.</p> 
+
+<h2 id="actualites"><a href="{% url actualites %}">Actualités</a></h2> 
+
+<p>La rubrique actualités vous permet de retrouver les informations
+scientifiques sélectionnées sur nos sites institutionnels et nos sites
+régionaux.</p> 
+
+<p>La recherche dans les actualités peut se faire en mode simple (rechercher
+dans tous les champs) ou plus complexe, en sélectionnant les actualités selon
+leur dates de parution. On retrouve, comme sur toutes les rubriques du portail,
+la possibilité d'un tri par région et/ou discipline. Il est bien entendu
+possible de croiser ces différentes recherches.</p> 
+
+<h2 id="agenda"><a href="{% url agenda %}">Agenda</a></h2> 
+
+<p>La possibilité est offerte aux chercheurs d'annoncer sur ce portail un
+évènement scientifique en l'inscrivant dans un agenda consultable par tous.</p> 
+
+<p>La recherche dans les évènements de l'agenda peut se faire en mode simple
+(rechercher dans tous les champs) ou plus complexe, en sélectionnant les
+actualités selon leur dates ou en précisant avec le menu déroulant le type
+d'évènement qui vous interesse.  On retrouve, comme sur toutes les rubriques du
+portail, la possibilité d'un tri par région ou discipline. Il est bien entendu
+possible de croiser ces différentes recherches.</p> 
+
+<h3 id="soumettre-evenement">Soumettre un évènement</h3> 
+
+<p>Un bouton <a href="{% url evenement-ajout %}">Soumettre un évènement</a> en
+haut à droite dans la rubrique agenda ouvre le formulaire d'annonce d'évènement
+que chacun peut remplir en ligne pour annoncer à la communauté universitaire
+francophone un évènement scientifique.</p> 
+
+<p>Le formulaire vous permet d'indiquer pour chaque événement deux disciplines
+et de lui attacher des mots-clés. Vous devez sélectionner un pays et un fuseau
+horaire ( la sélection du pays entraine la saisie automatique du fuseau horaire
+) dans les listes déroulante, ainsi qu'un type d'évènement&nbsp;: l'agenda
+permet d'annoncer les évènements de type colloque, conférence, journée d'étude,
+séminaire, appels à contribution pour les publications ou à communication pour
+les colloques, appels à projet. Les cours et formations ne peuvent pas faire
+l'objet d'une annonce dans cet agenda.</p> 
+
+<p>Dans le champs « Description », vous pouvez présenter les thématiques de
+l'évènement et donner toutes les informations utiles aux futurs
+participants.</p> 
+
+<p>Toutes les annonces sont validées par l'administrateur du site avant leur
+publication en ligne.</p> 
+
+<p>L'AUF se réserve le droit de retenir ou non une annonce&nbsp;: ne seront
+conservées que les annonces susceptibles d'intéresser la communauté
+universitaire. L'auteur d'une annonce autorise l'AUF à publier en ligne les
+informations données sur le formulaire d'annonce d'évènement. L'auteur d'une
+annonce s'engage à détenir l'autorisation de publication en ligne des
+informations attachées à l'annonce. Seules les annonces complètes seront
+publiées après un contrôle de la validité des informations données.</p> 
+
+<h2 id="sitotheque"><a href="{% url sites %}">Sitothèque</a></h2> 
+
+<p>La sitothèque regroupe un ensemble de sites de contenus produits par ou avec
+le soutien de l'AUF.</p> 
+
+<p>La recherche dans la sitothèque peut se faire en mode simple (rechercher
+dans tous les champs) ou plus complexe, en sélectionnant les actualités selon
+leur dates de parution. On retrouve, comme sur toutes les rubriques du portail,
+la possibilité d'un tri par région et/ou discipline.</p> 
+
+<h3><a href="{% url sites-auf %}" title="recherche Google">Sites AUF</a></h3> 
+
+<p>Une recherche Google est proposée pour <em>rechercher sur l'ensemble des sites présentés dans la sitothèque</em>.</p> 
+
+{% endblock %}

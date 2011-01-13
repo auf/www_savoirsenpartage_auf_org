@@ -5,6 +5,10 @@
 {% block contenu %}
 {% autopaginate actualites 10 %}
 
+<ul class="actions">
+    <li><a href="{% url aide %}#actualites">Aide</a></li>
+</ul>
+
 <h1>
     Actualités <a href="/rss/actualites"><img src="/media/img/feed.png" alt="fil RSS"/></a>
 </h1>

@@ -22,7 +22,7 @@ sep_patterns = patterns(
     '',
 
     # accueil
-    (r'^$', 'savoirs.views.index'),
+    (r'^$', 'savoirs.views.index', {}, 'accueil'),
 
     # recherche
     (r'^recherche/$', 'savoirs.views.recherche'),
@@ -34,22 +34,25 @@ urlpatterns = sep_patterns + patterns(
     (r'^informations/$', 'savoirs.views.informations'),
 
     # agenda
-    (r'^agenda/$', 'savoirs.views.evenement_index'),
+    (r'^agenda/$', 'savoirs.views.evenement_index', {}, 'agenda'),
     (r'^agenda/evenements/(?P<id>\d+)/$', 'savoirs.views.evenement'),
     (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
     (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
     (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
     (r'^agenda/evenements/utilisation/$', 'savoirs.views.evenement_utilisation'),
-    (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout'),
+    (r'^agenda/evenements/creer/$', 'savoirs.views.evenement_ajout', {}, 'evenement-ajout'),
     (r'^agenda/evenements/creer/options_fuseau_horaire/$', 'savoirs.views.options_fuseau_horaire'),
 
     # sous-menu droite
-    (r'^a-propos/$', 'savoirs.views.a_propos'),
-    (r'^legal/$', 'savoirs.views.legal'),
-    (r'^nous-contacter/$', 'savoirs.views.nous_contacter'),
+    (r'^a-propos/$', 'savoirs.views.a_propos', {}, 'a-propos'),
+    (r'^aide/$', 'django.views.generic.simple.direct_to_template', {'template': 'savoirs/aide.html'}, 'aide'),
+    (r'^domaines-de-recherche/$', 'django.views.generic.simple.direct_to_template', 
+     {'template': 'savoirs/domaines-de-recherche.html'}, 'domaines-de-recherche'),
+    (r'^legal/$', 'savoirs.views.legal', {}, 'legal'),
+    (r'^nous-contacter/$', 'savoirs.views.nous_contacter', {}, 'contact'),
 
     # ressources
-    (r'^ressources/$', 'savoirs.views.ressource_index'),
+    (r'^ressources/$', 'savoirs.views.ressource_index', {}, 'ressources'),
     (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve'),
 
     # actualités
@@ -58,16 +61,16 @@ urlpatterns = sep_patterns + patterns(
     (r'^appels/$', 'savoirs.views.actualite_index', dict(type='appels'), 'appels'),
 
     # sites
-    (r'^sites/$', 'sitotheque.views.index'),
+    (r'^sites/$', 'sitotheque.views.index', {}, 'sites'),
     (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
 
     # sites AUF
-    (r'^sites-auf/$', 'savoirs.views.sites_auf'),
+    (r'^sites-auf/$', 'savoirs.views.sites_auf', {}, 'sites-auf'),
 
     # chercheurs
-    (r'^chercheurs/$', 'chercheurs.views.index'),
+    (r'^chercheurs/$', 'chercheurs.views.index', {}, 'chercheurs'),
     (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve'),
-    (r'^chercheurs/inscription/$', 'chercheurs.views.inscription'),
+    (r'^chercheurs/inscription/$', 'chercheurs.views.inscription', {}, 'inscription'),
     (r'^chercheurs/inscription_faite/$', 'django.views.generic.simple.direct_to_template', dict(
         template='chercheurs/inscription_faite.html'
     ), 'chercheurs-inscription-faite'),
@@ -75,7 +78,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/desinscription/$', 'chercheurs.views.desinscription'),
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
-    (r'^chercheurs/conversion$', 'chercheurs.views.conversion'),
+    (r'^chercheurs/conversion$', 'chercheurs.views.conversion', {}, 'conversion'),
     (r'^chercheurs/connexion/$', 'django.contrib.auth.views.login', dict(
         template_name='chercheurs/login.html'
     ), 'chercheurs-login'),

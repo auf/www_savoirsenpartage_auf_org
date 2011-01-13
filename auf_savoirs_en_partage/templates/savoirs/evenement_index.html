@@ -4,6 +4,7 @@
 {% block contenu %}
 {% autopaginate evenements 10 %}
 <ul class="actions">
+    <li><a href="{% url aide %}#agenda">Aide</a></li>
     {% include "savoirs/evenement_actions.html" %}
 </ul>
 <h1>Agenda <a href="/rss/agenda"><img src="/media/img/feed.png" alt="fil RSS" /></a></h1>

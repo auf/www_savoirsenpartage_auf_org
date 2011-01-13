@@ -19,10 +19,21 @@
 {% if actualites %}
     <h2>Actualités ({{ actualites|length }} sur {{ total_actualites }})</h2>
     <div class="sous-titre">
-        <a class="action" href="{% url savoirs.views.actualite_index %}{{ briques_query_string }}"
+        <a class="action" href="{% url actualites %}{{ briques_query_string }}"
             >Voir toutes les actualités correspondant à cette recherche</a>
     </div>
     {% for actualite in actualites %}
+        {% include "savoirs/actualite_resultat.html" %} 
+    {% endfor %}
+{% endif %}
+
+{% if appels %}
+    <h2>Appels d'offres scientifiques ({{ appels|length }} sur {{ total_appels }})</h2>
+    <div class="sous-titre">
+        <a class="action" href="{% url appels %}{{ briques_query_string }}"
+            >Voir tous les appels d'offres correspondant à cette recherche</a>
+    </div>
+    {% for actualite in appels %}
         {% include "savoirs/actualite_resultat.html" %} 
     {% endfor %}
 {% endif %}
@@ -73,7 +84,7 @@
     {% endfor %}
 {% endif %}
 
-{% if not ressources and not actualites and not evenements and not chercheurs and not sites and not sites_auf %}
+{% if not ressources and not actualites and not appels and not evenements and not chercheurs and not sites and not sites_auf %}
     <h2>Aucun résultat</h2>
     <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 {% endif %}

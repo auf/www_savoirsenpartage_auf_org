@@ -38,6 +38,15 @@ class PageLoadTest(TestCase):
         
     def test_actualites(self):
         self.check_status_200('/actualites/')
+        self.check_status_200('/rss/actualites/')
+
+    def test_actualite(self):
+        self.check_status_200('/actualites/1/')
+        self.check_status_200('/actualites/2/')
+
+    def test_appels(self):
+        self.check_status_200('/appels/')
+        self.check_status_200('/rss/appels/')
 
     def test_chercheurs(self):
         self.check_status_200('/chercheurs/')

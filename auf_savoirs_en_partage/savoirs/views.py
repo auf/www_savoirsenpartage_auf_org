@@ -46,14 +46,15 @@ def index(request, discipline=None, region=None):
         ressources = ressources.filter_region(region)
         chercheurs = chercheurs.filter_region(region)
         sites = sites.filter_region(region)
-    actualites = actualites.order_by('-date')[0:4]
+    actualites_actu = actualites.filter_type('actu').order_by('-date')[0:4]
+    appels = actualites.filter_type('appels').order_by('-date')[0:4]
     evenements = evenements.order_by('-debut')[0:4]
     ressources = ressources.order_by('-id')[0:4]
     chercheurs = chercheurs.order_by('-date_modification')[0:10]
     sites = sites.order_by('-date_maj')[0:4]
     return render_to_response(
         "savoirs/index.html",
-        dict(actualites=actualites, evenements=evenements,
+        dict(actualites=actualites_actu, appels=appels, evenements=evenements,
              caldav_url=configuration['calendrier_publique'],
              ressources=ressources, chercheurs=chercheurs, sites=sites),
         context_instance = RequestContext(request))
@@ -111,6 +112,8 @@ def recherche(request, discipline=None, region=None):
         sites_auf = google_search(0, query)['results']
     except:
         sites_auf = []
+    actualites_actu = actualites.filter_type('actu')
+    appels = actualites.filter_type('appels')
 
     # Bâtissons une query string pour les liens vers les briques
     params = {}
@@ -133,7 +136,8 @@ def recherche(request, discipline=None, region=None):
              ressources=ressources[0:5], total_ressources=ressources.count(), 
              evenements=evenements[0:5], total_evenements=evenements.count(),
              chercheurs=chercheurs[0:10], total_chercheurs=chercheurs.count(),
-             actualites=actualites[0:5], total_actualites=actualites.count(),
+             actualites=actualites_actu[0:5], total_actualites=actualites_actu.count(),
+             appels=appels[0:5], total_appels=appels.count(),
              sites=sites[0:5], total_sites=sites.count(),
              sites_auf=sites_auf[0:5], briques_query_string=briques_query_string),
         context_instance = RequestContext(request)
@@ -186,12 +190,16 @@ def informations (request):
             context_instance = RequestContext(request))
 
 # actualités
-def actualite_index(request):
+def actualite_index(request, type='actu'):
     search_form = ActualiteSearchForm(request.GET)
-    actualites = search_form.get_query_set()
+    actualites = search_form.get_query_set().filter_type(type)
     excerpt = excerpt_function(Actualite.objects, search_form.cleaned_data['q'])
+    if type == 'appels':
+        template = "savoirs/appels_index.html"
+    else:
+        template = "savoirs/actualite_index.html"
     return render_to_response(
-        "savoirs/actualite_index.html",
+        template,
         dict(actualites=actualites, search_form=search_form,
              excerpt=excerpt, nb_resultats=actualites.count()),
         context_instance = RequestContext(request))

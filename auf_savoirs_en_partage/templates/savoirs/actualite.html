@@ -3,8 +3,8 @@
 {% block contenu %}
 <h1>{{ actualite.titre }}</h1>
 <p>{{ actualite.date|date:"d F Y" }}</p>
-<p>{{ actualite.texte }}</p>
-<p><span class="label">Source:</span> {{ actualite.source }}<br>
+<p>{{ actualite.texte|safe }}</p>
+<p><span class="label">Source:</span> {{ actualite.source.nom }}<br>
    <span class="label">Disciplines:</span> {{ actualite.disciplines.all|join:", " }}<br>
    <span class="label">Régions:</span> {{ actualite.regions.all|join:", " }}</p>
 <a href="{{ actualite.url }}">Lire la suite...</a>

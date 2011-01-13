@@ -3,7 +3,7 @@
 from django.conf.urls.defaults import patterns, include, handler500, handler404, url
 from django.conf import settings
 from django.contrib import admin
-from savoirs.rss import FilActualite, FilEvenement
+from savoirs.rss import FilActualite, FilEvenement, FilAppels
 
 admin.autodiscover()
 
@@ -11,7 +11,9 @@ handler500 = "views.page_500"
 handler404 = "views.page_404"
 
 site_feeds = {'actualites': FilActualite,
-              'agenda': FilEvenement }
+              'agenda': FilEvenement,
+              'appels': FilAppels
+             }
 
 
 # Les URLs suivantes peuvent être préfixées de la discipline et/ou la
@@ -51,8 +53,9 @@ urlpatterns = sep_patterns + patterns(
     (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve'),
 
     # actualités
-    (r'^actualites/$', 'savoirs.views.actualite_index'),
-    (r'^actualites/(?P<id>\d+)/$', 'savoirs.views.actualite'),
+    (r'^actualites/$', 'savoirs.views.actualite_index', {}, 'actualites'),
+    (r'^actualites/(?P<id>\d+)/$', 'savoirs.views.actualite', {}, 'actualite'),
+    (r'^appels/$', 'savoirs.views.actualite_index', dict(type='appels'), 'appels'),
 
     # sites
     (r'^sites/$', 'sitotheque.views.index'),

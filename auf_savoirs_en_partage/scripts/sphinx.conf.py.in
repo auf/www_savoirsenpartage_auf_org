@@ -117,9 +117,11 @@ emit_source('savoirsenpartage_actualites',
                       a.titre_actualite AS titre, 
                       a.texte_actualite AS texte, 
                       TO_DAYS(a.date_actualite) AS date,
+                      CASE s.type WHEN 'actu' THEN 1 WHEN 'appels' THEN 2 END AS type,
                       GROUP_CONCAT(DISTINCT r.nom) AS regions, 
                       GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines
                FROM actualite a 
+               INNER JOIN savoirs_sourceactualite s ON s.id = a.source_id
                LEFT JOIN actualite_regions ar ON ar.actualite_id = a.id_actualite 
                LEFT JOIN ref_region r ON r.id = ar.region_id 
                LEFT JOIN actualite_disciplines ad ON ad.actualite_id = a.id_actualite 
@@ -127,7 +129,7 @@ emit_source('savoirsenpartage_actualites',
                WHERE a.visible_actualite
                GROUP BY a.id_actualite''',
             sql_query_info='SELECT * from actualite WHERE id_actualite=$id',
-            sql_attr_uint=['date']
+            sql_attr_uint=['date', 'type'],
            )
 
 emit_source('savoirsenpartage_evenements',

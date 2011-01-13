@@ -224,6 +224,7 @@ admin.site.register(User, UserProfileAdmin)
 class ActualiteAdmin(admin.ModelAdmin):
     list_filter = ('visible', 'disciplines', 'regions')
     list_display = ('titre', 'source', 'date', 'visible')
+    list_editable = ['visible']
     actions = ['rendre_visible', 'rendre_invisible', 'assigner_regions', 'assigner_disciplines']
 
     def queryset(self, request):
@@ -252,7 +253,8 @@ admin.site.register(Actualite, ActualiteAdmin)
 
 class SourceActualiteAdmin(admin.ModelAdmin):
     actions = ['update_sources']
-    list_display = ['nom', 'url']
+    list_display = ['nom', 'url', 'type']
+    list_filter = ['type']
 
     def update_sources(self, request, queryset):
         for source in queryset:

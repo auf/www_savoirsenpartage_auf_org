@@ -21,3 +21,37 @@
   pk: 1
   fields:
     nom: Agronomie
+
+- model: savoirs.SourceActualite
+  pk: 1
+  fields:
+    nom: Actualités AUF
+    url: "http://www.auf.org/rss/actualites.xml"
+    type: actu
+
+- model: savoirs.SourceActualite
+  pk: 2
+  fields:
+    nom: "Appels d'offres AUF"
+    url: "http://www.auf.org/rss/appels-d-offres.xml"
+    type: appels
+
+- model: savoirs.Actualite
+  pk: 1
+  fields:
+    titre: "Conférence annuelle"
+    texte: "Bla bla bla..."
+    url: "http://www.auf.org"
+    date: "2010-01-01"
+    visible: 1
+    source: 1
+
+- model: savoirs.Actualite
+  pk: 2
+  fields:
+    titre: "Bourse de mobilité"
+    texte: "Bla bla bla..."
+    url: "http://www.auf.org"
+    date: "2010-01-02"
+    visible: 1
+    source: 2

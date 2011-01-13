@@ -127,18 +127,26 @@ class Discipline(models.Model):
 # Actualités
 
 class SourceActualite(models.Model):
+    TYPE_CHOICES = (
+        ('actu', 'Actualités'),
+        ('appels', "Appels d'offres"),
+    )
+
     nom = models.CharField(max_length=255)
-    url = models.CharField(max_length=255, verbose_name='URL')
+    url = models.CharField(max_length=255, verbose_name='URL', blank=True)
+    type = models.CharField(max_length=10, default='actu', choices=TYPE_CHOICES)
     
     class Meta:
         verbose_name = u'fil RSS syndiqué'
         verbose_name_plural = u'fils RSS syndiqués'
 
     def __unicode__(self,):
-        return u"%s" % self.nom
+        return u"%s (%s)" % (self.nom, self.get_type_display())
 
     def update(self):
         """Mise à jour du fil RSS."""
+        if not self.url:
+            return
         feed = feedparser.parse(self.url)
         for entry in feed.entries:
             if Actualite.all_objects.filter(url=entry.link).count() == 0:
@@ -158,6 +166,9 @@ class ActualiteQuerySet(SEPQuerySet):
             qs = qs.filter(date__lte=max)
         return qs
 
+    def filter_type(self, type):
+        return self.filter(source__type=type)
+
 class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
@@ -172,6 +183,10 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
             qs = qs.filter(date__lte=max.toordinal()+365)
         return qs
         
+    TYPE_CODES = {'actu': 1, 'appels': 2}
+    def filter_type(self, type):
+        return self.filter(type=self.TYPE_CODES[type])
+
 class ActualiteManager(SEPManager):
     
     def get_query_set(self):
@@ -183,6 +198,9 @@ class ActualiteManager(SEPManager):
     def filter_date(self, min=None, max=None):
         return self.get_query_set().filter_date(min=min, max=max)
 
+    def filter_type(self, type):
+        return self.get_query_set().filter_type(type)
+
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
     titre = models.CharField(max_length=765, db_column='titre_actualite')
@@ -191,7 +209,7 @@ class Actualite(models.Model):
     date = models.DateField(db_column='date_actualite')
     visible = models.BooleanField(db_column='visible_actualite', default=False)
     ancienid = models.IntegerField(db_column='ancienId_actualite', blank=True, null=True)
-    source = models.ForeignKey(SourceActualite, blank=True, null=True, related_name='actualites')
+    source = models.ForeignKey(SourceActualite, related_name='actualites')
     disciplines = models.ManyToManyField(Discipline, blank=True, related_name="actualites")
     regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='régions')
 

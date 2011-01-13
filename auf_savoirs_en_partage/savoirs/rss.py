@@ -10,12 +10,13 @@ class FilActualite(Feed):
     link = '/'
     description = "Agrégateur de ressources scientifiques et pédagogiques de l'AUF"
     limitation = 10
+    type = 'actu'
 
     title_template = "savoirs/rss_actualite_titre.html"
     description_template = "savoirs/rss_actualite_description.html"
 
     def items(self):
-        return Actualite.objects.filter(visible=True).order_by('-date')[:self.limitation]
+        return Actualite.objects.filter(visible=True).filter_type(self.type).order_by('-date')[:self.limitation]
 
     def item_link(self, item):
         return item.url
@@ -26,6 +27,9 @@ class FilActualite(Feed):
     def item_author_name(self,item):
         if item.source:
             return item.source.nom
+
+class FilAppels(FilActualite):
+    type = 'appels'
 
 class FilEvenement(Feed):
     title = "Calendrier des ressources scientifiques et pédagogiques de l'AUF"

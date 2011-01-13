@@ -1,0 +1,29 @@
+{% extends "container_base.html" %}
+
+{% load pagination_tags %}
+
+{% block contenu %}
+{% autopaginate actualites 10 %}
+
+<h1>
+    Appels d'offres scientifiques <a href="/rss/appels"><img src="/media/img/feed.png" alt="fil RSS"/></a>
+</h1>
+
+<h2>Recherche</h2>
+
+<form action="" method="get">
+    <table>
+    {{ search_form.as_table }}
+    <tr><th></th><td><input type="submit" value="Rechercher" /></td></tr>
+    </table>
+</form>
+
+<h2>Résultats</h2>
+<div class="sous-titre">{{ nb_resultats }} appels d'offres correspondant à votre recherche</div>
+
+<div class="pagination">{% paginate %}</div>
+{% for actualite in actualites %}
+{% include "savoirs/actualite_resultat.html" %}
+{% endfor %}
+<div class="pagination">{% paginate %}</div>
+{% endblock %}

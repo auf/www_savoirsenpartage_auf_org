@@ -208,13 +208,13 @@ def confirmation(request, action):
         model = u'références'
     
     elif action == u'visible':
-        objects = Actualite.objects.in_bulk(ids).values()
+        objects = Actualite.all_objects.in_bulk(ids).values()
         action = ('visible', True)
         desc = u'visibles'
         model = u'actualités'
     
     elif action == u'invisible':
-        objects = Actualite.objects.in_bulk(ids).values()
+        objects = Actualite.all_objects.in_bulk(ids).values()
         action = ('visible', False)
         desc = u'invisibles'
         model = u'actualités'

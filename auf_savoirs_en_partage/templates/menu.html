@@ -1,5 +1,5 @@
 {% load sep %}
-<h1>Régions</h1>
+<h1>Filtrer par <em>région</em></h1>
 <ul>
     <li{% if not region_active %} class="active"{% endif %}
     ><a href="{{ request.get_full_path|change_region:'all' }}">Toutes les régions</a</li>
@@ -9,7 +9,7 @@
     {% endfor %}
 </ul>
 
-<h1>Disciplines</h1>
+<h1>Filtrer par <em>discipline</em></h1>
 <ul>
     <li{% if not discipline_active %} class="active"{% endif %}
     ><a href="{{ request.get_full_path|change_discipline:'all' }}">Toutes les disciplines</a></li>

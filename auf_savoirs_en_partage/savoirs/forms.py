@@ -178,6 +178,10 @@ class EvenementForm(EvenementAdminForm):
         help_text="Présenter les thématiques de l'évènement et donner toutes les informations utiles aux futurs participants.",
         widget=forms.Textarea
     )
+    pays = forms.ModelChoiceField(
+        queryset=Pays.objects.all(), required=False, label='Pays',
+        help_text="La sélection du pays entraine la saisie automatique du fuseau horaire."
+    )
 
     class Meta:
         model = Evenement

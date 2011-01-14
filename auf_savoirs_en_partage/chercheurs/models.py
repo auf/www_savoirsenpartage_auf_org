@@ -29,6 +29,15 @@ class Personne(models.Model):
     class Meta:
         ordering = ["nom", "prenom"]
 
+    @property
+    def civilite(self):
+        if self.genre == 'm':
+            return 'M.'
+        elif self.genre == 'f':
+            return 'Mme'
+        else:
+            return ''
+
 class ChercheurQuerySet(SEPQuerySet):
 
     def filter_groupe(self, groupe):

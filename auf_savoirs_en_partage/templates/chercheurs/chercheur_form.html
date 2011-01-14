@@ -20,7 +20,17 @@
     <table>
         {% form_field forms.chercheur.statut %}
         {% form_field forms.chercheur.diplome %}
-        {% form_field forms.groupes.groupes %}
+        {% with forms.groupes.groupes as field %}
+        <tr>
+            <th style="width: 150px;">
+                <a href="{% url domaines-de-recherche %}">{{ field.label }}</a>
+                {% if field.errors %}{{ field.errors }}{% endif %}
+            </th>
+            <td>{{ field }}
+            {% if field.field.help_text %}<p class="help">{{ field.field.help_text|safe }}</p>{% endif %}
+            </td>
+        </tr>
+        {% endwith %}
     </table>
 </fieldset>
 

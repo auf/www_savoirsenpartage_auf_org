@@ -14,14 +14,19 @@
 
         // Activer le datepicker sur les input de classe "date"
         $.datepicker.setDefaults($.datepicker.regional['fr']);
-        $('input:text.date').datepicker({
-            autoSize: true,
-            dateFormat: 'dd/mm/yy',
-            showAnim: 'fadeIn',
-            onSelect: function(dateText) {
-                $('input:text.date').datepicker('option', 'defaultDate', dateText);
-            }
-        });
+        $('input:text.date')
+            .datepicker({
+                autoSize: true,
+                dateFormat: 'dd/mm/yy',
+                showAnim: 'fadeIn',
+                onSelect: function(dateText) {
+                    $('input:text.date').datepicker('option', 'defaultDate', dateText);
+                }
+            })
+            .change(function() {
+                $(this).datepicker('setDate', $(this).datepicker('getDate'));
+                return true;
+            });
         $('input:text.time').timepicker({
             timeFormat: 'HH:mm',
         });

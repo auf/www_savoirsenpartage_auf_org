@@ -167,7 +167,7 @@
     {% endif %}
     {% endif %}
 
-    {% if chercheur.publications %}
+    {% if chercheur.publications.count %}
     <h2>Publications</h2>
     <ul class="publications">
         {% for publication in chercheur.publications.all %}

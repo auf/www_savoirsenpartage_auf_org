@@ -308,7 +308,7 @@ class These(models.Model):
 class Expertise(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey(Chercheur, related_name='expertises')
-    nom = models.CharField(max_length=255, null=True, blank=True, verbose_name = "Objet de l'expertise")
+    nom = models.CharField(max_length=255, verbose_name = "Objet de l'expertise")
     date = models.CharField(max_length=255, blank=True)
     lieu = models.CharField(max_length=255, null=True, blank=True, verbose_name = "Lieu de l'expertise")
     organisme_demandeur = models.CharField(max_length=255, null=True, blank=True, verbose_name = 'Organisme demandeur')

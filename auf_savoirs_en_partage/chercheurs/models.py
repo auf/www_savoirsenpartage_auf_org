@@ -52,6 +52,9 @@ class ChercheurQuerySet(SEPQuerySet):
     def filter_nord_sud(self, nord_sud):
         return self.filter(Q(etablissement__pays__nord_sud=nord_sud) | Q(etablissement_autre_pays__nord_sud=nord_sud))
 
+    def filter_genre(self, genre):
+        return self.filter(genre=genre)
+
     def filter_statut(self, statut):
         return self.filter(statut=statut)
 

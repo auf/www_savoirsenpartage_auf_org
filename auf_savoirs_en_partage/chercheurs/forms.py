@@ -329,6 +329,7 @@ class RepertoireSearchForm (forms.Form):
         ('association_francophone', "Membre d'une association ou d'une société savante francophone"),
         ('reseau_institutionnel', "Membre des instances d'un réseau institutionnel de l'AUF")
     ))
+    genre = forms.ChoiceField(choices=((('', 'Tous'),) + GENRE_CHOICES), required=False, label="Genre", help_text="Homme, Femme ou les deux")
 
     def __init__(self, data=None, region=None):
         super(RepertoireSearchForm, self).__init__(data)
@@ -369,6 +370,9 @@ class RepertoireSearchForm (forms.Form):
             nord_sud = self.cleaned_data['nord_sud']
             if nord_sud:
                 chercheurs = chercheurs.filter_nord_sud(nord_sud)
+            genre = self.cleaned_data['genre']
+            if genre:
+                chercheurs = chercheurs.filter_genre(genre)
             activites_francophonie = self.cleaned_data['activites_francophonie']
             if activites_francophonie == 'instance_auf':
                 chercheurs = chercheurs.filter(membre_instance_auf=True)

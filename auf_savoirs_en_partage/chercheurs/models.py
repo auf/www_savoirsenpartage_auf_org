@@ -130,6 +130,9 @@ class ChercheurManager(SEPManager):
     def filter_nord_sud(self, nord_sud):
         return self.get_query_set().filter_nord_sud(nord_sud)
 
+    def filter_genre(self, genre):
+        return self.get_query_set().filter_(genre=genre)
+
     def filter_statut(self, statut):
         return self.get_query_set().filter_statut(statut)
 

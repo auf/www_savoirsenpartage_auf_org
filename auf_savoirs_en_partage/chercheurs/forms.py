@@ -329,7 +329,7 @@ class RepertoireSearchForm (forms.Form):
         ('association_francophone', "Membre d'une association ou d'une société savante francophone"),
         ('reseau_institutionnel', "Membre des instances d'un réseau institutionnel de l'AUF")
     ))
-    genre = forms.ChoiceField(choices=((('', 'Tous'),) + GENRE_CHOICES), required=False, label="Genre", help_text="Homme, Femme ou les deux")
+    genre = forms.ChoiceField(choices=((('', 'Tous'),) + GENRE_CHOICES), required=False, label="Genre")
 
     def __init__(self, data=None, region=None):
         super(RepertoireSearchForm, self).__init__(data)

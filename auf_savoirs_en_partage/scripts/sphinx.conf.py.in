@@ -186,6 +186,9 @@ emit_source('savoirsenpartage_chercheurs',
                                   WHEN 'etudiant' THEN 2
                                   WHEN 'independant' THEN 3
                                   END AS statut,
+                      CASE p.genre WHEN 'm' THEN 1
+                                  WHEN 'f' THEN 2
+                                  END AS genre,
                       (ex.id IS NOT NULL) AS expert
                FROM chercheurs_chercheur c
                INNER JOIN chercheurs_personne p ON c.personne_ptr_id = p.id
@@ -206,8 +209,8 @@ emit_source('savoirsenpartage_chercheurs',
                            'date_modification', 'statut', 'expert',
                            'membre_instance_auf', 'expert_oif',
                            'membre_association_francophone',
-                           'membre_reseau_institutionnel'],
-            sql_attr_str2ordinal=['nom_complet', 'etablissement_attr', 'pays_attr'])
+                           'membre_reseau_institutionnel', 'genre', ],
+            sql_attr_str2ordinal=['nom_complet', 'etablissement_attr', 'pays_attr', ])
                       
 emit_source('savoirsenpartage_sites',
             '''SELECT s.id AS id,

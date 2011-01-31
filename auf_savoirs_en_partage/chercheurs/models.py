@@ -93,6 +93,10 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
     def filter_nord_sud(self, nord_sud):
         return self.filter(nord_sud=self.NORD_SUD_CODES[nord_sud])
 
+    GENRE_CODES = dict([(k, i+1) for i, (k, v) in enumerate(GENRE_CHOICES)])
+    def filter_genre(self, genre):
+        return self.filter(genre=self.GENRE_CODES[genre])
+
     STATUT_CODES = {'enseignant': 1, 'etudiant': 2, 'independant': 3}
     def filter_statut(self, statut):
         return self.filter(statut=self.STATUT_CODES[statut])

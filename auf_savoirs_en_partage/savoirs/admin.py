@@ -265,7 +265,6 @@ admin.site.register(SourceActualite, SourceActualiteAdmin)
 
 class EvenementAdminForm(forms.ModelForm):
     mots_cles = forms.CharField(label='Mots-clés', required=False)
-    lieu = forms.CharField(label='Lieu', required=False)
 
     class Meta:
         model = Evenement
@@ -281,10 +280,10 @@ class EvenementAdminForm(forms.ModelForm):
 class EvenementAdmin(admin.ModelAdmin):
     form = EvenementAdminForm
     list_filter = ('approuve', 'regions', 'discipline', 'discipline_secondaire')
-    list_display = ('titre', 'debut', 'fin', 'lieu', 'approuve')
+    list_display = ('titre', 'debut', 'fin', 'ville', 'pays', 'approuve')
     fields = ['titre', 'discipline', 'discipline_secondaire', 'mots_cles',
-              'type', 'pays', 'fuseau', 'debut', 'fin', 'lieu', 'piece_jointe', 'regions',
-              'description', 'contact', 'url', 'approuve']
+              'type', 'adresse', 'ville', 'pays', 'fuseau', 'debut', 'fin', 'piece_jointe', 'regions',
+              'description', 'prenom', 'nom', 'courriel', 'url', 'approuve']
     actions = ['assigner_regions', 'assigner_disciplines']
 
     def queryset(self, request):

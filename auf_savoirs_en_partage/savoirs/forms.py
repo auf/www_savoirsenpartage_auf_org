@@ -179,13 +179,13 @@ class EvenementForm(EvenementAdminForm):
         widget=forms.Textarea
     )
     pays = forms.ModelChoiceField(
-        queryset=Pays.objects.all(), required=False, label='Pays',
+        queryset=Pays.objects.all(), required=True, label='Pays',
         help_text="La sélection du pays entraine la saisie automatique du fuseau horaire."
     )
 
     class Meta:
         model = Evenement
-        exclude = ('approuve', 'uid', 'regions')
+        exclude = ('contact', 'approuve', 'uid', 'regions')
 
 # Admin views pour les associations par lots
 

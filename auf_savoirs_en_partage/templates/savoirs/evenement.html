@@ -35,18 +35,25 @@
   <td>{{ evenement.mots_cles }}</td>
 </tr>
 {% endif %}
-{% if evenement.contact %}
 <tr>
-  <th>Contact</th>
-  <td>{{ evenement.contact|linebreaksbr }}</td>
+    <th>Contact</th>
+    {% if evenement.contact %}
+    <td>{{ evenement.contact|linebreaksbr }}</td>
+    {% endif %}
+    {% if evenement.prenom %}
+    <td>
+        {{ evenement.prenom }} {{ evenement.nom }} &lt;{{ evenement.courriel }}&gt;
+    </td>
+    {% endif %}
 </tr>
-{% endif %}
-{% if evenement.lieu %}
 <tr>
   <th>Lieu</th>
-  <td>{{ evenement.lieu|linebreaksbr }}</td>
+  <td>
+      {{ evenement.adresse|linebreaksbr }}<br>
+      {{ evenement.ville }}<br>
+      {{ evenement.pays.nom }}
+  </td>
 </tr>
-{% endif %}
 {% if evenement.piece_jointe %}
 <tr>
     <th>Pièce jointe</th>

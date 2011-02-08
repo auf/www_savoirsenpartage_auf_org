@@ -308,13 +308,17 @@ class Evenement(models.Model):
                                               blank=True, null=True)
     mots_cles = models.TextField('Mots-Clés', blank=True, null=True)
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
-    lieu = models.TextField()
+    adresse = models.TextField()
+    ville = models.CharField(max_length=100)
+    pays = models.ForeignKey(Pays, null=True, related_name='evenements')
     debut = models.DateTimeField(default=datetime.datetime.now)
     fin = models.DateTimeField(default=datetime.datetime.now)
-    pays = models.ForeignKey(Pays, related_name='evenements', null=True, blank=True)
     fuseau = models.CharField(max_length=100, choices=TIME_ZONE_CHOICES, verbose_name='fuseau horaire')
     description = models.TextField(blank=True, null=True)
-    contact = models.TextField(blank=True, null=True)
+    contact = models.TextField(null=True)   # champ obsolète
+    prenom = models.CharField('prénom', max_length=100)
+    nom = models.CharField(max_length=100)
+    courriel = models.EmailField()
     url = models.CharField(max_length=255, blank=True, null=True)
     piece_jointe = models.FileField(upload_to='agenda/pj', blank=True, verbose_name='pièce jointe')
     regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions')
@@ -359,6 +363,7 @@ class Evenement(models.Model):
     def save(self, *args, **kwargs):
         """Sauvegarde l'objet dans django et le synchronise avec caldav s'il a été
         approuvé"""
+        self.contact = ''    # Vider ce champ obsolète à la première occasion...
         self.clean()
         super(Evenement, self).save(*args, **kwargs)
         self.update_vevent()

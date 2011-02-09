@@ -604,7 +604,7 @@ class HarvestLog(models.Model):
 # Pages statiques
 
 class PageStatique(models.Model):
-    id = models.CharField(max_length=20, primary_key=True)
+    id = models.CharField(max_length=32, primary_key=True)
     titre = models.CharField(max_length=100)
     contenu = models.TextField()
 

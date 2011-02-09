@@ -216,7 +216,7 @@ class Migration(SchemaMigration):
         'savoirs.pagestatique': {
             'Meta': {'object_name': 'PageStatique'},
             'contenu': ('django.db.models.fields.TextField', [], {}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '20', 'primary_key': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '32', 'primary_key': 'True'}),
             'titre': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'savoirs.profile': {

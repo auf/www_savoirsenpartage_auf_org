@@ -33,7 +33,7 @@ def google_search (page, q):
                 data['last_page'] = p
 
         for r in response['responseData']['results']:
-            data['results'].append( {'uri': r['url'],
+            data['results'].append( {'uri': r['unescapedUrl'],
                         'content': r['content'],
                         'title': r['title']} )
 

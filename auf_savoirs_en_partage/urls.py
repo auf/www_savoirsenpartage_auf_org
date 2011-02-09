@@ -62,6 +62,7 @@ urlpatterns = sep_patterns + patterns(
     # sites
     (r'^sites/$', 'sitotheque.views.index', {}, 'sites'),
     (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
+    (r'^sites/google.xml$', 'sitotheque.views.config_google'),
 
     # sites AUF
     (r'^sites-auf/$', 'savoirs.views.sites_auf', {}, 'sites-auf'),

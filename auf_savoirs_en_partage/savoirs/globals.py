@@ -13,7 +13,6 @@ configuration = {
     'nombre_par_page_actualite': 10,
     'resultats_par_page': 8, # pas changeable a cause de google
     'engin_recherche': 'sep',
-    'google_xml': SITE_ROOT_URL+MEDIA_URL+"sites/google/recherche.xml?%s",
     'calendrier_publique': 'https://sep-caldav.auf.org/caldav.php/sep/home',
 }
 

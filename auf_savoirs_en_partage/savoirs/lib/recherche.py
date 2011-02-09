@@ -15,10 +15,8 @@ def google_search (page, q):
               'rsz': 'large',
               'v': '1.0',
               'start': page * configuration['resultats_par_page'],
-              }
-
-    params['cref'] = configuration['google_xml'] % time.time()
-    url = "/ajax/services/search/web?" + urllib.urlencode (params)
+              'cref': SITE_ROOT_URL + MEDIA_URL + "sites/google.xml?%s" % time.time()}
+    url = "/ajax/services/search/web?" + urllib.urlencode(params)
 
     handle = httplib.HTTPConnection ('ajax.googleapis.com')
     handle.request ("GET", url)

@@ -22,3 +22,9 @@ def retrieve(request, id):
     site = Site.objects.get(id=id)
     return render_to_response("sites/retrieve.html", dict(site=site),
                               context_instance = RequestContext(request))
+
+def config_google(request):
+    """Fichier de configuration pour la recherche Google"""
+    sites = Site.objects.filter(recherche_google=True)
+    return render_to_response("sites/google.xml", dict(sites=sites),
+                              context_instance = RequestContext(request))

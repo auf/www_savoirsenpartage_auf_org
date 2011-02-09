@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GoogleCustomizations>
+  <CustomSearchEngine>
+    <Title>Les savoirs en partage</Title>
+    <Description>Recherche dans tous les site de l&apos;AUF.</Description>
+    <Context>
+      <BackgroundLabels>
+	<Label name="inclure" mode="FILTER" />
+      </BackgroundLabels>
+    </Context>
+  </CustomSearchEngine>
+  <Annotations>
+    {% for site in sites %}
+    <Annotation about="{{ site.url }}*" score="1">
+      <Label name="inclure" />
+    </Annotation>
+    {% endfor %}
+  </Annotations>
+</GoogleCustomizations>

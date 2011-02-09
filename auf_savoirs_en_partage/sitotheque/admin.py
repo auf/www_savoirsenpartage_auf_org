@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect
 from models import Site
 
 class SiteAdmin(admin.ModelAdmin):
+    list_display = ['titre', 'recherche_google']
+    list_editable = ['recherche_google']
     actions = ('assigner_regions', 'assigner_disciplines')
     list_filter = ('discipline', 'regions')
 

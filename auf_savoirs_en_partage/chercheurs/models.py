@@ -177,7 +177,9 @@ class Chercheur(Personne):
         ('CASSOC', 'Conseil associatif'),
         ('CA', "Conseil d'administration"),
         ('CS', 'Conseil scientifique'),
-        ('CRE', "Commission régionale d'experts")
+        ('CRE', "Commission régionale d'experts"),
+        ('CR', 'Conférence des recteurs'),
+        ('CNO', "Conseil national d'orientation")
     )
 
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 

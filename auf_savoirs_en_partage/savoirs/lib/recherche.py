@@ -8,6 +8,7 @@ from auf_savoirs_en_partage.backend_config import RESOURCES
 from sep import SEP
 from utils import smart_str
 from savoirs.globals import configuration
+from settings import SITE_ROOT_URL
 
 def google_search (page, q):
     data = {'results': [], 'last_page': 0, 'more_link': ''}
@@ -15,9 +16,8 @@ def google_search (page, q):
               'rsz': 'large',
               'v': '1.0',
               'start': page * configuration['resultats_par_page'],
-              'cref': SITE_ROOT_URL + MEDIA_URL + "sites/google.xml?%s" % time.time()}
+              'cref': SITE_ROOT_URL + "/sites/google.xml?%s" % time.time()}
     url = "/ajax/services/search/web?" + urllib.urlencode(params)
-
     handle = httplib.HTTPConnection ('ajax.googleapis.com')
     handle.request ("GET", url)
     r = handle.getresponse ()

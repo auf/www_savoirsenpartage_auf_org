@@ -160,10 +160,15 @@ def ressource_index(request):
     ressources = search_form.get_query_set()
     nb_resultats = ressources.count()
     excerpt = excerpt_function(Record.objects, search_form.cleaned_data['q'])
+    try:
+        p = PageStatique.objects.get(id='ressources')
+        entete = p.contenu
+    except PageStatique.DoesNotExist:
+        entete = '<h1>Ressources</h1>'
     return render_to_response(
         "savoirs/ressource_index.html", 
         dict(search_form=search_form, ressources=ressources,
-             nb_resultats=nb_resultats, excerpt=excerpt),
+             nb_resultats=nb_resultats, excerpt=excerpt, entete=entete),
         context_instance=RequestContext(request)
     )
 
@@ -196,12 +201,23 @@ def actualite_index(request, type='actu'):
     excerpt = excerpt_function(Actualite.objects, search_form.cleaned_data['q'])
     if type == 'appels':
         template = "savoirs/appels_index.html"
+        try:
+            p = PageStatique.objects.get(id='appels')
+            entete = p.contenu
+        except PageStatique.DoesNotExist:
+            entete = "<h1>Appels d'offres scientifiques</h1>"
     else:
         template = "savoirs/actualite_index.html"
+        try:
+            p = PageStatique.objects.get(id='actualites')
+            entete = p.contenu
+        except PageStatique.DoesNotExist:
+            entete = '<h1>Actualités</h1>'
+
     return render_to_response(
         template,
         dict(actualites=actualites, search_form=search_form,
-             excerpt=excerpt, nb_resultats=actualites.count()),
+             excerpt=excerpt, nb_resultats=actualites.count(), entete=entete),
         context_instance = RequestContext(request))
 
 def actualite(request, id):
@@ -215,10 +231,17 @@ def evenement_index(request):
     search_form = EvenementSearchForm(request.GET)
     evenements = search_form.get_query_set()
     excerpt = excerpt_function(Evenement.objects, search_form.cleaned_data['q'])
+    
+    try:
+        p = PageStatique.objects.get(id='agenda')
+        entete = p.contenu
+    except PageStatique.DoesNotExist:
+        entete = '<h1>Agenda</h1>'
+
     return render_to_response(
         "savoirs/evenement_index.html",
         dict(evenements=evenements, search_form=search_form,
-             excerpt=excerpt, nb_resultats=evenements.count()),
+             excerpt=excerpt, nb_resultats=evenements.count(), entete=entete),
         context_instance=RequestContext(request)
     )
 
@@ -252,6 +275,13 @@ def options_fuseau_horaire(request):
     return render_to_response('savoirs/options_fuseau_horaire.html', dict(choices=choices),
                               context_instance=RequestContext(request))
 
+# pages statiques
+
+def page_statique(request, id):
+    page = get_object_or_404(PageStatique, pk=id)
+    return render_to_response('savoirs/page_statique.html', dict(page=page),
+                              context_instance=RequestContext(request))
+    
 @login_required
 def evenement_moderation(request):
     events = Evenement.objects.filter(approuve = False)

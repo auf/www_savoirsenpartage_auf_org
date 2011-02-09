@@ -600,3 +600,13 @@ class HarvestLog(models.Model):
         for k,v in message.items():
             setattr(logger, k, v)
         logger.save()
+
+# Pages statiques
+
+class PageStatique(models.Model):
+    id = models.CharField(max_length=20, primary_key=True)
+    titre = models.CharField(max_length=100)
+    contenu = models.TextField()
+
+    class Meta:
+        verbose_name_plural = 'pages statiques'

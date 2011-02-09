@@ -15,7 +15,8 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
 
-from models import SourceActualite, Actualite, Discipline, Evenement, Record, ListSet, HarvestLog, Profile
+from models import SourceActualite, Actualite, Discipline, Evenement, \
+                   Record, ListSet, HarvestLog, Profile, PageStatique
 from savoirs.globals import META
 
 class ListSetFilterSpec(RelatedFilterSpec):
@@ -301,5 +302,12 @@ class EvenementAdmin(admin.ModelAdmin):
 
 admin.site.register(Evenement, EvenementAdmin)
 
+class PageStatiqueAdmin(admin.ModelAdmin):
+    list_display = ['titre', 'id']
+    list_display_links = ['titre', 'id']
 
+    class Media:
+        js = ['js/tiny_mce/tiny_mce.js', 'js/tiny_mce_textareas.js']
+
+admin.site.register(PageStatique, PageStatiqueAdmin)
 

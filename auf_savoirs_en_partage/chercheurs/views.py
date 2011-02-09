@@ -16,6 +16,7 @@ from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404
+from savoirs.models import PageStatique
 
 def index(request):
     """Répertoire des chercheurs"""
@@ -35,10 +36,17 @@ def index(request):
         chercheurs = chercheurs.order_by_pays(direction)
     else:
         chercheurs = chercheurs.order_by('-date_modification')
+    
+    try:
+        p = PageStatique.objects.get(id='repertoire')
+        entete = p.contenu
+    except PageStatique.DoesNotExist:
+        entete = u'<h1>Répertoire des chercheurs</h1>'
 
     nb_chercheurs = chercheurs.count()
     return render_to_response("chercheurs/index.html",
-                              dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, search_form=search_form),
+                              dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, 
+                                   search_form=search_form, entete=entete),
                               context_instance=RequestContext(request))
 
 def inscription(request):

@@ -5,17 +5,11 @@
 {% autopaginate evenements 10 %}
 <ul class="actions">
     <li><a href="{% url aide %}#agenda">Aide</a></li>
+    <li><a href="/rss/agenda">Fil RSS</a></li>
     {% include "savoirs/evenement_actions.html" %}
 </ul>
-<h1>Agenda <a href="/rss/agenda"><img src="/media/img/feed.png" alt="fil RSS" /></a></h1>
 
-<p>
-La possibilité est offerte aux chercheurs d'annoncer sur ce portail un évènement scientifique en l'inscrivant dans un agenda consultable par tous. 
-C'est aussi un outil de communication et de veille au service des universitaires et scientifiques francophones qui leur permet de se tenir informés des manifestations scientifiques et de répondre aux appels à communications et contributions ainsi qu'aux appels à projets. 
-</p>
-<p>
-Consulter les <a href="{% url savoirs.views.evenement_utilisation %}">conditions d'utilisation</a>.
-</p>
+{{ entete|safe }}
 
 <h2>Recherche</h2>
 

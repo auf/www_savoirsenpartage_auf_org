@@ -11,28 +11,7 @@
     {% include "chercheurs/actions.html" %}
 </ul>
 
-<h1>Répertoire des chercheurs</h1>
-
-<p>
-Bienvenue sur le répertoire des chercheurs francophones de l'Agence
-universitaire de la Francophonie (AUF).
-</p>
-<p>
-Cet outil recense les universitaires (enseignants, chercheurs, doctorants)
-impliqués, ou souhaitant s'impliquer, dans les projets scientifiques appuyés
-par l'AUF. Il permet à la communauté scientifique de se mobiliser sur des
-projets en fonction de repères thématiques et/ou régionaux. 
-</p>
-<p>
-Dans le cadre de la programmation quadriennale, la politique scientifique de
-l'AUF s'appuie sur la mise en œuvre de projets inter-universitaires
-régionaux ou internationaux. Les <i>réseaux de chercheurs</i> ne sont plus
-le critère d'organisation du répertoire (consulter la 
-<a href="{% url chercheurs.views.conversion %}">table de passage</a>). Les
-chercheurs précisent leur <a href="{% url domaines-de-recherche %}">domaine de recherche</a>,
-discipline, thème(s) et groupe(s) de recherche, et ajoutent des mots-clés
-pour affiner leur profil scientifique.
-</p>
+{{ entete|safe }}
 
 <h2>Recherche</h2>
 

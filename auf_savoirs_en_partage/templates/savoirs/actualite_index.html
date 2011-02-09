@@ -7,11 +7,10 @@
 
 <ul class="actions">
     <li><a href="{% url aide %}#actualites">Aide</a></li>
+    <li><a href="/rss/actualites">Fil RSS</a></li>
 </ul>
 
-<h1>
-    Actualités <a href="/rss/actualites"><img src="/media/img/feed.png" alt="fil RSS"/></a>
-</h1>
+{{ entete|safe }}
 
 <h2>Recherche</h2>
 

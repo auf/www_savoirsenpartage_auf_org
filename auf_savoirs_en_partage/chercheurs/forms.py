@@ -79,7 +79,8 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('nom', 'prenom', 'genre', 'statut', 'diplome',
+        fields = ('nom', 'prenom', 'genre', 'adresse_postale', 'telephone', 
+                  'statut', 'diplome',
                   'discipline', 'theme_recherche', 'groupe_recherche',
                   'mots_cles', 'url_site_web', 'url_blog',
                   'url_reseau_social', 'attestation', 'membre_instance_auf',

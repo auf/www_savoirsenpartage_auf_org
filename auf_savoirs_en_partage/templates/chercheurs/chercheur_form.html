@@ -16,6 +16,17 @@
 </fieldset>
 
 <fieldset>
+    <legend>Coordonnées</legend>
+    <p><em>Confidentiel: ces renseignements, à usage interne de l'AUF, ne
+    seront pas divulgués ni affichés sur le portail ouvert au
+    public.</em></p>
+    <table>
+        {% form_field forms.chercheur.adresse_postale %}
+        {% form_field forms.chercheur.telephone %}
+    </table>
+</fieldset>
+
+<fieldset>
     <legend>Informations académiques</legend>
     <table>
         {% form_field forms.chercheur.statut %}

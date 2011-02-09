@@ -95,8 +95,10 @@ h1 a, h2 a, h3 a { color: #3a3125; }
 form { margin: 1em 0; }
 form td, form th { vertical-align: top }
 form th { width: 20em; text-align: left; font-weight: normal; }
+form p { margin-top: 0 }
 input[type=text] { width: 20em }
 input.date, form input.time { width: 8em; }
+textarea { height: 7em }
 select { width: 80%; overflow: hidden }
 fieldset { padding: 10px; margin: 0; position: relative; 
            border-top: 1px solid black; border-bottom: none;

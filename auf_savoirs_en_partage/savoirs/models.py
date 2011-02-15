@@ -314,20 +314,25 @@ class Evenement(models.Model):
     debut = models.DateTimeField(default=datetime.datetime.now)
     fin = models.DateTimeField(default=datetime.datetime.now)
     fuseau = models.CharField(max_length=100, choices=TIME_ZONE_CHOICES, verbose_name='fuseau horaire')
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField()
     contact = models.TextField(null=True)   # champ obsolète
     prenom = models.CharField('prénom', max_length=100)
     nom = models.CharField(max_length=100)
     courriel = models.EmailField()
     url = models.CharField(max_length=255, blank=True, null=True)
     piece_jointe = models.FileField(upload_to='agenda/pj', blank=True, verbose_name='pièce jointe')
-    regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions')
+    regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions additionnelles',
+                                     help_text="On considère d'emblée que l'évènement se déroule dans la région "
+                                               "dans laquelle se trouve le pays indiqué plus haut. Il est possible "
+                                               "de désigner ici des régions additionnelles.")
 
     objects = EvenementManager()
     all_objects = models.Manager()
 
     class Meta:
         ordering = ['-debut']
+        verbose_name = u'évènement'
+        verbose_name_plural = u'évènements'
 
     def __unicode__(self,):
         return "[%s] %s" % (self.uid, self.titre)
@@ -354,6 +359,9 @@ class Evenement(models.Model):
 
     def piece_jointe_display(self):
         return self.piece_jointe and os.path.basename(self.piece_jointe.name)
+
+    def courriel_display(self):
+        return self.courriel.replace(u'@', u' (à) ')
 
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -413,8 +421,7 @@ class Evenement(models.Model):
             cal.vevent.add('contact').value = self.contact
         if len(self.url) > 0:
             cal.vevent.add('url').value = self.url
-        if len(self.lieu) > 0:
-            cal.vevent.add('location').value = self.lieu
+        cal.vevent.add('location').value = ', '.join([x for x in [self.adresse, self.ville, self.pays.nom] if x])
         if self.piece_jointe:
             url = self.piece_jointe.url
             if not url.startswith('http://'):

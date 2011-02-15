@@ -137,17 +137,21 @@ emit_source('savoirsenpartage_evenements',
                       e.titre AS titre,
                       e.mots_cles AS mots_cles,
                       e.type AS type,
-                      e.lieu AS lieu,
+                      e.adresse AS adresse,
+                      e.ville AS ville,
                       e.description AS description,
-                      e.contact AS contact,
+                      CONCAT_WS(e.prenom, e.nom, e.courriel, e.contact) AS contact,
+                      p.nom AS pays,
                       CONCAT_WS(',', d.nom_discipline, d2.nom_discipline) AS disciplines,
-                      GROUP_CONCAT(DISTINCT r.nom) AS regions,
+                      CONCAT_WS(',', pr.nom, GROUP_CONCAT(DISTINCT r.nom)) AS regions,
                       TO_DAYS(DATE(e.debut)) AS debut
                FROM savoirs_evenement e
                LEFT JOIN discipline d ON d.id_discipline = e.discipline_id
                LEFT JOIN discipline d2 ON d2.id_discipline = e.discipline_secondaire_id
                LEFT JOIN savoirs_evenement_regions er ON er.evenement_id = e.id
                LEFT JOIN ref_region r ON r.id = er.region_id
+               LEFT JOIN ref_pays p ON p.code = e.pays_id
+               LEFT JOIN ref_region pr ON pr.id = p.region
                WHERE e.approuve
                GROUP BY e.id''',
             sql_query_info='SELECT * from savoirs_evenement WHERE id=$id',

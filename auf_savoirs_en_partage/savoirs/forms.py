@@ -174,7 +174,7 @@ class EvenementForm(EvenementAdminForm):
     debut = SEPDateTimeField()
     fin = SEPDateTimeField()
     description = forms.CharField(
-        label='Description', required=False,
+        label='Description', required=True,
         help_text="Présenter les thématiques de l'évènement et donner toutes les informations utiles aux futurs participants.",
         widget=forms.Textarea
     )

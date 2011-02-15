@@ -7,10 +7,14 @@ from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 
 class ChercheurAdmin(admin.ModelAdmin):
-    list_filter = ('groupes',)
+    list_filter = ('genre', 'statut', 'membre_reseau_institutionnel', 'membre_instance_auf', 'discipline', 'groupes')
     list_per_page = 25
     actions = ('remove_from_group',)
     search_fields = ('nom', 'prenom')
+
+    def lookup_allowed(self, lookup):
+        return lookup in ['groupes__id__exact', 'discipline__id__exact'] or \
+               admin.ModelAdmin.lookup_allowed(self, lookup)
 
     def remove_from_group(self, request, queryset):
         groupe_id = request.GET.get('groupes__id__exact')

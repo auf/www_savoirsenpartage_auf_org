@@ -49,9 +49,9 @@ class ChercheurForm(forms.ModelForm):
         help_text="Après avoir sélectionné un pays, une liste d'établissement apparaît dès la saisie partielle du nom de l'établissement."
     )
 
-    expertises_auf = forms.ChoiceField(
-        label="Êtes-vous disposé à réaliser des expertises pour l'AUF?",
-        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
+    pas_de_sollicitation_expertises = forms.BooleanField(
+        required=False,
+        label="Je ne souhaite pas être sollicité par l'AUF pour des missions d'expertise"
     )
 
     theme_recherche = forms.CharField(
@@ -92,7 +92,7 @@ class ChercheurForm(forms.ModelForm):
                   'membre_reseau_institutionnel',
                   'membre_reseau_institutionnel_nom',
                   'membre_reseau_institutionnel_fonction',
-                  'membre_reseau_institutionnel_dates', 'expertises_auf')
+                  'membre_reseau_institutionnel_dates')
         
     def __init__(self, data=None, prefix=None, instance=None):
         if instance is not None:
@@ -103,6 +103,7 @@ class ChercheurForm(forms.ModelForm):
             else:
                 initial['etablissement'] = instance.etablissement_autre_nom
                 initial['pays_etablissement'] = instance.etablissement_autre_pays_id
+            initial['pas_de_sollicitation_expertises'] = not instance.expertises_auf
         else:
             initial = None
         super(ChercheurForm, self).__init__(data=data, prefix=prefix, instance=instance, initial=initial)
@@ -119,6 +120,7 @@ class ChercheurForm(forms.ModelForm):
             self.instance.etablissement = None
             self.instance.etablissement_autre_nom = nom_etablissement
             self.instance.etablissement_autre_pays = pays_etablissement
+        self.instance.expertises_auf = not self.cleaned_data['pas_de_sollicitation_expertises']
         super(ChercheurForm, self).save()
 
     def clean_courriel(self):
@@ -206,9 +208,6 @@ class ChercheurForm(forms.ModelForm):
         if membre and not dates:
             raise forms.ValidationError('Veuillez préciser les dates')
         return dates
-
-    def clean_expertises_auf(self):
-        return bool(int(self.cleaned_data['expertises_auf']))
 
 class ChercheurInscriptionForm(ChercheurForm):
 

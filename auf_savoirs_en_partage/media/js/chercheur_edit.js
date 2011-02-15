@@ -1,4 +1,24 @@
 (function() {
+    var nom_expertise_selector = 'input[name^="expertise"][name$="nom"]';
+
+    function expertise_added($row) {
+        $row.find(nom_expertise_selector).change(show_or_hide_sollicitation_expert);
+    }
+    
+    function expertise_removed($row) {
+        show_or_hide_sollicitation_expert();
+    }
+    
+    function show_or_hide_sollicitation_expert() {
+        var $sollicitation_field = $('input[name$="pas_de_sollicitation_expertises"]').closest('table');
+        var $non_empty_fields = $(nom_expertise_selector + '[value!=""]:visible');
+        if ($non_empty_fields.size() > 0) {
+            $sollicitation_field.show();
+        }
+        else {
+            $sollicitation_field.hide();
+        }
+    }
 
     $(document).ready(function() {
 
@@ -7,7 +27,9 @@
             prefix: 'expertise',
             addText: 'ajouter une expertise',
             deleteText: 'supprimer cette expertise',
-            formCssClass: 'dynamic-form-expertises'
+            formCssClass: 'dynamic-form-expertises',
+            added: expertise_added,
+            removed: expertise_removed
         });
         $('#publications fieldset').formset({
             prefix: 'publication',
@@ -28,6 +50,11 @@
         var $additional_fields = $('.publication_affichage').next();
         $additional_fields.after($edit_publication_link).hide();
         $edit_publication_link.click(function() { $additional_fields.show(); $(this).hide(); });
+
+        // Montrer ou cacher la case à cocher "sollicitation pour expertise"
+        show_or_hide_sollicitation_expert();
+        $(nom_expertise_selector).change(show_or_hide_sollicitation_expert);
+
     });
 
 })();

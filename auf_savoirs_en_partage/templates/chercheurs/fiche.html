@@ -134,7 +134,7 @@
     </table>
     {% endif %}
 
-    {% if chercheur.expertises.count or chercheur.expertises_auf %}
+    {% if chercheur.expertises.count %}
     <h2>Expertises</h2>
     {% for expertise in chercheur.expertises.all %}
     <table>
@@ -157,14 +157,12 @@
     </table>
     <hr>
     {% endfor %}
-    {% if chercheur.expertises_auf %}
     <table>
         <tr>
             <td class="label">Est disposé à réaliser des expertises pour l'AUF</td>
-            <td>Oui</td>
+            <td>{{ chercheur.expertises_auf|yesno:"Oui,Non" }}</td>
         </tr>
     </table>
-    {% endif %}
     {% endif %}
 
     {% if chercheur.publications.count %}

@@ -122,7 +122,10 @@
     </fieldset>
     {% endfor %}
     <table>
-        {% form_field forms.chercheur.expertises_auf %}
+        <tr>
+            <th>{{ forms.chercheur.pas_de_sollicitation_expertises.label }}</th>
+            <td>{{ forms.chercheur.pas_de_sollicitation_expertises }}</td>
+        </tr>
     </table>
 </fieldset>
 

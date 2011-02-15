@@ -1,16 +1,19 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
-from chercheurs.forms import RepertoireSearchForm, SetPasswordForm, ChercheurFormGroup 
+from chercheurs.forms import RepertoireSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm
 from chercheurs.models import Chercheur
 from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement
+from django.conf import settings
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, RequestContext
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
-from django.contrib.sites.models import RequestSite
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import login as auth_login
+from django.contrib.sites.models import RequestSite, Site
 from django.utils import simplejson
 from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
@@ -160,3 +163,47 @@ def etablissements_autocomplete(request, pays=None):
     noms = list(noms.values_list('nom', flat=True)[:20])
     json = simplejson.dumps(noms)
     return HttpResponse(json, mimetype='application/json')
+
+def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
+    "The Django login view, but using a custom form."
+    redirect_to = request.REQUEST.get(redirect_field_name, '')
+    
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            # Light security check -- make sure redirect_to isn't garbage.
+            if not redirect_to or ' ' in redirect_to:
+                redirect_to = settings.LOGIN_REDIRECT_URL
+            
+            # Heavier security check -- redirects to http://example.com should 
+            # not be allowed, but things like /view/?param=http://example.com 
+            # should be allowed. This regex checks if there is a '//' *before* a
+            # question mark.
+            elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
+                    redirect_to = settings.LOGIN_REDIRECT_URL
+            
+            # Okay, security checks complete. Log the user in.
+            auth_login(request, form.get_user())
+
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+
+            return HttpResponseRedirect(redirect_to)
+
+    else:
+        form = AuthenticationForm(request)
+    request.session.set_test_cookie()
+    
+    if Site._meta.installed:
+        current_site = Site.objects.get_current()
+    else:
+        current_site = RequestSite(request)
+    
+    return render_to_response(template_name, {
+        'form': form,
+        redirect_field_name: redirect_to,
+        'site': current_site,
+        'site_name': current_site.name,
+    }, context_instance=RequestContext(request))
+login = never_cache(login)
+

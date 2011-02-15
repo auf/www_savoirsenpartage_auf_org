@@ -79,7 +79,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/perso/$', 'chercheurs.views.perso'),
     (r'^chercheurs/edit/$', 'chercheurs.views.edit'),
     (r'^chercheurs/conversion$', 'savoirs.views.page_statique', dict(id='table-de-passage'), 'conversion'),
-    (r'^chercheurs/connexion/$', 'django.contrib.auth.views.login', dict(
+    (r'^chercheurs/connexion/$', 'chercheurs.views.login', dict(
         template_name='chercheurs/login.html'
     ), 'chercheurs-login'),
     (r'^chercheurs/deconnexion/$', 'django.contrib.auth.views.logout', dict(

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
 from itertools import chain
@@ -415,3 +416,6 @@ class SetPasswordForm(forms.Form):
             if password != password_repeat:
                 raise forms.ValidationError("Les mots de passe ne concordent pas")
         return password_repeat   
+
+class AuthenticationForm(DjangoAuthenticationForm):
+    username = forms.CharField(label='Courriel')

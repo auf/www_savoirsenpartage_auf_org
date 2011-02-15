@@ -3,7 +3,9 @@
 <div id="fiche_chercheur">
 
     <div>{{ chercheur.etablissement_display }}</div>
+    {% if chercheur.afficher_courriel %}
     <div>{{ chercheur.courriel_display }}</div>
+    {% endif %}
     <div><span class="label">Région: </span>{{ chercheur.region.nom }}</div>
 
     <h2>Informations académiques</h2>

@@ -10,7 +10,13 @@
         {% form_field forms.chercheur.prenom %}
         {% if forms.chercheur.courriel %}
         {% form_field forms.chercheur.courriel %}
+        {% else %}
+        <tr>
+          <th style="width: 150px;">Courriel</th>
+          <td>{{ forms.chercheur.instance.courriel }}</td>
+        </tr>
         {% endif %}
+        {% form_field forms.chercheur.afficher_courriel %}
         {% form_field forms.chercheur.genre %}
     </table>
 </fieldset>

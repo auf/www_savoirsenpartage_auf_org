@@ -11,6 +11,10 @@ OUI_NON_CHOICES = (('1', 'Oui'), ('0', 'Non'))
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
     genre = forms.ChoiceField(widget=forms.RadioSelect(), choices=GENRE_CHOICES)
+    afficher_courriel = forms.ChoiceField(
+        label="Afficher mon courriel publiquement sur ce site",
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
+    )
     membre_instance_auf = forms.ChoiceField(
         label="Êtes-vous (ou avez-vous déjà été) membre d'une instance de l'AUF?",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
@@ -79,7 +83,7 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('nom', 'prenom', 'genre', 'adresse_postale', 'telephone', 
+        fields = ('nom', 'prenom', 'genre', 'afficher_courriel', 'adresse_postale', 'telephone', 
                   'statut', 'diplome',
                   'discipline', 'theme_recherche', 'groupe_recherche',
                   'mots_cles', 'url_site_web', 'url_blog',
@@ -133,7 +137,10 @@ class ChercheurForm(forms.ModelForm):
         if existing.count():
             raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
         return courriel
-        
+
+    def clean_afficher_courriel(self):
+        return bool(int(self.cleaned_data['afficher_courriel']))
+            
     def clean_membre_instance_auf(self):
         return bool(int(self.cleaned_data['membre_instance_auf']))
     

@@ -39,6 +39,9 @@ class Personne(models.Model):
         else:
             return ''
 
+    def courriel_display(self):
+        return self.courriel.replace(u'@', u' (à) ')
+
 class ChercheurQuerySet(SEPQuerySet):
 
     def filter_groupe(self, groupe):

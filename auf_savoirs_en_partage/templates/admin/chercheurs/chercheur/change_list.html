@@ -1,0 +1,17 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_list chercheurs_admin %}
+
+{% block filters %}
+<div id="changelist-filter">
+    <h2>{% trans 'Filter' %}</h2>
+    {% filter_genre %}
+    {% filter_statut %}
+    {% filter_membre_reseau_institutionnel %}
+    {% filter_membre_instance_auf %}
+    {% filter_discipline %}
+    {% filter_region %}
+    {% filter_pays %}
+    {% filter_groupe %}
+    {% filter_expert %}
+</div>
+{% endblock %}

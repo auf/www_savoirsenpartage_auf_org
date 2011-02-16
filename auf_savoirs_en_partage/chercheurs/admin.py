@@ -1,19 +1,23 @@
-# -*- encoding: utf-8 -*-
-from chercheurs.models import Chercheur, Publication, Groupe, ChercheurGroupe
+# -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Q
 from django.contrib import admin
 from django.core.urlresolvers import reverse as url
 from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 
+from chercheurs.models import Chercheur, Publication, Groupe, ChercheurGroupe, ChercheurQuerySet
+
 class ChercheurAdmin(admin.ModelAdmin):
-    list_filter = ('genre', 'statut', 'membre_reseau_institutionnel', 'membre_instance_auf', 'discipline', 'groupes')
+    list_filter = ['genre']
     list_per_page = 25
     actions = ('remove_from_group',)
     search_fields = ('nom', 'prenom')
 
     def lookup_allowed(self, lookup):
-        return lookup in ['groupes__id__exact', 'discipline__id__exact'] or \
+        return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
+                          'membre_instance_auf', 'discipline', 'region', 'pays', 
+                          'groupes'] or \
                admin.ModelAdmin.lookup_allowed(self, lookup)
 
     def remove_from_group(self, request, queryset):
@@ -36,6 +40,32 @@ class ChercheurAdmin(admin.ModelAdmin):
         else:
             del actions['remove_from_group']
         return actions
+
+    def queryset(self, request):
+        return ChercheurAdminQuerySet(Chercheur)
+
+class ChercheurAdminQuerySet(ChercheurQuerySet):
+
+    def filter(self, *args, **kwargs):
+        """Gère des filtres supplémentaires pour l'admin.
+           
+        C'est la seule façon que j'ai trouvée de contourner les mécanismes
+        de recherche de l'admin."""
+        qs = self
+        pays = kwargs.pop('pays', None)
+        region = kwargs.pop('region', None)
+        expert = kwargs.pop('expert', None)
+        if pays is not None:
+            qs = qs.filter(Q(etablissement__pays=pays) | (Q(etablissement=None) & Q(etablissement_autre_pays=pays)))
+        elif region is not None:
+            qs = qs.filter(Q(etablissement__pays__region=region) | (Q(etablissement=None) & Q(etablissement_autre_pays__region=region)))
+        if expert is not None:
+            if expert in ['1', 1, True]:
+                qs = qs.exclude(expertises=None)
+            else:
+                qs = qs.filter(expertises=None)
+
+        return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
 admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)

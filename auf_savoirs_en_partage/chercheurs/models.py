@@ -23,7 +23,7 @@ class Personne(models.Model):
     adresse_postale = models.TextField(blank=True)
     genre = models.CharField(max_length=1, choices=GENRE_CHOICES)
     commentaire = models.TextField(verbose_name='commentaires', null=True, blank=True)
-    actif = models.BooleanField(editable=False, default=True)
+    actif = models.BooleanField(editable=False, default=False)
 
     def __unicode__(self):
         return u"%s %s, %s" % (self.prenom, self.nom, self.courriel)

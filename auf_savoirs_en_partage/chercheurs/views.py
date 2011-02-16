@@ -74,7 +74,7 @@ def inscription(request):
 def activation(request, id_base36, token):
     """Activation d'un chercheur"""
     id = base36_to_int(id_base36)
-    chercheur = get_object_or_404(Chercheur, id=id)
+    chercheur = get_object_or_404(Chercheur.all_objects, id=id)
     if token == chercheur.activation_token():
         validlink = True
         if request.method == 'POST':
@@ -89,7 +89,7 @@ def activation(request, id_base36, token):
                 user.save()
 
                 # Auto-login
-                login(request, authenticate(username=email, password=password))
+                auth_login(request, authenticate(username=email, password=password))
                 return HttpResponseRedirect(url('chercheurs.views.perso'))
         else:
             form = SetPasswordForm()

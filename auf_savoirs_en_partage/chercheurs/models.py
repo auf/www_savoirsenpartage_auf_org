@@ -262,14 +262,15 @@ class Chercheur(Personne):
     
     @property
     def etablissement_display(self):
-        if self.etablissement:
-            return self.etablissement.nom + ', ' + self.etablissement.pays.nom
-        else:
-            return self.etablissement_autre_nom + ', ' + self.etablissement_autre_pays.nom
+        return self.nom_etablissement + ', ' + self.pays
 
     @property
     def pays(self):
         return self.etablissement.pays if self.etablissement else self.etablissement_autre_pays
+
+    @property
+    def nom_etablissement(self):
+        return self.etablissement.nom if self.etablissement else self.etablissement_autre_nom
 
     @property
     def region(self):

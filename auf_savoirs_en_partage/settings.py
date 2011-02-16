@@ -107,6 +107,7 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
 
 ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_MENU = 'auf_savoirs_en_partage.menu.CustomMenu'
 
 CONTACT_EMAIL = 'contact-savoirsenpartage@auf.org'
 

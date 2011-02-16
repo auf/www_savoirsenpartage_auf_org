@@ -126,6 +126,8 @@ urlpatterns = sep_patterns + patterns(
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),
 
+    # stats
+    (r'^stats/$', 'savoirs.admin_views.stats', {}, 'stats'),
 
     # rss
     (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),

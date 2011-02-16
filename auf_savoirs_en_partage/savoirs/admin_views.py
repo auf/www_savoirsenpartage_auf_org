@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
+from chercheurs.models import Chercheur
 from datamaster_modeles.models import Thematique, Pays, Region
 from savoirs.models import Record, Discipline, Actualite, Serveur
 from savoirs.forms import PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
@@ -245,3 +246,13 @@ def confirmation(request, action):
                       'description': u"Les %s suivantes vont être %s:" % (model, desc) ,
                       }),
                      context_instance = RequestContext(request))
+
+# Stats
+
+def stats(request):
+    mises_a_jour = Chercheur.objects.filter(date_modification__gte='2010-11-17').count()
+    return render_to_response(
+        'savoirs/stats.html',
+        {'mises_a_jour': mises_a_jour},
+        context_instance=RequestContext(request)
+    )

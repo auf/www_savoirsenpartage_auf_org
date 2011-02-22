@@ -19,7 +19,7 @@ class ChercheurAdmin(admin.ModelAdmin):
     def lookup_allowed(self, lookup):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
                           'membre_instance_auf', 'discipline', 'region', 'pays', 
-                          'groupes'] or \
+                          'groupes', 'nord_sud'] or \
                admin.ModelAdmin.lookup_allowed(self, lookup)
 
     def remove_from_group(self, request, queryset):
@@ -131,11 +131,17 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
         qs = self
         pays = kwargs.pop('pays', None)
         region = kwargs.pop('region', None)
+        nord_sud = kwargs.pop('nord_sud', None)
         expert = kwargs.pop('expert', None)
         if pays is not None:
-            qs = qs.filter(Q(etablissement__pays=pays) | (Q(etablissement=None) & Q(etablissement_autre_pays=pays)))
+            qs = qs.filter(Q(etablissement__pays=pays) | 
+                           (Q(etablissement=None) & Q(etablissement_autre_pays=pays)))
         elif region is not None:
-            qs = qs.filter(Q(etablissement__pays__region=region) | (Q(etablissement=None) & Q(etablissement_autre_pays__region=region)))
+            qs = qs.filter(Q(etablissement__pays__region=region) | 
+                           (Q(etablissement=None) & Q(etablissement_autre_pays__region=region)))
+        elif nord_sud is not None:
+            qs = qs.filter(Q(etablissement__pays__nord_sud=nord_sud) | 
+                           (Q(etablissement=None) & Q(etablissement_autre_pays__nord_sud=nord_sud)))
         if expert is not None:
             if expert in ['1', 1, True]:
                 qs = qs.exclude(expertises=None)

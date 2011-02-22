@@ -20,9 +20,9 @@
             <td>
                 Nombre de chercheurs
             </td>
-            <td>{{ nb_hommes }}</td>
-            <td>{{ nb_femmes }}</td>
-            <td>{{ nb_chercheurs }}</td>
+            <td><a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m">{{ nb_hommes }}</a></td>
+            <td><a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f">{{ nb_femmes }}</a></td>
+            <td><a href="{% url admin:chercheurs_chercheur_changelist %}">{{ nb_chercheurs }}</a></td>
         </tr>
         <tr>
             <td>
@@ -51,19 +51,47 @@
             {% for region in regions %}
             <tr>
                 <td>{{ region.nom }}</td>
-                <td>{{ hommes_par_region|getitem:region.id }}</td>
-                <td>{{ femmes_par_region|getitem:region.id }}</td>
-                <td>{{ chercheurs_par_region|getitem:region.id }}</td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&region={{ region.id }}"
+                        >{{ hommes_par_region|getitem:region.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&region={{ region.id }}"
+                        >{{ femmes_par_region|getitem:region.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?region={{ region.id }}"
+                        >{{ chercheurs_par_region|getitem:region.id }}</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
+    </table>
+
+    <h2>Chercheurs du Nord et du Sud</h2>
+    <table>
+        <thead>
+            <th></th>
+            <th>Hommes</th>
+            <th>Femmes</th>
+            <th>Total</th>
+        </thead>
         <tbody>
             {% for hemisphere in hemispheres %}
             <tr>
                 <td>{{ hemisphere }}</td>
-                <td>{{ hommes_par_hemisphere|getitem:hemisphere }}</td>
-                <td>{{ femmes_par_hemisphere|getitem:hemisphere }}</td>
-                <td>{{ chercheurs_par_hemisphere|getitem:hemisphere }}</td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&nord_sud={{ hemisphere }}"
+                        >{{ hommes_par_hemisphere|getitem:hemisphere }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&nord_sud={{ hemisphere }}"
+                        >{{ femmes_par_hemisphere|getitem:hemisphere }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?nord_sud={{ hemisphere }}"
+                        >{{ chercheurs_par_hemisphere|getitem:hemisphere }}</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -84,9 +112,18 @@
             {% for domaine in domaines %}
             <tr>
                 <td>{{ domaine.nom }}</td>
-                <td>{{ hommes_par_domaine|getitem:domaine.id }}</td>
-                <td>{{ femmes_par_domaine|getitem:domaine.id }}</td>
-                <td>{{ chercheurs_par_domaine|getitem:domaine.id }}</td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&groupes={{ domaine.id }}"
+                        >{{ hommes_par_domaine|getitem:domaine.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&groupes={{ domaine.id }}"
+                        >{{ femmes_par_domaine|getitem:domaine.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?groupes={{ domaine.id }}"
+                        >{{ chercheurs_par_domaine|getitem:domaine.id }}</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -109,9 +146,18 @@
             {% for discipline in disciplines %}
             <tr>
                 <td>{{ discipline.nom }}</td>
-                <td>{{ hommes_par_discipline|getitem:discipline.id }}</td>
-                <td>{{ femmes_par_discipline|getitem:discipline.id }}</td>
-                <td>{{ chercheurs_par_discipline|getitem:discipline.id }}</td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&discipline={{ discipline.id }}"
+                        >{{ hommes_par_discipline|getitem:discipline.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&discipline={{ discipline.id }}"
+                        >{{ femmes_par_discipline|getitem:discipline.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?discipline={{ discipline.id }}"
+                        >{{ chercheurs_par_discipline|getitem:discipline.id }}</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

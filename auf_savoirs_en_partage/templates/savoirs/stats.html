@@ -1,11 +1,120 @@
 {% extends "admin/base_site.html" %}
+{% load sep %}
 
 {% block breadcrumbs %}{% endblock %}
 {% block content %}
 <h1>Statistiques</h1>
 
-<p>
-Fiches mises à jour depuis le 17 novembre 2010: <strong>{{ mises_a_jour }}</strong>
-</p>
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Hommes</th>
+            <th>Femmes</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
 
+            <td>
+                Nombre de chercheurs
+            </td>
+            <td>{{ nb_hommes }}</td>
+            <td>{{ nb_femmes }}</td>
+            <td>{{ nb_chercheurs }}</td>
+        </tr>
+        <tr>
+            <td>
+                Fiches mises à jour depuis le 17 novembre 2010
+            </td>
+            <td>{{ mises_a_jour_hommes }}</td>
+            <td>{{ mises_a_jour_femmes }}</td>
+            <td>{{ mises_a_jour }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="subcol">
+    <h2>Chercheurs par région</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Région</th>
+                <th>Hommes</th>
+                <th>Femmes</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for region in regions %}
+            <tr>
+                <td>{{ region.nom }}</td>
+                <td>{{ hommes_par_region|getitem:region.id }}</td>
+                <td>{{ femmes_par_region|getitem:region.id }}</td>
+                <td>{{ chercheurs_par_region|getitem:region.id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tbody>
+            {% for hemisphere in hemispheres %}
+            <tr>
+                <td>{{ hemisphere }}</td>
+                <td>{{ hommes_par_hemisphere|getitem:hemisphere }}</td>
+                <td>{{ femmes_par_hemisphere|getitem:hemisphere }}</td>
+                <td>{{ chercheurs_par_hemisphere|getitem:hemisphere }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Chercheurs par domaine de recherche</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Domaine de recherche</th>
+                <th>Hommes</th>
+                <th>Femmes</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for domaine in domaines %}
+            <tr>
+                <td>{{ domaine.nom }}</td>
+                <td>{{ hommes_par_domaine|getitem:domaine.id }}</td>
+                <td>{{ femmes_par_domaine|getitem:domaine.id }}</td>
+                <td>{{ chercheurs_par_domaine|getitem:domaine.id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="subcol">
+    <h2>Chercheurs par discipline</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Discipline</th>
+                <th>Hommes</th>
+                <th>Femmes</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for discipline in disciplines %}
+            <tr>
+                <td>{{ discipline.nom }}</td>
+                <td>{{ hommes_par_discipline|getitem:discipline.id }}</td>
+                <td>{{ femmes_par_discipline|getitem:discipline.id }}</td>
+                <td>{{ chercheurs_par_discipline|getitem:discipline.id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

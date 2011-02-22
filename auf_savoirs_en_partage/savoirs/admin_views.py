@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from django import forms
-from django.db.models import get_model
+from django.db.models import get_model, Count
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse as url
 from django.contrib.auth.decorators import login_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
-from chercheurs.models import Chercheur
+from chercheurs.models import Chercheur, Groupe
 from datamaster_modeles.models import Thematique, Pays, Region
 from savoirs.models import Record, Discipline, Actualite, Serveur
 from savoirs.forms import PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
@@ -250,9 +250,65 @@ def confirmation(request, action):
 # Stats
 
 def stats(request):
-    mises_a_jour = Chercheur.objects.filter(date_modification__gte='2010-11-17').count()
+
+    def mises_a_jour(qs):
+        return qs.filter(date_modification__gte='2010-11-17').count()
+
+    def par_region(qs):
+        qs = qs.extra(select={
+            'region': '''(SELECT p.region FROM ref_pays p
+                          WHERE p.code = CASE WHEN chercheurs_chercheur.etablissement IS NULL
+                                              THEN chercheurs_chercheur.etablissement_autre_pays
+                                              ELSE (SELECT e.pays FROM ref_etablissement e 
+                                                    WHERE e.id = chercheurs_chercheur.etablissement) END)'''
+        })
+        return dict(qs.values_list('region').annotate(count=Count('pk')))
+
+    def par_hemisphere(qs):
+        qs = qs.extra(select={
+            'hemisphere': '''(SELECT p.nord_sud FROM ref_pays p
+                              WHERE p.code = CASE WHEN chercheurs_chercheur.etablissement IS NULL
+                                                  THEN chercheurs_chercheur.etablissement_autre_pays
+                                                  ELSE (SELECT e.pays FROM ref_etablissement e 
+                                                        WHERE e.id = chercheurs_chercheur.etablissement) END)'''
+        })
+        return dict(qs.values_list('hemisphere').annotate(count=Count('pk')))
+
+    def par_discipline(qs):
+        return dict(qs.values_list('discipline').annotate(count=Count('pk')))
+
+    def par_domaine(qs):
+        qs = qs.extra(tables=['chercheurs_chercheurgroupe'], 
+                      where=['chercheurs_chercheurgroupe.chercheur = chercheurs_chercheur.personne_ptr_id'],
+                      select={'groupe': 'chercheurs_chercheurgroupe.groupe'})
+        return dict(qs.values_list('groupe').annotate(count=Count('pk')))
+
+    chercheurs = Chercheur.objects
+    hommes = chercheurs.filter(genre='m')
+    femmes = chercheurs.filter(genre='f')
     return render_to_response(
-        'savoirs/stats.html',
-        {'mises_a_jour': mises_a_jour},
-        context_instance=RequestContext(request)
+        'savoirs/stats.html', {
+            'nb_chercheurs': chercheurs.count(),
+            'nb_hommes': hommes.count(),
+            'nb_femmes': femmes.count(),
+            'mises_a_jour': mises_a_jour(chercheurs),
+            'mises_a_jour_hommes': mises_a_jour(hommes),
+            'mises_a_jour_femmes': mises_a_jour(femmes),
+            'regions': Region.objects.order_by('nom'),
+            'chercheurs_par_region': par_region(chercheurs),
+            'hommes_par_region': par_region(hommes),
+            'femmes_par_region': par_region(femmes),
+            'hemispheres': ['Nord', 'Sud'],
+            'chercheurs_par_hemisphere': par_hemisphere(chercheurs),
+            'hommes_par_hemisphere': par_hemisphere(hommes),
+            'femmes_par_hemisphere': par_hemisphere(femmes),
+            'disciplines': Discipline.objects.order_by('nom'),
+            'chercheurs_par_discipline': par_discipline(chercheurs),
+            'hommes_par_discipline': par_discipline(hommes),
+            'femmes_par_discipline': par_discipline(femmes),
+            'domaines': Groupe.objects.order_by('nom'),
+            'chercheurs_par_domaine': par_domaine(chercheurs),
+            'hommes_par_domaine': par_domaine(hommes),
+            'femmes_par_domaine': par_domaine(femmes),
+        }, context_instance=RequestContext(request)
     )

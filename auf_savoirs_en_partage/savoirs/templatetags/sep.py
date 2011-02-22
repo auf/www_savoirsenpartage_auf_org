@@ -151,3 +151,8 @@ def change_discipline(path, discipline):
 def apply(value, func):
     """Applique une fonction arbitraire à la valeur filtrée."""
     return func(value)
+
+@register.filter
+def getitem(container, key):
+    """Applique ``container[key]`` sur la valeur filtrée."""
+    return container.get(key, '')

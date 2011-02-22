@@ -68,7 +68,8 @@ INSTALLED_APPS = (
     'sitotheque',
     'djangosphinx',
     'datamaster_modeles',
-    'south'
+    'south',
+    'auf.django.admingroup',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

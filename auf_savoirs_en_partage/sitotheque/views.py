@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import Context, RequestContext
 
 from savoirs.lib.recherche import excerpt_function
@@ -20,7 +20,7 @@ def index(request):
             
 def retrieve(request, id):
     """Fiche du site"""
-    site = Site.objects.get(id=id)
+    site = get_object_or_404(Site, id=id)
     return render_to_response("sites/retrieve.html", dict(site=site),
                               context_instance = RequestContext(request))
 

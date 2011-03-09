@@ -16,11 +16,11 @@ class ChercheurAdmin(admin.ModelAdmin):
     actions = ('remove_from_group', 'export_as_ods', 'export_as_csv')
     search_fields = ('nom', 'prenom')
 
-    def lookup_allowed(self, lookup):
+    def lookup_allowed(self, lookup, value):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
                           'membre_instance_auf', 'discipline', 'region', 'pays', 
                           'groupes', 'nord_sud'] or \
-               admin.ModelAdmin.lookup_allowed(self, lookup)
+               admin.ModelAdmin.lookup_allowed(self, lookup, value)
 
     def remove_from_group(self, request, queryset):
         groupe_id = request.GET.get('groupes__id__exact')

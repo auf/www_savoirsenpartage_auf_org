@@ -94,6 +94,11 @@ RESOURCES = {
         'acces': 'html',
         'url': 'http://www.revue-tice.info/',
     },
+    u'Frantice': {
+        'type': 'lodel',
+        'acces': 'html',
+        'url': 'http://www.frantice.net/',
+    },
     #'Exchorésis': {
     #    'type': 'lodel',
     #    'acces': 'html',

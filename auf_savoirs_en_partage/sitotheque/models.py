@@ -1,9 +1,11 @@
 # -*- encoding: utf-8 -*-
-from datamaster_modeles.models import *
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
 from djangosphinx.models import SphinxSearch
-from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet
+
+from datamaster_modeles.models import *
+from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet, Search
 
 TYPE_SITE_CHOICES = (
     ('RV', 'Revue en ligne'), 
@@ -16,7 +18,7 @@ TYPE_SITE_CHOICES = (
     ('SC', 'Site culturel'),
     ('SI', 'Site d\'information'),
     ('AU', 'Autre type de site'),
-    )
+)
 
 class SiteQuerySet(SEPQuerySet):
 
@@ -87,3 +89,29 @@ class Site(models.Model):
 
     def assigner_disciplines(self, disciplines):
         self.discipline.add(*disciplines)
+
+class SiteSearch(Search):
+    pays = models.ForeignKey(Pays, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "recherche de sites"
+        verbose_name_plural = "recherches de sites"
+
+    def run(self):
+        results = Site.objects
+        if self.q:
+            results = results.search(self.q)
+        if self.discipline:
+            results = results.filter_discipline(self.discipline)
+        if self.region:
+            results = results.filter_region(self.region)
+        if self.pays:
+            results = results.filter_pays(pays=self.pays)
+        if not self.q:
+            results = results.order_by('-date_maj')
+        return results.all()
+
+    def url(self):
+        qs = self.query_string()
+        return reverse('sites') + ('?' + qs if qs else '')
+

@@ -21,7 +21,12 @@
 </form>
 
 <h2>Résultats</h2>
-<div class="sous-titre">{{ nb_resultats }} évènements correspondant à votre recherche</div>
+<div class="sous-titre">
+    {{ nb_resultats }} évènements correspondant à votre recherche
+    {% if user.is_authenticated %}
+    (<a href="{% url sauvegarder_recherche "evenements" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
+    {% endif %}
+</div>
 
 <div class="pagination">{% paginate %}</div>
 {% for evenement in evenements %}

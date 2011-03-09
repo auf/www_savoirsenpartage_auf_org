@@ -20,7 +20,12 @@
 </form>
 
 <h2>Résultats</h2>
-<div class="sous-titre">{{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche</div>
+<div class="sous-titre">
+    {{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche
+    {% if user.is_authenticated %}
+    (<a href="{% url sauvegarder_recherche "sites" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
+    {% endif %}
+</div>
 
 <div class="pagination">{% paginate %}</div>
 {% for site in sites %}

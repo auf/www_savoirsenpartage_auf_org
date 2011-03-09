@@ -8,17 +8,21 @@ import pytz
 import random
 import uuid
 import vobject
+from urllib import urlencode
+
 from backend_config import RESOURCES
 from babel.dates import get_timezone_name
 from caldav.lib import error
-from babel.dates import get_timezone_name
-from datamaster_modeles.models import Region, Pays, Thematique
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
 from django.utils.encoding import smart_unicode
 from djangosphinx.models import SphinxQuerySet, SearchError
+
+from datamaster_modeles.models import Region, Pays, Thematique
 from savoirs.globals import META
 from settings import CALENDRIER_URL, SITE_ROOT_URL
 
@@ -617,3 +621,225 @@ class PageStatique(models.Model):
 
     class Meta:
         verbose_name_plural = 'pages statiques'
+
+# Recherches
+
+class GlobalSearchResults(object):
+
+    def __init__(self, actualites=None, appels=None, evenements=None, 
+                 ressources=None, chercheurs=None, sites=None, sites_auf=None):
+        self.actualites = actualites
+        self.appels = appels
+        self.evenements = evenements
+        self.ressources = ressources
+        self.chercheurs = chercheurs
+        self.sites = sites
+        self.sites_auf = sites_auf
+
+class Search(models.Model):
+    user = models.ForeignKey(User, editable=False)
+    content_type = models.ForeignKey(ContentType, editable=False)
+    nom = models.CharField(max_length=100, verbose_name="nom de la recherche")
+    q = models.CharField(max_length=100, blank=True, verbose_name="rechercher dans tous les champs")
+    discipline = models.ForeignKey(Discipline, blank=True, null=True)
+    region = models.ForeignKey(Region, blank=True, null=True, verbose_name='région',
+                               help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
+
+    def query_string(self):
+        params = dict()
+        for field in self._meta.fields:
+            if field.name in ['id', 'user', 'nom', 'search_ptr', 'content_type']:
+                continue
+            value = getattr(self, field.column)
+            if value:
+                if isinstance(value, datetime.date):
+                    params[field.name] = value.strftime('%d/%m/%Y')
+                else:
+                    params[field.name] = value
+        return urlencode(params)
+    
+    class Meta:
+        verbose_name = 'recherche transversale'
+        verbose_name_plural = "recherches transversales"
+
+    def save(self):
+        if (not self.content_type_id):
+            self.content_type = ContentType.objects.get_for_model(self.__class__)
+        super(Search, self).save()
+
+    def as_leaf_class(self):
+        content_type = self.content_type
+        model = content_type.model_class()
+        if(model == Search):
+            return self
+        return model.objects.get(id=self.id)
+                
+    def run(self):
+        from chercheurs.models import Chercheur
+        from sitotheque.models import Site
+
+        results = object()
+        actualites = Actualite.objects
+        evenements = Evenement.objects
+        ressources = Record.objects
+        chercheurs = Chercheur.objects
+        sites = Site.objects
+        if self.q:
+            actualites = actualites.search(self.q)
+            evenements = evenements.search(self.q)
+            ressources = ressources.search(self.q)
+            chercheurs = chercheurs.search(self.q)
+            sites = sites.search(self.q)
+        if self.discipline:
+            actualites = actualites.filter_discipline(self.discipline)
+            evenements = evenements.filter_discipline(self.discipline)
+            ressources = ressources.filter_discipline(self.discipline)
+            chercheurs = chercheurs.filter_discipline(self.discipline)
+            sites = sites.filter_discipline(self.discipline)
+        if self.region:
+            actualites = actualites.filter_region(self.region)
+            evenements = evenements.filter_region(self.region)
+            ressources = ressources.filter_region(self.region)
+            chercheurs = chercheurs.filter_region(self.region)
+            sites = sites.filter_region(self.region)
+        try:
+            sites_auf = google_search(0, self.q)['results']
+        except:
+            sites_auf = []
+
+        return GlobalSearchResults(
+            actualites=actualites.order_by('-date').filter_type('actu'),
+            appels=actualites.order_by('-date').filter_type('appels'),
+            evenements=evenements.order_by('-debut'),
+            ressources=ressources.order_by('-id'),
+            chercheurs=chercheurs.order_by('-date_modification'),
+            sites=sites.order_by('-date_maj'),
+            sites_auf=sites_auf
+        )
+
+    def url(self):
+        url = ''
+        if self.discipline:
+            url += '/discipline/%d' % self.discipline.id
+        if self.region:
+            url += '/region/%d' % self.region.id
+        url += '/recherche/'
+        if self.q:
+            url += '?' + urlencode({'q': self.q})
+        return url
+
+class RessourceSearch(Search):
+    auteur = models.CharField(max_length=100, blank=True, verbose_name="auteur ou contributeur")
+    titre = models.CharField(max_length=100, blank=True)
+    sujet = models.CharField(max_length=100, blank=True)
+    publisher = models.CharField(max_length=100, blank=True, verbose_name="éditeur")
+
+    class Meta:
+        verbose_name = 'recherche de ressources'
+        verbose_name_plural = "recherches de ressources"
+
+    def run(self):
+        results = Record.objects
+        if self.q:
+            results = results.search(self.q)
+        if self.auteur:
+            results = results.add_to_query('@(creator,contributor) ' + self.auteur)
+        if self.titre:
+            results = results.add_to_query('@title ' + self.titre)
+        if self.sujet:
+            results = results.add_to_query('@subject ' + self.sujet)
+        if self.publisher:
+            results = results.add_to_query('@publisher ' + self.publisher)
+        if self.discipline:
+            results = results.filter_discipline(self.discipline)
+        if self.region:
+            results = results.filter_region(self.region)
+        if not self.q:
+            """Montrer les résultats les plus récents si on n'a pas fait
+               une recherche par mots-clés."""
+            results = results.order_by('-id')
+        return results.all()
+
+    def url(self):
+        qs = self.query_string()
+        return reverse('ressources') + ('?' + qs if qs else '')
+
+class ActualiteSearchBase(Search):
+    date_min = models.DateField(blank=True, null=True, verbose_name="depuis le")
+    date_max = models.DateField(blank=True, null=True, verbose_name="jusqu'au")
+
+    class Meta:
+        abstract = True
+
+    def run(self):
+        results = Actualite.objects
+        if self.q:
+            results = results.search(self.q)
+        if self.discipline:
+            results = results.filter_discipline(self.discipline)
+        if self.region:
+            results = results.filter_region(self.region)
+        if self.date_min:
+            results = results.filter_date(min=self.date_min)
+        if self.date_max:
+            results = results.filter_date(max=self.date_max)
+        return results.all()
+
+class ActualiteSearch(ActualiteSearchBase):
+
+    class Meta:
+        verbose_name = "recherche d'actualités"
+        verbose_name_plural = "recherches d'actualités"
+        
+    def run(self):
+        return super(ActualiteSearch, self).run().filter_type('actu')
+
+    def url(self):
+        qs = self.query_string()
+        return reverse('actualites') + ('?' + qs if qs else '')
+
+class AppelSearch(ActualiteSearchBase):
+
+    class Meta:
+        verbose_name = "recherche d'appels d'offres"
+        verbose_name_plural = "recherches d'appels d'offres"
+
+    def run(self):
+        return super(AppelSearch, self).run().filter_type('appel')
+
+    def url(self):
+        qs = self.query_string()
+        return reverse('appels') + ('?' + qs if qs else '')
+
+class EvenementSearch(Search):
+    titre = models.CharField(max_length=100, blank=True, verbose_name="Intitulé")
+    type = models.CharField(max_length=100, blank=True, choices=Evenement.TYPE_CHOICES)
+    date_min = models.DateField(blank=True, null=True, verbose_name="depuis le")
+    date_max = models.DateField(blank=True, null=True, verbose_name="jusqu'au")
+
+    class Meta:
+        verbose_name = "recherche d'évènements"
+        verbose_name_plural = "recherches d'évènements"
+
+    def run(self):
+        results = Evenement.objects
+        if self.q:
+            results = results.search(self.q)
+        if self.titre:
+            results = results.add_to_query('@titre ' + self.titre)
+        if self.discipline:
+            results = results.filter_discipline(self.discipline)
+        if self.region:
+            results = results.filter_region(self.region)
+        if self.type:
+            results = results.filter_type(self.type)
+        if self.date_min:
+            results = results.filter_debut(min=self.date_min)
+        if self.date_max:
+            results = results.filter_debut(max=self.date_max)
+        return results.all()
+
+    def url(self):
+        qs = self.query_string()
+        return reverse('agenda') + ('?' + qs if qs else '')
+

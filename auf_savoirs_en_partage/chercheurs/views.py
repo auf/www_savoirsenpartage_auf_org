@@ -1,30 +1,32 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
-from chercheurs.forms import RepertoireSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm
+from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm
 from chercheurs.models import Chercheur
 from chercheurs.utils import get_django_user_for_email
-from datamaster_modeles.models import Etablissement
+from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.template import Context, RequestContext
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth import login as auth_login
+from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import RequestSite, Site
 from django.utils import simplejson
 from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404
-from savoirs.models import PageStatique
+from savoirs.models import PageStatique, Discipline
 
 def index(request):
     """Répertoire des chercheurs"""
-    search_form = RepertoireSearchForm(request.GET)
-    chercheurs = search_form.get_query_set().select_related('etablissement')
+    search_form = ChercheurSearchForm(request.GET)
+    search = search_form.save(commit=False)
+    chercheurs = search.run().select_related('etablissement')
     sort = request.GET.get('tri')
     if sort is not None and sort.endswith('_desc'):
         sort = sort[:-5]
@@ -47,6 +49,7 @@ def index(request):
         entete = u'<h1>Répertoire des chercheurs</h1>'
 
     nb_chercheurs = chercheurs.count()
+
     return render_to_response("chercheurs/index.html",
                               dict(chercheurs=chercheurs, nb_chercheurs=nb_chercheurs, 
                                    search_form=search_form, entete=entete),
@@ -206,4 +209,3 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         'site_name': current_site.name,
     }, context_instance=RequestContext(request))
 login = never_cache(login)
-

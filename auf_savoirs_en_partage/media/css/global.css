@@ -57,7 +57,7 @@ body { padding: 0; margin: 0; font-size: 9pt; font-family: Verdana, Arial, sans-
                     
 #flash-message { margin: 10px 20px; background: #f3e3e7; color: #b03d5e; padding: 1em; font-size: 120%;
                  border: 1px solid #b03d5e; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
-#contenu { position: relative; padding: 5px 20px; background: white; }
+#contenu { position: relative; padding: 5px 20px; }
 #contenu img.top, .resultats img.top { height:10px; position:relative; top:-10px; left:0;}
 #contenu img.bottom, .resultats img.bottom{ height:10px; position:relative; bottom:-10px; left:0;}
 
@@ -130,6 +130,9 @@ tr.odd { background:#ddd; }
 
 dt { font-weight: bold; }
 dd { padding: 0; margin: 0 0 1em 0; }
+ul.items-and-actions li { padding: 3px; border-bottom: 1px solid #ddd; }
+div.item-actions { float: right; }
+div.item-actions a { padding: 5px; }
 
 /* Styles inline */
 

@@ -17,6 +17,17 @@
     implantation_bureau: 1
     actif: 1
 
+- model: datamaster_modeles.Pays
+  pk: AO
+  fields:
+    id: 1
+    code_iso3: AGO
+    code_bureau: BAC
+    nom: Angola
+    region: 1
+    nord_sud: Sud
+    actif: 1
+
 - model: savoirs.Discipline
   pk: 1
   fields:
@@ -55,3 +66,10 @@
     date: "2010-01-02"
     visible: 1
     source: 2
+
+- model: chercheurs.Groupe
+  pk: 1
+  fields:
+    nom: "Littératures au Sud"
+    url: "www.llcd.auf.org/article2.html"
+    actif: 1

@@ -74,8 +74,8 @@ class ChercheurQuerySet(SEPQuerySet):
         return self.order_by(direction + 'nom', direction + 'prenom', '-date_modification')
 
     def order_by_etablissement(self, direction=''):
-        return self.extra(select=dict(nom_etablissement='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
-                                      order_by=[direction + 'nom_etablissement', '-date_modification'])
+        return self.extra(select=dict(etablissement_nom='IFNULL(ref_etablissement.nom, chercheurs_chercheur.etablissement_autre_nom)'),
+                                      order_by=[direction + 'etablissement_nom', '-date_modification'])
 
     def order_by_pays(self, direction=''):
         return self.extra(select=dict(

@@ -2,7 +2,7 @@ Bonjour,
 
 Nous avons enregistré votre inscription à Savoirs en partage.
 
-Veuillez maintenant confirmer votre adresse électronique en suivant le lien
+Veuillez maintenant activer votre compte en suivant le lien
 suivant:
 
   http://{{ domain }}{% url chercheurs-activation id_base36=id_base36, token=token %}

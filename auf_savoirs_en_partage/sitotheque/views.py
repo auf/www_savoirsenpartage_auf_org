@@ -1,15 +1,16 @@
 # -*- encoding: utf-8 -*-
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template import Context, RequestContext
-from django.db.models import Q
 
 from savoirs.lib.recherche import excerpt_function
 from sitotheque.models import Site
-from sitotheque.forms import SiteSearchForm
+from sitotheque.forms import SiteSearchForm, SiteSearchEditForm
 
 def index(request):
     search_form = SiteSearchForm(request.GET)
-    sites = search_form.get_query_set()
+    sites = search_form.save(commit=False).run()
     excerpt = excerpt_function(Site.objects, search_form.cleaned_data['q'])
     nb_sites = sites.count()
     return render_to_response("sites/index.html",

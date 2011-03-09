@@ -1,0 +1,26 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h1>Recherches sauvegardées</h1>
+
+{% if types %}
+{% for type in types %}
+<h2>{{ type.label }}</h2>
+<ul class="items-and-actions">
+    {% for recherche in type.recherches %}
+    <li>
+        <a href="{{ recherche.url }}">{{ recherche.nom }}</a>
+        <div class="item-actions">
+            <a href="{% url supprimer_recherche recherche.id %}">Supprimer</a>
+            <a href="{% url editer_recherche recherche.id %}">Modifier</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+</table>
+{% endfor %}
+{% else %}
+<p>Aucune recherche sauvegardée.</p>
+{% endif %}
+
+{% endblock %}

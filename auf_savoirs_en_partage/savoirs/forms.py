@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.admin import widgets
 from django.utils.safestring import mark_safe
 from datamaster_modeles.models import Thematique, Pays, Region
-from models import Evenement, Discipline, Record, Actualite
+from savoirs.models import Evenement, Discipline, Record, Actualite, RessourceSearch, ActualiteSearch, EvenementSearch, Search
 from savoirs.lib.recherche import build_search_regexp
 from savoirs.admin import EvenementAdminForm
 import settings
@@ -24,7 +24,7 @@ class SEPDateField(forms.DateField):
         # Nous recevons les dates en format français
         format = '%d/%m/%Y'
         self.widget = forms.DateInput(attrs={'class': 'date'}, format=format)
-        self.input_formats = [format,]
+        self.input_formats = [format]
 
 class SEPSplitDateTimeWidget(forms.MultiWidget):
     
@@ -51,122 +51,51 @@ class SEPDateTimeField(forms.DateTimeField):
 
 # Formulaires de recherche
 
-class RecordSearchForm(forms.Form):
+class RessourceSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les ressources."""
 
-    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
-    auteur = forms.CharField(required=False, label="Auteur ou contributeur")
-    titre = forms.CharField(required=False, label="Titre")
-    sujet = forms.CharField(required=False, label="Sujet")
-    publisher = forms.CharField(required=False, label="Éditeur")
-    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
-                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
+    class Meta:
+        model = RessourceSearch
+        fields = ['q', 'auteur', 'titre', 'sujet', 'publisher', 'discipline', 'region']
 
-    def get_query_set(self):
-        """Retourne l'ensemble des ressources qui correspondent aux valeurs
-           entrées dans le formulaire."""
-        records = Record.objects
-        if self.is_valid():
-            q = self.cleaned_data['q']
-            if q:
-                records = records.search(q)
-            auteur = self.cleaned_data['auteur']
-            if auteur:
-                records = records.add_to_query('@(creator,contributor) ' + auteur)
-            titre = self.cleaned_data['titre']
-            if titre:
-                records = records.add_to_query('@title ' + titre)
-            sujet = self.cleaned_data['sujet']
-            if sujet:
-                records = records.add_to_query('@subject ' + sujet)
-            publisher = self.cleaned_data['publisher']
-            if publisher:
-                records = records.add_to_query('@publisher ' + publisher)
-            discipline = self.cleaned_data['discipline']
-            if discipline:
-                records = records.filter_discipline(discipline)
-            region = self.cleaned_data['region']
-            if region:
-                records = records.filter_region(region)
+class RessourceSearchEditForm(RessourceSearchForm):
+    """Formulaire d'édition de recherche sauvegardée."""
 
-            if not q:
-                """Montrer les résultats les plus récents si on n'a pas fait
-                   une recherche par mots-clés."""
-                records = records.order_by('-id')
-        return records.all()
+    class Meta(RessourceSearchForm.Meta):
+        fields = ['nom'] + RessourceSearchForm.Meta.fields
 
-class ActualiteSearchForm(forms.Form):
+class ActualiteSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les actualités."""
-
-    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
-    date_min = SEPDateField(required=False, label="Depuis le")
-    date_max = SEPDateField(required=False, label="Jusqu'au") 
-    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
-                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
-
-    def get_query_set(self):
-        """Retourne l'ensemble des actualités qui correspondent aux valeurs
-           entrées dans le formulaire."""
-        actualites = Actualite.objects
-        if self.is_valid():
-            q = self.cleaned_data['q']
-            if q:
-                actualites = actualites.search(q)
-            discipline = self.cleaned_data['discipline']
-            if discipline:
-                actualites = actualites.filter_discipline(discipline)
-            region = self.cleaned_data['region']
-            if region:
-                actualites = actualites.filter_region(region)
-            date_min = self.cleaned_data['date_min']
-            if date_min:
-                actualites = actualites.filter_date(min=date_min)
-            date_max = self.cleaned_data['date_max']
-            if date_max:
-                actualites = actualites.filter_date(max=date_max)
-        return actualites.all()
-    
-class EvenementSearchForm(forms.Form):
-    """Formulaire de recherche pour les évènements."""
-
-    q = forms.CharField(required=False, label="Rechercher dans tous les champs")
-    titre = forms.CharField(required=False, label="Intitulé")
-    type = forms.ChoiceField(required=False, choices=(('', 'Tous'),)+Evenement.TYPE_CHOICES)
     date_min = SEPDateField(required=False, label="Depuis le") 
     date_max = SEPDateField(required=False, label="Jusqu'au") 
-    discipline = forms.ModelChoiceField(queryset=Discipline.objects.all(), required=False, label="Discipline", empty_label="Toutes")
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, label="Région", empty_label="Toutes",
-                                    help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
+
+    class Meta:
+        model = ActualiteSearch
+        fields = ['q', 'date_min', 'date_max', 'discipline', 'region']
     
-    def get_query_set(self):
-        """Retourne l'ensemble des évènements qui correspondent aux valeurs
-           entrées dans le formulaire."""
-        evenements = Evenement.objects
-        if self.is_valid():
-            query = self.cleaned_data['q']
-            if query:
-                evenements = evenements.search(query)
-            titre = self.cleaned_data['titre']
-            if titre:
-                evenements = evenements.add_to_query('@titre ' + titre)
-            discipline = self.cleaned_data['discipline']
-            if discipline:
-                evenements = evenements.filter_discipline(discipline)
-            region = self.cleaned_data['region']
-            if region:
-                evenements = evenements.filter_region(region)
-            type = self.cleaned_data['type']
-            if type:
-                evenements = evenements.filter_type(type)
-            date_min = self.cleaned_data['date_min']
-            if date_min:
-                evenements = evenements.filter_debut(min=date_min)
-            date_max = self.cleaned_data['date_max']
-            if date_max:
-                evenements = evenements.filter_debut(max=date_max)
-        return evenements.all()
+class ActualiteSearchEditForm(ActualiteSearchForm):
+
+    class Meta(ActualiteSearchForm.Meta):
+        fields = ['nom'] + ActualiteSearchForm.Meta.fields
+
+class EvenementSearchForm(forms.ModelForm):
+    """Formulaire de recherche pour les évènements."""
+    date_min = SEPDateField(required=False, label="Depuis le") 
+    date_max = SEPDateField(required=False, label="Jusqu'au") 
+
+    class Meta:
+        model = EvenementSearch
+        fields = ['q', 'type', 'date_min', 'date_max', 'discipline', 'region']
+
+class EvenementSearchEditForm(EvenementSearchForm):
+
+    class Meta(EvenementSearchForm.Meta):
+        fields = ['nom'] + EvenementSearchForm.Meta.fields
+
+class SearchEditForm(forms.ModelForm):
+
+    class Meta:
+        model = Search
 
 ###
 

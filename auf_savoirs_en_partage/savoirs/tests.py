@@ -24,12 +24,30 @@ class PageLoadTest(TestCase):
 
     def test_ressources(self):
         self.check_status_200('/ressources/')
+        self.check_status_200('/ressources/', {
+            'q': "recherche textuelle",
+            'auteur': 'Un auteur',
+            'titre': 'Un titre',
+            'sujet': 'Un sujet',
+            'publisher': "Jean l'éditeur",
+            'discipline': 1,
+            'region': 1
+        })
 
     def test_ressource(self):
         self.check_status_200('/ressources/1/')
 
     def test_agenda(self):
         self.check_status_200('/agenda/')
+        self.check_status_200('/agenda/', {
+            'q': 'foo',
+            'titre': 'bar',
+            'type': 'Colloque',
+            'date_min': '18/01/2001',
+            'date_max': '20/01/2001',
+            'discipline': 1,
+            'region': 1
+        })
         self.check_status_200('/agenda/evenements/utilisation/')
         self.check_status_200('/agenda/evenements/creer/')
 
@@ -38,6 +56,13 @@ class PageLoadTest(TestCase):
         
     def test_actualites(self):
         self.check_status_200('/actualites/')
+        self.check_status_200('/actualites/', {
+            'q': 'mots-clés',
+            'date_min': '01/01/2011',
+            'date_max': '31/12/2011',
+            'discipline': 1,
+            'region': 1
+        })
         self.check_status_200('/rss/actualites/')
 
     def test_actualite(self):
@@ -46,10 +71,30 @@ class PageLoadTest(TestCase):
 
     def test_appels(self):
         self.check_status_200('/appels/')
+        self.check_status_200('/appels/', {
+            'q': 'mots-clés',
+            'date_min': '01/01/2011',
+            'date_max': '31/12/2011',
+            'discipline': 1,
+            'region': 1
+        })
         self.check_status_200('/rss/appels/')
 
     def test_chercheurs(self):
         self.check_status_200('/chercheurs/')
+        self.check_status_200('/chercheurs/', {
+            'q': 'texte texte',
+            'nom_chercheur': 'Ted Kennedy',
+            'domaine': 1,
+            'groupe_recherche': 'Le groupe',
+            'statut': 'expert',
+            'discipline': 1,
+            'pays': 'AO',
+            'region': 1,
+            'nord_sud': 'Nord',
+            'activites_francophonie': 'instance_auf',
+            'genre': 'm'
+        })
         self.check_status_200('/chercheurs/', dict(tri='nom'))
         self.check_status_200('/chercheurs/', dict(tri='nom_desc'))
         self.check_status_200('/chercheurs/', dict(tri='etablissement'))
@@ -59,6 +104,12 @@ class PageLoadTest(TestCase):
 
     def test_sites(self):
         self.check_status_200('/sites/')
+        self.check_status_200('/sites/', {
+            'q': 'recherche',
+            'discipline': 1,
+            'pays': 'AO',
+            'region': 1
+        })
 
     def test_sites_auf(self):
         self.check_status_200('/sites-auf/')

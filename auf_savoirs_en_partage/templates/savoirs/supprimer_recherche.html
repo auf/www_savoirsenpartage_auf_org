@@ -1,0 +1,12 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<div class="cadre">
+    <h1>Supprimer une recherche</h1>
+    <form method="post" action="">
+        <p>Voulez-vous vraiment supprimer la recherche <em>{{ recherche.nom }}</em>&nbsp;?</p>
+        <input type="submit" name="confirmation" value="Oui">
+        <input type="submit" name="annulation" value="Non">
+    </form>
+</div>
+{% endblock %}

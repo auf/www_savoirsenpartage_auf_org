@@ -134,6 +134,11 @@ urlpatterns = sep_patterns + patterns(
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
 
+    # recherches sauvegardées
+    (r'^recherches/$', 'savoirs.views.recherches', {}, 'recherches'),
+    (r'^recherches/(?P<type>[^/]*)/sauvegarder/$', 'savoirs.views.sauvegarder_recherche', {}, 'sauvegarder_recherche'),
+    (r'^recherches/(?P<id>\d+)/supprimer/$', 'savoirs.views.supprimer_recherche', {}, 'supprimer_recherche'),
+    (r'^recherches/(?P<id>\d+)/editer/$', 'savoirs.views.editer_recherche', {}, 'editer_recherche'),
 )
 
 if settings.DEBUG:

@@ -1,13 +1,17 @@
 # -*- encoding: utf-8 -*-
 import hashlib
+
 from datamaster_modeles.models import *
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse as url
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
 from django.utils.hashcompat import sha_constructor
 from djangosphinx.models import SphinxSearch
-from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet
+
+from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet, Search
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
@@ -367,3 +371,66 @@ class ChercheurGroupe(models.Model):
 
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)
+
+class ChercheurSearch(Search):
+    nom_chercheur = models.CharField(max_length=100, blank=True, verbose_name='nom')
+    domaine = models.ForeignKey(Groupe, blank=True, null=True, verbose_name='domaine de recherche')
+    groupe_recherche = models.CharField(max_length=100, blank=True, null=True, 
+                                        verbose_name='groupe de recherche',
+                                        help_text='ou Laboratoire, ou Groupement inter-universitaire')
+    statut = models.CharField(max_length=100, blank=True, choices=STATUT_CHOICES + (('expert', 'Expert'),))
+    pays = models.ForeignKey(Pays, blank=True, null=True)
+    nord_sud = models.CharField(max_length=4, blank=True, choices=(('Nord', 'Nord'), ('Sud', 'Sud')),
+                                verbose_name='Nord/Sud',
+                                help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays développés, par Sud les pays en développement (pays les moins avancés, pays émergents et pays à économies en transition)")
+    activites_francophonie = models.CharField(
+        max_length=25, blank=True, verbose_name='activités en Francophonie',
+        choices=(('instance_auf', "Membre d'une instance de l'AUF"),
+                 ('expert_oif', "Sollicité par l'OIF"),
+                 ('association_francophone', "Membre d'une association ou d'une société savante francophone"),
+                 ('reseau_institutionnel', "Membre des instances d'un réseau institutionnel de l'AUF"))
+    ) 
+    genre = models.CharField(max_length=1, blank=True, choices=GENRE_CHOICES)
+
+    class Meta:
+        verbose_name = 'recherche de chercheurs'
+        verbose_name_plural = 'recherches de chercheurs'
+
+    def run(self):
+        results = Chercheur.objects
+        if self.q:
+            results = results.search(self.q)
+        if self.nom_chercheur:
+            results = results.add_to_query('@(nom,prenom) ' + self.nom_chercheur)
+        if self.groupe_recherche:
+            results = results.add_to_query('@groupe_recherche ' + self.groupe_recherche)
+        if self.discipline:
+            results = results.filter_discipline(self.discipline)
+        if self.region:
+            results = results.filter_region(self.region)
+        if self.statut:
+            if self.statut == "expert":
+                results = results.filter_expert()
+            else:
+                results = results.filter_statut(self.statut)
+        if self.domaine:
+            results = results.filter_groupe(self.domaine)
+        if self.pays:
+            results = results.filter_pays(self.pays)
+        if self.nord_sud:
+            results = results.filter_nord_sud(self.nord_sud)
+        if self.genre:
+            results = results.filter_genre(self.genre)
+        if self.activites_francophonie == 'instance_auf':
+            results = results.filter(membre_instance_auf=True)
+        elif self.activites_francophonie == 'expert_oif':
+            results = results.filter(expert_oif=True)
+        elif self.activites_francophonie == 'association_francophone':
+            results = results.filter(membre_association_francophone=True)
+        elif self.activites_francophonie == 'reseau_institutionnel':
+            results = results.filter(membre_reseau_institutionnel=True)
+        return results.all()
+
+    def url(self):
+        qs = self.query_string()
+        return url('chercheurs') + ('?' + qs if qs else '')

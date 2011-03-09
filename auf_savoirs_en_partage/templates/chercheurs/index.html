@@ -25,7 +25,12 @@
 </form>
 
 <h2>Résultats</h2>
-<div class="sous-titre"> {{nb_chercheurs}} chercheurs correspondant à votre recherche</div>
+<div class="sous-titre"> 
+    {{ nb_chercheurs }} chercheurs correspondant à votre recherche
+    {% if user.is_authenticated %}
+    (<a href="{% url sauvegarder_recherche "chercheurs" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
+    {% endif %}
+</div>
 
 <div class="pagination">{% paginate %}</div>
 <table id="repertoire">

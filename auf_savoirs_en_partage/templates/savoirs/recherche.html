@@ -2,8 +2,12 @@
 {% load sep %}
 
 {% block contenu %}
-<div class="texte">
-    <h1>Résultats correspondant à «&nbsp;{{ q }}&nbsp;»</h1>
+<h1>Résultats correspondant à «&nbsp;{{ q }}&nbsp;»</h1>
+{% if user.is_authenticated %}
+<div class="sous-titre">
+    <a href="{% url sauvegarder_recherche "transversale" %}{{ briques_query_string }}">Sauvegarder cette recherche</a>
+</div>
+{% endif %}
     
 {% if ressources %}
     <h2>Ressources ({{ ressources|length }} sur {{ total_ressources }})</h2>
@@ -88,6 +92,5 @@
     <h2>Aucun résultat</h2>
     <p><a href="{% url savoirs.views.index %}">Retour à la page d'accueil</a></p>
 {% endif %}
-</div>
 
 {% endblock %}

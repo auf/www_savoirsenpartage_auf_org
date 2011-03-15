@@ -502,7 +502,7 @@ class ListSet(models.Model):
 class RecordQuerySet(SEPQuerySet):
 
     def filter_modified(self, min=None, max=None):
-        return self._filter_date(self, 'modified', min=min, max=max)
+        return self._filter_date('modified', min=min, max=max)
 
 class RecordSphinxQuerySet(SEPSphinxQuerySet):
 
@@ -511,7 +511,7 @@ class RecordSphinxQuerySet(SEPSphinxQuerySet):
                                    weights=dict(title=3))
 
     def filter_modified(self, min=None, max=None):
-        return self._filter_date(self, 'modified', min=min, max=max)
+        return self._filter_date('modified', min=min, max=max)
 
 class RecordManager(SEPManager):
 

@@ -117,7 +117,7 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
         return self.filter(expert=True)
 
     def filter_date_modification(self, min=None, max=None):
-        return self._filter_date(self, 'date_modification', min=min, max=max)
+        return self._filter_date('date_modification', min=min, max=max)
 
     def order_by_nom(self, direction=''):
         return self.order_by(direction + 'nom_complet', '-date_modification')

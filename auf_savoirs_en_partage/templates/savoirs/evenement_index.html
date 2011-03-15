@@ -5,7 +5,6 @@
 {% autopaginate evenements 10 %}
 <ul class="actions">
     <li><a href="{% url aide %}#agenda">Aide</a></li>
-    <li><a href="/rss/agenda">Fil RSS</a></li>
     {% include "savoirs/evenement_actions.html" %}
 </ul>
 
@@ -23,6 +22,7 @@
 <h2>Résultats</h2>
 <div class="sous-titre">
     {{ nb_resultats }} évènements correspondant à votre recherche
+    (<a href="{% url rss_agenda %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
     {% if user.is_authenticated %}
     (<a href="{% url sauvegarder_recherche "evenements" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
     {% endif %}

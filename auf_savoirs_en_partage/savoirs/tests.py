@@ -125,3 +125,8 @@ class PageLoadTest(TestCase):
 
     def test_aide(self):
         self.check_status_200('/aide/')
+
+    def test_rss(self):
+        for brique in ['chercheurs', 'ressources', 'actualites', 'appels', 'agenda', 'sites']:
+            self.check_status_200('/rss/ressources/')
+            self.check_status_200('/rss/ressources/', {'q': 'test'})

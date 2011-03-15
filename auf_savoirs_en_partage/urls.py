@@ -124,12 +124,12 @@ urlpatterns = sep_patterns + patterns(
     (r'^stats/$', 'savoirs.admin_views.stats', {}, 'stats'),
 
     # rss
-    (r'^rss/chercheurs/$', FilChercheurs()),
-    (r'^rss/ressources/$', FilRessources()),
-    (r'^rss/actualites/$', FilActualites()),
-    (r'^rss/appels/$', FilAppels()),
-    (r'^rss/agenda/$', FilEvenements()),
-    (r'^rss/sites/$', FilSites()),
+    (r'^rss/chercheurs/$', FilChercheurs(), {}, 'rss_chercheurs'),
+    (r'^rss/ressources/$', FilRessources(), {}, 'rss_ressources'),
+    (r'^rss/actualites/$', FilActualites(), {}, 'rss_actualites'),
+    (r'^rss/appels/$', FilAppels(), {}, 'rss_appels'),
+    (r'^rss/agenda/$', FilEvenements(), {}, 'rss_agenda'),
+    (r'^rss/sites/$', FilSites(), {}, 'rss_sites'),
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
 

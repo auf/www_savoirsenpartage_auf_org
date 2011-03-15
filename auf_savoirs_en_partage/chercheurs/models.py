@@ -70,6 +70,9 @@ class ChercheurQuerySet(SEPQuerySet):
     def filter_expert(self):
         return self.exclude(expertises=None)
 
+    def filter_date_modification(self, min=None, max=None):
+        return self._filter_date('date_modification', min=min, max=max)
+
     def order_by_nom(self, direction=''):
         return self.order_by(direction + 'nom', direction + 'prenom', '-date_modification')
 
@@ -113,6 +116,9 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
     def filter_expert(self):
         return self.filter(expert=True)
 
+    def filter_date_modification(self, min=None, max=None):
+        return self._filter_date(self, 'date_modification', min=min, max=max)
+
     def order_by_nom(self, direction=''):
         return self.order_by(direction + 'nom_complet', '-date_modification')
 
@@ -151,6 +157,9 @@ class ChercheurManager(SEPManager):
 
     def filter_expert(self):
         return self.get_query_set().filter_expert()
+
+    def filter_date_modification(self, min=None, max=None):
+        return self.get_query_set().filter_date_modification(min=min, max=max)
 
     def order_by_nom(self, direction=''):
         return self.get_query_set().order_by_nom(self, direction=direction)
@@ -266,7 +275,7 @@ class Chercheur(Personne):
     
     @property
     def etablissement_display(self):
-        return self.nom_etablissement + ', ' + self.pays
+        return (self.nom_etablissement or '') + (', ' + self.pays.nom if self.pays else '')
 
     @property
     def pays(self):

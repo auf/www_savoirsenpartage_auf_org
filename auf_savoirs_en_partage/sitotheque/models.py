@@ -25,10 +25,16 @@ class SiteQuerySet(SEPQuerySet):
     def filter_pays(self, pays):
         return self.filter(pays=pays)
 
+    def filter_date_maj(self, min=None, max=None):
+        return self._filter_date('date_maj', min=min, max=max)
+
 class SiteSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
         SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_sites', weights=dict(titre=3))
+
+    def filter_date_maj(self, min=None, max=None):
+        return self._filter_date('date_maj', min=min, max=max)
 
     def filter_pays(self, pays):
         return self.filter(pays_ids=pays.id)
@@ -43,6 +49,9 @@ class SiteManager(SEPManager):
 
     def filter_pays(self, pays):
         return self.get_query_set().filter_pays(pays)
+
+    def filter_date_maj(self, min=None, max=None):
+        return self.get_query_set().filter_date_maj(self, min=min, max=max)
 
 class Site(models.Model):
     """Fiche d'info d'un site web"""
@@ -78,6 +87,9 @@ class Site(models.Model):
     def __unicode__(self):
         return "%s" % (self.titre)
         
+    def get_absolute_url(self):
+        return reverse('site', kwargs={'id': self.id})
+
     def type_display(self):
         for t in TYPE_SITE_CHOICES:
             if self.type == t[0]:

@@ -3,18 +3,12 @@
 from django.conf.urls.defaults import patterns, include, handler500, handler404, url
 from django.conf import settings
 from django.contrib import admin
-from savoirs.rss import FilActualite, FilEvenement, FilAppels
+from savoirs.rss import FilChercheurs, FilRessources, FilActualites, FilAppels, FilEvenements, FilSites
 
 admin.autodiscover()
 
 handler500 = "views.page_500"
 handler404 = "views.page_404"
-
-site_feeds = {'actualites': FilActualite,
-              'agenda': FilEvenement,
-              'appels': FilAppels
-             }
-
 
 # Les URLs suivantes peuvent être préfixées de la discipline et/ou la
 # région. Nous les regroupons donc dans un module qu'on incluera plus bas.
@@ -35,7 +29,7 @@ urlpatterns = sep_patterns + patterns(
 
     # agenda
     (r'^agenda/$', 'savoirs.views.evenement_index', {}, 'agenda'),
-    (r'^agenda/evenements/(?P<id>\d+)/$', 'savoirs.views.evenement'),
+    (r'^agenda/evenements/(?P<id>\d+)/$', 'savoirs.views.evenement', {}, 'evenement'),
     (r'^agenda/evenements/moderer/$', 'savoirs.views.evenement_moderation'),
     (r'^agenda/evenements/moderer/(.+)/accepter/$', 'savoirs.views.evenement_accepter'),
     (r'^agenda/evenements/moderer/(.+)/refuser/$', 'savoirs.views.evenement_refuser'),
@@ -52,7 +46,7 @@ urlpatterns = sep_patterns + patterns(
 
     # ressources
     (r'^ressources/$', 'savoirs.views.ressource_index', {}, 'ressources'),
-    (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve'),
+    (r'^ressources/(?P<id>\d+)/$', 'savoirs.views.ressource_retrieve', {}, 'ressource'),
 
     # actualités
     (r'^actualites/$', 'savoirs.views.actualite_index', {}, 'actualites'),
@@ -61,7 +55,7 @@ urlpatterns = sep_patterns + patterns(
 
     # sites
     (r'^sites/$', 'sitotheque.views.index', {}, 'sites'),
-    (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve'),
+    (r'^sites/(?P<id>\d+)/$', 'sitotheque.views.retrieve', {}, 'site'),
     (r'^sites/google.xml$', 'sitotheque.views.config_google'),
 
     # sites AUF
@@ -69,7 +63,7 @@ urlpatterns = sep_patterns + patterns(
 
     # chercheurs
     (r'^chercheurs/$', 'chercheurs.views.index', {}, 'chercheurs'),
-    (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve'),
+    (r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve', {}, 'chercheur'),
     (r'^chercheurs/inscription/$', 'chercheurs.views.inscription', {}, 'inscription'),
     (r'^chercheurs/inscription_faite/$', 'django.views.generic.simple.direct_to_template', dict(
         template='chercheurs/inscription_faite.html'
@@ -130,7 +124,12 @@ urlpatterns = sep_patterns + patterns(
     (r'^stats/$', 'savoirs.admin_views.stats', {}, 'stats'),
 
     # rss
-    (r'^rss/(.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':site_feeds}),
+    (r'^rss/chercheurs/$', FilChercheurs()),
+    (r'^rss/ressources/$', FilRessources()),
+    (r'^rss/actualites/$', FilActualites()),
+    (r'^rss/appels/$', FilAppels()),
+    (r'^rss/agenda/$', FilEvenements()),
+    (r'^rss/sites/$', FilSites()),
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
 

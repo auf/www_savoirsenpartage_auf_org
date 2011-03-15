@@ -42,7 +42,16 @@ class RandomQuerySetMixin(object):
         return [self[p] for p in positions]
 
 class SEPQuerySet(models.query.QuerySet, RandomQuerySetMixin):
-    pass
+
+    def _filter_date(self, field, min=None, max=None):
+        """Limite les résultats à ceux dont le champ ``field`` tombe entre
+           les dates ``min`` et ``max``."""
+        qs = self
+        if min:
+            qs = qs.filter(**{field + '__gte': min})
+        if max:
+            qs = qs.filter(**{field + '__lte': max})
+        return qs
 
 class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
     """Fonctionnalités communes aux query sets de Sphinx."""
@@ -78,6 +87,16 @@ class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
         """Par défaut, le filtre par région cherche le nom de la région dans
            tous les champs."""
         return self.search('"%s"' % region.nom)
+
+    def _filter_date(self, field, min=None, max=None):
+        """Limite les résultats à ceux dont le champ ``field`` tombe entre
+           les dates ``min`` et ``max``."""
+        qs = self
+        if min:
+            qs = qs.filter(**{field + '__gte': min.toordinal()+365})
+        if max:
+            qs = qs.filter(**{field + '__lte': max.toordinal()+365})
+        return qs
 
     def _get_sphinx_results(self):
         try:
@@ -163,12 +182,7 @@ class SourceActualite(models.Model):
 class ActualiteQuerySet(SEPQuerySet):
 
     def filter_date(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(date__gte=min)
-        if max:
-            qs = qs.filter(date__lte=max)
-        return qs
+        return self._filter_date('date', min=min, max=max)
 
     def filter_type(self, type):
         return self.filter(source__type=type)
@@ -180,13 +194,8 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
                                    weights=dict(titre=3))
 
     def filter_date(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(date__gte=min.toordinal()+365)
-        if max:
-            qs = qs.filter(date__lte=max.toordinal()+365)
-        return qs
-        
+        return self._filter_date('date', min=min, max=max)
+
     TYPE_CODES = {'actu': 1, 'appels': 2}
     def filter_type(self, type):
         return self.filter(type=self.TYPE_CODES[type])
@@ -227,6 +236,9 @@ class Actualite(models.Model):
     def __unicode__ (self):
         return "%s" % (self.titre)
 
+    def get_absolute_url(self):
+        return reverse('actualite', kwargs={'id': self.id})
+
     def assigner_disciplines(self, disciplines):
         self.disciplines.add(*disciplines)
 
@@ -258,12 +270,7 @@ class EvenementSphinxQuerySet(SEPSphinxQuerySet):
         return self.add_to_query('@type "%s"' % type)
     
     def filter_debut(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(debut__gte=min.toordinal()+365)
-        if max:
-            qs = qs.filter(debut__lte=max.toordinal()+365)
-        return qs
+        return self._filter_date('debut', min=min, max=max)
 
 class EvenementManager(SEPManager):
 
@@ -338,8 +345,11 @@ class Evenement(models.Model):
         verbose_name = u'évènement'
         verbose_name_plural = u'évènements'
 
-    def __unicode__(self,):
+    def __unicode__(self):
         return "[%s] %s" % (self.uid, self.titre)
+
+    def get_absolute_url(self):
+        return reverse('evenement', kwargs={'id': self.id})
 
     def duration_display(self):
         delta = self.fin - self.debut
@@ -489,24 +499,35 @@ class ListSet(models.Model):
     def __unicode__(self,):
         return self.name
 
+class RecordQuerySet(SEPQuerySet):
+
+    def filter_modified(self, min=None, max=None):
+        return self._filter_date(self, 'modified', min=min, max=max)
+
 class RecordSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
         SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_ressources',
                                    weights=dict(title=3))
 
+    def filter_modified(self, min=None, max=None):
+        return self._filter_date(self, 'modified', min=min, max=max)
+
 class RecordManager(SEPManager):
 
     def get_query_set(self):
         """Ne garder que les ressources validées et qui sont soit dans aucun
            listset ou au moins dans un listset validé."""
-        qs = SEPQuerySet(self.model)
+        qs = RecordQuerySet(self.model)
         qs = qs.filter(validated=True)
         qs = qs.filter(Q(listsets__isnull=True) | Q(listsets__validated=True))
         return qs.distinct()
 
     def get_sphinx_query_set(self):
         return RecordSphinxQuerySet(self.model)
+
+    def filter_modified(self, min=None, max=None):
+        return self.get_query_set().filter_modified(min=min, max=max)
 
 class Record(models.Model):
     
@@ -557,6 +578,9 @@ class Record(models.Model):
 
     def __unicode__(self):
         return "[%s] %s" % (self.server, self.title)
+
+    def get_absolute_url(self):
+        return reverse('ressource', kwargs={'id': self.id})
 
     def getServeurURL(self):
         """Retourne l'URL du serveur de provenance"""
@@ -757,7 +781,7 @@ class RessourceSearch(Search):
         if not self.q:
             """Montrer les résultats les plus récents si on n'a pas fait
                une recherche par mots-clés."""
-            results = results.order_by('-id')
+            results = results.order_by('-modified')
         return results.all()
 
     def url(self):

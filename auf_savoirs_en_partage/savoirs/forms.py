@@ -7,7 +7,8 @@ from django.db import models
 from django.contrib.admin import widgets
 from django.utils.safestring import mark_safe
 from datamaster_modeles.models import Thematique, Pays, Region
-from savoirs.models import Evenement, Discipline, Record, Actualite, RessourceSearch, ActualiteSearch, EvenementSearch, Search
+from savoirs.models import Evenement, Discipline, Record, Actualite, RessourceSearch, ActualiteSearch, \
+                           AppelSearch, EvenementSearch, Search
 from savoirs.lib.recherche import build_search_regexp
 from savoirs.admin import EvenementAdminForm
 import settings
@@ -77,6 +78,20 @@ class ActualiteSearchEditForm(ActualiteSearchForm):
 
     class Meta(ActualiteSearchForm.Meta):
         fields = ['nom'] + ActualiteSearchForm.Meta.fields
+
+class AppelSearchForm(forms.ModelForm):
+    """Formulaire de recherche pour les actualités."""
+    date_min = SEPDateField(required=False, label="Depuis le") 
+    date_max = SEPDateField(required=False, label="Jusqu'au") 
+
+    class Meta:
+        model = AppelSearch
+        fields = ['q', 'date_min', 'date_max', 'discipline', 'region']
+    
+class AppelSearchEditForm(AppelSearchForm):
+
+    class Meta(AppelSearchForm.Meta):
+        fields = ['nom'] + AppelSearchForm.Meta.fields
 
 class EvenementSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les évènements."""

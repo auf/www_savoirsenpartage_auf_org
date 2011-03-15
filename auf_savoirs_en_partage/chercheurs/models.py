@@ -443,3 +443,7 @@ class ChercheurSearch(Search):
     def url(self):
         qs = self.query_string()
         return url('chercheurs') + ('?' + qs if qs else '')
+
+    def rss_url(self):
+        qs = self.query_string()
+        return url('rss_chercheurs') + ('?' + qs if qs else '')

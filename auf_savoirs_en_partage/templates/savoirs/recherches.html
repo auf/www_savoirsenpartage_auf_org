@@ -11,6 +11,9 @@
     <li>
         <a href="{{ recherche.url }}">{{ recherche.nom }}</a>
         <div class="item-actions">
+            {% if recherche.rss_url %}
+            <a href="{{ recherche.rss_url }}">Fil RSS</a>
+            {% endif %}
             <a href="{% url supprimer_recherche recherche.id %}">Supprimer</a>
             <a href="{% url editer_recherche recherche.id %}">Modifier</a>
         </div>

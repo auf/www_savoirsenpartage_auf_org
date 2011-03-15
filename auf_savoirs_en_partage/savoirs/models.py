@@ -752,6 +752,9 @@ class Search(models.Model):
             url += '?' + urlencode({'q': self.q})
         return url
 
+    def rss_url(self):
+        return None
+
 class RessourceSearch(Search):
     auteur = models.CharField(max_length=100, blank=True, verbose_name="auteur ou contributeur")
     titre = models.CharField(max_length=100, blank=True)
@@ -788,6 +791,10 @@ class RessourceSearch(Search):
         qs = self.query_string()
         return reverse('ressources') + ('?' + qs if qs else '')
 
+    def rss_url(self):
+        qs = self.query_string()
+        return reverse('rss_ressources') + ('?' + qs if qs else '')
+
 class ActualiteSearchBase(Search):
     date_min = models.DateField(blank=True, null=True, verbose_name="depuis le")
     date_max = models.DateField(blank=True, null=True, verbose_name="jusqu'au")
@@ -822,6 +829,10 @@ class ActualiteSearch(ActualiteSearchBase):
         qs = self.query_string()
         return reverse('actualites') + ('?' + qs if qs else '')
 
+    def rss_url(self):
+        qs = self.query_string()
+        return reverse('rss_actualites') + ('?' + qs if qs else '')
+ 
 class AppelSearch(ActualiteSearchBase):
 
     class Meta:
@@ -834,6 +845,10 @@ class AppelSearch(ActualiteSearchBase):
     def url(self):
         qs = self.query_string()
         return reverse('appels') + ('?' + qs if qs else '')
+
+    def rss_url(self):
+        qs = self.query_string()
+        return reverse('rss_appels') + ('?' + qs if qs else '')
 
 class EvenementSearch(Search):
     titre = models.CharField(max_length=100, blank=True, verbose_name="Intitulé")
@@ -867,3 +882,6 @@ class EvenementSearch(Search):
         qs = self.query_string()
         return reverse('agenda') + ('?' + qs if qs else '')
 
+    def rss_url(self):
+        qs = self.query_string()
+        return reverse('rss_agenda') + ('?' + qs if qs else '')

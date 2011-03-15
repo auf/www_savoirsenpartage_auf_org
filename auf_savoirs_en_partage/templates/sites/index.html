@@ -22,6 +22,7 @@
 <h2>Résultats</h2>
 <div class="sous-titre">
     {{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche
+    (<a href="{% url rss_sites %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
     {% if user.is_authenticated %}
     (<a href="{% url sauvegarder_recherche "sites" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
     {% endif %}

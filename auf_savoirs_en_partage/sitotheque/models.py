@@ -127,3 +127,6 @@ class SiteSearch(Search):
         qs = self.query_string()
         return reverse('sites') + ('?' + qs if qs else '')
 
+    def rss_url(self):
+        qs = self.query_string()
+        return reverse('rss_sites') + ('?' + qs if qs else '')

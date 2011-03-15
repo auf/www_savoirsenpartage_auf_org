@@ -269,8 +269,10 @@ def sauvegarder_recherche(request, type):
     """Sauvegarde une recherche"""
     if type == 'ressources':
         form_class = RessourceSearchEditForm
-    elif type in ['actualites', 'appels']:
+    elif type == 'actualites':
         form_class = ActualiteSearchEditForm
+    elif type == 'appels':
+        form_class = AppelSearchEditForm
     elif type == 'sites':
         form_class = SiteSearchEditForm
     elif type == 'chercheurs':
@@ -300,8 +302,10 @@ def editer_recherche(request, id):
     recherche = get_object_or_404(Search, id=id, user=request.user).as_leaf_class()
     if isinstance(recherche, RessourceSearch):
         form_class = RessourceSearchEditForm
-    elif isinstance(recherche, ActualiteSearchBase):
+    elif isinstance(recherche, ActualiteSearch):
         form_class = ActualiteSearchEditForm
+    elif isinstance(recherche, AppelSearch):
+        form_class = AppelSearchEditForm
     elif isinstance(recherche, SiteSearch):
         form_class = SiteSearchEditForm
     elif isinstance(recherche, ChercheurSearch):

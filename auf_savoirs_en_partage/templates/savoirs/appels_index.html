@@ -7,7 +7,6 @@
 
 <ul class="actions">
     <li><a href="{% url aide %}#actualites">Aide</a></li>
-    <li><a href="/rss/appels">Fil RSS</a></li>
 </ul>
 
 {{ entete|safe }}
@@ -24,6 +23,7 @@
 <h2>Résultats</h2>
 <div class="sous-titre">
     {{ nb_resultats }} appels d'offres correspondant à votre recherche
+    (<a href="{% url rss_appels %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
     {% if user.is_authenticated %}
     (<a href="{% url sauvegarder_recherche "appels" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
     {% endif %}

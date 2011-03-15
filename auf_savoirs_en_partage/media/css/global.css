@@ -154,7 +154,7 @@ ul.liste-de-l-accueil li { padding: 1em 0; border-top: 2px solid #d5d5d5;}
 ul.liste-de-l-accueil img { float:left; margin:0 1em 5px 0; max-width:75px;}
 ul.liste-de-l-accueil .titre { font-weight:bold; margin: 0.25em 0; }
 
-#rss-agenda, #rss-actualites { position: absolute; top: 15px; right: 20px; }
+.rss-icon { position: absolute; top: 15px; right: 20px; }
 
 /* Actions */
 

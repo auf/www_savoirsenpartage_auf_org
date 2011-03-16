@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from urllib import urlencode
+
 from django import template
 from django.utils.encoding import smart_unicode
 
@@ -81,3 +83,9 @@ def prepare_choices(choices, query_param, context, remove=[]):
                        'query_string': cl.get_query_string({query_param: k}, remove),
                        'display': v})
     return result
+
+@register.simple_tag
+def query_string_with_initial(request, initial):
+    qs = request.GET.copy()
+    qs['initial'] = initial
+    return urlencode(qs)

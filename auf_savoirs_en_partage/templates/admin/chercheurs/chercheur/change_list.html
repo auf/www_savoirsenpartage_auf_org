@@ -16,3 +16,15 @@
     {% filter_expert %}
 </div>
 {% endblock %}
+
+{% block pagination %}
+<p class="paginator">
+    {% for initial in initials %}
+    {% if initial == current_initial %}
+    <span class="this-page">{{ initial }}</span>
+    {% else %}
+    <a href="?{% query_string_with_initial request initial %}">{{ initial }}</a>
+    {% endif %}
+    {% endfor %}
+</p>
+{% endblock %}

@@ -12,14 +12,14 @@ from chercheurs.models import Chercheur, Publication, Groupe, ChercheurGroupe, C
 
 class ChercheurAdmin(admin.ModelAdmin):
     list_filter = ['genre']
-    list_per_page = 25
+    list_per_page = 9999
     actions = ('remove_from_group', 'export_as_ods', 'export_as_csv')
     search_fields = ('nom', 'prenom')
 
     def lookup_allowed(self, lookup, value):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
                           'membre_instance_auf', 'discipline', 'region', 'pays', 
-                          'groupes', 'nord_sud'] or \
+                          'groupes', 'nord_sud', 'initial'] or \
                admin.ModelAdmin.lookup_allowed(self, lookup, value)
 
     def remove_from_group(self, request, queryset):
@@ -45,6 +45,14 @@ class ChercheurAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         return ChercheurAdminQuerySet(Chercheur)
+
+    def changelist_view(self, request, extra_context=None):
+        initials = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        current_initial = request.GET.get('initial', 'A')
+        return super(ChercheurAdmin, self).changelist_view(request, extra_context={
+            'initials': initials,
+            'current_initial': current_initial
+        })
 
     def export(self, queryset, type):
         if queryset.count() == 0:
@@ -128,11 +136,12 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
            
         C'est la seule façon que j'ai trouvée de contourner les mécanismes
         de recherche de l'admin."""
-        qs = self
         pays = kwargs.pop('pays', None)
         region = kwargs.pop('region', None)
         nord_sud = kwargs.pop('nord_sud', None)
         expert = kwargs.pop('expert', None)
+        initial = kwargs.pop('initial', 'A')
+        qs = super(ChercheurAdminQuerySet, self).filter(nom__istartswith=initial)
         if pays is not None:
             qs = qs.filter(Q(etablissement__pays=pays) | 
                            (Q(etablissement=None) & Q(etablissement_autre_pays=pays)))

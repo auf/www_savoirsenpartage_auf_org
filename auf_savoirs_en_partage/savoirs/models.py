@@ -8,6 +8,7 @@ import pytz
 import random
 import uuid
 import vobject
+from pytz.tzinfo import AmbiguousTimeError, NonExistentTimeError
 from urllib import urlencode
 
 from backend_config import RESOURCES
@@ -293,7 +294,12 @@ def build_time_zone_choices(pays=None):
     for tzname in timezones:
         tz = pytz.timezone(tzname)
         fr_name = get_timezone_name(tz, locale='fr_FR')
-        offset = tz.utcoffset(now)
+        try:
+            offset = tz.utcoffset(now)
+        except (AmbiguousTimeError, NonExistentTimeError):
+            # oups. On est en train de changer d'heure. Ça devrait être fini
+            # demain
+            offset = tz.utcoffset(now + datetime.timedelta(days=1))
         seconds = offset.seconds + offset.days * 86400
         (hours, minutes) = divmod(seconds // 60, 60)
         offset_str = 'UTC%+d:%d' % (hours, minutes) if minutes else 'UTC%+d' % hours

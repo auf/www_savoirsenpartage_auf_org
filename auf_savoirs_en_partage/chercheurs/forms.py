@@ -7,7 +7,7 @@ from django.forms.models import inlineformset_factory
 from itertools import chain
 from models import *
 
-OUI_NON_CHOICES = (('1', 'Oui'), ('0', 'Non'))
+OUI_NON_CHOICES = ((True, 'Oui'), (False, 'Non'))
 
 class ChercheurForm(forms.ModelForm):
     """Formulaire d'édition d'un chercheur."""
@@ -140,10 +140,10 @@ class ChercheurForm(forms.ModelForm):
         return courriel
 
     def clean_afficher_courriel(self):
-        return bool(int(self.cleaned_data['afficher_courriel']))
+        return self.cleaned_data['afficher_courriel'] == 'True'
             
     def clean_membre_instance_auf(self):
-        return bool(int(self.cleaned_data['membre_instance_auf']))
+        return self.cleaned_data['membre_instance_auf'] == 'True'
     
     def clean_membre_instance_auf_nom(self):
         membre = self.cleaned_data.get('membre_instance_auf')
@@ -167,7 +167,7 @@ class ChercheurForm(forms.ModelForm):
         return dates
 
     def clean_expert_oif(self):
-        return bool(int(self.cleaned_data['expert_oif']))
+        return self.cleaned_data['expert_oif'] == 'True'
 
     def clean_expert_oif_details(self):
         expert = self.cleaned_data.get('expert_oif')
@@ -184,7 +184,7 @@ class ChercheurForm(forms.ModelForm):
         return dates
 
     def clean_membre_association_francophone(self):
-        return bool(int(self.cleaned_data['membre_association_francophone']))
+        return self.cleaned_data['membre_association_francophone'] == 'True'
 
     def clean_membre_association_francophone_details(self):
         membre = self.cleaned_data.get('membre_association_francophone')
@@ -194,7 +194,7 @@ class ChercheurForm(forms.ModelForm):
         return details
         
     def clean_membre_reseau_institutionnel(self):
-        return bool(int(self.cleaned_data['membre_reseau_institutionnel']))
+        return self.cleaned_data['membre_reseau_institutionnel'] == 'True'
 
     def clean_membre_reseau_institutionnel_nom(self):
         membre = self.cleaned_data.get('membre_reseau_institutionnel')
@@ -261,13 +261,15 @@ class ExpertiseForm(forms.ModelForm):
         label="Voulez-vous que l'organisme demandeur soit visible sur votre fiche?",
         choices=OUI_NON_CHOICES, widget=forms.RadioSelect(), required=False
     )
+    nom = forms.CharField(label="Objet de l'expertise", required=False)
+
     class Meta:
         model = Expertise
         fields = ('nom', 'date', 'organisme_demandeur', 'organisme_demandeur_visible')        
 
     def clean_organisme_demandeur_visible(self):
         value = self.cleaned_data['organisme_demandeur_visible']
-        return bool(int(value)) if value else False
+        return value == 'True'
 
 ExpertiseFormSet = inlineformset_factory(Chercheur, Expertise, form=ExpertiseForm, extra=1)
 
@@ -314,7 +316,11 @@ class ChercheurFormGroup(object):
             self.publications.instance = chercheur
             self.publications.save()
             self.expertises.instance = chercheur
-            self.expertises.save()
+            for expertise in self.expertises.save(commit=False):
+                if expertise.nom:
+                    expertise.save()
+                elif expertise.id:
+                    expertise.delete()
             return self.chercheur.instance
 
 class ChercheurSearchForm(forms.ModelForm):

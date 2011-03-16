@@ -212,7 +212,7 @@ class Chercheur(Personne):
     attestation = models.BooleanField()
 
     #Domaine
-    thematique = models.ForeignKey(Thematique, db_column='thematique', null=True, verbose_name='thematique')
+    thematique = models.ForeignKey(Thematique, db_column='thematique', blank=True, null=True, verbose_name='thematique')
     mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés') 
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
     theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche') 

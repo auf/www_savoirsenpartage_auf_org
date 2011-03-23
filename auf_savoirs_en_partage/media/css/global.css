@@ -133,6 +133,8 @@ dd { padding: 0; margin: 0 0 1em 0; }
 ul.items-and-actions li { padding: 3px; border-bottom: 1px solid #ddd; }
 div.item-actions { float: right; }
 div.item-actions a { padding: 5px; }
+div.item-actions a.alerte { padding-right: 15px; }
+div.item-actions a.alerte.active { background: url(../img/icon-yes.gif) right center no-repeat; }
 
 /* Styles inline */
 
@@ -178,6 +180,6 @@ ul.actions { font-size: 90%; float: right; text-align: right; list-style: none;
 
 /* Cadre */
 
-.cadre { width: 60%; margin: 100px auto; padding: 20px; background: #f9f9f9; border: 1px solid #aaa }
+.cadre { width: 70%; margin: 50px auto; padding: 20px; background: #f9f9f9; border: 1px solid #aaa }
 .cadre h1 { margin: -20px -20px 0 -20px; padding: 5px; background: #aaa; color: white; font-size: 120%; font-weight: bold; text-align: center; }
 

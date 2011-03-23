@@ -63,7 +63,7 @@ class RessourceSearchEditForm(RessourceSearchForm):
     """Formulaire d'édition de recherche sauvegardée."""
 
     class Meta(RessourceSearchForm.Meta):
-        fields = ['nom'] + RessourceSearchForm.Meta.fields
+        fields = ['nom', 'alerte_courriel'] + RessourceSearchForm.Meta.fields
 
 class ActualiteSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les actualités."""
@@ -77,7 +77,7 @@ class ActualiteSearchForm(forms.ModelForm):
 class ActualiteSearchEditForm(ActualiteSearchForm):
 
     class Meta(ActualiteSearchForm.Meta):
-        fields = ['nom'] + ActualiteSearchForm.Meta.fields
+        fields = ['nom', 'alerte_courriel'] + ActualiteSearchForm.Meta.fields
 
 class AppelSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les actualités."""
@@ -91,7 +91,7 @@ class AppelSearchForm(forms.ModelForm):
 class AppelSearchEditForm(AppelSearchForm):
 
     class Meta(AppelSearchForm.Meta):
-        fields = ['nom'] + AppelSearchForm.Meta.fields
+        fields = ['nom', 'alerte_courriel'] + AppelSearchForm.Meta.fields
 
 class EvenementSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les évènements."""
@@ -105,7 +105,7 @@ class EvenementSearchForm(forms.ModelForm):
 class EvenementSearchEditForm(EvenementSearchForm):
 
     class Meta(EvenementSearchForm.Meta):
-        fields = ['nom'] + EvenementSearchForm.Meta.fields
+        fields = ['nom', 'alerte_courriel'] + EvenementSearchForm.Meta.fields
 
 class SearchEditForm(forms.ModelForm):
 

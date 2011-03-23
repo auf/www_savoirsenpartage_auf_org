@@ -13,4 +13,4 @@ class SiteSearchForm(forms.ModelForm):
 class SiteSearchEditForm(SiteSearchForm):
 
     class Meta(SiteSearchForm.Meta):
-        fields = ['nom'] + SiteSearchForm.Meta.fields
+        fields = ['nom', 'alerte_courriel'] + SiteSearchForm.Meta.fields

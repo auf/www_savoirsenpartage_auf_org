@@ -1,4 +1,7 @@
 # -*- encoding: utf-8 -*-
+import textwrap
+
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
@@ -109,7 +112,7 @@ class SiteSearch(Search):
         verbose_name = "recherche de sites"
         verbose_name_plural = "recherches de sites"
 
-    def run(self):
+    def run(self, min_date=None, max_date=None):
         results = Site.objects
         if self.q:
             results = results.search(self.q)
@@ -121,6 +124,10 @@ class SiteSearch(Search):
             results = results.filter_pays(pays=self.pays)
         if not self.q:
             results = results.order_by('-date_maj')
+        if min_date:
+            results = results.filter_date_maj(min=min_date)
+        if max_date:
+            results = results.filter_date_maj(max=max_date)
         return results.all()
 
     def url(self):
@@ -130,3 +137,15 @@ class SiteSearch(Search):
     def rss_url(self):
         qs = self.query_string()
         return reverse('rss_sites') + ('?' + qs if qs else '')
+
+    def get_email_alert_content(self, results):
+        content = ''
+        for site in results:
+            content += u'-   [%s](%s%s)\n\n' % (site.titre,
+                                                settings.SITE_ROOT_URL,
+                                                site.get_absolute_url())
+            if site.description:
+                content += '\n'
+                content += ''.join(['    %s\n' % line for line in textwrap.wrap(site.description)])
+                content += '\n'
+        return content

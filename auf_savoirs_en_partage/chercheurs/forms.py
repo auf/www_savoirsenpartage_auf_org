@@ -336,7 +336,7 @@ class ChercheurSearchEditForm(ChercheurSearchForm):
     """Formulaire d'édition d'une recherche sauvegardée."""
 
     class Meta(ChercheurSearchForm.Meta):
-        fields = ['nom'] + ChercheurSearchForm.Meta.fields
+        fields = ['nom', 'alerte_courriel'] + ChercheurSearchForm.Meta.fields
 
 class SendPasswordForm(forms.Form):
     email = forms.EmailField(required=True, label="Adresse électronique")

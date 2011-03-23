@@ -340,6 +340,22 @@ def supprimer_recherche(request, id):
     }, context_instance=RequestContext(request))
 
 @login_required
+def activer_alerte(request, id):
+    """Activer une alerte courriel"""
+    recherche = get_object_or_404(Search, id=id, user=request.user)
+    recherche.alerte_courriel = True
+    recherche.save()
+    return HttpResponseRedirect(reverse('recherches'))
+
+@login_required
+def desactiver_alerte(request, id):
+    """Désactiver une alerte courriel"""
+    recherche = get_object_or_404(Search, id=id, user=request.user)
+    recherche.alerte_courriel = False
+    recherche.save()
+    return HttpResponseRedirect(reverse('recherches'))
+
+@login_required
 def evenement_moderation(request):
     events = Evenement.objects.filter(approuve = False)
     return render_to_response ("savoirs/evenement_moderation.html", \

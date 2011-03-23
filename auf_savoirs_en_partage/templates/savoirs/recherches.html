@@ -14,6 +14,11 @@
             {% if recherche.rss_url %}
             <a href="{{ recherche.rss_url }}">Fil RSS</a>
             {% endif %}
+            {% if recherche.alerte_courriel %}
+            <a href="{% url desactiver_alerte recherche.id %}" class="alerte active">Alerte courriel</a>
+            {% else %}
+            <a href="{% url activer_alerte recherche.id %}" class="alerte">Alerte courriel</a>
+            {% endif %}
             <a href="{% url supprimer_recherche recherche.id %}">Supprimer</a>
             <a href="{% url editer_recherche recherche.id %}">Modifier</a>
         </div>

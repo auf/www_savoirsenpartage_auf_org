@@ -6,6 +6,7 @@ import operator
 import os
 import pytz
 import random
+import textwrap
 import uuid
 import vobject
 from pytz.tzinfo import AmbiguousTimeError, NonExistentTimeError
@@ -16,12 +17,14 @@ from babel.dates import get_timezone_name
 from caldav.lib import error
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q, Max
 from django.db.models.signals import pre_delete
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_unicode, smart_str
 from djangosphinx.models import SphinxQuerySet, SearchError
+from markdown2 import markdown
 
 from datamaster_modeles.models import Region, Pays, Thematique
 from savoirs.globals import META
@@ -666,10 +669,16 @@ class GlobalSearchResults(object):
         self.sites = sites
         self.sites_auf = sites_auf
 
+    def __nonzero__(self):
+        return bool(self.actualites or self.appels or self.evenements or 
+                    self.ressources or self.chercheurs or self.sites or self.sites_auf)
+
 class Search(models.Model):
     user = models.ForeignKey(User, editable=False)
     content_type = models.ForeignKey(ContentType, editable=False)
     nom = models.CharField(max_length=100, verbose_name="nom de la recherche")
+    alerte_courriel = models.BooleanField(verbose_name="Envoyer une alerte courriel")
+    derniere_alerte = models.DateField(verbose_name="Date d'envoi de la dernière alerte courriel", null=True, editable=False)
     q = models.CharField(max_length=100, blank=True, verbose_name="rechercher dans tous les champs")
     discipline = models.ForeignKey(Discipline, blank=True, null=True)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name='région',
@@ -685,7 +694,7 @@ class Search(models.Model):
                 if isinstance(value, datetime.date):
                     params[field.name] = value.strftime('%d/%m/%Y')
                 else:
-                    params[field.name] = value
+                    params[field.name] = smart_str(value)
         return urlencode(params)
     
     class Meta:
@@ -704,7 +713,7 @@ class Search(models.Model):
             return self
         return model.objects.get(id=self.id)
                 
-    def run(self):
+    def run(self, min_date=None, max_date=None):
         from chercheurs.models import Chercheur
         from sitotheque.models import Site
 
@@ -732,6 +741,19 @@ class Search(models.Model):
             ressources = ressources.filter_region(self.region)
             chercheurs = chercheurs.filter_region(self.region)
             sites = sites.filter_region(self.region)
+        if min_date:
+            actualites = actualites.filter_date(min=min_date)
+            evenements = evenements.filter_debut(min=min_date)
+            ressources = ressources.filter_modified(min=min_date)
+            chercheurs = chercheurs.filter_date_modification(min=min_date)
+            sites = sites.filter_date_maj(min=min_date)
+        if max_date:
+            actualites = actualites.filter_date(max=max_date)
+            evenements = evenements.filter_debut(max=max_date)
+            ressources = ressources.filter_modified(max=max_date)
+            chercheurs = chercheurs.filter_date_modification(max=max_date)
+            sites = sites.filter_date_maj(max=max_date)
+
         try:
             sites_auf = google_search(0, self.q)['results']
         except:
@@ -755,11 +777,99 @@ class Search(models.Model):
             url += '/region/%d' % self.region.id
         url += '/recherche/'
         if self.q:
-            url += '?' + urlencode({'q': self.q})
+            url += '?' + urlencode({'q': smart_str(self.q)})
         return url
 
     def rss_url(self):
         return None
+
+    def send_email_alert(self):
+        """Envoie une alerte courriel correspondant à cette recherche"""
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        if self.derniere_alerte is not None:
+            results = self.as_leaf_class().run(min_date=self.derniere_alerte, max_date=yesterday)
+            if results:
+                subject = 'Savoirs en partage - ' + self.nom
+                from_email = 'contact-savoirsenpartage@auf.org'
+                to_email = self.user.email
+                text_content = u'Voici les derniers résultats correspondant à votre recherche sauvegardée.\n\n'
+                text_content += self.as_leaf_class().get_email_alert_content(results)
+                text_content += u'''
+                
+Pour modifier votre abonnement aux alertes courriel de Savoirs en partage,
+rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_ROOT_URL, reverse('recherches'))
+                html_content = '<div style="font-family: Arial, sans-serif">\n' + markdown(smart_str(text_content)) + '</div>\n'
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
+        self.derniere_alerte = yesterday
+        self.save()
+        return
+
+    def get_email_alert_content(self, results):
+        content = ''
+        if results.chercheurs:
+            content += u'\n### Nouveaux chercheurs\n\n'
+            for chercheur in results.chercheurs:
+                content += u'-   [%s %s](%s%s)  \n' % (chercheur.nom.upper(),
+                                                       chercheur.prenom,
+                                                       SITE_ROOT_URL,
+                                                       chercheur.get_absolute_url())
+                content += u'    %s\n\n' % chercheur.etablissement_display
+        if results.ressources:
+            content += u'\n### Nouvelles ressources\n\n'
+            for ressource in results.ressources:
+                content += u'-   [%s](%s%s)\n\n' % (ressource.title,
+                                                    SITE_ROOT_URL,
+                                                    ressource.get_absolute_url())
+                if ressource.description:
+                    content += '\n'
+                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(ressource.description)])
+                    content += '\n'
+
+        if results.actualites:
+            content += u'\n### Nouvelles actualités\n\n'
+            for actualite in results.actualites:
+                content += u'-  [%s](%s%s)\n\n' % (actualite.titre,
+                                                   SITE_ROOT_URL,
+                                                   actualite.get_absolute_url())
+                if actualite.texte:
+                    content += '\n'
+                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(actualite.texte)])
+                    content += '\n'
+        if results.appels:
+            content += u"\n### Nouveaux appels d'offres\n\n"
+            for appel in results.appels:
+                content += u'-   [%s](%s%s)\n\n' % (appel.titre,
+                                                    SITE_ROOT_URL,
+                                                    appel.get_absolute_url())
+                if appel.texte:
+                    content += '\n'
+                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(appel.texte)])
+                    content += '\n'
+        if results.evenements:
+            content += u"\n### Nouveaux évènements\n\n"
+            for evenement in results.evenements:
+                content += u'-   [%s](%s%s)  \n' % (evenement.titre,
+                                                    SITE_ROOT_URL,
+                                                    evenement.get_absolute_url())
+                content += u'    où ? : %s, %s, %s  \n' % (evenement.adresse, evenement.ville, evenement.pays and evenement.pays.nom)
+                content += evenement.debut.strftime(u'    quand ? : %d/%m/%Y %H:%M  \n')
+                content += u'    durée ? : %s\n\n' % evenement.duration_display()
+                content += u'    quoi ? : '
+                content += '\n             '.join(textwrap.wrap(evenement.description))
+                content += '\n\n'
+        if results.sites:
+            content += u"\n### Nouveaux sites\n\n"
+            for site in results.sites:
+                content += u'-   [%s](%s%s)\n\n' % (site.titre,
+                                                    SITE_ROOT_URL,
+                                                    site.get_absolute_url())
+                if site.description:
+                    content += '\n'
+                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(site.description)])
+                    content += '\n'
+        return content
 
 class RessourceSearch(Search):
     auteur = models.CharField(max_length=100, blank=True, verbose_name="auteur ou contributeur")
@@ -771,7 +881,7 @@ class RessourceSearch(Search):
         verbose_name = 'recherche de ressources'
         verbose_name_plural = "recherches de ressources"
 
-    def run(self):
+    def run(self, min_date=None, max_date=None):
         results = Record.objects
         if self.q:
             results = results.search(self.q)
@@ -787,6 +897,10 @@ class RessourceSearch(Search):
             results = results.filter_discipline(self.discipline)
         if self.region:
             results = results.filter_region(self.region)
+        if min_date:
+            results = results.filter_modified(min=min_date)
+        if max_date:
+            results = results.filter_modified(max=max_date)
         if not self.q:
             """Montrer les résultats les plus récents si on n'a pas fait
                une recherche par mots-clés."""
@@ -801,6 +915,18 @@ class RessourceSearch(Search):
         qs = self.query_string()
         return reverse('rss_ressources') + ('?' + qs if qs else '')
 
+    def get_email_alert_content(self, results):
+        content = ''
+        for ressource in results:
+            content += u'-   [%s](%s%s)\n\n' % (ressource.title,
+                                                SITE_ROOT_URL,
+                                                ressource.get_absolute_url())
+            if ressource.description:
+                content += '\n'
+                content += ''.join(['    %s\n' % line for line in textwrap.wrap(ressource.description)])
+                content += '\n'
+        return content
+
 class ActualiteSearchBase(Search):
     date_min = models.DateField(blank=True, null=True, verbose_name="depuis le")
     date_max = models.DateField(blank=True, null=True, verbose_name="jusqu'au")
@@ -808,7 +934,7 @@ class ActualiteSearchBase(Search):
     class Meta:
         abstract = True
 
-    def run(self):
+    def run(self, min_date=None, max_date=None):
         results = Actualite.objects
         if self.q:
             results = results.search(self.q)
@@ -820,7 +946,23 @@ class ActualiteSearchBase(Search):
             results = results.filter_date(min=self.date_min)
         if self.date_max:
             results = results.filter_date(max=self.date_max)
+        if min_date:
+            results = results.filter_date(min=min_date)
+        if max_date:
+            results = results.filter_date(max=max_date)
         return results.all()
+
+    def get_email_alert_content(self, results):
+        content = ''
+        for actualite in results:
+            content += u'-  [%s](%s%s)\n\n' % (actualite.titre,
+                                               SITE_ROOT_URL,
+                                               actualite.get_absolute_url())
+            if actualite.texte:
+                content += '\n'
+                content += ''.join(['    %s\n' % line for line in textwrap.wrap(actualite.texte)])
+                content += '\n'
+        return content
 
 class ActualiteSearch(ActualiteSearchBase):
 
@@ -828,8 +970,8 @@ class ActualiteSearch(ActualiteSearchBase):
         verbose_name = "recherche d'actualités"
         verbose_name_plural = "recherches d'actualités"
         
-    def run(self):
-        return super(ActualiteSearch, self).run().filter_type('actu')
+    def run(self, min_date=None, max_date=None):
+        return super(ActualiteSearch, self).run(min_date=min_date, max_date=max_date).filter_type('actu')
 
     def url(self):
         qs = self.query_string()
@@ -845,8 +987,8 @@ class AppelSearch(ActualiteSearchBase):
         verbose_name = "recherche d'appels d'offres"
         verbose_name_plural = "recherches d'appels d'offres"
 
-    def run(self):
-        return super(AppelSearch, self).run().filter_type('appel')
+    def run(self, min_date=None, max_date=None):
+        return super(AppelSearch, self).run(min_date=min_date, max_date=max_date).filter_type('appels')
 
     def url(self):
         qs = self.query_string()
@@ -866,7 +1008,7 @@ class EvenementSearch(Search):
         verbose_name = "recherche d'évènements"
         verbose_name_plural = "recherches d'évènements"
 
-    def run(self):
+    def run(self, min_date=None, max_date=None):
         results = Evenement.objects
         if self.q:
             results = results.search(self.q)
@@ -882,6 +1024,10 @@ class EvenementSearch(Search):
             results = results.filter_debut(min=self.date_min)
         if self.date_max:
             results = results.filter_debut(max=self.date_max)
+        if min_date:
+            results = results.filter_debut(min=min_date)
+        if max_date:
+            results = results.filter_debut(max=max_date)
         return results.all()
 
     def url(self):
@@ -891,3 +1037,17 @@ class EvenementSearch(Search):
     def rss_url(self):
         qs = self.query_string()
         return reverse('rss_agenda') + ('?' + qs if qs else '')
+
+    def get_email_alert_content(self, results):
+        content = ''
+        for evenement in results:
+            content += u'-   [%s](%s%s)  \n' % (evenement.titre,
+                                                SITE_ROOT_URL,
+                                                evenement.get_absolute_url())
+            content += u'    où ? : %s, %s, %s  \n' % (evenement.adresse, evenement.ville, evenement.pays and evenement.pays.nom)
+            content += evenement.debut.strftime(u'    quand ? : %d/%m/%Y %H:%M  \n')
+            content += u'    durée ? : %s\n\n' % evenement.duration_display()
+            content += u'    quoi ? : '
+            content += '\n             '.join(textwrap.wrap(evenement.description))
+            content += '\n\n'
+        return content

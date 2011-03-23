@@ -299,6 +299,9 @@ class Chercheur(Personne):
     def activation_token(self):
         return sha_constructor(settings.SECRET_KEY + unicode(self.id)).hexdigest()[::2]
 
+    def get_absolute_url(self):
+        return url('chercheur', kwargs={'id': self.id})
+
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')
     auteurs = models.CharField(max_length=255, blank=True, verbose_name='auteur(s)')
@@ -405,7 +408,7 @@ class ChercheurSearch(Search):
         verbose_name = 'recherche de chercheurs'
         verbose_name_plural = 'recherches de chercheurs'
 
-    def run(self):
+    def run(self, min_date=None, max_date=None):
         results = Chercheur.objects
         if self.q:
             results = results.search(self.q)
@@ -438,6 +441,10 @@ class ChercheurSearch(Search):
             results = results.filter(membre_association_francophone=True)
         elif self.activites_francophonie == 'reseau_institutionnel':
             results = results.filter(membre_reseau_institutionnel=True)
+        if min_date:
+            results = results.filter_date_modification(min=min_date)
+        if max_date:
+            results = results.filter_date_modification(max=max_date)
         return results.all()
 
     def url(self):
@@ -447,3 +454,13 @@ class ChercheurSearch(Search):
     def rss_url(self):
         qs = self.query_string()
         return url('rss_chercheurs') + ('?' + qs if qs else '')
+
+    def get_email_alert_content(self, results):
+        content = ''
+        for chercheur in results:
+            content += u'-   [%s %s](%s%s)  \n' % (chercheur.nom.upper(),
+                                                   chercheur.prenom,
+                                                   settings.SITE_ROOT_URL,
+                                                   chercheur.get_absolute_url())
+            content += u'    %s\n\n' % chercheur.etablissement_display
+        return content

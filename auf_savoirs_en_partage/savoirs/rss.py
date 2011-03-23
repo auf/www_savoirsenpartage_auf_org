@@ -21,7 +21,7 @@ class FilChercheurs(Feed):
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)
-        return search.run().order_by('-date_modification').filter_date_modification(min=min_date)
+        return search.run(min_date=min_date).order_by('-date_modification')
 
     def item_title(self, chercheur):
         return unicode(chercheur)
@@ -47,7 +47,7 @@ class FilRessources(Feed):
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)
-        return search.run().order_by('-modified').filter_modified(min=min_date)
+        return search.run(min_date=min_date).order_by('-modified')
 
     def item_title(self, ressource):
         return ressource.title
@@ -75,7 +75,7 @@ class FilActualitesBase(Feed):
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)
-        return search.run().filter_date(min=min_date).order_by('-date')
+        return search.run(min_date=min_date).order_by('-date')
 
     def item_title(self, actualite):
         return actualite.titre
@@ -119,7 +119,7 @@ class FilEvenements(Feed):
     def items(self, search):
         min_date = date.today()
         max_date = date.today() + timedelta(days=30)
-        return search.run().filter_debut(min=min_date, max=max_date).order_by('-debut')
+        return search.run(min_date=min_date, max_date=max_date).order_by('-debut')
 
     def item_title(self, evenement):
         return evenement.titre
@@ -140,8 +140,8 @@ class FilSites(Feed):
         return search_form.save(commit=False)
 
     def items(self, search):
-        min_date = date.today() - timedelta(days=365)
-        return search.run().filter_date_maj(min=min_date)
+        min_date = date.today() - timedelta(days=30)
+        return search.run(min_date=min_date)
 
     def item_title(self, site):
         return site.titre

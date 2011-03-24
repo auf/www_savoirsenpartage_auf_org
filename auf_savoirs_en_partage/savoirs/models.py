@@ -28,7 +28,7 @@ from markdown2 import markdown
 
 from datamaster_modeles.models import Region, Pays, Thematique
 from savoirs.globals import META
-from settings import CALENDRIER_URL, SITE_ROOT_URL
+from settings import CALENDRIER_URL, SITE_ROOT_URL, CONTACT_EMAIL
 
 # Fonctionnalités communes à tous les query sets
 
@@ -54,7 +54,7 @@ class SEPQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         if min:
             qs = qs.filter(**{field + '__gte': min})
         if max:
-            qs = qs.filter(**{field + '__lte': max})
+            qs = qs.filter(**{field + '__lt': max + datetime.timedelta(days=1)})
         return qs
 
 class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
@@ -257,12 +257,10 @@ class EvenementQuerySet(SEPQuerySet):
         return self.filter(type=type)
 
     def filter_debut(self, min=None, max=None):
-        qs = self
-        if min:
-            qs = qs.filter(debut__gte=min)
-        if max:
-            qs = qs.filter(debut__lt=max+datetime.timedelta(days=1))
-        return qs
+        return self._filter_date('debut', min=min, max=max)
+
+    def filter_date_modification(self, min=None, max=None):
+        return self._filter_date('date_modification', min=min, max=max)
 
 class EvenementSphinxQuerySet(SEPSphinxQuerySet):
 
@@ -275,6 +273,9 @@ class EvenementSphinxQuerySet(SEPSphinxQuerySet):
     
     def filter_debut(self, min=None, max=None):
         return self._filter_date('debut', min=min, max=max)
+
+    def filter_date_modification(self, min=None, max=None):
+        return self._filter_date('date_modification', min=min, max=max)
 
 class EvenementManager(SEPManager):
 
@@ -289,6 +290,9 @@ class EvenementManager(SEPManager):
 
     def filter_debut(self, min=None, max=None):
         return self.get_query_set().filter_debut(min=min, max=max)
+
+    def filter_date_modification(self, min=None, max=None):
+        return self.get_query_set().filter_date_modification(min=min, max=max)
 
 def build_time_zone_choices(pays=None):
     timezones = pytz.country_timezones[pays] if pays else pytz.common_timezones
@@ -345,6 +349,7 @@ class Evenement(models.Model):
                                      help_text="On considère d'emblée que l'évènement se déroule dans la région "
                                                "dans laquelle se trouve le pays indiqué plus haut. Il est possible "
                                                "de désigner ici des régions additionnelles.")
+    date_modification = models.DateTimeField(editable=False, auto_now=True, null=True)
 
     objects = EvenementManager()
     all_objects = models.Manager()
@@ -385,6 +390,17 @@ class Evenement(models.Model):
 
     def courriel_display(self):
         return self.courriel.replace(u'@', u' (à) ')
+
+    @property
+    def lieu(self):
+        bits = []
+        if self.adresse:
+            bits.append(self.adresse)
+        if self.ville:
+            bits.append(self.ville)
+        if self.pays:
+            bits.append(self.pays.nom)
+        return ', '.join(bits)
 
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -702,6 +718,15 @@ class Search(models.Model):
         verbose_name_plural = "recherches transversales"
 
     def save(self):
+        if self.alerte_courriel:
+            try:
+                original_search = Search.objects.get(id=self.id)
+                if not original_search.alerte_courriel:
+                    # On a nouvellement activé l'alerte courriel. Notons la
+                    # date.
+                    self.derniere_alerte = datetime.date.today() - datetime.timedelta(days=1)
+            except Search.DoesNotExist:
+                self.derniere_alerte = datetime.date.today() - datetime.timedelta(days=1)
         if (not self.content_type_id):
             self.content_type = ContentType.objects.get_for_model(self.__class__)
         super(Search, self).save()
@@ -717,7 +742,6 @@ class Search(models.Model):
         from chercheurs.models import Chercheur
         from sitotheque.models import Site
 
-        results = object()
         actualites = Actualite.objects
         evenements = Evenement.objects
         ressources = Record.objects
@@ -743,13 +767,13 @@ class Search(models.Model):
             sites = sites.filter_region(self.region)
         if min_date:
             actualites = actualites.filter_date(min=min_date)
-            evenements = evenements.filter_debut(min=min_date)
+            evenements = evenements.filter_date_modification(min=min_date)
             ressources = ressources.filter_modified(min=min_date)
             chercheurs = chercheurs.filter_date_modification(min=min_date)
             sites = sites.filter_date_maj(min=min_date)
         if max_date:
             actualites = actualites.filter_date(max=max_date)
-            evenements = evenements.filter_debut(max=max_date)
+            evenements = evenements.filter_date_modification(max=max_date)
             ressources = ressources.filter_modified(max=max_date)
             chercheurs = chercheurs.filter_date_modification(max=max_date)
             sites = sites.filter_date_maj(max=max_date)
@@ -790,7 +814,7 @@ class Search(models.Model):
             results = self.as_leaf_class().run(min_date=self.derniere_alerte, max_date=yesterday)
             if results:
                 subject = 'Savoirs en partage - ' + self.nom
-                from_email = 'contact-savoirsenpartage@auf.org'
+                from_email = CONTACT_EMAIL
                 to_email = self.user.email
                 text_content = u'Voici les derniers résultats correspondant à votre recherche sauvegardée.\n\n'
                 text_content += self.as_leaf_class().get_email_alert_content(results)
@@ -804,7 +828,6 @@ rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_R
                 msg.send()
         self.derniere_alerte = yesterday
         self.save()
-        return
 
     def get_email_alert_content(self, results):
         content = ''
@@ -853,7 +876,7 @@ rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_R
                 content += u'-   [%s](%s%s)  \n' % (evenement.titre,
                                                     SITE_ROOT_URL,
                                                     evenement.get_absolute_url())
-                content += u'    où ? : %s, %s, %s  \n' % (evenement.adresse, evenement.ville, evenement.pays and evenement.pays.nom)
+                content += u'    où ? : %s  \n' % evenement.lieu
                 content += evenement.debut.strftime(u'    quand ? : %d/%m/%Y %H:%M  \n')
                 content += u'    durée ? : %s\n\n' % evenement.duration_display()
                 content += u'    quoi ? : '
@@ -1025,9 +1048,9 @@ class EvenementSearch(Search):
         if self.date_max:
             results = results.filter_debut(max=self.date_max)
         if min_date:
-            results = results.filter_debut(min=min_date)
+            results = results.filter_date_modification(min=min_date)
         if max_date:
-            results = results.filter_debut(max=max_date)
+            results = results.filter_date_modification(max=max_date)
         return results.all()
 
     def url(self):
@@ -1044,7 +1067,7 @@ class EvenementSearch(Search):
             content += u'-   [%s](%s%s)  \n' % (evenement.titre,
                                                 SITE_ROOT_URL,
                                                 evenement.get_absolute_url())
-            content += u'    où ? : %s, %s, %s  \n' % (evenement.adresse, evenement.ville, evenement.pays and evenement.pays.nom)
+            content += u'    où ? : %s  \n' % evenement.lieu
             content += evenement.debut.strftime(u'    quand ? : %d/%m/%Y %H:%M  \n')
             content += u'    durée ? : %s\n\n' % evenement.duration_display()
             content += u'    quoi ? : '

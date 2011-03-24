@@ -117,9 +117,8 @@ class FilEvenements(Feed):
         return search_form.save(commit=False)
 
     def items(self, search):
-        min_date = date.today()
-        max_date = date.today() + timedelta(days=30)
-        return search.run(min_date=min_date, max_date=max_date).order_by('-debut')
+        min_date = date.today() - timedelta(days=30)
+        return search.run(min_date=min_date).order_by('-debut')
 
     def item_title(self, evenement):
         return evenement.titre

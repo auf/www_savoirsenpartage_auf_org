@@ -146,7 +146,8 @@ emit_source('savoirsenpartage_evenements',
                       p.nom AS pays,
                       CONCAT_WS(',', d.nom_discipline, d2.nom_discipline) AS disciplines,
                       CONCAT_WS(',', pr.nom, GROUP_CONCAT(DISTINCT r.nom)) AS regions,
-                      TO_DAYS(DATE(e.debut)) AS debut
+                      TO_DAYS(DATE(e.debut)) AS debut,
+                      TO_DAYS(DATE(e.date_modification)) AS date_modification
                FROM savoirs_evenement e
                LEFT JOIN discipline d ON d.id_discipline = e.discipline_id
                LEFT JOIN discipline d2 ON d2.id_discipline = e.discipline_secondaire_id
@@ -157,7 +158,7 @@ emit_source('savoirsenpartage_evenements',
                WHERE e.approuve
                GROUP BY e.id''',
             sql_query_info='SELECT * from savoirs_evenement WHERE id=$id',
-            sql_attr_uint=['debut'])
+            sql_attr_uint=['debut', 'date_modification'])
             
 emit_source('savoirsenpartage_chercheurs',
             '''SELECT c.personne_ptr_id AS id,

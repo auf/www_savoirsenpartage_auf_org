@@ -61,7 +61,7 @@ class ChercheurForm(forms.ModelForm):
 
     theme_recherche = forms.CharField(
         max_length=1000, label='Thèmes de recherche', help_text='1000 signes maximum',
-        error_messages=dict(max_length="Veuillez entrer au maximum %(max)d signes (vous en avez entré %(length)d)."),
+        error_messages=dict(max_length="Veuillez entrer au maximum %(limit_value)d signes (vous en avez entré %(show_value)d)."),
         widget=forms.Textarea()
     )
     attestation = forms.BooleanField(

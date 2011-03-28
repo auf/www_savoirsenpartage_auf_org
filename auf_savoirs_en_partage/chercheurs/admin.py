@@ -46,6 +46,13 @@ class ChercheurAdmin(admin.ModelAdmin):
     def queryset(self, request):
         return ChercheurAdminQuerySet(Chercheur)
 
+    def get_object(self, request, object_id):
+        """On doit réimplémenter cette méthode à cause de ce qu'on fait avec "initial" dans la méthode queryset()."""
+        try:
+            return Chercheur.objects.get(id=object_id)
+        except Chercheur.DoesNotExist:
+            return None
+
     def changelist_view(self, request, extra_context=None):
         initials = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         current_initial = request.GET.get('initial', 'A')

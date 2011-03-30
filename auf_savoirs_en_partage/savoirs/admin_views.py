@@ -3,7 +3,8 @@ from django import forms
 from django.db.models import get_model, Count
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse as url
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
@@ -249,6 +250,7 @@ def confirmation(request, action):
 
 # Stats
 
+@permission_required('savoirs.statistiques')
 def stats(request):
 
     def mises_a_jour(qs):

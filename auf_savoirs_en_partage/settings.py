@@ -93,7 +93,7 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'authentification.AUFBackend', 
+    'auf.django.auth.backends.CascadeBackend', #'authentification.AUFBackend', 
     'authentification.PersonneBackend',
     'django.contrib.auth.backends.ModelBackend',
 )

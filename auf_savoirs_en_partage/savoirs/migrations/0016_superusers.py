@@ -1,51 +1,29 @@
 # encoding: utf-8
-
 import datetime
-from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-
-from datamaster_modeles.models import Authentification as RemoteUser, Employe
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        grp_auf,created  = orm['auth.Group'].objects.get_or_create(name="AUF")
-        grp_auf.save()
-
-        for auth in RemoteUser.objects.all():
-            employe = auth.id
+        users = (
+            'olivier.larcheveque@auf.org',
+            'davin.baragiotta@auf.org',
+            'ali.jetha@auf.org',
+            )
+        for courriel in users:
             try:
-                user, created = orm['auth.User'].objects.get_or_create(email=auth.courriel)
-                username = auth.courriel.replace("@auf.org", "")
-                user.username = username
-                user.email = auth.courriel
-                user.first_name = employe.prenom
-                user.last_name = employe.nom
-                user.is_staff = True
-                user.is_active = True
-                user.password = auth.motdepasse
-                user.save()
-
-                user.groups.add(grp_auf)
-                user.save()
-            except MultipleObjectsReturned:
-                print "user avec le courriel %s existe plusieurs fois!" % auth.courriel
+                u = orm['auth.User'].objects.get(email=courriel)
+                u.is_superuser = True
+                u.save()
+            except:
+                print "%s n'a pas pu devenir superuser" % courriel
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        grp_auf, created = orm['auth.Group'].objects.get_or_create(name="AUF")
-        grp_auf.delete()
-        for employe in RemoteUser.objects.all():
-            try:
-                u = orm['auth.User'].objects.get(email=employe.courriel)
-                u.delete()
-            except ObjectDoesNotExist:
-                pass
-            except MultipleObjectsReturned:
-                print "user avec le courriel %s existe plusieurs fois!" % employe.courriel
+
 
     models = {
         'auth.group': {
@@ -212,7 +190,6 @@ class Migration(DataMigration):
             'approuve': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'contact': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'courriel': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
-            'date_modification': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'blank': 'True'}),
             'debut': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'description': ('django.db.models.fields.TextField', [], {}),
             'discipline': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'discipline'", 'blank': 'True', 'null': 'True', 'to': "orm['savoirs.Discipline']"}),
@@ -228,7 +205,7 @@ class Migration(DataMigration):
             'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'evenements'", 'blank': 'True', 'to': "orm['datamaster_modeles.Region']"}),
             'titre': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'05dd698c-6440-11e0-afda-64315030e72d'", 'max_length': '255'}),
+            'uid': ('django.db.models.fields.CharField', [], {'default': "'ad8811e0-6441-11e0-8f3e-64315030e72d'", 'max_length': '255'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'ville': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
@@ -312,9 +289,7 @@ class Migration(DataMigration):
         },
         'savoirs.search': {
             'Meta': {'object_name': 'Search'},
-            'alerte_courriel': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'derniere_alerte': ('django.db.models.fields.DateField', [], {'null': 'True'}),
             'discipline': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['savoirs.Discipline']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '100'}),

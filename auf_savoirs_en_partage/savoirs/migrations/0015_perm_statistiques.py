@@ -201,7 +201,7 @@ class Migration(DataMigration):
             'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'evenements'", 'blank': 'True', 'to': "orm['datamaster_modeles.Region']"}),
             'titre': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'b08a4eb6-5ae2-11e0-a651-64315030e72d'", 'max_length': '255'}),
+            'uid': ('django.db.models.fields.CharField', [], {'default': "'05dd698c-6440-11e0-afda-64315030e72d'", 'max_length': '255'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'ville': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },

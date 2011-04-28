@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'datamaster_modeles',
     'south',
     'auf.django.admingroup',
+    'alphafilter',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

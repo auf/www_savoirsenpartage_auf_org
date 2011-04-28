@@ -1,11 +1,9 @@
 # coding: utf-8
 
-from urllib import urlencode
-
 from django import template
 from django.utils.encoding import smart_unicode
 
-from chercheurs.models import Chercheur, Groupe, GENRE_CHOICES, STATUT_CHOICES
+from chercheurs.models import Groupe, GENRE_CHOICES, STATUT_CHOICES
 from datamaster_modeles.models import Region, Pays
 from savoirs.models import Discipline
 
@@ -83,9 +81,3 @@ def prepare_choices(choices, query_param, context, remove=[]):
                        'query_string': cl.get_query_string({query_param: k}, remove),
                        'display': v})
     return result
-
-@register.simple_tag
-def query_string_with_initial(request, initial):
-    qs = request.GET.copy()
-    qs['initial'] = initial
-    return urlencode(qs)

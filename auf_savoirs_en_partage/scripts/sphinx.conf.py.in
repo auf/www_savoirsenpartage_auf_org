@@ -72,7 +72,7 @@ index %%(name)s
 {
     morphology = libstemmer_fr
     charset_type = utf-8
-    charset_table = 0..9, A..Z->a..z, _, a..z, \\
+    charset_table = 0..9, A..Z->a..z, _, a..z, U+2D, \\
                     U+C0->a, U+C2->a, U+E0->a, U+E2->a, \\
                     U+C7->c, U+E7->c, \\
                     U+C8->e, U+C9->e, U+CA->e, U+E8->e, U+E9->e, U+EA->e, U+EB->e, \\

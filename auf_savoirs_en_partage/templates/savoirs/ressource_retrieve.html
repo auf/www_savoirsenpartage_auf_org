@@ -16,7 +16,7 @@
 {% endif %}
 
 {% if ressource.source %}
-<div><span class="label">Source:</span> {{ ressource.source }}</div>
+<div><span class="label">Source:</span> {{ ressource.source|urlize }}</div>
 {% endif %}
 
 {% if ressource.publisher %}

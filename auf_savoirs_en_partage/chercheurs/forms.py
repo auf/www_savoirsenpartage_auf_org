@@ -223,10 +223,16 @@ class ChercheurInscriptionForm(ChercheurForm):
         fields = ChercheurForm.Meta.fields + ('courriel',)
 
 class GroupesForm(forms.Form):
-    """Formulaire qui associe des groupes à un chercheur."""
-    groupes = forms.ModelMultipleChoiceField(
-        queryset=Groupe.objects.all(), 
+    """Formulaire qui associe des domaines de recherche et groupe de chercheur à un chercheur."""
+    domaines_recherche = forms.ModelMultipleChoiceField(
+        queryset=Groupe.domaine_recherche_objects.all(),
         label='Domaines de recherche', required=False,
+        help_text="Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
+    )
+
+    groupes_chercheur = forms.ModelMultipleChoiceField(
+        queryset=Groupe.groupe_chercheur_objects.all(),
+        label='Groupes de chercheur', required=False,
         help_text="Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
     )
 
@@ -234,15 +240,21 @@ class GroupesForm(forms.Form):
         self.chercheur = chercheur
         initial = {}
         if chercheur:
-            initial['groupes'] = chercheur.groupes.values_list('id', flat=True)
+            initial['domaines_recherche'] = chercheur.domaines_recherche.values_list('id', flat=True)
+            initial['groupes_chercheur'] = chercheur.groupes_chercheur.values_list('id', flat=True)
         super(GroupesForm, self).__init__(data=data, prefix=prefix, initial=initial)
 
     def save(self):
         if self.is_valid():
-            groupes = self.cleaned_data['groupes']
-            ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__in=groupes).delete()
-            for g in groupes:
-                ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=g, actif=1)
+            domaines_recherche = self.cleaned_data['domaines_recherche']
+            ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=True).exclude(groupe__in=domaines_recherche).delete()
+            for dr in domaines_recherche:
+                ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=dr, actif=1)
+
+            groupes_chercheur = self.cleaned_data['groupes_chercheur']
+            ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=False).exclude(groupe__in=groupes_chercheur).delete()
+            for gc in groupes_chercheur:
+                ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc, actif=1)
 
 class PublicationForm(forms.ModelForm):
     class Meta:
@@ -328,9 +340,9 @@ class ChercheurSearchForm(forms.ModelForm):
 
     class Meta:
         model = ChercheurSearch
-        fields = ['q', 'nom_chercheur', 'domaine', 'groupe_recherche', 'statut',
-                  'discipline', 'pays', 'region', 'nord_sud',
-                  'activites_francophonie', 'genre']
+        fields = ['q', 'nom_chercheur', 'domaine', 'groupe_chercheur',
+                  'groupe_recherche', 'statut', 'discipline', 'pays',
+                  'region', 'nord_sud', 'activites_francophonie', 'genre']
 
 class ChercheurSearchEditForm(ChercheurSearchForm):
     """Formulaire d'édition d'une recherche sauvegardée."""

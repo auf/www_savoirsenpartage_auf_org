@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.utils.encoding import smart_str
 from django_exportateur.exportateur import exportateur
 
-from chercheurs.models import Chercheur, Publication, Groupe, ChercheurGroupe, ChercheurQuerySet, These
+from chercheurs.models import Chercheur, Publication, GroupeChercheur, DomaineRecherche, ChercheurGroupe, ChercheurQuerySet, These
 
 class ChercheurAdmin(admin.ModelAdmin):
     list_filter = ['genre']
@@ -162,5 +162,6 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
 
 admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)
-admin.site.register(Groupe)
+admin.site.register(GroupeChercheur)
+admin.site.register(DomaineRecherche)
 

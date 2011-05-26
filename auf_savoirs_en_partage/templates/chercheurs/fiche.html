@@ -19,11 +19,21 @@
             <td>{{ chercheur.diplome }}</td>
         </tr>
         <tr>
-            <td class="label">Domaine{{ chercheur.groupes.all|pluralize }} de recherche:</td>
+            <td class="label">Domaine{{ chercheur.domaines_recherche.all|pluralize }} de recherche:</td>
             <td>
                 <ul>
-                    {% for g in chercheur.groupes.all %}
-                    <li>{{ g.nom }}</li>
+                    {% for dr in chercheur.domaines_recherche.all %}
+                    <li>{{ dr.nom }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">Groupe{{ chercheur.groupes_chercheur.all|pluralize }} de chercheur:</td>
+            <td>
+                <ul>
+                    {% for gc in chercheur.groupes_chercheur.all %}
+                    <li>{{ gc.nom }}</li>
                     {% endfor %}
                 </ul>
             </td>

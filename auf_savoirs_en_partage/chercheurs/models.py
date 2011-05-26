@@ -289,6 +289,14 @@ class Chercheur(Personne):
     def region(self):
         return self.pays.region
 
+    @property
+    def domaines_recherche(self):
+        return self.groupes.filter(groupe_chercheur=False)
+
+    @property
+    def groupes_chercheur(self):
+        return self.groupes.filter(groupe_chercheur=True)
+
     def save(self):
         """Si on a donné un établissement membre, on laisse tomber l'autre établissement."""
         if self.etablissement:
@@ -352,6 +360,14 @@ class Expertise(models.Model):
     def __unicode__(self):
         return u"%s" % (self.nom)
     
+class GroupeChercheurManager(models.Manager):
+    def get_query_set(self):
+        return super(GroupeChercheurManager, self).get_query_set().filter(groupe_chercheur=True)
+
+class DomaineRechercheManager(models.Manager):
+    def get_query_set(self):
+        return super(DomaineRechercheManager, self).get_query_set().filter(groupe_chercheur=False)
+
 class Groupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     nom = models.CharField(max_length=255, db_column='nom')
@@ -362,6 +378,12 @@ class Groupe(models.Model):
     bulletin = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Bulletin')
     actif = models.BooleanField(editable = False, db_column='actif')
+    groupe_chercheur = models.BooleanField(default=False, verbose_name='Groupe de chercheur')
+
+
+    objects = models.Manager()
+    groupe_chercheur_objects = GroupeChercheurManager()
+    domaine_recherche_objects = DomaineRechercheManager()
 
     class Meta:
         verbose_name = 'domaine de recherche'
@@ -369,7 +391,23 @@ class Groupe(models.Model):
 
     def __unicode__(self):
         return u"%s" % (self.nom)
-    
+
+class GroupeChercheur(Groupe):
+    objects = GroupeChercheurManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'groupe de chercheur'
+        verbose_name_plural = 'groupes de chercheur'
+
+class DomaineRecherche(Groupe):
+    objects = DomaineRechercheManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'domaine de recherche'
+        verbose_name_plural = 'domaines de recherche'
+
 class ChercheurGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur', editable=False)
@@ -386,7 +424,8 @@ class ChercheurGroupe(models.Model):
 
 class ChercheurSearch(Search):
     nom_chercheur = models.CharField(max_length=100, blank=True, verbose_name='nom')
-    domaine = models.ForeignKey(Groupe, blank=True, null=True, verbose_name='domaine de recherche')
+    domaine = models.ForeignKey(DomaineRecherche, blank=True, null=True, verbose_name='domaine de recherche')
+    groupe_chercheur = models.ForeignKey(GroupeChercheur, blank=True, null=True, verbose_name='groupe de chercheur')
     groupe_recherche = models.CharField(max_length=100, blank=True, null=True, 
                                         verbose_name='groupe de recherche',
                                         help_text='ou Laboratoire, ou Groupement inter-universitaire')
@@ -427,6 +466,8 @@ class ChercheurSearch(Search):
                 results = results.filter_statut(self.statut)
         if self.domaine:
             results = results.filter_groupe(self.domaine)
+        if self.groupe_chercheur:
+            results = results.filter_groupe(self.groupe_chercheur)
         if self.pays:
             results = results.filter_pays(self.pays)
         if self.nord_sud:

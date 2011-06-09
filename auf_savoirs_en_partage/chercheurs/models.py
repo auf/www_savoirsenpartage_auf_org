@@ -264,6 +264,11 @@ class Chercheur(Personne):
     objects = ChercheurManager()
     all_objects = models.Manager()
 
+    class Meta:
+        permissions = (
+            ("can_view", "Peut visualiser la liste des chercheurs"),
+        )
+
     def __unicode__(self):
         return u"%s %s" % (self.nom.upper(), self.prenom.title())
         

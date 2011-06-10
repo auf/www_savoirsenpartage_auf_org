@@ -19,6 +19,19 @@ class ChercheurAdmin(admin.ModelAdmin):
     actions = ('remove_from_group', 'export_as_ods', 'export_as_csv')
     search_fields = ('nom', 'prenom')
 
+    def has_change_permission(self, request, obj=None):
+        if not obj and request.user.has_perm('chercheurs.view_chercheur'):
+            return True
+
+        return super(ChercheurAdmin, self).has_change_permission(request, obj)
+
+    def change_view(self, request, obj=None):
+        if request.user.has_perm('chercheurs.view_chercheur') and \
+            not super(ChercheurAdmin, self).has_change_permission(request, obj):
+            return HttpResponseRedirect(url('admin:chercheurs_chercheur_changelist'))
+
+        return super(ChercheurAdmin, self).change_view(request, obj)
+
     def lookup_allowed(self, lookup, value):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
                           'membre_instance_auf', 'discipline', 'region', 'pays', 

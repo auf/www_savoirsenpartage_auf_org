@@ -266,7 +266,7 @@ class Chercheur(Personne):
 
     class Meta:
         permissions = (
-            ("can_view", "Peut visualiser la liste des chercheurs"),
+            ("view_chercheur", "Peut visualiser la liste des chercheurs"),
         )
 
     def __unicode__(self):

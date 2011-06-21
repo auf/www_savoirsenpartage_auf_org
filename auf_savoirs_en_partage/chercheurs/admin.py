@@ -178,7 +178,7 @@ class MemberInline(admin.TabularInline):
     model = ChercheurGroupe
 
 
-class GroupeChercheurAdmin(admin.ModelAdmin):
+class BaseGroupeAdmin(admin.ModelAdmin):
     filter_horizontal = ('responsables',)
     fieldsets = (
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion', 'bulletin')}),
@@ -188,15 +188,11 @@ class GroupeChercheurAdmin(admin.ModelAdmin):
         MemberInline,
     ]
 
-class DomaineRechercheAdmin(admin.ModelAdmin):
-    filter_horizontal = ('responsables',)
-    fieldsets = (
-        (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion', 'bulletin')}),
-        (('Responsables'), {'fields': ('responsables',)}),
-    )
-    inlines = [
-        MemberInline,
-    ]
+class GroupeChercheurAdmin(BaseGroupeAdmin):
+    pass
+
+class DomaineRechercheAdmin(BaseGroupeAdmin):
+    pass
 
 admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)

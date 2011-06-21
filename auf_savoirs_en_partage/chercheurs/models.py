@@ -385,7 +385,7 @@ class Groupe(models.Model):
     actif = models.BooleanField(editable = False, db_column='actif')
     groupe_chercheur = models.BooleanField(default=False, editable=False, verbose_name='Groupe de chercheur')
 
-    responsables = models.ManyToManyField(User, verbose_name='responsables', blank=True)
+    responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='responsables', blank=True)
 
 
     objects = models.Manager()

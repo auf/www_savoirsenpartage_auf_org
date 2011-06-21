@@ -196,12 +196,32 @@ class BaseGroupeAdmin(admin.ModelAdmin):
 
         super(BaseGroupeAdmin, self).save_model(request, obj, form, change)
 
+    def queryset(self, request):
+        qs = super(BaseGroupeAdmin, self).queryset(request)
+
+        return qs.filter(responsables=request.user)
+
+    def has_change_permission(self, request, obj=None, groupe_chercheur=False):
+
+        if not obj:
+            if request.user.responsable_groupe.filter(groupe_chercheur=groupe_chercheur).count():
+                return True
+        else:
+            if request.user in obj.responsables.all():
+                return True
+
+        return super(BaseGroupeAdmin, self).has_change_permission(request, obj)
 
 class GroupeChercheurAdmin(BaseGroupeAdmin):
-    pass
+
+    def has_change_permission(self, request, obj=None):
+        return super(GroupeChercheurAdmin, self).has_change_permission(request, obj, groupe_chercheur=True)
+
 
 class DomaineRechercheAdmin(BaseGroupeAdmin):
-    pass
+
+    def has_change_permission(self, request, obj=None):
+        return super(DomaineRechercheAdmin, self).has_change_permission(request, obj, groupe_chercheur=False)
 
 admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)

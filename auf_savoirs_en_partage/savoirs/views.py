@@ -100,6 +100,7 @@ def recherche(request, discipline=None, region=None):
         ressources=results.ressources[0:5], total_ressources=results.ressources.count(), 
         evenements=results.evenements[0:5], total_evenements=results.evenements.count(),
         chercheurs=results.chercheurs[0:10], total_chercheurs=results.chercheurs.count(),
+        groupes=results.groupes[0:10], total_groupes=results.groupes.count(),
         actualites=results.actualites[0:5], total_actualites=results.actualites.count(),
         appels=results.appels[0:5], total_appels=results.appels.count(),
         sites=results.sites[0:5], total_sites=results.sites.count(),

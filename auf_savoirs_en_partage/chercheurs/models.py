@@ -365,11 +365,15 @@ class Expertise(models.Model):
     def __unicode__(self):
         return u"%s" % (self.nom)
     
-class GroupeChercheurManager(models.Manager):
+class GroupeManager(models.Manager):
+    def search(self, text):
+        return self.get_query_set().filter(nom__icontains=text)
+
+class GroupeChercheurManager(GroupeManager):
     def get_query_set(self):
         return super(GroupeChercheurManager, self).get_query_set().filter(groupe_chercheur=True)
 
-class DomaineRechercheManager(models.Manager):
+class DomaineRechercheManager(GroupeManager):
     def get_query_set(self):
         return super(DomaineRechercheManager, self).get_query_set().filter(groupe_chercheur=False)
 
@@ -388,7 +392,7 @@ class Groupe(models.Model):
     responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='responsables', blank=True)
 
 
-    objects = models.Manager()
+    objects = GroupeManager()
     groupe_chercheur_objects = GroupeChercheurManager()
     domaine_recherche_objects = DomaineRechercheManager()
 

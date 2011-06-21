@@ -66,6 +66,19 @@
     </ul>
 {% endif %}
 
+{% if groupes %}
+    <h2>Groupes de chercheur ({{ groupes|length }} sur {{ total_groupes }})</h2>
+    <div class="sous-titre">
+        <a class="action" href="{% url chercheurs.views.groupe_index %}{{ briques_query_string }}"
+            >Voir tous les groupes de chercheur correspondant à cette recherche</a>
+    </div>
+    <ul>
+    {% for groupe in groupes %}
+        <li><a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
 {% if sites %}
     <h2>Sites de la sitothèque ({{ sites|length }} sur {{ total_sites }})</h2>
     <div class="sous-titre">

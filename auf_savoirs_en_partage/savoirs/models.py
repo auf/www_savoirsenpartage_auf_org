@@ -676,18 +676,21 @@ class PageStatique(models.Model):
 class GlobalSearchResults(object):
 
     def __init__(self, actualites=None, appels=None, evenements=None, 
-                 ressources=None, chercheurs=None, sites=None, sites_auf=None):
+                 ressources=None, chercheurs=None, groupes=None,
+                 sites=None, sites_auf=None):
         self.actualites = actualites
         self.appels = appels
         self.evenements = evenements
         self.ressources = ressources
         self.chercheurs = chercheurs
+        self.groupes = groupes
         self.sites = sites
         self.sites_auf = sites_auf
 
     def __nonzero__(self):
         return bool(self.actualites or self.appels or self.evenements or 
-                    self.ressources or self.chercheurs or self.sites or self.sites_auf)
+                    self.ressources or self.chercheurs or self.groupes or
+                    self.sites or self.sites_auf)
 
 class Search(models.Model):
     user = models.ForeignKey(User, editable=False)
@@ -739,19 +742,21 @@ class Search(models.Model):
         return model.objects.get(id=self.id)
                 
     def run(self, min_date=None, max_date=None):
-        from chercheurs.models import Chercheur
+        from chercheurs.models import Chercheur, Groupe
         from sitotheque.models import Site
 
         actualites = Actualite.objects
         evenements = Evenement.objects
         ressources = Record.objects
         chercheurs = Chercheur.objects
+        groupes = Groupe.objects
         sites = Site.objects
         if self.q:
             actualites = actualites.search(self.q)
             evenements = evenements.search(self.q)
             ressources = ressources.search(self.q)
             chercheurs = chercheurs.search(self.q)
+            groupes = groupes.search(self.q)
             sites = sites.search(self.q)
         if self.discipline:
             actualites = actualites.filter_discipline(self.discipline)
@@ -789,6 +794,7 @@ class Search(models.Model):
             evenements=evenements.order_by('-debut'),
             ressources=ressources.order_by('-id'),
             chercheurs=chercheurs.order_by('-date_modification'),
+            groupes=groupes.order_by('nom'),
             sites=sites.order_by('-date_maj'),
             sites_auf=sites_auf
         )

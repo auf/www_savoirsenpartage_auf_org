@@ -383,7 +383,7 @@ class Groupe(models.Model):
     bulletin = models.URLField(max_length=255, null=True, blank=True,
                                     verbose_name='Bulletin')
     actif = models.BooleanField(editable = False, db_column='actif')
-    groupe_chercheur = models.BooleanField(default=False, verbose_name='Groupe de chercheur')
+    groupe_chercheur = models.BooleanField(default=False, editable=False, verbose_name='Groupe de chercheur')
 
 
     objects = models.Manager()
@@ -405,6 +405,10 @@ class GroupeChercheur(Groupe):
         verbose_name = 'groupe de chercheur'
         verbose_name_plural = 'groupes de chercheur'
 
+    def save(self, *args, **kwargs):
+        self.groupe_chercheur = True
+        super(GroupeChercheur, self).save(*args, **kwargs)
+
 class DomaineRecherche(Groupe):
     objects = DomaineRechercheManager()
 
@@ -412,6 +416,10 @@ class DomaineRecherche(Groupe):
         proxy = True
         verbose_name = 'domaine de recherche'
         verbose_name_plural = 'domaines de recherche'
+
+    def save(self, *args, **kwargs):
+        self.groupe_chercheur = False
+        super(DomaineRecherche, self).save(*args, **kwargs)
 
 class ChercheurGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')

@@ -249,12 +249,18 @@ class GroupesForm(forms.Form):
             domaines_recherche = self.cleaned_data['domaines_recherche']
             ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=True).exclude(groupe__in=domaines_recherche).delete()
             for dr in domaines_recherche:
-                ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=dr, actif=1)
+                cg, created = ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=dr)
+                if created:
+                    cg.actif = 1
+                    cg.save()
 
             groupes_chercheur = self.cleaned_data['groupes_chercheur']
             ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=False).exclude(groupe__in=groupes_chercheur).delete()
             for gc in groupes_chercheur:
-                ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc, actif=1)
+                cg, created = ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc)
+                if created:
+                    cg.actif = 0
+                    cg.save()
 
 class PublicationForm(forms.ModelForm):
     class Meta:

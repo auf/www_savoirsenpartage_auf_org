@@ -173,8 +173,15 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
 
         return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
+
+class GroupeChercheurAdmin(admin.ModelAdmin):
+    filter_horizontal = ('responsables',)
+
+class DomaineRechercheAdmin(admin.ModelAdmin):
+    filter_horizontal = ('responsables',)
+
 admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)
-admin.site.register(GroupeChercheur)
-admin.site.register(DomaineRecherche)
+admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
+admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
 

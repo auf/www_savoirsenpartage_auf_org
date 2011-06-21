@@ -188,6 +188,15 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         MemberInline,
     ]
 
+    def save_model(self, request, obj, form, change):
+        responsables = form.cleaned_data['responsables']
+        for user in responsables:
+            user.is_staff = True
+            user.save()
+
+        super(BaseGroupeAdmin, self).save_model(request, obj, form, change)
+
+
 class GroupeChercheurAdmin(BaseGroupeAdmin):
     pass
 

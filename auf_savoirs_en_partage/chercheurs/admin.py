@@ -174,11 +174,29 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
         return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
 
+class MemberInline(admin.TabularInline):
+    model = ChercheurGroupe
+
+
 class GroupeChercheurAdmin(admin.ModelAdmin):
     filter_horizontal = ('responsables',)
+    fieldsets = (
+        (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion', 'bulletin')}),
+        (('Responsables'), {'fields': ('responsables',)}),
+    )
+    inlines = [
+        MemberInline,
+    ]
 
 class DomaineRechercheAdmin(admin.ModelAdmin):
     filter_horizontal = ('responsables',)
+    fieldsets = (
+        (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion', 'bulletin')}),
+        (('Responsables'), {'fields': ('responsables',)}),
+    )
+    inlines = [
+        MemberInline,
+    ]
 
 admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)

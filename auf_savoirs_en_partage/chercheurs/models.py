@@ -425,11 +425,11 @@ class DomaineRecherche(Groupe):
 
 class ChercheurGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
-    chercheur = models.ForeignKey('Chercheur', db_column='chercheur', editable=False)
+    chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
     groupe = models.ForeignKey('Groupe', db_column='groupe')
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
-    actif = models.BooleanField(editable = False, db_column='actif')
+    actif = models.BooleanField(db_column='actif')
 
     class Meta:
         verbose_name = 'adhésion'

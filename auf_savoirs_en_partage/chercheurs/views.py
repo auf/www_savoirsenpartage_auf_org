@@ -220,11 +220,17 @@ def groupe_index(request):
         p = PageStatique.objects.get(id='groupes')
         entete = p.contenu
     except PageStatique.DoesNotExist:
-        entete = '<h1>Groupes</h1>'
+        entete = '<h1>Liste des groupes</h1>'
+
+    if request.user.is_authenticated():
+        chercheur = Chercheur.objects.get(courriel=request.user.email)
+        mesgroupes = chercheur.groupes.all().filter(chercheurgroupe__actif=1)
+    else:
+        mesgroupes = None
 
     return render_to_response("chercheurs/groupe_index.html", dict(
         search_form=search_form, groupes=groupes.order_by('nom'),
-        nb_resultats=nb_resultats, entete=entete
+        nb_resultats=nb_resultats, entete=entete, mesgroupes=mesgroupes,
     ), context_instance=RequestContext(request))
 
 def groupe_retrieve(request, id):

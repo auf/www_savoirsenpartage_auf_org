@@ -13,14 +13,21 @@
 
 {{ entete|safe }}
 
+<div style="clear:both;width:400px;float:left;padding-right:20px;">
 <h2>Recherche</h2>
 
 <form method="get" action="">
     <table>
-        {% with search_form as form %}
-        {% include "render_form.html" %}
-        {% endwith %}
-        <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
+		<tr>
+		{% for field in search_form %}
+			{% if field.is_hidden %}
+				{{ field }}
+			{% else %}
+				<td>{{ field }}</td>
+			{% endif %}
+		{% endfor %}
+        <td><input type="submit" class="bouton" value="Rechercher" /></td>
+		</tr>
     </table>
 </form>
 
@@ -30,18 +37,33 @@
 </div>
 
 <div class="pagination">{% paginate %}</div>
-{% for groupe in groupes %}
-<div class="resultatRecherche">
-    <div class="titre">
-        <a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a>
-    </div>
-</div>
 
-{% empty %}
+{% if groupes %}
+<ul>
+{% for groupe in groupes %}
+<li><a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
 	<div class="resultatRecherche">
 		<h2>Aucun résultat trouvé</h2>
 	</div>
-{% endfor %}
+{% endif %}
 <div class="pagination">{% paginate %}</div>
+
+</div>
+
+{% if mesgroupes %}
+<div style="float:left;">
+<h2>Mes groupes</h2>
+<ul>
+{% for groupe in mesgroupes %}
+<li><a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a></li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
+<div style="clear:both;"></div>
 
 {% endblock %}

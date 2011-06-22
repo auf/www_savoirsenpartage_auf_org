@@ -103,6 +103,10 @@ urlpatterns = sep_patterns + patterns(
     (r'^etablissements/autocomplete/$', 'chercheurs.views.etablissements_autocomplete'),
     (r'^etablissements/autocomplete/(?P<pays>.*)/$', 'chercheurs.views.etablissements_autocomplete'),
 
+    # groupes
+    (r'^groupes/$', 'chercheurs.views.groupe_index'),
+    (r'^groupes/(?P<id>\d+)/$', 'chercheurs.views.groupe_retrieve'),
+
     # section par discipline et/ou région
     (r'^discipline/(?P<discipline>\d+)/', include(sep_patterns)),
     (r'^region/(?P<region>\d+)/', include(sep_patterns)),

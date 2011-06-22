@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
-from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm
-from chercheurs.models import Chercheur
+from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm
+from chercheurs.models import Chercheur, Groupe
 from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
@@ -209,3 +209,28 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         'site_name': current_site.name,
     }, context_instance=RequestContext(request))
 login = never_cache(login)
+
+# groupes
+def groupe_index(request):
+    search_form = GroupeSearchForm(request.GET)
+    search = search_form.save(commit=False)
+    groupes = search.run()
+    nb_resultats = groupes.count()
+    try:
+        p = PageStatique.objects.get(id='groupes')
+        entete = p.contenu
+    except PageStatique.DoesNotExist:
+        entete = '<h1>Groupes</h1>'
+
+    return render_to_response("chercheurs/groupe_index.html", dict(
+        search_form=search_form, groupes=groupes.order_by('nom'),
+        nb_resultats=nb_resultats, entete=entete
+    ), context_instance=RequestContext(request))
+
+def groupe_retrieve(request, id):
+    groupe = get_object_or_404(Groupe, id=id)
+    return render_to_response(
+        "chercheurs/groupe_retrieve.html",
+        dict(groupe=groupe),
+        context_instance=RequestContext(request)
+    )

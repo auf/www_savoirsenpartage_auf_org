@@ -524,3 +524,23 @@ class ChercheurSearch(Search):
                                                    chercheur.get_absolute_url())
             content += u'    %s\n\n' % chercheur.etablissement_display
         return content
+
+class GroupeSearch(Search):
+
+    class Meta:
+        verbose_name = 'recherche de groupe'
+        verbose_name_plural = 'recherches de groupes'
+
+    def run(self):
+        results = Groupe.objects
+        if self.q:
+            results = results.search(self.q)
+        return results.all()
+
+    #def url(self):
+    #    qs = self.query_string()
+    #    return url('groupes') + ('?' + qs if qs else '')
+
+    #def rss_url(self):
+    #    qs = self.query_string()
+    #    return url('rss_groupes') + ('?' + qs if qs else '')

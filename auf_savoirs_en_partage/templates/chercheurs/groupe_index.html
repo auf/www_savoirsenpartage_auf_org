@@ -1,0 +1,47 @@
+{% extends "container_base.html" %}
+{% load pagination_tags %}
+{% load form_tags %}
+{% load sep %}
+
+{% block contenu %}
+{% autopaginate groupes 20 %}
+
+<ul class="actions">
+    <li><a href="{% url aide %}#repertoire">Aide</a></li>
+    {% include "chercheurs/actions.html" %}
+</ul>
+
+{{ entete|safe }}
+
+<h2>Recherche</h2>
+
+<form method="get" action="">
+    <table>
+        {% with search_form as form %}
+        {% include "render_form.html" %}
+        {% endwith %}
+        <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
+    </table>
+</form>
+
+<h2>Résultats</h2>
+<div class="sous-titre"> 
+    {{ nb_resultats }} resultats correspondant à votre recherche
+</div>
+
+<div class="pagination">{% paginate %}</div>
+{% for groupe in groupes %}
+<div class="resultatRecherche">
+    <div class="titre">
+        <a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a>
+    </div>
+</div>
+
+{% empty %}
+	<div class="resultatRecherche">
+		<h2>Aucun résultat trouvé</h2>
+	</div>
+{% endfor %}
+<div class="pagination">{% paginate %}</div>
+
+{% endblock %}

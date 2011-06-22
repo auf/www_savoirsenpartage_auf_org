@@ -341,6 +341,13 @@ class ChercheurFormGroup(object):
                     expertise.delete()
             return self.chercheur.instance
 
+class GroupeSearchForm(forms.ModelForm):
+    """Formulaire de recherche pour les groupes."""
+
+    class Meta:
+        model = GroupeSearch
+        fields = ['q']
+
 class ChercheurSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les chercheurs."""
 

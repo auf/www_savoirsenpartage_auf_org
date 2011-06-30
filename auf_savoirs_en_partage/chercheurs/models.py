@@ -544,3 +544,15 @@ class GroupeSearch(Search):
     #def rss_url(self):
     #    qs = self.query_string()
     #    return url('rss_groupes') + ('?' + qs if qs else '')
+
+class Message(models.Model):
+
+    chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
+    groupe = models.ForeignKey('Groupe', db_column='groupe')
+    titre = models.CharField(max_length=255)
+    contenu = models.TextField()
+
+    date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.chercheur, self.titre)

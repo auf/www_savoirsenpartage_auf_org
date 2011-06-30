@@ -8,6 +8,16 @@
 	<p>{{ groupe.page_accueil|safe }}</p>
 
 	<h2>Derniers messages</h2>
+	{% if messages %}
+	<ul>
+		{% for msg in messages.all %}
+		<li>{{ msg.contenu }}</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<p>Aucun message</p>
+	{% endif %}
+	<p><a href="{% url groupe_messages groupe.pk %}">Ajouter un message</a></p>
 </div>
 
 <div style="float:left;">

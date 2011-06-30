@@ -239,10 +239,15 @@ def groupe_index(request):
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
     membres = groupe.membership.all().order_by('-date_modification')
+    messages = groupe.message_set.all()
 
     return render_to_response(
         "chercheurs/groupe_retrieve.html", {
             'groupe': groupe,
             'membres': membres,
+            'messages': messages,
         }, context_instance=RequestContext(request)
     )
+
+def groupe_messages(request, id):
+    pass

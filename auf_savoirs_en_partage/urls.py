@@ -106,6 +106,7 @@ urlpatterns = sep_patterns + patterns(
     # groupes
     (r'^groupes/$', 'chercheurs.views.groupe_index'),
     (r'^groupes/(?P<id>\d+)/$', 'chercheurs.views.groupe_retrieve'),
+    url(r'^groupes/(?P<id>\d+)/messages/$', 'chercheurs.views.groupe_messages', name='groupe_messages'),
 
     # section par discipline et/ou région
     (r'^discipline/(?P<discipline>\d+)/', include(sep_patterns)),

@@ -223,8 +223,11 @@ def groupe_index(request):
         entete = '<h1>Liste des groupes</h1>'
 
     if request.user.is_authenticated():
-        chercheur = Chercheur.objects.get(courriel=request.user.email)
-        mesgroupes = chercheur.groupes.all().filter(chercheurgroupe__actif=1)
+        try:
+            chercheur = Chercheur.objects.get(courriel=request.user.email)
+            mesgroupes = chercheur.groupes.all().filter(chercheurgroupe__actif=1)
+        except Chercheur.DoesNotExist:
+            mesgroupes = None
     else:
         mesgroupes = None
 

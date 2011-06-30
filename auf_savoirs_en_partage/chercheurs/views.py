@@ -238,8 +238,11 @@ def groupe_index(request):
 
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
+    membres = groupe.membership.all().order_by('-date_modification')
+
     return render_to_response(
-        "chercheurs/groupe_retrieve.html",
-        dict(groupe=groupe),
-        context_instance=RequestContext(request)
+        "chercheurs/groupe_retrieve.html", {
+            'groupe': groupe,
+            'membres': membres,
+        }, context_instance=RequestContext(request)
     )

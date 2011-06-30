@@ -1,0 +1,25 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h1>{{ groupe }}</h1>
+
+<div style="clear:both;width:400px;float:left;padding-right:20px;">
+
+	<p>{{ groupe.page_accueil|safe }}</p>
+
+	<h2>Derniers messages</h2>
+</div>
+
+<div style="float:left;">
+	{% if membres %}
+	<h2>Membres</h2>
+	<ul>
+		{% for membre in membres.all %}
+		<li>{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+	<h2>Recherches prédéfinies</h2>
+</div>
+
+{% endblock %}

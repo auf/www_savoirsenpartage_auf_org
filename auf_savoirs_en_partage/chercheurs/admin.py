@@ -181,12 +181,16 @@ class MemberInline(admin.TabularInline):
 class BaseGroupeAdmin(admin.ModelAdmin):
     filter_horizontal = ('responsables',)
     fieldsets = (
-        (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion', 'bulletin')}),
+        (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
+                                            'bulletin', 'page_accueil')}),
         (('Responsables'), {'fields': ('responsables',)}),
     )
     inlines = [
         MemberInline,
     ]
+
+    class Media:
+        js = ['js/tiny_mce/tiny_mce.js', 'js/tiny_mce_textareas.js']
 
     def save_model(self, request, obj, form, change):
         responsables = form.cleaned_data['responsables']

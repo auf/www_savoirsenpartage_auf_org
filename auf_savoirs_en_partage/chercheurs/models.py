@@ -227,7 +227,7 @@ class Chercheur(Personne):
         help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"
     )
                                     
-    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', blank=True, verbose_name='Domaines de recherche')
+    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', related_name='membres', blank=True, verbose_name='Domaines de recherche')
     
     # Activités en francophonie
     membre_instance_auf = models.NullBooleanField(verbose_name="est ou a déjà été membre d'une instance de l'AUF")
@@ -391,6 +391,7 @@ class Groupe(models.Model):
 
     responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='responsables', blank=True)
 
+    page_accueil = models.TextField(null=True, blank=True)
 
     objects = GroupeManager()
     groupe_chercheur_objects = GroupeChercheurManager()
@@ -430,7 +431,7 @@ class DomaineRecherche(Groupe):
 class ChercheurGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
-    groupe = models.ForeignKey('Groupe', db_column='groupe')
+    groupe = models.ForeignKey('Groupe', db_column='groupe', related_name="membership")
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
     actif = models.BooleanField(db_column='actif')

@@ -225,7 +225,7 @@ def groupe_index(request):
     if request.user.is_authenticated():
         try:
             chercheur = Chercheur.objects.get(courriel=request.user.email)
-            mesgroupes = chercheur.groupes.all().filter(chercheurgroupe__actif=1)
+            mesgroupes = chercheur.groupes.all().filter(membership__actif=1)
         except Chercheur.DoesNotExist:
             mesgroupes = None
     else:

@@ -9,15 +9,14 @@
 
 	<h2>Derniers messages</h2>
 	{% if messages %}
-	<ul>
-		{% for msg in messages.all %}
-		<li>{{ msg.contenu }}</li>
+		{% for message in messages.all %}
+			{% include 'chercheurs/groupe_message_display.html' %}
 		{% endfor %}
 	</ul>
 	{% else %}
 	<p>Aucun message</p>
 	{% endif %}
-	<p><a href="{% url groupe_messages groupe.pk %}">Ajouter un message</a></p>
+	<p><a href="{% url groupe_messages groupe.pk %}">Ajouter ou voir tous les messages</a></p>
 </div>
 
 <div style="float:left;">

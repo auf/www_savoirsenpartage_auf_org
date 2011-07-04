@@ -1,0 +1,24 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<h1>{{ groupe }}</h1>
+<p><a href="{% url groupe_messages groupe.pk %}">Retour à la page du groupe</a></p>
+
+<h2>Messages</h2>
+{% if messages %}
+	{% for message in messages.all %}
+		{% include 'chercheurs/groupe_message_display.html' %}
+	{% endfor %}
+{% else %}
+<p>Aucun message</p>
+{% endif %}
+
+<h2>Nouveau message</h2>
+<form method="post" action="">
+    <table>
+        {% include "render_form.html" %}
+        <tr><th></th><td><input type="submit" class="bouton" value="Envoyer" /></td></tr>
+    </table>
+</form>
+
+{% endblock %}

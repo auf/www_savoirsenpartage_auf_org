@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
-from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm
+from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
 from chercheurs.models import Chercheur, Groupe
 from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement, Region
@@ -239,7 +239,7 @@ def groupe_index(request):
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
     membres = groupe.membership.all().order_by('-date_modification')
-    messages = groupe.message_set.all()
+    messages = groupe.message_set.all()[:5]
 
     return render_to_response(
         "chercheurs/groupe_retrieve.html", {
@@ -250,4 +250,29 @@ def groupe_retrieve(request, id):
     )
 
 def groupe_messages(request, id):
-    pass
+
+    groupe = get_object_or_404(Groupe, id=id)
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            chercheur = Chercheur.objects.get(courriel=request.user.email)
+            message = form.save(commit=False)
+            message.groupe = groupe
+            message.chercheur = chercheur
+            message.save()
+
+            form = MessageForm()
+
+    else:
+        form = MessageForm()
+
+    messages = groupe.message_set.all()
+
+    return render_to_response(
+        "chercheurs/groupe_message.html", {
+            'groupe': groupe,
+            'messages': messages,
+            'form': form,
+        }, context_instance=RequestContext(request)
+    )

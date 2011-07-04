@@ -183,3 +183,7 @@ ul.actions { font-size: 90%; float: right; text-align: right; list-style: none;
 .cadre { width: 70%; margin: 50px auto; padding: 20px; background: #f9f9f9; border: 1px solid #aaa }
 .cadre h1 { margin: -20px -20px 0 -20px; padding: 5px; background: #aaa; color: white; font-size: 120%; font-weight: bold; text-align: center; }
 
+/* Liste message */
+
+.message { margin-bottom:20px; }
+.message .info { font-size:90%; }

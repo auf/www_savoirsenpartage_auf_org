@@ -553,7 +553,7 @@ class Message(models.Model):
     titre = models.CharField(max_length=255)
     contenu = models.TextField()
 
-    date_creation = models.DateField(auto_now_add=True, db_column='date_creation')
+    date_creation = models.DateTimeField(auto_now_add=True, db_column='date_creation')
 
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.titre)

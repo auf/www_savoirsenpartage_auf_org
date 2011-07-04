@@ -391,3 +391,9 @@ class SetPasswordForm(forms.Form):
 class AuthenticationForm(DjangoAuthenticationForm):
     username = forms.CharField(label='Courriel')
 
+
+class MessageForm(forms.ModelForm):
+
+    class Meta:
+        model = Message
+        exclude = ('chercheur', 'groupe')

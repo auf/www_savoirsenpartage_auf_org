@@ -66,4 +66,12 @@
 
 <div style="clear:both;"></div>
 
+{% if messages %}
+	<h2>Activités récentes de mes groupes</h2>
+	{% for message in messages %}
+	{% include 'chercheurs/groupe_message_display.html' %}
+	{% endfor %}
+{% endif %}
+
+
 {% endblock %}

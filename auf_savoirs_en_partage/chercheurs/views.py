@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
-from chercheurs.models import Chercheur, Groupe
+from chercheurs.models import Chercheur, Groupe, Message
 from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
@@ -222,19 +222,25 @@ def groupe_index(request):
     except PageStatique.DoesNotExist:
         entete = '<h1>Liste des groupes</h1>'
 
+    est_chercheur, mesgroupes, messages = False, None, None
     if request.user.is_authenticated():
         try:
             chercheur = Chercheur.objects.get(courriel=request.user.email)
             mesgroupes = chercheur.groupes.all().filter(membership__actif=1)
+            messages = Message.objects.all().filter(groupe__in=mesgroupes)[:10]
+            est_chercheur = True
         except Chercheur.DoesNotExist:
-            mesgroupes = None
-    else:
-        mesgroupes = None
+            pass
 
-    return render_to_response("chercheurs/groupe_index.html", dict(
-        search_form=search_form, groupes=groupes.order_by('nom'),
-        nb_resultats=nb_resultats, entete=entete, mesgroupes=mesgroupes,
-    ), context_instance=RequestContext(request))
+    return render_to_response("chercheurs/groupe_index.html", {
+        'search_form': search_form,
+        'groupes': groupes.order_by('nom'),
+        'nb_resultats': nb_resultats,
+        'entete': entete,
+        'mesgroupes': mesgroupes,
+        'messages': messages,
+        'est_chercheur': est_chercheur,
+    }, context_instance=RequestContext(request))
 
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)

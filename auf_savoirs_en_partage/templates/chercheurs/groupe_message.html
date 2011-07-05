@@ -1,6 +1,9 @@
 {% extends "container_base.html" %}
+{% load pagination_tags %}
 
 {% block contenu %}
+{% autopaginate messages 20 %}
+
 <h1>{{ groupe }}</h1>
 <p><a href="{% url groupe_messages groupe.pk %}">Retour à la page du groupe</a></p>
 
@@ -9,6 +12,7 @@
 	{% for message in messages.all %}
 		{% include 'chercheurs/groupe_message_display.html' %}
 	{% endfor %}
+	<div class="pagination">{% paginate %}</div>
 {% else %}
 <p>Aucun message</p>
 {% endif %}

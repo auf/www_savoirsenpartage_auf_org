@@ -3,7 +3,7 @@
 from django.conf.urls.defaults import patterns, include, handler500, handler404, url
 from django.conf import settings
 from django.contrib import admin
-from savoirs.rss import FilChercheurs, FilRessources, FilActualites, FilAppels, FilEvenements, FilSites
+from savoirs.rss import FilChercheurs, FilRessources, FilActualites, FilAppels, FilEvenements, FilSites, FilMessages
 
 admin.autodiscover()
 
@@ -105,7 +105,7 @@ urlpatterns = sep_patterns + patterns(
 
     # groupes
     (r'^groupes/$', 'chercheurs.views.groupe_index'),
-    (r'^groupes/(?P<id>\d+)/$', 'chercheurs.views.groupe_retrieve'),
+    url(r'^groupes/(?P<id>\d+)/$', 'chercheurs.views.groupe_retrieve', name='groupe_retrieve'),
     url(r'^groupes/(?P<id>\d+)/messages/$', 'chercheurs.views.groupe_messages', name='groupe_messages'),
 
     # section par discipline et/ou région
@@ -135,6 +135,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^rss/appels/$', FilAppels(), {}, 'rss_appels'),
     (r'^rss/agenda/$', FilEvenements(), {}, 'rss_agenda'),
     (r'^rss/sites/$', FilSites(), {}, 'rss_sites'),
+    (r'^rss/messages/(?P<groupe_id>\d+)/$', FilMessages(), {}, 'rss_messages'),
     (r'^json/get/$', 'savoirs.views.json_get'),
     (r'^json/set/$', 'savoirs.views.json_set'),
 

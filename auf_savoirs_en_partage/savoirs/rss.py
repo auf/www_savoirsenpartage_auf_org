@@ -5,10 +5,14 @@ from dateutil.tz import tzlocal, tzutc
 
 from django.core.urlresolvers import reverse
 from django.contrib.syndication.views import Feed
+from django.shortcuts import get_object_or_404
+
 
 from chercheurs.forms import ChercheurSearchForm
 from savoirs.forms import RessourceSearchForm, ActualiteSearchForm, EvenementSearchForm
 from sitotheque.forms import SiteSearchForm
+
+from chercheurs.models import Groupe, Message
 
 class FilChercheurs(Feed):
     title = "Savoirs en partage - chercheurs"
@@ -150,3 +154,29 @@ class FilSites(Feed):
 
     def item_author_name(self, site):
         return site.auteur
+
+class FilMessages(Feed):
+
+    def get_object(self, request, groupe_id):
+        return get_object_or_404(Groupe, pk=groupe_id)
+
+    def title(self, obj):
+        return "Savoirs en partage - Messages pour le groupe: %s" % (obj.nom,)
+
+    def link(self, obj):
+        return obj.get_absolute_url()
+
+    def description(self, obj):
+        return "Derniers messages du groupe %s" % (obj.nom,)
+
+    def items(self, obj):
+        return Message.objects.filter(groupe=obj)[:30]
+
+    def item_title(self, message):
+        return message.titre
+
+    def item_description(self, message):
+        return message.contenu
+
+    def item_author_name(self, message):
+        return message.chercheur

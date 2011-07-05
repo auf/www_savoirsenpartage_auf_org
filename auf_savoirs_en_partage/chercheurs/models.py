@@ -404,6 +404,10 @@ class Groupe(models.Model):
     def __unicode__(self):
         return u"%s" % (self.nom)
 
+    def get_absolute_url(self):
+        return url('groupe_retrieve', kwargs={'id': self.id})
+
+
 class GroupeChercheur(Groupe):
     objects = GroupeChercheurManager()
 
@@ -555,8 +559,12 @@ class Message(models.Model):
 
     date_creation = models.DateTimeField(auto_now_add=True, db_column='date_creation')
 
+    class Meta:
+        ordering = ['-date_creation']
+
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.titre)
 
-    class Meta:
-        ordering = ['-date_creation']
+    def get_absolute_url(self):
+        return url('groupe_messages', kwargs={'id': self.groupe.id})
+

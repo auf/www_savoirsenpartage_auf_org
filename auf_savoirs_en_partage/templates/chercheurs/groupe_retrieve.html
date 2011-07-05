@@ -7,7 +7,7 @@
 
 	<p>{{ groupe.page_accueil|safe }}</p>
 
-	<h2>Derniers messages</h2>
+	<h2>Derniers messages <a href="{% url rss_messages groupe.pk %}"><img src="/media/img/feed.png" /></a></h2>
 	{% if messages %}
 		{% for message in messages.all %}
 			{% include 'chercheurs/groupe_message_display.html' %}

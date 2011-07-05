@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
-from chercheurs.models import Chercheur, Groupe, Message
+from chercheurs.models import Chercheur, Groupe, Message, ChercheurGroupe
 from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
@@ -242,16 +242,42 @@ def groupe_index(request):
         'est_chercheur': est_chercheur,
     }, context_instance=RequestContext(request))
 
+def groupe_adhesion(request, id):
+    try:
+        groupe = get_object_or_404(Groupe, id=id)
+        chercheur = Chercheur.objects.get(courriel=request.user.email)
+        cg, created = ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=groupe)
+        if created:
+            cg.actif = 0
+            cg.save()
+    except:
+        pass
+
+    return HttpResponseRedirect(url('groupe_retrieve', kwargs={'id': id}))
+
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
     membres = groupe.membership.all().order_by('-date_modification')
     messages = groupe.message_set.all()[:5]
+
+    est_chercheur, est_membre, est_membre_actif = False, False, False
+    if request.user.is_authenticated():
+        try:
+            chercheur = Chercheur.objects.get(courriel=request.user.email)
+            est_chercheur = True
+            est_membre = chercheur in groupe.membres.all()
+            est_membre_actif = bool(len(groupe.membership.filter(chercheur=chercheur, actif=True)))
+        except Chercheur.DoesNotExist:
+            pass
 
     return render_to_response(
         "chercheurs/groupe_retrieve.html", {
             'groupe': groupe,
             'membres': membres,
             'messages': messages,
+            'est_chercheur': est_chercheur,
+            'est_membre': est_membre,
+            'est_membre_actif': est_membre_actif,
         }, context_instance=RequestContext(request)
     )
 

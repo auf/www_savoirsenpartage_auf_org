@@ -599,7 +599,7 @@ class Record(models.Model):
     isbn = models.TextField(null = True, blank = True)
     orig_lang = models.TextField(null = True, blank = True)
 
-    categorie = models.ForeignKey(RecordCategorie, blank=True, null=True)
+    categorie = models.ForeignKey(RecordCategorie, blank=True, null=True, verbose_name='catégorie')
 
     # Metadata AUF multivaluées
     disciplines = models.ManyToManyField(Discipline, blank=True)

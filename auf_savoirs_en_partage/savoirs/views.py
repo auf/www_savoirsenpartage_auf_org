@@ -197,7 +197,13 @@ def evenement_index(request):
     search = search_form.save(commit=False)
     evenements = search.run()
     excerpt = excerpt_function(Evenement.objects, search_form.cleaned_data['q'])
-    
+
+    ordre = request.GET.get('sort', 'soumission')
+    if ordre == 'soumission':
+        evenements = evenements.order_by('-date_modification')
+    else:
+        evenements = evenements.order_by('-debut')
+
     try:
         p = PageStatique.objects.get(id='agenda')
         entete = p.contenu
@@ -206,7 +212,7 @@ def evenement_index(request):
 
     return render_to_response(
         "savoirs/evenement_index.html",
-        dict(evenements=evenements, search_form=search_form,
+        dict(evenements=evenements, search_form=search_form, ordre=ordre,
              excerpt=excerpt, nb_resultats=evenements.count(), entete=entete),
         context_instance=RequestContext(request)
     )

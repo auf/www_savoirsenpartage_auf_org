@@ -26,6 +26,23 @@
     {% if user.is_authenticated %}
     (<a href="{% url sauvegarder_recherche "evenements" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
     {% endif %}
+	<p>
+	{% if ordre != 'soumission' %}
+	<a href="{% url savoirs.views.evenement_index %}?sort=soumission">
+	{% endif %}
+	Trier par ordre de soumission
+	{% if ordre != 'soumission' %}
+	</a>
+	{% endif %}
+	/
+	{% if ordre != 'chronologique' %}
+	<a href="{% url savoirs.views.evenement_index %}?sort=chronologique">
+	{% endif %}
+	Trier par ordre chronologique
+	</p>
+	{% if ordre != 'chronologique' %}
+	</a>
+	{% endif %}
 </div>
 
 <div class="pagination">{% paginate %}</div>

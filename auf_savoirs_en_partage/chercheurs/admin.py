@@ -203,7 +203,7 @@ class BaseGroupeAdmin(admin.ModelAdmin):
     def queryset(self, request):
         qs = super(BaseGroupeAdmin, self).queryset(request)
 
-        if not request.user.is_superuser:
+        if not request.user.is_superuser and not request.user.has_perm('chercheurs.change_groupechercheur'):
             qs = qs.filter(responsables=request.user)
 
         return qs

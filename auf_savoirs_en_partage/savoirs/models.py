@@ -524,6 +524,17 @@ class ListSet(models.Model):
     def __unicode__(self,):
         return self.name
 
+class RecordCategorie(models.Model):
+    nom = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'catégorie ressource'
+        verbose_name_plural = 'catégories ressources'
+
+    def __unicode__(self):
+        return self.nom
+
+
 class RecordQuerySet(SEPQuerySet):
 
     def filter_modified(self, min=None, max=None):
@@ -587,6 +598,8 @@ class Record(models.Model):
     issued = models.CharField(max_length = 255, null = True, blank = True)
     isbn = models.TextField(null = True, blank = True)
     orig_lang = models.TextField(null = True, blank = True)
+
+    categorie = models.ForeignKey(RecordCategorie, blank=True, null=True)
 
     # Metadata AUF multivaluées
     disciplines = models.ManyToManyField(Discipline, blank=True)

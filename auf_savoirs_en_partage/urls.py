@@ -122,6 +122,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^admin/confirmation/(.*)', 'savoirs.admin_views.confirmation'),
     (r'^admin/assigner_pays', 'savoirs.admin_views.assigner_pays'),
     (r'^admin/assigner_thematiques', 'savoirs.admin_views.assigner_thematiques'),
+    (r'^admin/assigner_categorie', 'savoirs.admin_views.assigner_categorie'),
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_regions', 'savoirs.admin_views.assigner_regions', {}, 'assigner_regions'),
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
     (r'^admin/(.*)', admin.site.root),

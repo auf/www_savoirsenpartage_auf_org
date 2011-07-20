@@ -10,8 +10,8 @@ from django.shortcuts import render_to_response
 
 from chercheurs.models import Chercheur, Groupe
 from datamaster_modeles.models import Thematique, Pays, Region
-from savoirs.models import Record, Discipline, Actualite, Serveur
-from savoirs.forms import PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
+from savoirs.models import Record, Discipline, Actualite, Serveur, RecordCategorie
+from savoirs.forms import CategorieForm, PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
 
 # Dashboard
 class RecordDashboard:
@@ -57,6 +57,39 @@ class RecordDashboard:
         """Retourne la structure de données nécessaire pour le widget de django-admin-tool"""
         records = self.mes_records()
         return [{'title':self.ref_apercu(r), 'url':self.change_url(r), 'external': False} for r in records]
+
+@login_required
+def assigner_categorie(request):
+    ids = request.GET.get("ids").split(",")
+    records = Record.all_objects.in_bulk(ids)
+    if request.method == 'POST':
+        categorie_form = CategorieForm(request.POST)
+
+        if categorie_form.is_valid():
+
+            # charger la categorie
+            categorie_id = request.POST.get("categorie")
+            categorie = RecordCategorie.objects.get(id=categorie_id)
+
+            # assigner la catégorie à chaque référence
+            for r in records.values():
+                r.categorie = categorie
+                r.save()
+            
+            # retouner un status à l'utilisateur sur la liste des références
+            succes = u"La catégorie %s a été assigné à %s références" % (categorie.nom, len(ids))
+            request.user.message_set.create(message=succes)
+            return HttpResponseRedirect('/admin/savoirs/record')
+    else:
+        categorie_form = CategorieForm()
+
+    return render_to_response ("savoirs/assigner.html",
+            Context ({'records': records,
+                      'form': categorie_form,
+                      'titre': u"Assignation d'une catégorie par lots",
+                      'description': u"Sélectionner la catégorie qui sera associé aux références suivantes :" ,
+                      }),
+                     context_instance = RequestContext(request))
 
 @login_required
 def assigner_pays(request):

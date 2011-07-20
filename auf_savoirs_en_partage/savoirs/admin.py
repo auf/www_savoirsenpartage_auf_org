@@ -16,7 +16,7 @@ from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
 
 from models import SourceActualite, Actualite, Discipline, Evenement, \
-                   Record, ListSet, HarvestLog, Profile, PageStatique
+                   Record, RecordCategorie, ListSet, HarvestLog, Profile, PageStatique
 from savoirs.globals import META
 
 class ListSetFilterSpec(RelatedFilterSpec):
@@ -123,20 +123,20 @@ class RecordAdminQuerySet(QuerySet):
 class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     fields = ['server', 'title', 'creator', 'description', 'modified',
               'identifier', 'uri', 'source', 'contributor', 'publisher',
-              'type', 'format', 'language', 'disciplines', 'thematiques',
-              'pays', 'regions', 'validated']
+              'type', 'format', 'language', 'categorie', 'disciplines',
+              'thematiques','pays', 'regions', 'validated']
 
     readonly_fields = []
 
     list_filter = ('validated', 'server', 'listsets', 'pays', 'regions',
-                   'disciplines', 'thematiques')
+                   'disciplines', 'thematiques', 'categorie')
     list_display = ('title', 'subject', 'uri_display', 'creator',
-                    'est_complet', 'validated',)
+                    'categorie', 'est_complet', 'validated',)
     list_editable = ('validated',)
     list_per_page = 25
 
     actions = ['assigner_pays', 'assigner_regions', 'assigner_disciplines',
-               'assigner_thematiques']
+               'assigner_thematiques', 'assigner_categorie']
 
     def __init__(self, *args, **kwargs):
         """Surcharge l'initialisation pour définir les champs de recherche dynamiquement,
@@ -190,6 +190,11 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + ','.join(selected))
     assigner_disciplines.short_description = u'Assigner des disciplines'
+
+    def assigner_categorie(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('categorie', ",".join(selected)))
+    assigner_categorie.short_description = u'Assigner une catégorie'
 
 admin.site.register(Record, RecordAdmin)
 
@@ -311,3 +316,5 @@ class PageStatiqueAdmin(admin.ModelAdmin):
 
 admin.site.register(PageStatique, PageStatiqueAdmin)
 
+
+admin.site.register(RecordCategorie)

@@ -8,7 +8,7 @@ from django.contrib.admin import widgets
 from django.utils.safestring import mark_safe
 from datamaster_modeles.models import Thematique, Pays, Region
 from savoirs.models import Evenement, Discipline, Record, Actualite, RessourceSearch, ActualiteSearch, \
-                           AppelSearch, EvenementSearch, Search
+                           AppelSearch, EvenementSearch, Search, RecordCategorie
 from savoirs.lib.recherche import build_search_regexp
 from savoirs.admin import EvenementAdminForm
 import settings
@@ -132,6 +132,10 @@ class EvenementForm(EvenementAdminForm):
         exclude = ('contact', 'approuve', 'uid', 'regions')
 
 # Admin views pour les associations par lots
+
+class CategorieForm(forms.Form):
+    values = [(c.id, c.nom) for c in RecordCategorie.objects.all()]
+    categorie = forms.ChoiceField(choices=values)
 
 class PaysForm(forms.Form):
     values = [(p.id, p.nom) for p in Pays.objects.all()]

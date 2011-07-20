@@ -8,13 +8,13 @@
 	<p>{{ groupe.page_accueil|safe }}</p>
 
 	{% if not est_chercheur  %}
-	<p><em>Pour rejoindre ce groupe, vous devez vous <a href="{% url chercheurs.views.inscription %}">inscrire en tant que chercheur</a>.</em></p>
+	<p class="cadre" style="margin:10px auto;"><em>Pour rejoindre ce groupe, vous devez vous <a href="{% url chercheurs.views.inscription %}">inscrire en tant que chercheur</a>.</em></p>
 	{% else %}
 		{% if not est_membre %}
-		<p><em><a href="{% url chercheurs.views.groupe_adhesion groupe.pk %}">Cliquer ici pour devenir membre</a>. Votre demande doit être approuver par le responsable du groupe.</em></p>
+		<p class="cadre" style="margin:10px auto;"><em><a href="{% url chercheurs.views.groupe_adhesion groupe.pk %}">Cliquer ici pour devenir membre</a>. Votre demande doit être approuver par le responsable du groupe.</em></p>
 		{% else %}
 			{% if not est_membre_actif %}
-			<p><em>Votre demande d'adhésion n'a pas encore été approuvé par le reponsable.</em></p>
+			<p class="cadre" style="margin:10px auto;"><em>Votre demande d'adhésion n'a pas encore été approuvé par le reponsable.</em></p>
 			{% endif %}
 		{% endif %}
 	{% endif %}

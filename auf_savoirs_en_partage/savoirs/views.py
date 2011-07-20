@@ -161,11 +161,8 @@ def informations (request):
 
 # actualités
 def actualite_index(request, type='actu'):
-    search_form = ActualiteSearchForm(request.GET)
-    search = search_form.save(commit=False)
-    actualites = search.run().filter_type(type)
-    excerpt = excerpt_function(Actualite.objects, search_form.cleaned_data['q'])
     if type == 'appels':
+        search_form = AppelSearchForm(request.GET)
         template = "savoirs/appels_index.html"
         try:
             p = PageStatique.objects.get(id='appels')
@@ -173,12 +170,17 @@ def actualite_index(request, type='actu'):
         except PageStatique.DoesNotExist:
             entete = "<h1>Appels d'offres scientifiques</h1>"
     else:
+        search_form = ActualiteSearchForm(request.GET)
         template = "savoirs/actualite_index.html"
         try:
             p = PageStatique.objects.get(id='actualites')
             entete = p.contenu
         except PageStatique.DoesNotExist:
             entete = '<h1>Actualités</h1>'
+
+    search = search_form.save(commit=False)
+    actualites = search.run()
+    excerpt = excerpt_function(Actualite.objects, search_form.cleaned_data['q'])
 
     return render_to_response(template, dict(
         actualites=actualites, search_form=search_form,

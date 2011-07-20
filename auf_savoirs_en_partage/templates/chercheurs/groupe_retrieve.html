@@ -1,6 +1,9 @@
 {% extends "container_base.html" %}
+{% load pagination_tags %}
 
 {% block contenu %}
+{% autopaginate membres 20 %}
+
 <h1>{{ groupe }}</h1>
 
 <div style="clear:both;width:400px;float:left;padding-right:20px;">
@@ -37,7 +40,7 @@
 	</a></p>
 </div>
 
-<div style="float:left;">
+<div style="float:left;width:270px">
 	{% if membres %}
 	<h2>Membres</h2>
 	<ul>
@@ -45,6 +48,7 @@
 		<li><a href="{% url chercheurs.views.retrieve membre.chercheur.pk %}">{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</a></li>
 		{% endfor %}
 	</ul>
+	{% paginate %}
 	{% endif %}
 	<!--<h2>Recherches prédéfinies</h2>-->
 </div>

@@ -42,7 +42,7 @@
 	<h2>Membres</h2>
 	<ul>
 		{% for membre in membres.all %}
-		<li>{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</li>
+		<li><a href="{% url chercheurs.views.retrieve membre.chercheur.pk %}">{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</a></li>
 		{% endfor %}
 	</ul>
 	{% endif %}

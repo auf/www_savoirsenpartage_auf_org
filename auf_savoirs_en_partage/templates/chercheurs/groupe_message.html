@@ -19,6 +19,7 @@
 <p>Aucun message</p>
 {% endif %}
 
+{% if est_membre_actif %}
 <h2>Nouveau message</h2>
 <form method="post" action="">
     <table>
@@ -26,5 +27,6 @@
         <tr><th></th><td><input type="submit" class="bouton" value="Envoyer" /></td></tr>
     </table>
 </form>
+{% endif %}
 
 {% endblock %}

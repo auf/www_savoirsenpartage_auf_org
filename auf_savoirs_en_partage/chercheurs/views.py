@@ -22,6 +22,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404
 from savoirs.models import PageStatique, Discipline
 
+
 def index(request):
     """Répertoire des chercheurs"""
     search_form = ChercheurSearchForm(request.GET)
@@ -285,10 +286,19 @@ def groupe_messages(request, id):
 
     groupe = get_object_or_404(Groupe, id=id)
 
-    if request.method == 'POST':
+    est_chercheur, est_membre, est_membre_actif = False, False, False
+    if request.user.is_authenticated():
+        try:
+            chercheur = Chercheur.objects.get(courriel=request.user.email)
+            est_chercheur = True
+            est_membre = chercheur in groupe.membres.all()
+            est_membre_actif = bool(len(groupe.membership.filter(chercheur=chercheur, actif=True)))
+        except Chercheur.DoesNotExist:
+            pass
+
+    if est_membre_actif and request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
-            chercheur = Chercheur.objects.get(courriel=request.user.email)
             message = form.save(commit=False)
             message.groupe = groupe
             message.chercheur = chercheur
@@ -306,5 +316,8 @@ def groupe_messages(request, id):
             'groupe': groupe,
             'messages': messages,
             'form': form,
+            'est_chercheur': est_chercheur,
+            'est_membre': est_membre,
+            'est_membre_actif': est_membre_actif,
         }, context_instance=RequestContext(request)
     )

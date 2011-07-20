@@ -28,7 +28,13 @@
 	{% else %}
 	<p>Aucun message</p>
 	{% endif %}
-	<p><a href="{% url groupe_messages groupe.pk %}">Ajouter ou voir tous les messages</a></p>
+	<p><a href="{% url groupe_messages groupe.pk %}">
+		{% if est_membre_actif %}
+		Ajouter ou voir tous les messages
+		{% else %}
+		Voir tous les messages
+		{% endif %}
+	</a></p>
 </div>
 
 <div style="float:left;">

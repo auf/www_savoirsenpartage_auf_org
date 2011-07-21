@@ -174,6 +174,30 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
         return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
 
+class ChercheurGroupeAdmin(admin.ModelAdmin):
+    list_filter = ('groupe',)
+    list_display = ('groupe', 'chercheur', 'actif')
+    list_editable = ('actif',)
+
+    def queryset(self, request):
+        qs = super(ChercheurGroupeAdmin, self).queryset(request)
+
+        if not request.user.is_superuser and not request.user.has_perm('chercheurs.change_chercheurgroupe'):
+            qs = qs.filter(groupe__responsables=request.user)
+
+        return qs
+
+    def has_change_permission(self, request, obj=None):
+
+        if not obj:
+            if request.user.responsable_groupe.count():
+                return True
+        else:
+            if request.user in obj.groupe.responsables.all():
+                return True
+
+        return super(BaseGroupeAdmin, self).has_change_permission(request, obj)
+
 class MemberInline(admin.TabularInline):
     model = ChercheurGroupe
 
@@ -234,4 +258,5 @@ admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)
 admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
+admin.site.register(ChercheurGroupe, ChercheurGroupeAdmin)
 

@@ -107,6 +107,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^groupes/$', 'chercheurs.views.groupe_index'),
     url(r'^groupes/(?P<id>\d+)/$', 'chercheurs.views.groupe_retrieve', name='groupe_retrieve'),
     url(r'^groupes/(?P<id>\d+)/adhesion/$', 'chercheurs.views.groupe_adhesion', name='groupe_adhesion'),
+    url(r'^groupes/(?P<id>\d+)/membres/$', 'chercheurs.views.groupe_membres', name='groupe_membres'),
     url(r'^groupes/(?P<id>\d+)/messages/$', 'chercheurs.views.groupe_messages', name='groupe_messages'),
 
     # section par discipline et/ou région

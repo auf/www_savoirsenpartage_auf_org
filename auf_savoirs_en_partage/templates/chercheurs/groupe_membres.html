@@ -1,0 +1,22 @@
+{% extends "container_base.html" %}
+{% load pagination_tags %}
+
+{% block contenu %}
+{% autopaginate membres 50 %}
+
+<h1>{{ groupe }}</h1>
+<p><a href="{% url groupe_retrieve groupe.pk %}">Retour à la page du groupe</a></p>
+
+<h2>Liste complète des membres</h2>
+{% if membres %}
+	<ul>
+	{% for membre in membres.all %}
+		<li><a href="{% url chercheurs.views.retrieve membre.chercheur.pk %}">{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</a></li>
+	{% endfor %}
+	</ul>
+	<div class="pagination">{% paginate %}</div>
+{% else %}
+<p>Aucun membre</p>
+{% endif %}
+
+{% endblock %}

@@ -259,6 +259,8 @@ def groupe_adhesion(request, id):
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
     membres = groupe.membership.all().filter(actif=True).order_by('-date_modification')
+    plus_que_20 = True if membres.count() > 20 else False
+    membres_20 = membres[:20]
     messages = groupe.message_set.all()[:5]
 
     est_chercheur, est_membre, est_membre_actif = False, False, False
@@ -274,11 +276,23 @@ def groupe_retrieve(request, id):
     return render_to_response(
         "chercheurs/groupe_retrieve.html", {
             'groupe': groupe,
-            'membres': membres,
+            'membres': membres_20,
+            'plus_que_20': plus_que_20,
             'messages': messages,
             'est_chercheur': est_chercheur,
             'est_membre': est_membre,
             'est_membre_actif': est_membre_actif,
+        }, context_instance=RequestContext(request)
+    )
+
+def groupe_membres(request, id):
+    groupe = get_object_or_404(Groupe, id=id)
+    membres = groupe.membership.all().filter(actif=True).order_by('chercheur__nom')
+
+    return render_to_response(
+        "chercheurs/groupe_membres.html", {
+            'groupe': groupe,
+            'membres': membres,
         }, context_instance=RequestContext(request)
     )
 

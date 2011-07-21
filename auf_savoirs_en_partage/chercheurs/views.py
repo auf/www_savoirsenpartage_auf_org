@@ -258,7 +258,7 @@ def groupe_adhesion(request, id):
 
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
-    membres = groupe.membership.all().order_by('-date_modification')
+    membres = groupe.membership.all().filter(actif=True).order_by('-date_modification')
     messages = groupe.message_set.all()[:5]
 
     est_chercheur, est_membre, est_membre_actif = False, False, False

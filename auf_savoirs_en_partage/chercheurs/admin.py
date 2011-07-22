@@ -196,7 +196,7 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
             if request.user in obj.groupe.responsables.all():
                 return True
 
-        return super(BaseGroupeAdmin, self).has_change_permission(request, obj)
+        return super(ChercheurGroupeAdmin, self).has_change_permission(request, obj)
 
 class MemberInline(admin.TabularInline):
     model = ChercheurGroupe

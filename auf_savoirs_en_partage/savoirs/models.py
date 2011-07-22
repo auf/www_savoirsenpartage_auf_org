@@ -733,6 +733,9 @@ class Search(models.Model):
         verbose_name = 'recherche transversale'
         verbose_name_plural = "recherches transversales"
 
+    def __unicode__(self):
+        return self.nom
+
     def save(self):
         if self.alerte_courriel:
             try:

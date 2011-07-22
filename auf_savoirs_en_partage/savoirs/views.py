@@ -35,10 +35,11 @@ def index(request, discipline=None, region=None):
     region_obj = region and get_object_or_404(Region, pk=region)
     search = Search(discipline=discipline_obj, region=region_obj)
     results = search.run()
+    today = datetime.date.today()
     return render_to_response("savoirs/index.html", dict(
         actualites=results.actualites[0:4], 
         appels=results.appels[0:4], 
-        evenements=results.evenements[0:4],
+        evenements=results.evenements.filter_debut(min=today).order_by('debut')[0:4],
         ressources=results.ressources[0:4],
         chercheurs=results.chercheurs[0:10],
         sites=results.sites[0:4],

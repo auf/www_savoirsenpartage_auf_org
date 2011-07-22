@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import copy
+import datetime
 import pytz
 import simplejson 
 
@@ -195,16 +196,26 @@ def actualite(request, id):
 
 # agenda
 def evenement_index(request):
-    search_form = EvenementSearchForm(request.GET)
-    search = search_form.save(commit=False)
+    if request.GET.get('action', False):
+        search_form = EvenementSearchForm(request.GET)
+        search = search_form.save(commit=False)
+        q = search_form.cleaned_data.get('q', '')
+
+    else:
+        today = datetime.date.today()
+        search_form = EvenementSearchForm(initial={'date_min':today})
+        search = search_form.save(commit=False)
+        search.date_min = today
+        q = ''
+
     evenements = search.run()
-    excerpt = excerpt_function(Evenement.objects, search_form.cleaned_data['q'])
+    excerpt = excerpt_function(Evenement.objects, q)
 
     ordre = request.GET.get('sort', 'soumission')
     if ordre == 'soumission':
         evenements = evenements.order_by('-date_modification')
     else:
-        evenements = evenements.order_by('-debut')
+        evenements = evenements.order_by('debut')
 
     try:
         p = PageStatique.objects.get(id='agenda')

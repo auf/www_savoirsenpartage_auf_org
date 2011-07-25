@@ -733,6 +733,9 @@ class Search(models.Model):
         verbose_name = 'recherche transversale'
         verbose_name_plural = "recherches transversales"
 
+    def __unicode__(self):
+        return self.nom
+
     def save(self):
         if self.alerte_courriel:
             try:
@@ -813,6 +816,11 @@ class Search(models.Model):
         )
 
     def url(self):
+
+        if self.content_type.model != 'search':
+            obj = self.content_type.get_object_for_this_type(pk=self.pk)
+            return obj.url()
+
         url = ''
         if self.discipline:
             url += '/discipline/%d' % self.discipline.id

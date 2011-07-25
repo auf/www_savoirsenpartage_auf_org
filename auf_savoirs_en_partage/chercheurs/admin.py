@@ -9,6 +9,7 @@ from django.utils.encoding import smart_str
 from django_exportateur.exportateur import exportateur
 
 from chercheurs.models import Chercheur, Publication, GroupeChercheur, DomaineRecherche, ChercheurGroupe, ChercheurQuerySet, These
+from savoirs.models import Search
 
 class ChercheurAdmin(admin.ModelAdmin):
     list_filter = ['genre']
@@ -208,6 +209,7 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
                                             'bulletin', 'page_accueil')}),
         (('Responsables'), {'fields': ('responsables',)}),
+        (('Recherches prédéfinies'), {'fields': ('recherches',)}),
     )
     inlines = [
         MemberInline,
@@ -221,6 +223,10 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         for user in responsables:
             user.is_staff = True
             user.save()
+
+        if not request.user.is_superuser:
+            recherches = Search.objects.exclude(user=request.user)
+            form.cleaned_data['recherches'] = form.cleaned_data['recherches'] | recherches
 
         super(BaseGroupeAdmin, self).save_model(request, obj, form, change)
 
@@ -242,6 +248,13 @@ class BaseGroupeAdmin(admin.ModelAdmin):
                 return True
 
         return super(BaseGroupeAdmin, self).has_change_permission(request, obj)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "recherches" and not request.user.is_superuser:
+            kwargs["queryset"] = Search.objects.filter(user=request.user)
+            return db_field.formfield(**kwargs)
+        return super(BaseGroupeAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+
 
 class GroupeChercheurAdmin(BaseGroupeAdmin):
 

@@ -391,6 +391,8 @@ class Groupe(models.Model):
 
     responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='responsables', blank=True)
 
+    recherches = models.ManyToManyField(Search, related_name='recherche_groupe', verbose_name='recherches prédéfinies', blank=True)
+
     page_accueil = models.TextField(null=True, blank=True)
 
     objects = GroupeManager()

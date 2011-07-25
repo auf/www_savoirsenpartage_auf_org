@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import copy
+import datetime
 import pytz
 import simplejson 
 
@@ -34,10 +35,11 @@ def index(request, discipline=None, region=None):
     region_obj = region and get_object_or_404(Region, pk=region)
     search = Search(discipline=discipline_obj, region=region_obj)
     results = search.run()
+    today = datetime.date.today()
     return render_to_response("savoirs/index.html", dict(
         actualites=results.actualites[0:4], 
         appels=results.appels[0:4], 
-        evenements=results.evenements[0:4],
+        evenements=results.evenements.filter_debut(min=today).order_by('debut')[0:4],
         ressources=results.ressources[0:4],
         chercheurs=results.chercheurs[0:10],
         sites=results.sites[0:4],
@@ -195,16 +197,26 @@ def actualite(request, id):
 
 # agenda
 def evenement_index(request):
-    search_form = EvenementSearchForm(request.GET)
-    search = search_form.save(commit=False)
+    if request.GET.get('action', False):
+        search_form = EvenementSearchForm(request.GET)
+        search = search_form.save(commit=False)
+        q = search_form.cleaned_data.get('q', '')
+
+    else:
+        today = datetime.date.today()
+        search_form = EvenementSearchForm(initial={'date_min':today})
+        search = search_form.save(commit=False)
+        search.date_min = today
+        q = ''
+
     evenements = search.run()
-    excerpt = excerpt_function(Evenement.objects, search_form.cleaned_data['q'])
+    excerpt = excerpt_function(Evenement.objects, q)
 
     ordre = request.GET.get('sort', 'soumission')
     if ordre == 'soumission':
         evenements = evenements.order_by('-date_modification')
     else:
-        evenements = evenements.order_by('-debut')
+        evenements = evenements.order_by('debut')
 
     try:
         p = PageStatique.objects.get(id='agenda')

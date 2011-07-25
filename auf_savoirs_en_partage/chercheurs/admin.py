@@ -9,6 +9,7 @@ from django.utils.encoding import smart_str
 from django_exportateur.exportateur import exportateur
 
 from chercheurs.models import Chercheur, Publication, GroupeChercheur, DomaineRecherche, ChercheurGroupe, ChercheurQuerySet, These
+from savoirs.models import Search
 
 class ChercheurAdmin(admin.ModelAdmin):
     list_filter = ['genre']
@@ -174,6 +175,30 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
         return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
 
+class ChercheurGroupeAdmin(admin.ModelAdmin):
+    list_filter = ('groupe',)
+    list_display = ('groupe', 'chercheur', 'actif')
+    list_editable = ('actif',)
+
+    def queryset(self, request):
+        qs = super(ChercheurGroupeAdmin, self).queryset(request)
+
+        if not request.user.is_superuser and not request.user.has_perm('chercheurs.change_chercheurgroupe'):
+            qs = qs.filter(groupe__responsables=request.user)
+
+        return qs
+
+    def has_change_permission(self, request, obj=None):
+
+        if not obj:
+            if request.user.responsable_groupe.count():
+                return True
+        else:
+            if request.user in obj.groupe.responsables.all():
+                return True
+
+        return super(ChercheurGroupeAdmin, self).has_change_permission(request, obj)
+
 class MemberInline(admin.TabularInline):
     model = ChercheurGroupe
 
@@ -184,6 +209,7 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
                                             'bulletin', 'page_accueil')}),
         (('Responsables'), {'fields': ('responsables',)}),
+        (('Recherches prédéfinies'), {'fields': ('recherches',)}),
     )
     inlines = [
         MemberInline,
@@ -197,6 +223,10 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         for user in responsables:
             user.is_staff = True
             user.save()
+
+        if not request.user.is_superuser:
+            recherches = Search.objects.exclude(user=request.user)
+            form.cleaned_data['recherches'] = form.cleaned_data['recherches'] | recherches
 
         super(BaseGroupeAdmin, self).save_model(request, obj, form, change)
 
@@ -219,6 +249,13 @@ class BaseGroupeAdmin(admin.ModelAdmin):
 
         return super(BaseGroupeAdmin, self).has_change_permission(request, obj)
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "recherches" and not request.user.is_superuser:
+            kwargs["queryset"] = Search.objects.filter(user=request.user)
+            return db_field.formfield(**kwargs)
+        return super(BaseGroupeAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+
+
 class GroupeChercheurAdmin(BaseGroupeAdmin):
 
     def has_change_permission(self, request, obj=None):
@@ -234,4 +271,5 @@ admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)
 admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
+admin.site.register(ChercheurGroupe, ChercheurGroupeAdmin)
 

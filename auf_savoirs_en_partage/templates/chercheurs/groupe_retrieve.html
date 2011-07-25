@@ -46,7 +46,14 @@
 			<a href="{% url groupe_membres groupe.pk %}">Voir tous les chercheurs de ce groupe</a>
 		{% endif %}
 	{% endif %}
-	<!--<h2>Recherches prédéfinies</h2>-->
+	{% if groupe.recherches.count %}
+		<h2>Recherches prédéfinies</h2>
+		<ul>
+			{% for recherche in groupe.recherches.all %}
+			<li><a href="{{ recherche.url }}">{{ recherche }}</a></li>
+			{% endfor %}
+		</ul>
+	{% endif %}
 </div>
 
 {% endblock %}

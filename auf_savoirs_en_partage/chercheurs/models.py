@@ -453,7 +453,7 @@ class ChercheurGroupe(models.Model):
 class ChercheurSearch(Search):
     nom_chercheur = models.CharField(max_length=100, blank=True, verbose_name='nom')
     domaine = models.ForeignKey(DomaineRecherche, blank=True, null=True, verbose_name='domaine de recherche')
-    groupe_chercheur = models.ForeignKey(GroupeChercheur, blank=True, null=True, verbose_name='groupe de chercheur')
+    groupe_chercheur = models.ForeignKey(GroupeChercheur, blank=True, null=True, verbose_name='groupe de chercheurs')
     groupe_recherche = models.CharField(max_length=100, blank=True, null=True, 
                                         verbose_name='groupe de recherche',
                                         help_text='ou Laboratoire, ou Groupement inter-universitaire')

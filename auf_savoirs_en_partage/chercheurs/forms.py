@@ -232,7 +232,7 @@ class GroupesForm(forms.Form):
 
     groupes_chercheur = forms.ModelMultipleChoiceField(
         queryset=Groupe.groupe_chercheur_objects.all(),
-        label='Groupes de chercheur', required=False,
+        label='Groupes de chercheurs', required=False,
         help_text="Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
     )
 

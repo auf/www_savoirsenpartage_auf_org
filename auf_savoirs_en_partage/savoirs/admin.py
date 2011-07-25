@@ -15,8 +15,10 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
 
-from models import SourceActualite, Actualite, Discipline, Evenement, \
-                   Record, RecordCategorie, ListSet, HarvestLog, Profile, PageStatique
+from models import SourceActualite, Actualite, ActualiteVoir, Discipline, \
+                   Evenement, EvenementVoir, Record, RecordCategorie, \
+                   ListSet, HarvestLog, Profile, PageStatique
+
 from savoirs.globals import META
 
 class ListSetFilterSpec(RelatedFilterSpec):
@@ -257,6 +259,20 @@ class ActualiteAdmin(admin.ModelAdmin):
 
 admin.site.register(Actualite, ActualiteAdmin)
 
+class ActualiteVoirAdmin(ActualiteAdmin):
+
+    actions = None
+    list_editable = []
+    fields = ['titre', 'texte', 'url', 'date', 'visible', 'ancienid', 'source', 'disciplines', 'regions']
+
+    def __init__(self, model, admin_site):
+        super(ActualiteVoirAdmin, self).__init__(model, admin_site)
+
+        self.readonly_fields = self.fields
+
+
+admin.site.register(ActualiteVoir, ActualiteVoirAdmin)
+
 class SourceActualiteAdmin(admin.ModelAdmin):
     actions = ['update_sources']
     list_display = ['nom', 'url', 'type']
@@ -306,6 +322,19 @@ class EvenementAdmin(admin.ModelAdmin):
     assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Evenement, EvenementAdmin)
+
+class EvenementVoirAdmin(EvenementAdmin):
+
+    actions = None
+    list_editable = []
+
+    def __init__(self, model, admin_site):
+        super(EvenementVoirAdmin, self).__init__(model, admin_site)
+
+        self.readonly_fields = self.fields
+
+
+admin.site.register(EvenementVoir, EvenementVoirAdmin)
 
 class PageStatiqueAdmin(admin.ModelAdmin):
     list_display = ['titre', 'id']

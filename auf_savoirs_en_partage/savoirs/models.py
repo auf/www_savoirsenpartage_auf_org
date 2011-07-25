@@ -249,6 +249,14 @@ class Actualite(models.Model):
     def assigner_regions(self, regions):
         self.regions.add(*regions)
 
+
+class ActualiteVoir(Actualite):
+
+    class Meta:
+        proxy = True
+        verbose_name = '(visualisation) actualité'
+        verbose_name_plural = '(visualisation) actualités'
+
 # Agenda
 
 class EvenementQuerySet(SEPQuerySet):
@@ -512,6 +520,13 @@ def delete_vevent(sender, instance, *args, **kwargs):
     # car dans le cas de la suppression par lots, cell-ci n'est pas invoquée
     instance.delete_vevent()
 pre_delete.connect(delete_vevent, sender=Evenement) 
+
+class EvenementVoir(Evenement):
+
+    class Meta:
+        proxy = True
+        verbose_name = '(visualisation) événement'
+        verbose_name_plural = '(visualisation) événement'
 
 # Ressources
 

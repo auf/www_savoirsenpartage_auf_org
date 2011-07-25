@@ -105,6 +105,13 @@ class Site(models.Model):
     def assigner_disciplines(self, disciplines):
         self.discipline.add(*disciplines)
 
+class SiteVoir(Site):
+
+    class Meta:
+        proxy = True
+        verbose_name = '(visualisation) sites'
+        verbose_name_plural = '(visualisation) sites'
+
 class SiteSearch(Search):
     pays = models.ForeignKey(Pays, blank=True, null=True)
 

@@ -8,7 +8,9 @@ from django.http import HttpResponseRedirect
 from django.utils.encoding import smart_str
 from django_exportateur.exportateur import exportateur
 
-from chercheurs.models import Chercheur, Publication, GroupeChercheur, DomaineRecherche, ChercheurGroupe, ChercheurQuerySet, These
+from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
+                              GroupeChercheur, DomaineRecherche, \
+                              ChercheurGroupe, ChercheurQuerySet, These
 from savoirs.models import Search
 
 class ChercheurAdmin(admin.ModelAdmin):
@@ -19,19 +21,6 @@ class ChercheurAdmin(admin.ModelAdmin):
 
     actions = ('remove_from_group', 'export_as_ods', 'export_as_csv')
     search_fields = ('nom', 'prenom')
-
-    def has_change_permission(self, request, obj=None):
-        if not obj and request.user.has_perm('chercheurs.view_chercheur'):
-            return True
-
-        return super(ChercheurAdmin, self).has_change_permission(request, obj)
-
-    def change_view(self, request, obj=None):
-        if request.user.has_perm('chercheurs.view_chercheur') and \
-            not super(ChercheurAdmin, self).has_change_permission(request, obj):
-            return HttpResponseRedirect(url('admin:chercheurs_chercheur_changelist'))
-
-        return super(ChercheurAdmin, self).change_view(request, obj)
 
     def lookup_allowed(self, lookup, value):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
@@ -144,6 +133,34 @@ class ChercheurAdmin(admin.ModelAdmin):
     def export_as_ods(self, request, queryset):
         return self.export(queryset, 'ods')
     export_as_ods.short_description = 'Export ODS'
+
+
+class ChercheurVoirAdmin(ChercheurAdmin):
+
+    list_editable = []
+    fields = ['salutation', 'nom', 'prenom', 'courriel', 'afficher_courriel',
+              'fonction', 'date_naissance', 'sousfonction', 'telephone',
+              'adresse_postale', 'genre', 'commentaire',
+             
+              'nationalite', 'statut', 'diplome', 'etablissement',
+              'etablissement_autre_nom', 'etablissement_autre_pays',
+              'attestation', 'thematique', 'mots_cles', 'discipline',
+              'theme_recherche', 'groupe_recherche', 'url_site_web',
+              'url_blog', 'url_reseau_social', 
+              'membre_instance_auf', 'membre_instance_auf_nom',
+              'membre_instance_auf_fonction', 'membre_instance_auf_dates',
+              'expert_oif', 'expert_oif_details', 'expert_oif_dates',
+              'membre_association_francophone', 'membre_association_francophone_details',
+              'membre_reseau_institutionnel', 'membre_reseau_institutionnel_nom',
+              'membre_reseau_institutionnel_fonction', 'membre_reseau_institutionnel_dates',
+              'expertises_auf']
+
+    def __init__(self, model, admin_site):
+        super(ChercheurVoirAdmin, self).__init__(model, admin_site)
+        self.readonly_fields = self.fields
+
+
+admin.site.register(ChercheurVoir, ChercheurVoirAdmin)
 
 class ChercheurAdminQuerySet(ChercheurQuerySet):
 

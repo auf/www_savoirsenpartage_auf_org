@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse as url
 from django.http import HttpResponseRedirect
-from models import Site
+from models import Site, SiteVoir
 
 class SiteAdmin(admin.ModelAdmin):
     list_display = ['titre', 'recherche_google']
@@ -24,3 +24,16 @@ class SiteAdmin(admin.ModelAdmin):
     assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Site, SiteAdmin)
+
+class SiteVoirAdmin(SiteAdmin):
+
+    actions = None
+    list_editable = []
+
+    def __init__(self, model, admin_site):
+        super(SiteAdmin, self).__init__(model, admin_site)
+
+        self.readonly_fields = self.fields
+
+
+admin.site.register(SiteVoir, SiteVoirAdmin)

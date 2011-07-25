@@ -264,11 +264,6 @@ class Chercheur(Personne):
     objects = ChercheurManager()
     all_objects = models.Manager()
 
-    class Meta:
-        permissions = (
-            ("view_chercheur", "Peut visualiser la liste des chercheurs"),
-        )
-
     def __unicode__(self):
         return u"%s %s" % (self.nom.upper(), self.prenom.title())
         
@@ -314,6 +309,13 @@ class Chercheur(Personne):
 
     def get_absolute_url(self):
         return url('chercheur', kwargs={'id': self.id})
+
+class ChercheurVoir(Chercheur):
+
+    class Meta:
+        proxy = True
+        verbose_name = '(visualisation) chercheur'
+        verbose_name_plural = '(visualisation) chercheur'
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')

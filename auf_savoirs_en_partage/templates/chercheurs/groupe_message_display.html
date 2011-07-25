@@ -1,4 +1,4 @@
 <div class="message">
-	<div class="info">Le {{ message.date_creation|date:"j N Y, G:i" }} par <a href="{% url chercheurs.views.retrieve message.chercheur.pk %}">{{ message.chercheur }}</a></div>
-	<div class="msg">{{ message.contenu|safe }}</div>
+	<div class="info">{{ message.date_creation|date:"j N Y, G:i" }} par <a href="{% url chercheurs.views.retrieve message.chercheur.pk %}">{{ message.chercheur }}</a></div>
+	<div class="msg"><strong>{{ message.titre }}</strong><br>{{ message.contenu|safe }}</div>
 </div>

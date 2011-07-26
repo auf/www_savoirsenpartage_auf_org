@@ -134,8 +134,7 @@ class EvenementForm(EvenementAdminForm):
 # Admin views pour les associations par lots
 
 class CategorieForm(forms.Form):
-    values = [(c.id, c.nom) for c in RecordCategorie.objects.all()]
-    categorie = forms.ChoiceField(choices=values)
+    categorie = forms.ModelChoiceField(queryset=RecordCategorie.objects.all())
 
 class PaysForm(forms.Form):
     values = [(p.id, p.nom) for p in Pays.objects.all()]

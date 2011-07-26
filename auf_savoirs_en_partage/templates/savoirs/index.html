@@ -11,6 +11,7 @@
         <ul class="actions-accueil">
             <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
             {% include "chercheurs/actions.html" %}
+            <li><nobr><a href="{% url chercheurs.views.groupe_index %}">Groupe de chercheurs</a></nobr></li>
         </ul>
         
         {% if chercheurs %}

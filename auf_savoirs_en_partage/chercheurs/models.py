@@ -417,8 +417,8 @@ class GroupeChercheur(Groupe):
 
     class Meta:
         proxy = True
-        verbose_name = 'groupe de chercheur'
-        verbose_name_plural = 'groupes de chercheur'
+        verbose_name = 'groupe de chercheurs'
+        verbose_name_plural = 'groupes de chercheurs'
 
     def save(self, *args, **kwargs):
         self.groupe_chercheur = True

@@ -3,7 +3,7 @@
 from django import template
 from django.utils.encoding import smart_unicode
 
-from chercheurs.models import Groupe, GENRE_CHOICES, STATUT_CHOICES
+from chercheurs.models import GroupeChercheur, DomaineRecherche, GENRE_CHOICES, STATUT_CHOICES
 from datamaster_modeles.models import Region, Pays
 from savoirs.models import Discipline
 
@@ -60,9 +60,14 @@ def filter_pays(context):
             'choices': prepare_choices(choices.values_list('code', 'nom'), 'pays', context)}
 
 @register.inclusion_tag('admin/filter.html', takes_context=True)
-def filter_groupe(context):
+def filter_groupe_chercheurs(context):
+    return {'title': u"groupe de chercheurs",
+            'choices': prepare_choices(GroupeChercheur.objects.values_list('id', 'nom'), 'groupes', context)}
+
+@register.inclusion_tag('admin/filter.html', takes_context=True)
+def filter_domaine_recherche(context):
     return {'title': u"domaine de recherche",
-            'choices': prepare_choices(Groupe.objects.values_list('id', 'nom'), 'groupes', context)}
+            'choices': prepare_choices(DomaineRecherche.objects.values_list('id', 'nom'), 'groupes', context)}
 
 @register.inclusion_tag('admin/filter.html', takes_context=True)
 def filter_expert(context):

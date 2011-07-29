@@ -84,7 +84,7 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('nom', 'prenom', 'genre', 'afficher_courriel', 'adresse_postale', 'telephone', 
+        fields = ('nom', 'prenom', 'genre', 'courriel', 'afficher_courriel', 'adresse_postale', 'telephone',
                   'statut', 'diplome',
                   'discipline', 'theme_recherche', 'groupe_recherche',
                   'mots_cles', 'url_site_web', 'url_blog',
@@ -220,7 +220,8 @@ class ChercheurForm(forms.ModelForm):
 class ChercheurInscriptionForm(ChercheurForm):
 
     class Meta(ChercheurForm.Meta):
-        fields = ChercheurForm.Meta.fields + ('courriel',)
+        pass
+        #fields = ChercheurForm.Meta.fields + ('courriel',)
 
 class GroupesForm(forms.Form):
     """Formulaire qui associe des domaines de recherche et groupe de chercheur à un chercheur."""

@@ -35,6 +35,19 @@ class Personne(models.Model):
     class Meta:
         ordering = ["nom", "prenom"]
 
+    def save(self, *args, **kwargs):
+
+        old_instance = Personne.objects.get(pk=self.pk)
+        if self.courriel != old_instance.courriel:
+            try:
+                user = User.objects.get(email=old_instance.courriel)
+                user.email = self.courriel
+                user.save()
+            except User.DoesNotExist:
+                pass
+
+        super(Personne, self).save(*args, **kwargs)
+
     @property
     def civilite(self):
         if self.genre == 'm':

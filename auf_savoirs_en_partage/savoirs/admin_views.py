@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
-from chercheurs.models import Chercheur, Groupe
+from chercheurs.models import Chercheur, GroupeChercheur, DomaineRecherche
 from datamaster_modeles.models import Thematique, Pays, Region
 from savoirs.models import Record, Discipline, Actualite, Serveur, RecordCategorie
 from savoirs.forms import CategorieForm, PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
@@ -313,8 +313,18 @@ def stats(request):
         return dict(qs.values_list('discipline').annotate(count=Count('pk')))
 
     def par_domaine(qs):
-        qs = qs.extra(tables=['chercheurs_chercheurgroupe'], 
-                      where=['chercheurs_chercheurgroupe.chercheur = chercheurs_chercheur.personne_ptr_id'],
+        qs = qs.extra(tables=['chercheurs_chercheurgroupe', 'chercheurs_groupe'], 
+                      where=['chercheurs_chercheurgroupe.chercheur = chercheurs_chercheur.personne_ptr_id',
+                             'chercheurs_chercheurgroupe.groupe = chercheurs_groupe.id',
+                             'chercheurs_groupe.groupe_chercheur = 0'],
+                      select={'groupe': 'chercheurs_chercheurgroupe.groupe'})
+        return dict(qs.values_list('groupe').annotate(count=Count('pk')))
+
+    def par_groupe(qs):
+        qs = qs.extra(tables=['chercheurs_chercheurgroupe', 'chercheurs_groupe'], 
+                      where=['chercheurs_chercheurgroupe.chercheur = chercheurs_chercheur.personne_ptr_id',
+                             'chercheurs_chercheurgroupe.groupe = chercheurs_groupe.id',
+                             'chercheurs_groupe.groupe_chercheur = 1'],
                       select={'groupe': 'chercheurs_chercheurgroupe.groupe'})
         return dict(qs.values_list('groupe').annotate(count=Count('pk')))
 
@@ -341,9 +351,13 @@ def stats(request):
             'chercheurs_par_discipline': par_discipline(chercheurs),
             'hommes_par_discipline': par_discipline(hommes),
             'femmes_par_discipline': par_discipline(femmes),
-            'domaines': Groupe.objects.order_by('nom'),
+            'domaines': DomaineRecherche.objects.order_by('nom'),
             'chercheurs_par_domaine': par_domaine(chercheurs),
             'hommes_par_domaine': par_domaine(hommes),
             'femmes_par_domaine': par_domaine(femmes),
+            'groupeschercheurs': GroupeChercheur.objects.order_by('nom'),
+            'chercheurs_par_groupe': par_groupe(chercheurs),
+            'hommes_par_groupe': par_groupe(hommes),
+            'femmes_par_groupe': par_groupe(femmes),
         }, context_instance=RequestContext(request)
     )

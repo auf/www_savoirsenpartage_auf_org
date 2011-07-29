@@ -128,6 +128,38 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>Chercheurs par groupe de chercheurs</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Groupe de chercheurs</th>
+                <th>Hommes</th>
+                <th>Femmes</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for groupe in groupeschercheurs %}
+            <tr>
+                <td>{{ groupe.nom }}</td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&groupes={{ groupe.id }}"
+                        >{{ hommes_par_groupe|getitem:groupe.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&groupes={{ groupe.id }}"
+                        >{{ femmes_par_groupe|getitem:groupe.id }}</a>
+                </td>
+                <td>
+                    <a href="{% url admin:chercheurs_chercheur_changelist %}?groupes={{ groupe.id }}"
+                        >{{ chercheurs_par_groupe|getitem:groupe.id }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <div class="subcol">

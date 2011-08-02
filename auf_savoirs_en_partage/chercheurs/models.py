@@ -458,7 +458,9 @@ class ChercheurGroupe(models.Model):
     actif = models.BooleanField(db_column='actif')
 
     class Meta:
-        verbose_name = 'adhésion'
+        verbose_name = 'adhésion aux groupes'
+        verbose_name_plural = 'adhésions aux groupes'
+        ordering = ['chercheur']
 
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)

@@ -1,1 +1,12 @@
 {% extends "alphafilter/change_list.html" %}
+{% load i18n admin_list adhesion_admin %}
+
+{% block filters %}
+<div id="changelist-filter">
+    <h2>{% trans 'Filter' %}</h2>
+    {% filter_statut %}
+    {% filter_groupe_chercheurs %}
+    {% filter_domaine_recherche %}
+</div>
+{% endblock %}
+

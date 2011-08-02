@@ -449,15 +449,15 @@ class DomaineRecherche(Groupe):
         self.groupe_chercheur = False
         super(DomaineRecherche, self).save(*args, **kwargs)
 
-class ChercheurGroupe(models.Model):
-    CG_STATUT_CHOICES = (
-        ('nouveau', 'Nouveau'),
-        ('refuse', 'Refusé'),
-        ('accepte', 'Accepté'),
-        ('resilie', 'Résilié'),
-        ('exclus', 'Exclus'),
-    )
+CG_STATUT_CHOICES = (
+    ('nouveau', 'Nouveau'),
+    ('refuse', 'Refusé'),
+    ('accepte', 'Accepté'),
+    ('resilie', 'Résilié'),
+    ('exclus', 'Exclus'),
+)
 
+class ChercheurGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
     groupe = models.ForeignKey('Groupe', db_column='groupe', related_name="membership")

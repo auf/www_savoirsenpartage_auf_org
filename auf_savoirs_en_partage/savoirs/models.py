@@ -941,6 +941,7 @@ class RessourceSearch(Search):
     titre = models.CharField(max_length=100, blank=True)
     sujet = models.CharField(max_length=100, blank=True)
     publisher = models.CharField(max_length=100, blank=True, verbose_name="éditeur")
+    categorie = models.ForeignKey(RecordCategorie, blank=True, null=True, verbose_name='catégorie')
 
     class Meta:
         verbose_name = 'recherche de ressources'
@@ -958,6 +959,8 @@ class RessourceSearch(Search):
             results = results.add_to_query('@subject ' + self.sujet)
         if self.publisher:
             results = results.add_to_query('@publisher ' + self.publisher)
+        if self.categorie:
+            results = results.add_to_query('@categorie %s' % self.categorie.id)
         if self.discipline:
             results = results.filter_discipline(self.discipline)
         if self.region:

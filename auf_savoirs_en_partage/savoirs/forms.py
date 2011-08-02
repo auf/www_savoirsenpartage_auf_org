@@ -57,7 +57,7 @@ class RessourceSearchForm(forms.ModelForm):
 
     class Meta:
         model = RessourceSearch
-        fields = ['q', 'auteur', 'titre', 'sujet', 'publisher', 'discipline', 'region']
+        fields = ['q', 'auteur', 'titre', 'sujet', 'publisher', 'categorie', 'discipline', 'region']
 
 class RessourceSearchEditForm(RessourceSearchForm):
     """Formulaire d'édition de recherche sauvegardée."""

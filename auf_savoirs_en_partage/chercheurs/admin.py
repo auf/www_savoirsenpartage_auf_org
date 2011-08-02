@@ -198,6 +198,14 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
     list_editable = ('actif',)
     search_fields = ('chercheur__nom', 'chercheur__prenom')
 
+    alphabet_filter = 'chercheur__nom'
+    DEFAULT_ALPHABET = ''
+
+
+    def lookup_allowed(self, lookup, value):
+        return lookup in ['chercheur__nom__istartswith'] or \
+               admin.ModelAdmin.lookup_allowed(self, lookup, value)
+
     def queryset(self, request):
         qs = super(ChercheurGroupeAdmin, self).queryset(request)
 

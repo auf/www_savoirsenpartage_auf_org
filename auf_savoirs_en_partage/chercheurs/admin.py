@@ -193,7 +193,7 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
 
 
 class ChercheurGroupeAdmin(admin.ModelAdmin):
-    list_filter = ('groupe',)
+    list_filter = ('groupe','statut')
     list_display = ('groupe', 'chercheur', 'statut')
     list_editable = ('statut',)
     search_fields = ('chercheur__nom', 'chercheur__prenom')

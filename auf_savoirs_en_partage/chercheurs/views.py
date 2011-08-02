@@ -227,7 +227,7 @@ def groupe_index(request):
     if request.user.is_authenticated():
         try:
             chercheur = Chercheur.objects.get(courriel=request.user.email)
-            mesgroupes = chercheur.groupes.all().filter(membership__actif=1)
+            mesgroupes = chercheur.groupes.all().filter(membership__statut='accepte')
             messages = Message.objects.all().filter(groupe__in=mesgroupes)[:10]
             est_chercheur = True
         except Chercheur.DoesNotExist:
@@ -258,7 +258,7 @@ def groupe_adhesion(request, id):
 
 def groupe_retrieve(request, id):
     groupe = get_object_or_404(Groupe, id=id)
-    membres = groupe.membership.all().filter(actif=True).order_by('-date_modification')
+    membres = groupe.membership.all().filter(statut='accepte').order_by('-date_modification')
     plus_que_20 = True if membres.count() > 20 else False
     membres_20 = membres[:20]
     messages = groupe.message_set.all()[:5]
@@ -269,7 +269,7 @@ def groupe_retrieve(request, id):
             chercheur = Chercheur.objects.get(courriel=request.user.email)
             est_chercheur = True
             est_membre = chercheur in groupe.membres.all()
-            est_membre_actif = bool(len(groupe.membership.filter(chercheur=chercheur, actif=True)))
+            est_membre_actif = bool(len(groupe.membership.filter(chercheur=chercheur, statut='accepte')))
         except Chercheur.DoesNotExist:
             pass
 
@@ -287,7 +287,7 @@ def groupe_retrieve(request, id):
 
 def groupe_membres(request, id):
     groupe = get_object_or_404(Groupe, id=id)
-    membres = groupe.membership.all().filter(actif=True).order_by('chercheur__nom')
+    membres = groupe.membership.all().filter(statut='accepte').order_by('chercheur__nom')
 
     return render_to_response(
         "chercheurs/groupe_membres.html", {
@@ -306,7 +306,7 @@ def groupe_messages(request, id):
             chercheur = Chercheur.objects.get(courriel=request.user.email)
             est_chercheur = True
             est_membre = chercheur in groupe.membres.all()
-            est_membre_actif = bool(len(groupe.membership.filter(chercheur=chercheur, actif=True)))
+            est_membre_actif = bool(len(groupe.membership.filter(chercheur=chercheur, statut='accepte')))
         except Chercheur.DoesNotExist:
             pass
 

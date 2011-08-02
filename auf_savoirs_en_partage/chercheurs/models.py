@@ -463,7 +463,6 @@ class ChercheurGroupe(models.Model):
     groupe = models.ForeignKey('Groupe', db_column='groupe', related_name="membership")
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
-    actif = models.BooleanField(db_column='actif')
     statut = models.CharField(max_length=100, choices=CG_STATUT_CHOICES, default='nouveau')
 
     class Meta:

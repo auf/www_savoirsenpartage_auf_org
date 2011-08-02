@@ -196,6 +196,7 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
     list_filter = ('groupe',)
     list_display = ('groupe', 'chercheur', 'actif')
     list_editable = ('actif',)
+    search_fields = ('chercheur__nom', 'chercheur__prenom')
 
     def queryset(self, request):
         qs = super(ChercheurGroupeAdmin, self).queryset(request)

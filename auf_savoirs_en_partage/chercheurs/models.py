@@ -450,12 +450,21 @@ class DomaineRecherche(Groupe):
         super(DomaineRecherche, self).save(*args, **kwargs)
 
 class ChercheurGroupe(models.Model):
+    CG_STATUT_CHOICES = (
+        ('nouveau', 'Nouveau'),
+        ('refuse', 'Refusé'),
+        ('accepte', 'Accepté'),
+        ('resilie', 'Résilié'),
+        ('exclus', 'Exclus'),
+    )
+
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
     groupe = models.ForeignKey('Groupe', db_column='groupe', related_name="membership")
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
     actif = models.BooleanField(db_column='actif')
+    statut = models.CharField(max_length=100, choices=CG_STATUT_CHOICES, default='nouveau')
 
     class Meta:
         verbose_name = 'adhésion aux groupes'

@@ -424,6 +424,9 @@ class Groupe(models.Model):
     def get_absolute_url(self):
         return url('groupe_retrieve', kwargs={'id': self.id})
 
+    def membres_actif(self):
+        return self.membership.filter(statut="accepte")
+
 
 class GroupeChercheur(Groupe):
     objects = GroupeChercheurManager()

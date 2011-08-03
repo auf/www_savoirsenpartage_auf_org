@@ -398,3 +398,9 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         exclude = ('chercheur', 'groupe')
+
+# Admin views
+
+class CGStatutForm(forms.Form):
+    statut = forms.ChoiceField(choices=CG_STATUT_CHOICES)
+

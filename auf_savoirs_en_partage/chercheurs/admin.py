@@ -201,6 +201,8 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
     alphabet_filter = 'chercheur__nom'
     DEFAULT_ALPHABET = ''
 
+    actions = ['assigner_cgstatut']
+
 
     def lookup_allowed(self, lookup, value):
         return lookup in ['chercheur__nom__istartswith'] or \
@@ -224,6 +226,11 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
                 return True
 
         return super(ChercheurGroupeAdmin, self).has_change_permission(request, obj)
+
+    def assigner_cgstatut(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('cgstatut', ",".join(selected)))
+    assigner_cgstatut.short_description = u'Assigner un statut'
 
 class MemberInline(admin.TabularInline):
     model = ChercheurGroupe

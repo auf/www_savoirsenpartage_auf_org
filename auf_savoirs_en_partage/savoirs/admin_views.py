@@ -313,19 +313,19 @@ def stats(request):
         return dict(qs.values_list('discipline').annotate(count=Count('pk')))
 
     def par_domaine(qs):
-        qs = qs.extra(tables=['chercheurs_chercheurgroupe', 'chercheurs_groupe'], 
-                      where=['chercheurs_chercheurgroupe.chercheur = chercheurs_chercheur.personne_ptr_id',
-                             'chercheurs_chercheurgroupe.groupe = chercheurs_groupe.id',
+        qs = qs.extra(tables=['chercheurs_adhesiongroupe', 'chercheurs_groupe'],
+                      where=['chercheurs_adhesiongroupe.chercheur = chercheurs_chercheur.personne_ptr_id',
+                             'chercheurs_adhesiongroupe.groupe = chercheurs_groupe.id',
                              'chercheurs_groupe.groupe_chercheur = 0'],
-                      select={'groupe': 'chercheurs_chercheurgroupe.groupe'})
+                      select={'groupe': 'chercheurs_adhesiongroupe.groupe'})
         return dict(qs.values_list('groupe').annotate(count=Count('pk')))
 
     def par_groupe(qs):
-        qs = qs.extra(tables=['chercheurs_chercheurgroupe', 'chercheurs_groupe'], 
-                      where=['chercheurs_chercheurgroupe.chercheur = chercheurs_chercheur.personne_ptr_id',
-                             'chercheurs_chercheurgroupe.groupe = chercheurs_groupe.id',
+        qs = qs.extra(tables=['chercheurs_adhesiongroupe', 'chercheurs_groupe'],
+                      where=['chercheurs_adhesiongroupe.chercheur = chercheurs_chercheur.personne_ptr_id',
+                             'chercheurs_adhesiongroupe.groupe = chercheurs_groupe.id',
                              'chercheurs_groupe.groupe_chercheur = 1'],
-                      select={'groupe': 'chercheurs_chercheurgroupe.groupe'})
+                      select={'groupe': 'chercheurs_adhesiongroupe.groupe'})
         return dict(qs.values_list('groupe').annotate(count=Count('pk')))
 
     chercheurs = Chercheur.objects

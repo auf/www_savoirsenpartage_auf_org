@@ -240,7 +240,7 @@ class Chercheur(Personne):
         help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"
     )
                                     
-    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', related_name='membres', blank=True, verbose_name='Domaines de recherche')
+    groupes = models.ManyToManyField('Groupe', through='AdhesionGroupe', related_name='membres', blank=True, verbose_name='groupes')
     
     # Activités en francophonie
     membre_instance_auf = models.NullBooleanField(verbose_name="est ou a déjà été membre d'une instance de l'AUF")
@@ -424,6 +424,9 @@ class Groupe(models.Model):
     def get_absolute_url(self):
         return url('groupe_retrieve', kwargs={'id': self.id})
 
+    def membres_actif(self):
+        return self.membership.filter(statut="accepte")
+
 
 class GroupeChercheur(Groupe):
     objects = GroupeChercheurManager()
@@ -449,16 +452,26 @@ class DomaineRecherche(Groupe):
         self.groupe_chercheur = False
         super(DomaineRecherche, self).save(*args, **kwargs)
 
-class ChercheurGroupe(models.Model):
+CG_STATUT_CHOICES = (
+    ('nouveau', 'Nouveau'),
+    ('refuse', 'Refusé'),
+    ('accepte', 'Accepté'),
+    ('resilie', 'Résilié'),
+    ('exclus', 'Exclus'),
+)
+
+class AdhesionGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
     groupe = models.ForeignKey('Groupe', db_column='groupe', related_name="membership")
     date_inscription = models.DateField(auto_now_add=True)
     date_modification = models.DateField(auto_now=True)
-    actif = models.BooleanField(db_column='actif')
+    statut = models.CharField(max_length=100, choices=CG_STATUT_CHOICES, default='nouveau')
 
     class Meta:
-        verbose_name = 'adhésion'
+        verbose_name = 'adhésion aux groupes'
+        verbose_name_plural = 'adhésions aux groupes'
+        ordering = ['chercheur']
 
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)

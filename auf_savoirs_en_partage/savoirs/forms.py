@@ -57,7 +57,7 @@ class RessourceSearchForm(forms.ModelForm):
 
     class Meta:
         model = RessourceSearch
-        fields = ['q', 'auteur', 'titre', 'sujet', 'publisher', 'discipline', 'region']
+        fields = ['q', 'auteur', 'titre', 'sujet', 'publisher', 'categorie', 'discipline', 'region']
 
 class RessourceSearchEditForm(RessourceSearchForm):
     """Formulaire d'édition de recherche sauvegardée."""
@@ -137,15 +137,13 @@ class CategorieForm(forms.Form):
     categorie = forms.ModelChoiceField(queryset=RecordCategorie.objects.all())
 
 class PaysForm(forms.Form):
-    values = [(p.id, p.nom) for p in Pays.objects.all()]
-    pays = forms.MultipleChoiceField(choices=values)
+    pays = forms.ModelMultipleChoiceField(queryset=Pays.objects.all())
 
 class RegionsForm(forms.Form):
     regions = forms.ModelMultipleChoiceField(queryset=Region.objects.all())
 
 class ThematiquesForm(forms.Form):
-    values = [(t.id, t.nom) for t in Thematique.objects.all()]
-    thematiques = forms.MultipleChoiceField(choices=values)
+    thematiques = forms.ModelMultipleChoiceField(queryset=Thematique.objects.all())
 
 class DisciplinesForm(forms.Form):
     disciplines = forms.ModelMultipleChoiceField(queryset=Discipline.objects.all())

@@ -232,21 +232,14 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
         return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('cgstatut', ",".join(selected)))
     assigner_cgstatut.short_description = u'Assigner un statut'
 
-class MemberInline(admin.TabularInline):
-    model = ChercheurGroupe
-
 
 class BaseGroupeAdmin(admin.ModelAdmin):
-    filter_horizontal = ('responsables',)
     fieldsets = (
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
                                             'bulletin', 'page_accueil')}),
         (('Responsables'), {'fields': ('responsables',)}),
         (('Recherches prédéfinies'), {'fields': ('recherches',)}),
     )
-    inlines = [
-        MemberInline,
-    ]
 
     class Media:
         js = ['js/tiny_mce/tiny_mce.js', 'js/tiny_mce_textareas.js']

@@ -206,7 +206,7 @@ emit_source('savoirsenpartage_chercheurs',
                LEFT JOIN discipline d ON d.id_discipline = c.discipline
                LEFT JOIN chercheurs_publication pub ON pub.chercheur_id = c.personne_ptr_id
                LEFT JOIN chercheurs_these t ON t.chercheur_id = c.personne_ptr_id
-               LEFT JOIN chercheurs_chercheurgroupe cg ON cg.chercheur = c.personne_ptr_id
+               LEFT JOIN chercheurs_adhesiongroupe cg ON cg.chercheur = c.personne_ptr_id
                LEFT JOIN chercheurs_groupe g ON g.id = cg.groupe
                LEFT JOIN chercheurs_expertise ex ON ex.chercheur_id = c.personne_ptr_id
                WHERE p.actif

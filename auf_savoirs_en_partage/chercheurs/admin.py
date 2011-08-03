@@ -10,7 +10,7 @@ from django_exportateur.exportateur import exportateur
 
 from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
                               GroupeChercheur, DomaineRecherche, \
-                              ChercheurGroupe, ChercheurQuerySet, These
+                              AdhesionGroupe, ChercheurQuerySet, These
 from savoirs.models import Search
 
 class ChercheurAdmin(admin.ModelAdmin):
@@ -31,7 +31,7 @@ class ChercheurAdmin(admin.ModelAdmin):
     def remove_from_group(self, request, queryset):
         groupe_id = request.GET.get('groupes__id__exact')
         chercheur_ids = queryset.values_list('id', flat=True)
-        matches = ChercheurGroupe.objects.filter(groupe=groupe_id, chercheur__in=chercheur_ids)
+        matches = AdhesionGroupe.objects.filter(groupe=groupe_id, chercheur__in=chercheur_ids)
         matches.delete()
         return HttpResponseRedirect(url('admin:chercheurs_chercheur_changelist') + '?groupes__id__exact=' + groupe_id)
 
@@ -192,7 +192,7 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
         return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
 
-class ChercheurGroupeAdmin(admin.ModelAdmin):
+class AdhesionGroupeAdmin(admin.ModelAdmin):
     list_filter = ('groupe','statut')
     list_display = ('groupe', 'chercheur', 'statut')
     list_editable = ('statut',)
@@ -209,9 +209,9 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
                admin.ModelAdmin.lookup_allowed(self, lookup, value)
 
     def queryset(self, request):
-        qs = super(ChercheurGroupeAdmin, self).queryset(request)
+        qs = super(AdhesionGroupeAdmin, self).queryset(request)
 
-        if not request.user.is_superuser and not request.user.has_perm('chercheurs.change_chercheurgroupe'):
+        if not request.user.is_superuser and not request.user.has_perm('chercheurs.change_adhesiongroupe'):
             qs = qs.filter(groupe__responsables=request.user)
 
         return qs
@@ -225,7 +225,7 @@ class ChercheurGroupeAdmin(admin.ModelAdmin):
             if request.user in obj.groupe.responsables.all():
                 return True
 
-        return super(ChercheurGroupeAdmin, self).has_change_permission(request, obj)
+        return super(AdhesionGroupeAdmin, self).has_change_permission(request, obj)
 
     def assigner_cgstatut(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -297,5 +297,5 @@ admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication)
 admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
-admin.site.register(ChercheurGroupe, ChercheurGroupeAdmin)
+admin.site.register(AdhesionGroupe, AdhesionGroupeAdmin)
 

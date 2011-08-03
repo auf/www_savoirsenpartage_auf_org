@@ -240,7 +240,7 @@ class Chercheur(Personne):
         help_text=u"Vous pouvez indiquer ici l'adresse de votre page personnelle dans votre réseau social préféré (e.g. Facebook, LinkedIn, Twitter, Identica, ...)"
     )
                                     
-    groupes = models.ManyToManyField('Groupe', through='ChercheurGroupe', related_name='membres', blank=True, verbose_name='Domaines de recherche')
+    groupes = models.ManyToManyField('Groupe', through='AdhesionGroupe', related_name='membres', blank=True, verbose_name='groupes')
     
     # Activités en francophonie
     membre_instance_auf = models.NullBooleanField(verbose_name="est ou a déjà été membre d'une instance de l'AUF")
@@ -460,7 +460,7 @@ CG_STATUT_CHOICES = (
     ('exclus', 'Exclus'),
 )
 
-class ChercheurGroupe(models.Model):
+class AdhesionGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
     groupe = models.ForeignKey('Groupe', db_column='groupe', related_name="membership")

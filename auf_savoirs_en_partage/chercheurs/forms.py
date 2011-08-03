@@ -248,20 +248,20 @@ class GroupesForm(forms.Form):
     def save(self):
         if self.is_valid():
             domaines_recherche = self.cleaned_data['domaines_recherche']
-            ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=True).exclude(groupe__in=domaines_recherche).delete()
+            AdhesionGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=True).exclude(groupe__in=domaines_recherche).delete()
             for dr in domaines_recherche:
-                cg, created = ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=dr)
+                adhesion, created = AdhesionGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=dr)
                 if created:
-                    cg.actif = 1
-                    cg.save()
+                    adhesion.actif = 1
+                    adhesion.save()
 
             groupes_chercheur = self.cleaned_data['groupes_chercheur']
-            ChercheurGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=False).exclude(groupe__in=groupes_chercheur).delete()
+            AdhesionGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=False).exclude(groupe__in=groupes_chercheur).delete()
             for gc in groupes_chercheur:
-                cg, created = ChercheurGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc)
+                adhesion, created = AdhesionGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc)
                 if created:
-                    cg.actif = 0
-                    cg.save()
+                    adhesion.actif = 0
+                    adhesion.save()
 
 class PublicationForm(forms.ModelForm):
     class Meta:

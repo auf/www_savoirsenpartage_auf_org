@@ -6,14 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
-from chercheurs.models import ChercheurGroupe
+from chercheurs.models import AdhesionGroupe
 from chercheurs.forms import CGStatutForm
 
 
 @login_required
 def assigner_cgstatut(request):
     ids = request.GET.get("ids").split(",")
-    records = ChercheurGroupe.objects.in_bulk(ids)
+    records = AdhesionGroupe.objects.in_bulk(ids)
     if request.method == 'POST':
         cgstatut_form = CGStatutForm(request.POST)
 
@@ -29,7 +29,7 @@ def assigner_cgstatut(request):
             # retouner un status à l'utilisateur sur la liste des références
             succes = u"Le statut a été assigné à %s références" % (len(ids),)
             request.user.message_set.create(message=succes)
-            return HttpResponseRedirect('/admin/chercheurs/chercheurgroupe')
+            return HttpResponseRedirect('/admin/chercheurs/adhesiongroupe')
     else:
         cgstatut_form = CGStatutForm()
 

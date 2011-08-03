@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
-from chercheurs.models import Chercheur, Groupe, Message, ChercheurGroupe
+from chercheurs.models import Chercheur, Groupe, Message, AdhesionGroupe
 from chercheurs.utils import get_django_user_for_email
 from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
@@ -247,10 +247,10 @@ def groupe_adhesion(request, id):
     try:
         groupe = get_object_or_404(Groupe, id=id)
         chercheur = Chercheur.objects.get(courriel=request.user.email)
-        cg, created = ChercheurGroupe.objects.get_or_create(chercheur=chercheur, groupe=groupe)
+        adhesion, created = AdhesionGroupe.objects.get_or_create(chercheur=chercheur, groupe=groupe)
         if created:
-            cg.actif = 0
-            cg.save()
+            adhesion.actif = 0
+            adhesion.save()
     except:
         pass
 

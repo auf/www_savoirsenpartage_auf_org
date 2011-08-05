@@ -64,10 +64,10 @@ RESOURCES = {
         'acces': 'html',
         'url': 'http://www.radisma.info/',
     },
-    u'RMNSci.net': {
+    u'RMNSci.info': {
         'type': 'lodel',
         'acces': 'html',
-        'url': 'http://www.rmnsci.net/',
+        'url': 'http://www.rmnsci.info/',
     },
     u'Urbamag': {
         'type': 'lodel',

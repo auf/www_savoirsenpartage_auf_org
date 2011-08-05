@@ -212,7 +212,7 @@ class HarvestLogAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     fields = ['context', 'name', 'added', 'updated', 'processed', 'record']
     list_display = fields + ['date']
     admin_order_fields = ['date']
-    search_fields = fields
+    search_fields = ['context', 'name', 'added', 'updated', 'processed', 'record__title']
     readonly_fields = fields
     list_filter = ('context',)
 

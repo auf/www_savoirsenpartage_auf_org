@@ -293,8 +293,12 @@ class DomaineRechercheAdmin(BaseGroupeAdmin):
     def has_change_permission(self, request, obj=None):
         return super(DomaineRechercheAdmin, self).has_change_permission(request, obj, groupe_chercheur=False)
 
+class PublicationAdmin(admin.ModelAdmin):
+    search_fields = ('auteurs', 'titre', 'revue', 'editeur')
+
+
 admin.site.register(Chercheur, ChercheurAdmin)
-admin.site.register(Publication)
+admin.site.register(Publication, PublicationAdmin)
 admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
 admin.site.register(AdhesionGroupe, AdhesionGroupeAdmin)

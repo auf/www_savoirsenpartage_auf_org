@@ -479,7 +479,6 @@ class AdhesionGroupe(models.Model):
 class ChercheurSearch(Search):
     nom_chercheur = models.CharField(max_length=100, blank=True, verbose_name='nom')
     domaine = models.ForeignKey(DomaineRecherche, blank=True, null=True, verbose_name='domaine de recherche')
-    groupe_chercheur = models.ForeignKey(GroupeChercheur, blank=True, null=True, verbose_name='communauté de chercheurs')
     equipe_recherche = models.CharField(max_length=100, blank=True, null=True,
                                         verbose_name='Équipe de recherche',
                                         help_text='ou Laboratoire, ou Groupement inter-universitaire')
@@ -520,8 +519,6 @@ class ChercheurSearch(Search):
                 results = results.filter_statut(self.statut)
         if self.domaine:
             results = results.filter_groupe(self.domaine)
-        if self.groupe_chercheur:
-            results = results.filter_groupe(self.groupe_chercheur)
         if self.pays:
             results = results.filter_pays(self.pays)
         if self.nord_sud:

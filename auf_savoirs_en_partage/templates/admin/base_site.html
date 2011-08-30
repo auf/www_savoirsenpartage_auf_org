@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+<style>
+.selector {
+width: 840px!important;
+}
+
+.selector select {
+width: 400px!important;
+}
+
+.selector-available, .selector-chosen {
+width: 400px!important;
+}
+</style>
+{% endblock %}
+
+{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">{% trans 'Django administration' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

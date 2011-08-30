@@ -3,13 +3,23 @@
     $(document).ready(function() {
 
         //Register review form submition function
-        $("#show_publications").click(function() { 
+        $("#show_publications").click(function() {
             if($(".publications_autre").css('display') == 'none') {
                 $(".publications_autre").show();
             }
             else {
                 $(".publications_autre").hide();
             }
+        });
+
+        $("#btnrechercheavance").click(function() {
+            if($("#rechercheavancee").css('display') == 'none') {
+                $("#rechercheavancee").show();
+            }
+            else {
+                $("#rechercheavancee").hide();
+            }
+			return false;
         });
 
         // Activer le datepicker sur les input de classe "date"

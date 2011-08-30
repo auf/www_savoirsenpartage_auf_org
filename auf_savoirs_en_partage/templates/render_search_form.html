@@ -1,0 +1,10 @@
+{% load form_tags %}
+
+{% form_field form.q %}
+
+<tr><td colspan="2"><a href="#" id="btnrechercheavance">Recherche avancée</a></td></tr>
+<tbody id="rechercheavancee" style="display:none;">
+{% for field in form %}
+	{% if field.name != 'q' %}{% include "render_field.html" %}{% endif %}
+{% endfor %}
+</tbody>

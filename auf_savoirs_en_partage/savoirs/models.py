@@ -726,7 +726,7 @@ class Search(models.Model):
     nom = models.CharField(max_length=100, verbose_name="nom de la recherche")
     alerte_courriel = models.BooleanField(verbose_name="Envoyer une alerte courriel")
     derniere_alerte = models.DateField(verbose_name="Date d'envoi de la dernière alerte courriel", null=True, editable=False)
-    q = models.CharField(max_length=100, blank=True, verbose_name="rechercher dans tous les champs")
+    q = models.CharField(max_length=100, blank=True, verbose_name="dans tous les champs")
     discipline = models.ForeignKey(Discipline, blank=True, null=True)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name='région',
                                help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")

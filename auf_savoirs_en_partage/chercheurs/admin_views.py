@@ -6,8 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
-from chercheurs.models import AdhesionGroupe
+from chercheurs.models import AdhesionGroupe, Groupe
 from chercheurs.forms import CGStatutForm
+from chercheurs.utils import export as real_export
 
 
 @login_required
@@ -41,3 +42,11 @@ def assigner_cgstatut(request):
                       }),
                      context_instance = RequestContext(request))
 
+@login_required
+def export(request):
+    type = request.GET['type']
+    id = request.GET['id']
+
+    queryset = Groupe.objects.get(pk=id).membres.all()
+
+    return real_export(queryset, type)

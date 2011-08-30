@@ -254,8 +254,8 @@ class ActualiteVoir(Actualite):
 
     class Meta:
         proxy = True
-        verbose_name = '(visualisation) actualité'
-        verbose_name_plural = '(visualisation) actualités'
+        verbose_name = 'actualité (visualisation)'
+        verbose_name_plural = 'actualités (visualisation)'
 
 # Agenda
 
@@ -525,8 +525,8 @@ class EvenementVoir(Evenement):
 
     class Meta:
         proxy = True
-        verbose_name = '(visualisation) événement'
-        verbose_name_plural = '(visualisation) événement'
+        verbose_name = 'événement (visualisation)'
+        verbose_name_plural = 'événement (visualisation)'
 
 # Ressources
 

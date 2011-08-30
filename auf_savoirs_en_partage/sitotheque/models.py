@@ -109,8 +109,8 @@ class SiteVoir(Site):
 
     class Meta:
         proxy = True
-        verbose_name = '(visualisation) sites'
-        verbose_name_plural = '(visualisation) sites'
+        verbose_name = 'sites (visualisation)'
+        verbose_name_plural = 'sites (visualisation)'
 
 class SiteSearch(Search):
     pays = models.ForeignKey(Pays, blank=True, null=True)

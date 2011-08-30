@@ -327,8 +327,8 @@ class ChercheurVoir(Chercheur):
 
     class Meta:
         proxy = True
-        verbose_name = '(visualisation) chercheur'
-        verbose_name_plural = '(visualisation) chercheur'
+        verbose_name = 'chercheur (visualisation)'
+        verbose_name_plural = 'chercheur (visualisation)'
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')

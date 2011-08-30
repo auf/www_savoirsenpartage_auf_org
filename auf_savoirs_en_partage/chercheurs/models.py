@@ -404,7 +404,7 @@ class Groupe(models.Model):
     actif = models.BooleanField(editable = False, db_column='actif')
     groupe_chercheur = models.BooleanField(default=False, editable=False, verbose_name='Groupe de chercheur')
 
-    responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='responsables', blank=True)
+    responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='gestionnaire de communauté', blank=True)
 
     recherches = models.ManyToManyField(Search, related_name='recherche_groupe', verbose_name='recherches prédéfinies', blank=True)
 

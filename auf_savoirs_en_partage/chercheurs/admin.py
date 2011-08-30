@@ -237,7 +237,7 @@ class BaseGroupeAdmin(admin.ModelAdmin):
     fieldsets = (
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
                                             'bulletin', 'page_accueil')}),
-        (('Responsables'), {'fields': ('responsables',)}),
+        (('Gestionnaire de communauté'), {'fields': ('responsables',)}),
         (('Recherches prédéfinies'), {'fields': ('recherches',)}),
     )
 

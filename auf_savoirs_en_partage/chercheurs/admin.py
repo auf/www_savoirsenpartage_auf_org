@@ -38,7 +38,7 @@ class ChercheurAdmin(admin.ModelAdmin):
     def get_actions(self, request):
         actions = super(ChercheurAdmin, self).get_actions(request)
 
-        # Si on filtre par groupe de recherche, offrir d'en retirer les
+        # Si on filtre par groupes, offrir d'en retirer les
         # chercheurs sélectionnés.
         groupe_id = request.GET.get('groupes__id__exact')
         if groupe_id:
@@ -63,12 +63,12 @@ class ChercheurAdmin(admin.ModelAdmin):
         if queryset.count() == 0:
             return None
         obj = queryset[0]
-        headers = ['Nom', 'Prénom', 'Genre', 'Courriel', 'Téléphone', 'Adresse postale', 
+        headers = ['Nom', 'Prénom', 'Genre', 'Courriel', 'Téléphone', 'Adresse postale',
                    'Statut', 'Diplôme', 'Établissement', 'Pays', 'Domaines de recherche',
-                   'Thèse', 'Directeur', 'Discipline', 'Thèmes de recherche', 'Groupe de recherche', 'Mots-clés', 
+                   'Thèse', 'Directeur', 'Discipline', 'Thèmes de recherche', 'Équipe de recherche', 'Mots-clés',
                    'Site web', 'Blog', 'Réseau social',
                    'Membre instance AUF', "Sollicité par l'OIF", 'Membre société francophone',
-                   'Membre instance réseau institutionnel AUF', 'Expertises', 'Solliciter pour expertises', 
+                   'Membre instance réseau institutionnel AUF', 'Expertises', 'Solliciter pour expertises',
                    'Publications']
         data = []
         for c in queryset:
@@ -93,7 +93,7 @@ class ChercheurAdmin(admin.ModelAdmin):
                 row.append('')
             row.append(c.discipline.nom if c.discipline else '')
             row.append(c.theme_recherche)
-            row.append(c.groupe_recherche)
+            row.append(c.equipe_recherche)
             row.append(c.mots_cles)
             row.append(c.url_site_web)
             row.append(c.url_blog)
@@ -145,7 +145,7 @@ class ChercheurVoirAdmin(ChercheurAdmin):
               'nationalite', 'statut', 'diplome', 'etablissement',
               'etablissement_autre_nom', 'etablissement_autre_pays',
               'attestation', 'thematique', 'mots_cles', 'discipline',
-              'theme_recherche', 'groupe_recherche', 'url_site_web',
+              'theme_recherche', 'equipe_recherche', 'url_site_web',
               'url_blog', 'url_reseau_social', 
               'membre_instance_auf', 'membre_instance_auf_nom',
               'membre_instance_auf_fonction', 'membre_instance_auf_dates',

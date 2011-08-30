@@ -73,9 +73,9 @@ class ChercheurForm(forms.ModelForm):
         queryset=Discipline.objects.all(),
         help_text="La liste des disciplines procède d'un choix fait par le conseil scientifique de l'AUF."
     )
-    groupe_recherche = forms.CharField(
-        max_length=255, label='Groupe de recherche', required=False,
-        help_text="Indiquer l'appartenance à un groupe de recherche universitaire ou laboratoire ou groupement inter-universitaire"
+    equipe_recherche = forms.CharField(
+        max_length=255, label='Équipe de recherche', required=False,
+        help_text="Indiquer l'appartenance à une équipe de recherche universitaire ou laboratoire ou groupement inter-universitaire"
     )
     url_site_web = forms.URLField(
         label='Adresse site Internet', required=False,
@@ -86,7 +86,7 @@ class ChercheurForm(forms.ModelForm):
         model = Chercheur
         fields = ('nom', 'prenom', 'genre', 'courriel', 'afficher_courriel', 'adresse_postale', 'telephone',
                   'statut', 'diplome',
-                  'discipline', 'theme_recherche', 'groupe_recherche',
+                  'discipline', 'theme_recherche', 'equipe_recherche',
                   'mots_cles', 'url_site_web', 'url_blog',
                   'url_reseau_social', 'attestation', 'membre_instance_auf',
                   'membre_instance_auf_nom', 'membre_instance_auf_fonction',
@@ -355,8 +355,8 @@ class ChercheurSearchForm(forms.ModelForm):
     class Meta:
         model = ChercheurSearch
         fields = ['q', 'nom_chercheur', 'domaine', 'groupe_chercheur',
-                  'groupe_recherche', 'statut', 'discipline', 'pays',
-                  'region', 'nord_sud', 'activites_francophonie', 'genre']
+                  'statut', 'discipline', 'pays', 'region', 'nord_sud',
+                  'activites_francophonie', 'genre']
 
 class ChercheurSearchEditForm(ChercheurSearchForm):
     """Formulaire d'édition d'une recherche sauvegardée."""

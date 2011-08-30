@@ -233,8 +233,8 @@ class GroupesForm(forms.Form):
 
     groupes_chercheur = forms.ModelMultipleChoiceField(
         queryset=Groupe.groupe_chercheur_objects.all(),
-        label='Groupes de chercheurs', required=False,
-        help_text="Adhérez à un ou plusieurs groupes de chercheurs. Votre demande doit être approuvée par le gestionnaire de communauté.<br><br>Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
+        label='Communautés de chercheurs', required=False,
+        help_text="Adhérez à un ou plusieurs communautés de chercheurs. Votre demande doit être approuvée par le gestionnaire de communauté.<br><br>Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
     )
 
     def __init__(self, data=None, prefix=None, chercheur=None):

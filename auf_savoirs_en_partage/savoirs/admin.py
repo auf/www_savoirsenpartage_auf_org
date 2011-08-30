@@ -174,28 +174,33 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     # Actions
 
     def assigner_pays(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('pays', ",".join(selected)))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('pays', selected))
     assigner_pays.short_description = u'Assigner des pays'
 
     def assigner_regions(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + ','.join(selected))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + selected)
     assigner_regions.short_description = u'Assigner des régions'
 
     def assigner_thematiques(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('thematiques', ",".join(selected)))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('thematiques', selected))
     assigner_thematiques.short_description = u'Assigner des thématiques'
 
     def assigner_disciplines(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + ','.join(selected))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='record')) + '?ids=' + selected)
     assigner_disciplines.short_description = u'Assigner des disciplines'
 
     def assigner_categorie(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('categorie', ",".join(selected)))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect("/admin/assigner_%s?ids=%s" % ('categorie', selected))
     assigner_categorie.short_description = u'Assigner une catégorie'
 
 admin.site.register(Record, RecordAdmin)
@@ -240,21 +245,25 @@ class ActualiteAdmin(admin.ModelAdmin):
 
     # actions
     def rendre_visible(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'visible', ",".join(selected)))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'visible', selected))
 
     def rendre_invisible(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'invisible', ",".join(selected)))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect("/admin/confirmation/%s/%s?ids=%s" % ('actualite', 'invisible', selected))
 
     def assigner_regions(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='actualite')) + '?ids=' + ','.join(selected))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='actualite')) + '?ids=' + selected)
     assigner_regions.short_description = u'Assigner des régions'
 
     def assigner_disciplines(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='actualite')) + '?ids=' + ','.join(selected))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='actualite')) + '?ids=' + selected)
     assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Actualite, ActualiteAdmin)
@@ -312,13 +321,15 @@ class EvenementAdmin(admin.ModelAdmin):
         return Evenement.all_objects.get_query_set()
 
     def assigner_regions(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='evenement')) + '?ids=' + ','.join(selected))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='evenement')) + '?ids=' + selected)
     assigner_regions.short_description = u'Assigner des régions'
 
     def assigner_disciplines(self, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='evenement')) + '?ids=' + ','.join(selected))
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='evenement')) + '?ids=' + selected)
     assigner_disciplines.short_description = u'Assigner des disciplines'
 
 admin.site.register(Evenement, EvenementAdmin)

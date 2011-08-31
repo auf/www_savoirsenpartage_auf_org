@@ -1,0 +1,18 @@
+{% extends "alphafilter/change_list.html" %}
+{% load i18n admin_list adhesion_admin %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style type="text/css" media="screen">
+ul.alphabetfilter li.first,.change-list ul.alphabetfilter li.first{width:2em!important;}
+</style>
+{% endblock %}
+
+{% block filters %}
+<div id="changelist-filter">
+    <h2>{% trans 'Filter' %}</h2>
+    {% filter_statut %}
+    {% filter_groupe_chercheurs %}
+</div>
+{% endblock %}
+

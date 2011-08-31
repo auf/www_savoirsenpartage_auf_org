@@ -354,7 +354,7 @@ class ChercheurSearchForm(forms.ModelForm):
 
     class Meta:
         model = ChercheurSearch
-        fields = ['q', 'nom_chercheur', 'domaine', 'groupe_chercheur',
+        fields = ['q', 'nom_chercheur', 'domaine',
                   'statut', 'discipline', 'pays', 'region', 'nord_sud',
                   'activites_francophonie', 'genre']
 

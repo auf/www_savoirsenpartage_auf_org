@@ -460,6 +460,14 @@ CG_STATUT_CHOICES = (
     ('exclus', 'Exclus'),
 )
 
+class AdhesionCommunauteManager(GroupeManager):
+    def get_query_set(self):
+        return super(AdhesionCommunauteManager, self).get_query_set().filter(groupe__groupe_chercheur=True)
+
+class AdhesionDomaineRechercheManager(GroupeManager):
+    def get_query_set(self):
+        return super(AdhesionDomaineRechercheManager, self).get_query_set().filter(groupe__groupe_chercheur=False)
+
 class AdhesionGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
@@ -475,6 +483,22 @@ class AdhesionGroupe(models.Model):
 
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)
+
+class AdhesionCommunaute(AdhesionGroupe):
+    objects = AdhesionCommunauteManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'adhésion aux communautés de chercheurs'
+        verbose_name_plural = 'adhésion aux communautés de chercheurs'
+
+class AdhesionDomaineRecherche(AdhesionGroupe):
+    objects = AdhesionDomaineRechercheManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'adhésion aux domaines de recherche'
+        verbose_name_plural = 'adhésion aux domaines de recherche'
 
 class ChercheurSearch(Search):
     nom_chercheur = models.CharField(max_length=100, blank=True, verbose_name='nom')

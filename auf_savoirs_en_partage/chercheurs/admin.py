@@ -8,7 +8,9 @@ from django.http import HttpResponseRedirect
 
 from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
                               GroupeChercheur, DomaineRecherche, \
-                              AdhesionGroupe, ChercheurQuerySet
+                              AdhesionGroupe, ChercheurQuerySet, \
+                              AdhesionCommunaute, AdhesionDomaineRecherche, \
+                              Groupe
 from chercheurs.utils import export
 from savoirs.models import Search
 
@@ -166,6 +168,13 @@ class AdhesionGroupeAdmin(admin.ModelAdmin):
     assigner_cgstatut.short_description = u'Assigner un statut'
 
 
+class AdhesionCommunauteAdmin(AdhesionGroupeAdmin):
+    pass
+
+
+class AdhesionDomaineRechercheAdmin(AdhesionGroupeAdmin):
+    pass
+
 class BaseGroupeAdmin(admin.ModelAdmin):
     fieldsets = (
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
@@ -234,5 +243,6 @@ admin.site.register(Chercheur, ChercheurAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
-admin.site.register(AdhesionGroupe, AdhesionGroupeAdmin)
+admin.site.register(AdhesionCommunaute, AdhesionCommunauteAdmin)
+admin.site.register(AdhesionDomaineRecherche, AdhesionDomaineRechercheAdmin)
 

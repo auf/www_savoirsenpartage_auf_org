@@ -30,7 +30,7 @@ def assigner_cgstatut(request):
             # retouner un status à l'utilisateur sur la liste des références
             succes = u"Le statut a été assigné à %s références" % (len(ids),)
             request.user.message_set.create(message=succes)
-            return HttpResponseRedirect('/admin/chercheurs/adhesiongroupe')
+            return HttpResponseRedirect('/admin/chercheurs/')
     else:
         cgstatut_form = CGStatutForm()
 

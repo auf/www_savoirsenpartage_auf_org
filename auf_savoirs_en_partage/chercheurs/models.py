@@ -588,7 +588,7 @@ class GroupeSearch(Search):
         verbose_name_plural = 'recherches de groupes'
 
     def run(self):
-        results = Groupe.objects
+        results = Groupe.groupe_chercheur_objects
         if self.q:
             results = results.search(self.q)
         return results.all()

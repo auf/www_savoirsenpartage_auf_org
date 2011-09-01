@@ -73,9 +73,9 @@ class ChercheurForm(forms.ModelForm):
         queryset=Discipline.objects.all(),
         help_text="La liste des disciplines procède d'un choix fait par le conseil scientifique de l'AUF."
     )
-    groupe_recherche = forms.CharField(
-        max_length=255, label='Groupe de recherche', required=False,
-        help_text="Indiquer l'appartenance à un groupe de recherche universitaire ou laboratoire ou groupement inter-universitaire"
+    equipe_recherche = forms.CharField(
+        max_length=255, label='Équipe de recherche', required=False,
+        help_text="Indiquer l'appartenance à une équipe de recherche universitaire ou laboratoire ou groupement inter-universitaire"
     )
     url_site_web = forms.URLField(
         label='Adresse site Internet', required=False,
@@ -86,7 +86,7 @@ class ChercheurForm(forms.ModelForm):
         model = Chercheur
         fields = ('nom', 'prenom', 'genre', 'courriel', 'afficher_courriel', 'adresse_postale', 'telephone',
                   'statut', 'diplome',
-                  'discipline', 'theme_recherche', 'groupe_recherche',
+                  'discipline', 'theme_recherche', 'equipe_recherche',
                   'mots_cles', 'url_site_web', 'url_blog',
                   'url_reseau_social', 'attestation', 'membre_instance_auf',
                   'membre_instance_auf_nom', 'membre_instance_auf_fonction',
@@ -231,18 +231,18 @@ class GroupesForm(forms.Form):
         help_text="Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
     )
 
-    groupes_chercheur = forms.ModelMultipleChoiceField(
-        queryset=Groupe.groupe_chercheur_objects.all(),
-        label='Groupes de chercheurs', required=False,
-        help_text="Adhérez à un ou plusieurs groupes de chercheurs. Votre demande doit être approuvée par le responsable du groupe.<br><br>Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
-    )
+    #groupes_chercheur = forms.ModelMultipleChoiceField(
+    #    queryset=Groupe.groupe_chercheur_objects.all(),
+    #    label='Communautés de chercheurs', required=False,
+    #    help_text="Adhérez à un ou plusieurs communautés de chercheurs. Votre demande doit être approuvée par le gestionnaire de communauté.<br><br>Ce champ est proposé à titre d'indication complémentaire, mais il n'est pas obligatoire. Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs."
+    #)
 
     def __init__(self, data=None, prefix=None, chercheur=None):
         self.chercheur = chercheur
         initial = {}
         if chercheur:
             initial['domaines_recherche'] = chercheur.domaines_recherche.values_list('id', flat=True)
-            initial['groupes_chercheur'] = chercheur.groupes_chercheur.values_list('id', flat=True)
+            #initial['groupes_chercheur'] = chercheur.groupes_chercheur.values_list('id', flat=True)
         super(GroupesForm, self).__init__(data=data, prefix=prefix, initial=initial)
 
     def save(self):
@@ -255,13 +255,13 @@ class GroupesForm(forms.Form):
                     adhesion.actif = 1
                     adhesion.save()
 
-            groupes_chercheur = self.cleaned_data['groupes_chercheur']
-            AdhesionGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=False).exclude(groupe__in=groupes_chercheur).delete()
-            for gc in groupes_chercheur:
-                adhesion, created = AdhesionGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc)
-                if created:
-                    adhesion.actif = 0
-                    adhesion.save()
+            #groupes_chercheur = self.cleaned_data['groupes_chercheur']
+            #AdhesionGroupe.objects.filter(chercheur=self.chercheur).exclude(groupe__groupe_chercheur=False).exclude(groupe__in=groupes_chercheur).delete()
+            #for gc in groupes_chercheur:
+            #    adhesion, created = AdhesionGroupe.objects.get_or_create(chercheur=self.chercheur, groupe=gc)
+            #    if created:
+            #        adhesion.actif = 0
+            #        adhesion.save()
 
 class PublicationForm(forms.ModelForm):
     class Meta:
@@ -354,9 +354,9 @@ class ChercheurSearchForm(forms.ModelForm):
 
     class Meta:
         model = ChercheurSearch
-        fields = ['q', 'nom_chercheur', 'domaine', 'groupe_chercheur',
-                  'groupe_recherche', 'statut', 'discipline', 'pays',
-                  'region', 'nord_sud', 'activites_francophonie', 'genre']
+        fields = ['q', 'nom_chercheur', 'domaine',
+                  'statut', 'discipline', 'pays', 'region', 'nord_sud',
+                  'activites_francophonie', 'genre']
 
 class ChercheurSearchEditForm(ChercheurSearchForm):
     """Formulaire d'édition d'une recherche sauvegardée."""

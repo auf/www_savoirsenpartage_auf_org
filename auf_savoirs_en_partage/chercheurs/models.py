@@ -229,7 +229,7 @@ class Chercheur(Personne):
     mots_cles = models.CharField(max_length=255, null=True, verbose_name='mots-clés') 
     discipline = models.ForeignKey(Discipline, db_column='discipline', null=True, verbose_name='Discipline')
     theme_recherche = models.TextField(null=True, blank=True, verbose_name='thèmes de recherche') 
-    groupe_recherche = models.CharField(max_length=255, blank=True, verbose_name='groupe de recherche')
+    equipe_recherche = models.CharField(max_length=255, blank=True, verbose_name='équipe de recherche')
     url_site_web = models.URLField(max_length=255, null=True, blank=True, 
                                    verbose_name='adresse site Internet', verify_exists=False)
     url_blog = models.URLField(max_length=255, null=True, blank=True, verbose_name='blog',
@@ -327,8 +327,8 @@ class ChercheurVoir(Chercheur):
 
     class Meta:
         proxy = True
-        verbose_name = '(visualisation) chercheur'
-        verbose_name_plural = '(visualisation) chercheur'
+        verbose_name = 'chercheur (visualisation)'
+        verbose_name_plural = 'chercheur (visualisation)'
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')
@@ -404,7 +404,7 @@ class Groupe(models.Model):
     actif = models.BooleanField(editable = False, db_column='actif')
     groupe_chercheur = models.BooleanField(default=False, editable=False, verbose_name='Groupe de chercheur')
 
-    responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='responsables', blank=True)
+    responsables = models.ManyToManyField(User, related_name='responsable_groupe', verbose_name='gestionnaire de communauté', blank=True)
 
     recherches = models.ManyToManyField(Search, related_name='recherche_groupe', verbose_name='recherches prédéfinies', blank=True)
 
@@ -433,8 +433,8 @@ class GroupeChercheur(Groupe):
 
     class Meta:
         proxy = True
-        verbose_name = 'groupe de chercheurs'
-        verbose_name_plural = 'groupes de chercheurs'
+        verbose_name = 'communauté de chercheurs'
+        verbose_name_plural = 'communautés de chercheurs'
 
     def save(self, *args, **kwargs):
         self.groupe_chercheur = True
@@ -460,6 +460,14 @@ CG_STATUT_CHOICES = (
     ('exclus', 'Exclus'),
 )
 
+class AdhesionCommunauteManager(GroupeManager):
+    def get_query_set(self):
+        return super(AdhesionCommunauteManager, self).get_query_set().filter(groupe__groupe_chercheur=True)
+
+class AdhesionDomaineRechercheManager(GroupeManager):
+    def get_query_set(self):
+        return super(AdhesionDomaineRechercheManager, self).get_query_set().filter(groupe__groupe_chercheur=False)
+
 class AdhesionGroupe(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     chercheur = models.ForeignKey('Chercheur', db_column='chercheur')
@@ -476,12 +484,27 @@ class AdhesionGroupe(models.Model):
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)
 
+class AdhesionCommunaute(AdhesionGroupe):
+    objects = AdhesionCommunauteManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'adhésion aux communautés de chercheurs'
+        verbose_name_plural = 'adhésion aux communautés de chercheurs'
+
+class AdhesionDomaineRecherche(AdhesionGroupe):
+    objects = AdhesionDomaineRechercheManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'adhésion aux domaines de recherche'
+        verbose_name_plural = 'adhésion aux domaines de recherche'
+
 class ChercheurSearch(Search):
     nom_chercheur = models.CharField(max_length=100, blank=True, verbose_name='nom')
     domaine = models.ForeignKey(DomaineRecherche, blank=True, null=True, verbose_name='domaine de recherche')
-    groupe_chercheur = models.ForeignKey(GroupeChercheur, blank=True, null=True, verbose_name='groupe de chercheurs')
-    groupe_recherche = models.CharField(max_length=100, blank=True, null=True, 
-                                        verbose_name='groupe de recherche',
+    equipe_recherche = models.CharField(max_length=100, blank=True, null=True,
+                                        verbose_name='Équipe de recherche',
                                         help_text='ou Laboratoire, ou Groupement inter-universitaire')
     statut = models.CharField(max_length=100, blank=True, choices=STATUT_CHOICES + (('expert', 'Expert'),))
     pays = models.ForeignKey(Pays, blank=True, null=True)
@@ -507,8 +530,8 @@ class ChercheurSearch(Search):
             results = results.search(self.q)
         if self.nom_chercheur:
             results = results.add_to_query('@(nom,prenom) ' + self.nom_chercheur)
-        if self.groupe_recherche:
-            results = results.add_to_query('@groupe_recherche ' + self.groupe_recherche)
+        if self.equipe_recherche:
+            results = results.add_to_query('@equipe_recherche ' + self.equipe_recherche)
         if self.discipline:
             results = results.filter_discipline(self.discipline)
         if self.region:
@@ -520,8 +543,6 @@ class ChercheurSearch(Search):
                 results = results.filter_statut(self.statut)
         if self.domaine:
             results = results.filter_groupe(self.domaine)
-        if self.groupe_chercheur:
-            results = results.filter_groupe(self.groupe_chercheur)
         if self.pays:
             results = results.filter_pays(self.pays)
         if self.nord_sud:
@@ -567,7 +588,7 @@ class GroupeSearch(Search):
         verbose_name_plural = 'recherches de groupes'
 
     def run(self):
-        results = Groupe.objects
+        results = Groupe.groupe_chercheur_objects
         if self.q:
             results = results.search(self.q)
         return results.all()

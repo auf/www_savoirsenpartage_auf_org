@@ -55,7 +55,7 @@
 
 {% if mesgroupes %}
 <div style="float:left;">
-<h2>Mes groupes</h2>
+<h2>Mes communautés</h2>
 <ul>
 {% for groupe in mesgroupes %}
 <li><a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a></li>
@@ -67,7 +67,7 @@
 <div style="clear:both;"></div>
 
 {% if messages %}
-	<h2>Activités récentes de mes groupes</h2>
+	<h2>Activités récentes de mes communautés</h2>
 	{% for message in messages %}
 	{% include 'chercheurs/groupe_message_display_full.html' %}
 	{% endfor %}

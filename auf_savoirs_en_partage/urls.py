@@ -127,6 +127,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^admin/assigner_cgstatut', 'chercheurs.admin_views.assigner_cgstatut'),
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_regions', 'savoirs.admin_views.assigner_regions', {}, 'assigner_regions'),
     (r'^admin/(?P<app_name>[^/]*)/(?P<model_name>[^/]*)/assigner_disciplines', 'savoirs.admin_views.assigner_disciplines', {}, 'assigner_disciplines'),
+    (r'^admin/chercheurs/chercheur/export', 'chercheurs.admin_views.export'),
     (r'^admin/(.*)', admin.site.root),
 
     # stats

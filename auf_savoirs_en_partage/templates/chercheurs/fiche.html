@@ -29,7 +29,7 @@
             </td>
         </tr>
         <tr>
-            <td class="label">Groupe{{ chercheur.groupes_chercheur.all|pluralize }} de chercheurs:</td>
+            <td class="label">Communauté{{ chercheur.groupes_chercheur.all|pluralize }} de chercheurs:</td>
             <td>
                 <ul>
                     {% for gc in chercheur.groupes_chercheur.all %}
@@ -76,10 +76,10 @@
             <td>{{ chercheur.theme_recherche }}</td>
         </tr>
         {% endif %}
-        {% if chercheur.groupe_recherche %}
+        {% if chercheur.equipe_recherche %}
         <tr>
-            <td class="label">Groupe de recherche:</td>
-            <td>{{ chercheur.groupe_recherche }}</td>
+            <td class="label">Équipe de recherche:</td>
+            <td>{{ chercheur.equipe_recherche }}</td>
         </tr>
         {% endif %}
         {% if chercheur.mots_cles %}

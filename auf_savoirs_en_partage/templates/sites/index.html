@@ -10,12 +10,14 @@
 </ul>
 <h1>Sites &#8212; Sitothèque</h1>
 
-<h2>Recherche</h2>
+<h2>Rechercher</h2>
 
 <form method="get" action="">
     <table id="repertoire_recherche">
-    {{search_form.as_table}}
-    <tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
+        {% with search_form as form %}
+        {% include "render_search_form.html" %}
+        {% endwith %}
+		<tr><th></th><td><input type="submit" class="bouton" value="Rechercher" /></td></tr>
     </table>
 </form>
 

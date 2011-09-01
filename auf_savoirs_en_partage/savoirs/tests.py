@@ -86,7 +86,7 @@ class PageLoadTest(TestCase):
             'q': 'texte texte',
             'nom_chercheur': 'Ted Kennedy',
             'domaine': 1,
-            'groupe_recherche': 'Le groupe',
+            'equipe_recherche': 'Le groupe',
             'statut': 'expert',
             'discipline': 1,
             'pays': 'AO',

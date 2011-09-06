@@ -37,14 +37,17 @@ class Personne(models.Model):
 
     def save(self, *args, **kwargs):
 
-        old_instance = Personne.objects.get(pk=self.pk)
-        if self.courriel != old_instance.courriel:
-            try:
-                user = User.objects.get(email=old_instance.courriel)
-                user.email = self.courriel
-                user.save()
-            except User.DoesNotExist:
-                pass
+        try:
+            old_instance = Personne.objects.get(pk=self.pk)
+            if self.courriel != old_instance.courriel:
+                try:
+                    user = User.objects.get(email=old_instance.courriel)
+                    user.email = self.courriel
+                    user.save()
+                except User.DoesNotExist:
+                    pass
+        except Personne.DoesNotExist:
+            pass
 
         super(Personne, self).save(*args, **kwargs)
 

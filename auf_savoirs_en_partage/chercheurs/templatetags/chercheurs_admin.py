@@ -61,7 +61,7 @@ def filter_pays(context):
 
 @register.inclusion_tag('admin/filter.html', takes_context=True)
 def filter_groupe_chercheurs(context):
-    return {'title': u"communauté de chercheurs",
+    return {'title': u"communautés de chercheurs",
             'choices': prepare_choices(GroupeChercheur.objects.values_list('id', 'nom'), 'groupes', context)}
 
 @register.inclusion_tag('admin/filter.html', takes_context=True)

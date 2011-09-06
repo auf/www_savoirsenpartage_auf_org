@@ -312,7 +312,7 @@ def sauvegarder_recherche(request, type):
             request.flash['message'] = 'Votre recherche a été sauvegardée.'
             return HttpResponseRedirect(search.url())
     else:
-        form = form_class(initial=dict(request.GET.iteritems()))
+        form = form_class(initial=dict(request.GET.iteritems(), alerte_courriel=True))
     return render_to_response("savoirs/sauvegarder_recherche.html", dict(
         form=form
     ), context_instance=RequestContext(request))

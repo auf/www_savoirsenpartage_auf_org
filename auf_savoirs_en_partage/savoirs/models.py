@@ -652,6 +652,13 @@ class Record(models.Model):
     def assigner_disciplines(self, disciplines):
         self.disciplines.add(*disciplines)
     
+class RecordEdit(Record):
+
+    class Meta:
+        proxy = True
+        verbose_name = 'ressource (édition)'
+        verbose_name_plural = 'ressources (édition)'
+
 class Serveur(models.Model):
     """Identification d'un serveur d'ou proviennent les références"""
     nom = models.CharField(primary_key = True, max_length = 255)

@@ -16,7 +16,7 @@ from django.utils.encoding import smart_unicode, iri_to_uri
 from django.http import HttpResponseRedirect
 
 from models import SourceActualite, Actualite, ActualiteVoir, Discipline, \
-                   Evenement, EvenementVoir, Record, RecordCategorie, \
+                   Evenement, EvenementVoir, Record, RecordEdit, RecordCategorie, \
                    ListSet, HarvestLog, Profile, PageStatique
 
 from savoirs.globals import META
@@ -204,6 +204,41 @@ class RecordAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     assigner_categorie.short_description = u'Assigner une catégorie'
 
 admin.site.register(Record, RecordAdmin)
+
+class RecordEditAdmin(RecordAdmin):
+
+    list_editable = []
+
+
+    def __init__(self, model, admin_site):
+        super(RecordEditAdmin, self).__init__(model, admin_site)
+
+        self.readonly_fields = self.fields
+
+    def get_actions(self, request):
+        actions = super(RecordEditAdmin, self).get_actions(request)
+
+        del actions['assigner_pays']
+        del actions['assigner_thematiques']
+        del actions[ 'assigner_categorie']
+
+        return actions
+
+    def assigner_disciplines(self, request, queryset):
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_disciplines', kwargs=dict(app_name='savoirs', model_name='recordedit')) + '?ids=' + selected)
+    assigner_disciplines.short_description = u'Assigner des disciplines'
+
+    def assigner_regions(self, request, queryset):
+        selected = queryset.values_list('id', flat=True)
+        selected = ",".join("%s" % val for val in selected)
+        return HttpResponseRedirect(url('assigner_regions', kwargs=dict(app_name='savoirs', model_name='recordedit')) + '?ids=' + selected)
+    assigner_regions.short_description = u'Assigner des régions'
+
+admin.site.register(RecordEdit, RecordEditAdmin)
+
+
 
 class ListSetAdmin(ReadOnlyAdminFields, admin.ModelAdmin):
     fields = ['spec', 'name', 'server', 'validated' ]

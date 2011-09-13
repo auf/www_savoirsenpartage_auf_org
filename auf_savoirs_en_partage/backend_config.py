@@ -42,6 +42,21 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://ceca.auf.org/',
     },
+    u'Journal de la Société de biologie clinique': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://revues.temp.bj.refer.org/index.php/JSBC/',
+    },
+    u'Le Bénin Médical': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://revues.temp.bj.refer.org/index.php/BM/',
+    },
+    u'Annales des l\'Université de Parakou : Série sciences naturelles et agronomie': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://revues.temp.bj.refer.org/index.php/A-UPAR-SNA/',
+    },
 
     #LODEL
     u'Revue-signes': {

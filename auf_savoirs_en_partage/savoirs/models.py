@@ -926,7 +926,7 @@ rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_R
                                                     SITE_ROOT_URL,
                                                     evenement.get_absolute_url())
                 content += u'    où ? : %s  \n' % evenement.lieu
-                content += evenement.debut.strftime(u'    quand ? : %d/%m/%Y %H:%M  \n')
+                content += evenement.debut.strftime('    quand ? : %d/%m/%Y %H:%M  \n')
                 content += u'    durée ? : %s\n\n' % evenement.duration_display()
                 content += u'    quoi ? : '
                 content += '\n             '.join(textwrap.wrap(evenement.description))
@@ -1120,7 +1120,7 @@ class EvenementSearch(Search):
                                                 SITE_ROOT_URL,
                                                 evenement.get_absolute_url())
             content += u'    où ? : %s  \n' % evenement.lieu
-            content += evenement.debut.strftime(u'    quand ? : %d/%m/%Y %H:%M  \n')
+            content += evenement.debut.strftime('    quand ? : %d/%m/%Y %H:%M  \n')
             content += u'    durée ? : %s\n\n' % evenement.duration_display()
             content += u'    quoi ? : '
             content += '\n             '.join(textwrap.wrap(evenement.description))

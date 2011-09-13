@@ -1,0 +1,11 @@
+Madame, Monsieur,
+
+Votre adhésion à la communauté {{ groupe }} a été acceptée : votre nom apparait maintenant sur la liste des membres de cette communauté et vous pouvez ajouter des messages et suivre en ligne les activités de cette communauté sur "Savoirs en partage" (http://{{ domain }}{% url groupe_retrieve id=groupe.pk %})
+
+Avec nos meilleures salutations,
+
+-- 
+Savoirs en partage
+http://{{ domain }}
+contact-savoirsenpartage@auf.org
+Savoirs en partage

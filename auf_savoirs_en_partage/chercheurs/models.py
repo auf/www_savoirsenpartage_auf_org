@@ -484,6 +484,22 @@ class AdhesionGroupe(models.Model):
         verbose_name_plural = 'adhésions aux groupes'
         ordering = ['chercheur']
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_instance = AdhesionGroupe.objects.get(pk=self.pk)
+            if old_instance.statut=='nouveau' and self.statut=='accepte':
+                from django.template.loader import get_template
+                from django.template import Context
+                from django.core.mail import send_mail
+                from django.conf import settings
+
+                template = get_template('chercheurs/groupe_confirmation.txt')
+                domain = settings.SITE_DOMAIN
+                message = template.render(Context(dict(groupe=self.groupe, domain=domain)))
+                send_mail('Votre inscription à Savoirs en partage', message, None, [self.chercheur.courriel])
+
+        super(AdhesionGroupe, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return u"%s - %s" % (self.chercheur, self.groupe)
 

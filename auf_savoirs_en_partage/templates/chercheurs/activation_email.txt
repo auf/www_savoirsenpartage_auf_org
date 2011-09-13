@@ -9,6 +9,8 @@ suivant:
 
 Si vous rencontrez des difficultés, vous pouvez écrire à : contact-savoirsenpartage@auf.org
 
+Le portail "Savoirs en partage" permet d'animer des communautés de chercheurs, qu'il s'agisse d'associations régies par leur règles propres, ou de communautés virtuelles librement constituées. Si vous le souhaitez, vous pouvez adhérer à une ou plusieurs des communautés de chercheurs en vous rendant sur leur page respective : les communautés de chercheurs (http://{{ domain }}/groupes/).
+
 Avec nos meilleures salutations.
 
 -- 

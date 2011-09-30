@@ -10,7 +10,7 @@ from lookups import ChercheurLookup
 
 
 class FaunAuteurForm(forms.ModelForm):
-    sep_chercheur = selectable.AutoComboboxSelectField(lookup_class=ChercheurLookup, allow_new=False)
+    sep_chercheur = selectable.AutoComboboxSelectField(lookup_class=ChercheurLookup, allow_new=False, label="SEP Chercheur")
 
     class Meta:
         model = FaunAuteur

@@ -154,6 +154,9 @@ urlpatterns = sep_patterns + patterns(
 
     # API Interface (FAUN)
     (r'^faun/auteurs/(?P<id>\d+)', 'interfaces.views.faun_auteurs', {}, 'faun_auteurs'),
+
+    # Django-selectable
+    (r'^djselectable/', include('selectable.urls')),
 )
 
 if settings.DEBUG:

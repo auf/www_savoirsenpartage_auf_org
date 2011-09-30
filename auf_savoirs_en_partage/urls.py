@@ -151,6 +151,12 @@ urlpatterns = sep_patterns + patterns(
     (r'^recherches/(?P<id>\d+)/editer/$', 'savoirs.views.editer_recherche', {}, 'editer_recherche'),
     (r'^recherches/(?P<id>\d+)/activer-alerte/$', 'savoirs.views.activer_alerte', {}, 'activer_alerte'),
     (r'^recherches/(?P<id>\d+)/desactiver-alerte/$', 'savoirs.views.desactiver_alerte', {}, 'desactiver_alerte'),
+
+    # API Interface (FAUN)
+    (r'^faun/auteurs/(?P<id>\d+)', 'interfaces.views.faun_auteurs', {}, 'faun_auteurs'),
+
+    # Django-selectable
+    (r'^djselectable/', include('selectable.urls')),
 )
 
 if settings.DEBUG:

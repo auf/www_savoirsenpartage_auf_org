@@ -209,6 +209,7 @@ class RecordEditAdmin(RecordAdmin):
 
     list_editable = []
 
+    change_list_template = "admin/savoirs/record/change_list.html"
 
     def __init__(self, model, admin_site):
         super(RecordEditAdmin, self).__init__(model, admin_site)

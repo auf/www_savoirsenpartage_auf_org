@@ -71,6 +71,7 @@ INSTALLED_APPS = (
     'south',
     'auf.django.admingroup',
     'alphafilter',
+    'interfaces',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

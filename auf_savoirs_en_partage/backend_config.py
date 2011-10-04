@@ -57,6 +57,11 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://revues.temp.bj.refer.org/index.php/A-UPAR-SNA/',
     },
+    u'Archives de l\'Agence universitaire de la Francophonie': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://archives.auf.org/',
+    },
 
     #LODEL
     u'Revue-signes': {

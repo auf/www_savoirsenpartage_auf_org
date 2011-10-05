@@ -20,6 +20,8 @@ from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.forms import PasswordChangeForm
 from savoirs.models import PageStatique, Discipline
 
 
@@ -102,6 +104,33 @@ def activation(request, id_base36, token):
         validlink = False
     return render_to_response('chercheurs/activation.html', dict(form=form, validlink=validlink),
                               context_instance=RequestContext(request))
+
+@csrf_protect
+@login_required
+def password_change(request, template_name='registration/password_change_form.html',
+                    post_change_redirect=None, password_change_form=PasswordChangeForm):
+    if post_change_redirect is None:
+        post_change_redirect = url('django.contrib.auth.views.password_change_done')
+    if request.method == "POST":
+        form = password_change_form(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+
+            # Mot de passe pour LDAP
+            username = request.user.email
+            authldap, created = AuthLDAP.objects.get_or_create(username=username)
+            password = form.cleaned_data.get('new_password1')
+            ldap_hash = create_ldap_hash(password)
+            authldap.ldap_hash = ldap_hash
+            authldap.save()
+
+            return HttpResponseRedirect(post_change_redirect)
+    else:
+        form = password_change_form(user=request.user)
+    return render_to_response(template_name, {
+        'form': form,
+    }, context_instance=RequestContext(request))
+
 
 @chercheur_required
 def desinscription(request):

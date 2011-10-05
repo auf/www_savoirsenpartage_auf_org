@@ -79,7 +79,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^chercheurs/deconnexion/$', 'django.contrib.auth.views.logout', dict(
         template_name='chercheurs/logged_out.html'
     ), 'chercheurs-logout'),
-    (r'^chercheurs/changement-mdp/$', 'django.contrib.auth.views.password_change', dict(
+    (r'^chercheurs/changement-mdp/$', 'chercheurs.views.password_change', dict(
         template_name='chercheurs/password_change_form.html',
         post_change_redirect='/chercheurs/changement-mdp-fini/'
     ), 'chercheurs-password-change'),

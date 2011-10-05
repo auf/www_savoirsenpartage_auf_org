@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'auf.django.admingroup',
     'alphafilter',
     'interfaces',
+    'rappels',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

@@ -118,6 +118,10 @@ urlpatterns = sep_patterns + patterns(
     # traduction disponible dans le frontend sans permissons
     url(r'^jsi18n/$', admin.site.i18n_javascript,),
 
+    # Rappels
+    (r'^admin/rappels/$', 'rappels.views.admin_rappels', {}, 'admin-rappels'),
+
+    # Admin
     url(r'^admin_tools/', include('admin_tools.urls')),
     (r'^admin/', include(admin.site.urls)),
     (r'^admin/confirmation/(.*)', 'savoirs.admin_views.confirmation'),
@@ -132,6 +136,7 @@ urlpatterns = sep_patterns + patterns(
 
     # stats
     (r'^stats/$', 'savoirs.admin_views.stats', {}, 'stats'),
+
 
     # rss
     (r'^rss/chercheurs/$', FilChercheurs(), {}, 'rss_chercheurs'),

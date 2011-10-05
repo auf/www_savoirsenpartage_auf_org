@@ -1,0 +1,19 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<h1>Mise à jour des fiches chercheurs</h1>
+
+<h2>Chercheurs connectés depuis un an (détail par mois)</h2>
+
+<table>
+{% for chercheur in chercheurs %}
+<tr>
+	<td>{{ chercheur.year }}-{{ chercheur.month|stringformat:"02d" }}</td>
+	<td>{{ chercheur.total }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

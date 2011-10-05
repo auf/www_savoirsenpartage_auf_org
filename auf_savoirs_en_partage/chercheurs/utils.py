@@ -100,3 +100,12 @@ def export(queryset, type):
                              for p in c.publications.all()))
         data.append([smart_str(x) if x else '' for x in row])
     return exportateur(headers, data, type, filename='chercheurs.%s' % type)
+
+def create_ldap_hash(password):
+    import hashlib, struct, random, base64
+
+    salt = struct.pack('L', random.randint(0, 2**32 - 1))
+    raw_hash = hashlib.sha1(password.encode('utf-8') + salt).digest()
+    ldap_hash = '{SSHA}' + base64.b64encode(raw_hash + salt)
+
+    return ldap_hash

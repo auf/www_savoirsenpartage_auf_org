@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
-from chercheurs.models import Chercheur, Groupe, Message, AdhesionGroupe
-from chercheurs.utils import get_django_user_for_email
+from chercheurs.models import Chercheur, Groupe, Message, AdhesionGroupe, AuthLDAP
+from chercheurs.utils import get_django_user_for_email, create_ldap_hash
 from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
 from django.shortcuts import render_to_response
@@ -18,7 +18,7 @@ from django.contrib.sites.models import RequestSite, Site
 from django.utils import simplejson
 from django.utils.http import int_to_base36, base36_to_int
 from django.views.decorators.cache import never_cache
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from savoirs.models import PageStatique, Discipline
 
@@ -186,6 +186,15 @@ def login(request, template_name='registration/login.html', redirect_field_name=
             elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
                     redirect_to = settings.LOGIN_REDIRECT_URL
             
+            # Mot de passe pour LDAP
+            username = form.cleaned_data.get('username')
+            authldap, created = AuthLDAP.objects.get_or_create(username=username)
+            if created:
+                password = form.cleaned_data.get('password')
+                ldap_hash = create_ldap_hash(password)
+                authldap.ldap_hash = ldap_hash
+                authldap.save()
+
             # Okay, security checks complete. Log the user in.
             auth_login(request, form.get_user())
 

@@ -638,3 +638,11 @@ class Message(models.Model):
     def get_absolute_url(self):
         return url('groupe_messages', kwargs={'id': self.groupe.id})
 
+
+class AuthLDAP(models.Model):
+    username = models.CharField('utilisateur', max_length=255, unique=True)
+    ldap_hash = models.CharField('hash LDAP', max_length=255)
+    date_modification = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return self.username

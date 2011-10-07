@@ -5,13 +5,19 @@
 {% block content %}
 <h1>Mise à jour des fiches chercheurs</h1>
 
+<p>
+Nombre de chercheurs du répertoire: {{ num_chercheurs }}<br>
+Nombre de chercheurs non-connecté depuis un an: {{ num_chercheurs_lastlog_beforethisyear }}<br>
+Nombre de chercheurs connecté depuis un an: {{ num_chercheurs_lastlog_thisyear }}<br>
+</p>
+
 <h2>Chercheurs connectés depuis un an (détail par mois)</h2>
 
 <table>
-{% for chercheur in chercheurs %}
+{% for chercheur in chercheurs_anneemois %}
 <tr>
-	<td>{{ chercheur.year }}-{{ chercheur.month|stringformat:"02d" }}</td>
-	<td>{{ chercheur.total }}</td>
+	<td align="right">{{ chercheur.year }}-{{ chercheur.month|stringformat:"02d" }}</td>
+	<td align="right">{{ chercheur.total }}</td>
 </tr>
 {% endfor %}
 </table>

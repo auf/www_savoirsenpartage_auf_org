@@ -15,6 +15,7 @@ from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySe
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
+    user = models.OneToOneField(User, related_name="chercheur", verbose_name="utilisateur", null=True, blank=True)
     salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name='prénom')

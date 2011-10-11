@@ -51,3 +51,4 @@ class ChercheurRappel(Chercheur):
 
     def last_login(self):
         return self.user.last_login
+    last_login.short_description = "Dernière connexion"

@@ -1,0 +1,21 @@
+{% extends "alphafilter/change_list.html" %}
+{% load i18n chercheurs_admin %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style type="text/css" media="screen">
+ul.alphabetfilter li.first,.change-list ul.alphabetfilter li.first{width:2em!important;}
+</style>
+{% endblock %}
+
+{% block content_title %}<h1>Sélectionnez les chercheurs destinataires du rappel</h1>{% endblock %}
+{% block object-tools %}{% endblock %}
+
+{% block filters %}
+<div id="changelist-filter">
+    <h2>{% trans 'Filter' %}</h2>
+    {% filter_groupe_chercheurs %}
+    {% filter_domaine_recherche %}
+</div>
+{% endblock %}
+

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django.db import models
+import datetime
 
+from django.db import models
 from django.contrib.auth.models import User
+
+from chercheurs.models import Chercheur
 
 
 class Rappel(models.Model):
@@ -29,3 +32,22 @@ class RappelUser(models.Model):
         super(RappelUser, self).save(*args, **kwargs)
 
         # Envoi du courriel...
+
+
+class ChercheurRappelManager(models.Manager):
+    def get_query_set(self):
+        last_year = datetime.datetime.today() - datetime.timedelta(days=365)
+        return super(ChercheurRappelManager, self).get_query_set().filter(user__is_active=True).filter(user__last_login__lt=last_year)
+
+
+class ChercheurRappel(Chercheur):
+
+    objects = ChercheurRappelManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'chercheur (rappel)'
+        verbose_name_plural = 'chercheur (rappel)'
+
+    def last_login(self):
+        return self.user.last_login

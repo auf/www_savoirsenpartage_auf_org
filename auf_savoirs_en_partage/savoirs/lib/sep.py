@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import simplejson, re, datetime, operator, hashlib
+import simplejson, re, datetime, operator, hashlib, HTMLParser
 from savoirs.globals import *
 from savoirs.models import Record, ListSet
 
@@ -9,15 +9,20 @@ class SEPEncoder:
     """
     separator = ", "
 
+    def __init__(self):
+        self._parser = HTMLParser.HTMLParser()
+
     def propre(self, str):
         """Retoune une chaîne de caractère propre utf-8
         Elle permet de corrgier les problèmes d'encodage."""
         if str is None:
             return u""
-        
+
+        str = self._parser.unescape(str)
+
         if str.__class__.__name__ == 'str':
             str = str.decode('utf-8')
-        
+
         return str.replace(u"\x92", u"´")
 
     def encode(self, field, data):

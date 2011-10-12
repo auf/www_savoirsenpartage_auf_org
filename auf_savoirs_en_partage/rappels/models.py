@@ -33,12 +33,28 @@ class RappelUser(models.Model):
 
         # Envoi du courriel...
         print u"Envoi du courriel à %s" % self.user.email
+        from django.template import Context, Template
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        template = Template(self.rappel.contenu)
+        domaine = settings.SITE_DOMAIN
+        message = template.render(Context({
+            'chercheur': self.user.chercheur.prenom_nom,
+            'domaine': domaine,
+            'date_limite': self.rappel.date_limite
+        }))
+        send_mail(self.rappel.sujet, message, None, [self.user.email])
 
 
 class RappelModele(models.Model):
     nom = models.CharField("nom", max_length=100)
     sujet = models.CharField("sujet", max_length=255)
     contenu = models.TextField("contenu")
+
+    class Meta:
+        verbose_name = 'Modèle de rappel'
+        verbose_name_plural = 'Modèles de rappel'
 
     def __unicode__(self):
         return self.nom

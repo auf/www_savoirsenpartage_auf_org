@@ -61,6 +61,10 @@ class Personne(models.Model):
         else:
             return ''
 
+    @property
+    def prenom_nom(self):
+        return u"%s %s" % (self.prenom, self.nom)
+
     def courriel_display(self):
         return self.courriel.replace(u'@', u' (à) ')
 

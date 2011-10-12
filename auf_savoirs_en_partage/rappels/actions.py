@@ -40,10 +40,12 @@ def rappel(modeladmin, request, queryset):
 
         n = queryset.count()
 
-        modeladmin.message_user(
-            request,
-            u"%(count)d rappel(s) ont été envoyé(s)." % {"count": n}
-        )
+        if n == 1:
+            message = u"1 rappel a été envoyé."
+        else:
+            message = u"%(count)d rappels ont été envoyés." % {"count": n}
+
+        modeladmin.message_user(request, message)
 
         return None
 

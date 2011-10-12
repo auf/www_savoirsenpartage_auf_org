@@ -32,7 +32,7 @@ class RappelUser(models.Model):
         super(RappelUser, self).save(*args, **kwargs)
 
         # Envoi du courriel...
-        print "Envoi du courriel à %s" % self.user.email
+        print u"Envoi du courriel à %s" % self.user.email
 
 
 class RappelModele(models.Model):

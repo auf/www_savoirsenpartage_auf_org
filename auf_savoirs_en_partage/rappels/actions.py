@@ -6,8 +6,9 @@ from django import template
 from django.contrib.admin import helpers
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext as _
+from django.forms.widgets import Select
 
-from models import Rappel, RappelUser
+from models import Rappel, RappelUser, RappelModele
 
 
 def rappel(modeladmin, request, queryset):
@@ -20,12 +21,15 @@ def rappel(modeladmin, request, queryset):
         today = datetime.date.today()
         lastyear = today - datetime.timedelta(days=365)
 
+        modele_id = request.POST.get('modele')
+        rappelmodele = RappelModele.objects.get(pk=modele_id)
+
         rappel = Rappel()
         rappel.user_creation = request.user
         rappel.date_cible = lastyear
         rappel.date_limite = today + datetime.timedelta(days=30)
-        rappel.sujet = "Savoirs en partage : vérification de votre fiche chercheur"
-        rappel.contenu = "Bla"
+        rappel.sujet = rappelmodele.sujet
+        rappel.contenu = rappelmodele.contenu
         rappel.save()
 
         for chercheur in queryset:
@@ -43,9 +47,12 @@ def rappel(modeladmin, request, queryset):
 
         return None
 
+    select = Select(choices=RappelModele.objects.values_list('id', 'nom'))
+
     context = {
         "title": _("Are you sure?"),
         "queryset": queryset,
+        "templateselect": select.render("modele", ''),
         "app_label": app_label,
         "opts": opts,
         "action_checkbox_name": helpers.ACTION_CHECKBOX_NAME,

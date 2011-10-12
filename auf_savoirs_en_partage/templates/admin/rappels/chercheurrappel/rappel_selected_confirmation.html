@@ -18,13 +18,16 @@
 	{% endfor %}
 	</ul>
     <form action="" method="post">{% csrf_token %}
-    <div>
     {% for obj in queryset %}
     <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk }}" />
     {% endfor %}
     <input type="hidden" name="action" value="rappel" />
     <input type="hidden" name="post" value="yes" />
+	<p>
+	Sélectionner un modèle: {{ templateselect }}
+    </p>
+    <p>
     <input type="submit" value="Confirmer et envoyer le rappel" />
-    </div>
+    </p>
     </form>
 {% endblock %}

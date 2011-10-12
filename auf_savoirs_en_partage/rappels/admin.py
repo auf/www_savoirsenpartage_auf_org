@@ -4,12 +4,15 @@ from django.contrib import admin
 
 from chercheurs.admin import ChercheurAdmin
 from rappels.models import ChercheurRappel
+from rappels import actions
 
 
 class ChercheurRappelAdmin(ChercheurAdmin):
     list_display = ['__unicode__', 'last_login']
-
     list_editable = []
+
+    actions = [actions.rappel]
+
     fields = ['salutation', 'nom', 'prenom', 'courriel', 'afficher_courriel',
               'fonction', 'date_naissance', 'sousfonction', 'telephone',
               'adresse_postale', 'genre', 'commentaire',
@@ -32,6 +35,21 @@ class ChercheurRappelAdmin(ChercheurAdmin):
 
     def queryset(self, request):
         return ChercheurRappel.objects
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_actions(self, request):
+        actions = super(ChercheurRappelAdmin, self).get_actions(request)
+
+        del actions['delete_selected']
+        del actions['export_as_ods']
+        del actions['export_as_csv']
+        if 'remove_from_group' in actions:
+            del actions['remove_from_group']
+
+        return actions
+
 
 
 admin.site.register(ChercheurRappel, ChercheurRappelAdmin)

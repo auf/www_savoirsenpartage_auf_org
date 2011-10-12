@@ -5,7 +5,7 @@ from conf import *
 
 ADMINS = (
     ('Équipe ARI-SI', 'developpeurs@ca.auf.org'),
-    ('PA', 'paparent+auf@paparent.me')
+    ('PA', 'paparent+auf@paparent.me'),
 )
 
 MANAGERS = ADMINS

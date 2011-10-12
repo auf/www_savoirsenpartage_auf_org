@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import simplejson, re, datetime, operator, hashlib, HTMLParser
+from django.utils.encoding import smart_unicode
 from savoirs.globals import *
 from savoirs.models import Record, ListSet
 
@@ -18,11 +19,8 @@ class SEPEncoder:
         if str is None:
             return u""
 
+        str = smart_unicode(str)
         str = self._parser.unescape(str)
-
-        if str.__class__.__name__ == 'str':
-            str = str.decode('utf-8')
-
         return str.replace(u"\x92", u"´")
 
     def encode(self, field, data):

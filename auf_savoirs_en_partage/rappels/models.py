@@ -35,6 +35,15 @@ class RappelUser(models.Model):
         print "Envoi du courriel à %s" % self.user.email
 
 
+class RappelModele(models.Model):
+    nom = models.CharField("nom", max_length=100)
+    sujet = models.CharField("sujet", max_length=255)
+    contenu = models.TextField("contenu")
+
+    def __unicode__(self):
+        return self.nom
+
+
 class ChercheurRappelManager(models.Manager):
     def get_query_set(self):
         last_year = datetime.datetime.today() - datetime.timedelta(days=365)

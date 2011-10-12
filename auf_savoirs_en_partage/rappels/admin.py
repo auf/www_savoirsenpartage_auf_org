@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from chercheurs.admin import ChercheurAdmin
-from rappels.models import ChercheurRappel
+from rappels.models import ChercheurRappel, RappelModele
 from rappels import actions
 
 
@@ -50,6 +50,9 @@ class ChercheurRappelAdmin(ChercheurAdmin):
 
         return actions
 
-
-
 admin.site.register(ChercheurRappel, ChercheurRappelAdmin)
+
+
+class RappelModeleAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(RappelModele, RappelModeleAdmin)

@@ -176,6 +176,7 @@ class AdhesionDomaineRechercheAdmin(AdhesionGroupeAdmin):
     pass
 
 class BaseGroupeAdmin(admin.ModelAdmin):
+    search_fields = ['nom']
     fieldsets = (
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
                                             'bulletin', 'page_accueil')}),

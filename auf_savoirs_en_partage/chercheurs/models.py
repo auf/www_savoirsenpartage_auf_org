@@ -418,6 +418,7 @@ class Groupe(models.Model):
     domaine_recherche_objects = DomaineRechercheManager()
 
     class Meta:
+        ordering = ['nom']
         verbose_name = 'domaine de recherche'
         verbose_name_plural = 'domaines de recherche'
 

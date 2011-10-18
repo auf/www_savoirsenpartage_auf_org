@@ -197,7 +197,9 @@ def actualite(request, id):
 
 # agenda
 def evenement_index(request):
-    if request.GET.get('action', False):
+    if request.GET.get('q', False) or request.GET.get('type', False) or \
+       request.GET.get('date_min', False) or request.GET.get('date_max', False) or \
+       request.GET.get('discipline', False) or request.GET.get('region', False):
         search_form = EvenementSearchForm(request.GET)
         search = search_form.save(commit=False)
         q = search_form.cleaned_data.get('q', '')

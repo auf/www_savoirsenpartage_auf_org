@@ -194,8 +194,8 @@ class BaseGroupeAdmin(admin.ModelAdmin):
             user.save()
 
         if not request.user.is_superuser:
-            recherches = Search.objects.exclude(user=request.user)
-            form.cleaned_data['recherches'] = form.cleaned_data['recherches'] | recherches
+            recherches = obj.recherches.exclude(user=request.user)
+            form.cleaned_data['recherches'] = set(form.cleaned_data['recherches']) | set(recherches)
 
         super(BaseGroupeAdmin, self).save_model(request, obj, form, change)
 

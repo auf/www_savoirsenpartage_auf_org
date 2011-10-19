@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse as url
 from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
 
 from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
                               GroupeChercheur, DomaineRecherche, \
@@ -222,6 +223,11 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         if db_field.name == "recherches" and not request.user.is_superuser:
             kwargs["queryset"] = Search.objects.filter(user=request.user)
             return db_field.formfield(**kwargs)
+
+        if db_field.name == "responsables":
+            kwargs["queryset"] = User.objects.all().order_by('username')
+            return db_field.formfield(**kwargs)
+
         return super(BaseGroupeAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
 

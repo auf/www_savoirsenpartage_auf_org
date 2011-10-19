@@ -10,6 +10,7 @@ class CustomMenu(Menu):
     """
 
     statistiques = items.MenuItem(title='Statistiques', url=reverse('stats'))
+    rappels = items.MenuItem(title='Rappels', url=reverse('admin-rappels'))
 
     def __init__(self, **kwargs):
         Menu.__init__(self, **kwargs)
@@ -33,3 +34,5 @@ class CustomMenu(Menu):
         request = context['request']
         if request.user.has_perm('savoirs.statistiques'):
             self.children.append(self.statistiques)
+
+        self.children.append(self.rappels)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 
 from models import FaunAuteur
@@ -10,8 +11,9 @@ def faun_auteurs(request, id):
     try:
         faunauteur = FaunAuteur.objects.get(faun_auteur=id)
     except FaunAuteur.DoesNotExist:
-        response = HttpResponse()
+        url = ''
     else:
-        response = HttpResponse("http://%s/chercheurs/%d" % (settings.SITE_DOMAIN, faunauteur.sep_chercheur.pk))
-
-    return response
+        url = request.build_absolute_uri(reverse('chercheur', 
+                                                 kwargs={'id': faunauteur.sep_chercheur_id}))
+        return HttpResponse(url)
+    return HttpResponse(url, mimetype="text/plain")

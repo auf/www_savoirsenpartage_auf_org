@@ -122,7 +122,9 @@ emit_source('savoirsenpartage_actualites',
                       TO_DAYS(a.date_actualite) AS date,
                       CASE s.type WHEN 'actu' THEN 1 WHEN 'appels' THEN 2 END AS type,
                       GROUP_CONCAT(DISTINCT r.nom) AS regions, 
-                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines
+                      GROUP_CONCAT(DISTINCT r.id) AS region_ids,
+                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
+                      GROUP_CONCAT(DISTINCT d.id_discipline) AS discipline_ids
                FROM actualite a 
                INNER JOIN savoirs_sourceactualite s ON s.id = a.source_id
                LEFT JOIN actualite_regions ar ON ar.actualite_id = a.id_actualite 
@@ -132,6 +134,7 @@ emit_source('savoirsenpartage_actualites',
                WHERE a.visible_actualite
                GROUP BY a.id_actualite''',
             sql_query_info='SELECT * from actualite WHERE id_actualite=$id',
+            sql_attr_multi=['discipline_ids', 'region_ids'],
             sql_attr_uint=['date', 'type'],
            )
 
@@ -180,7 +183,8 @@ emit_source('savoirsenpartage_chercheurs',
                       pays.id AS pays_id,
                       r.nom AS region,
                       r.id AS region_id,
-                      GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
+                      d.nom_discipline AS discipline,
+                      d.id_discipline AS discipline_id,
                       GROUP_CONCAT(DISTINCT IFNULL(pub.titre, pub.publication_affichage)) AS publications,
                       t.titre AS these,
                       GROUP_CONCAT(DISTINCT g.nom) AS groupes,
@@ -213,7 +217,7 @@ emit_source('savoirsenpartage_chercheurs',
                GROUP BY c.personne_ptr_id''',
             sql_query_info='SELECT * from chercheurs_chercheur WHERE id=$id',
             sql_attr_multi=['groupe_ids'],
-            sql_attr_uint=['pays_id', 'region_id', 'nord_sud',
+            sql_attr_uint=['pays_id', 'region_id', 'discipline_id', 'nord_sud',
                            'date_modification', 'statut', 'expert',
                            'membre_instance_auf', 'expert_oif',
                            'membre_association_francophone',
@@ -228,19 +232,22 @@ emit_source('savoirsenpartage_sites',
                       s.auteur AS auteur,
                       s.mots_cles AS mots_cles,
                       GROUP_CONCAT(DISTINCT d.nom_discipline) AS disciplines,
-                      GROUP_CONCAT(DISTINCT p.nom) AS pays,
-                      GROUP_CONCAT(DISTINCT p.id) AS pays_ids,
+                      GROUP_CONCAT(DISTINCT d.id_discipline) AS discipline_ids,
+                      p.nom AS pays,
+                      p.id AS pays_id,
                       GROUP_CONCAT(DISTINCT r.nom) AS regions,
+                      GROUP_CONCAT(DISTINCT r.id) AS region_ids,
                       TO_DAYS(s.date_maj) AS date_maj
                FROM sitotheque_site s
                LEFT JOIN sitotheque_site_discipline sd ON sd.site_id = s.id
                LEFT JOIN discipline d ON d.id_discipline = sd.discipline_id
-               LEFT JOIN ref_pays p ON p.id = s.pays
-               LEFT JOIN ref_region r ON r.id = p.region
+               LEFT JOIN ref_pays p ON p.code = s.pays
+               LEFT JOIN sitotheque_site_regions sr ON sr.site_id = s.id
+               LEFT JOIN ref_region r ON r.id = sr.region_id
                GROUP BY s.id''',
             'SELECT * FROM sitotheque_site WHERE id=$id',
-            sql_attr_multi=['pays_ids'],
-            sql_attr_uint=['date_maj']
+            sql_attr_multi=['discipline_ids', 'region_ids'],
+            sql_attr_uint=['date_maj', 'pays_id']
            )
 
 emit_index('savoirsenpartage_actualites')

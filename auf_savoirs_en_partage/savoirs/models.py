@@ -204,6 +204,12 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
     def filter_type(self, type):
         return self.filter(type=self.TYPE_CODES[type])
 
+    def filter_region(self, region):
+        return self.filter(region_ids=region.id)
+
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_ids=discipline.id)
+
 class ActualiteManager(SEPManager):
     
     def get_query_set(self):
@@ -284,6 +290,12 @@ class EvenementSphinxQuerySet(SEPSphinxQuerySet):
 
     def filter_date_modification(self, min=None, max=None):
         return self._filter_date('date_modification', min=min, max=max)
+
+    def filter_region(self, region):
+        return self.add_to_query('@regions "%s"' % region.nom)
+
+    def filter_discipline(self, discipline):
+        return self.add_to_query('@disciplines "%s"' % discipline.nom)
 
 class EvenementManager(SEPManager):
 
@@ -563,6 +575,13 @@ class RecordSphinxQuerySet(SEPSphinxQuerySet):
 
     def filter_modified(self, min=None, max=None):
         return self._filter_date('modified', min=min, max=max)
+
+    def filter_region(self, region):
+        return self.filter(region_ids=region.id)
+
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_ids=discipline.id)
+
 
 class RecordManager(SEPManager):
 

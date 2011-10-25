@@ -116,6 +116,9 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
     def filter_region(self, region):
         return self.filter(region_id=region.id)
 
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_id=discipline.id)
+
     def filter_groupe(self, groupe):
         return self.filter(groupe_ids=groupe.id)
 

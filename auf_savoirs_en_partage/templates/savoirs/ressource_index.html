@@ -1,6 +1,10 @@
 {% extends "container_base.html" %}
-
+{% load sep %}
 {% load pagination_tags %}
+
+{% block sep_menu_droite %}
+{% sep_menu_brique discipline_active region_active %}
+{% endblock %}
 
 {% block contenu %}
 {% autopaginate ressources 15 %}

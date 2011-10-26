@@ -1,0 +1,20 @@
+{% load sep %}
+<h1>Filtrer par <em>région</em></h1>
+<ul>
+    <li{% if not region_active %} class="active"{% endif %}
+    ><a href="{{ request.path }}{% query_string 'region=' '' %}">Toutes les régions</a</li>
+    {% for r in regions %}
+    <li{% ifequal r.id region_active %} class="active"{% endifequal %}
+    ><a href="{{ request.path }}{% query_string 'region=r.id' '' %}">{{ r.nom }}</a></li>
+    {% endfor %}
+</ul>
+
+<h1>Filtrer par <em>discipline</em></h1>
+<ul>
+    <li{% if not discipline_active %} class="active"{% endif %}
+    ><a href="{{ request.path }}{% query_string 'discipline=' '' %}">Toutes les disciplines</a></li>
+    {% for d in disciplines %}
+    <li{% ifequal d.id discipline_active %} class="active"{% endifequal %}
+    ><a href="{{ request.path }}{% query_string 'discipline=d.id' '' %}">{{ d.nom }}</a></li>
+    {% endfor %}
+</ul>

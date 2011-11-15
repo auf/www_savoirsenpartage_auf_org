@@ -11,7 +11,8 @@ from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
                               GroupeChercheur, DomaineRecherche, \
                               AdhesionGroupe, ChercheurQuerySet, \
                               AdhesionCommunaute, AdhesionDomaineRecherche, \
-                              Groupe
+                              Groupe, Message
+
 from chercheurs.utils import export
 from savoirs.models import Search
 
@@ -242,6 +243,11 @@ class DomaineRechercheAdmin(BaseGroupeAdmin):
     def has_change_permission(self, request, obj=None):
         return super(DomaineRechercheAdmin, self).has_change_permission(request, obj, groupe_chercheur=False)
 
+
+class MessageAdmin(admin.ModelAdmin):
+    list_filter = ('groupe',)
+
+
 class PublicationAdmin(admin.ModelAdmin):
     search_fields = ('auteurs', 'titre', 'revue', 'editeur')
 
@@ -252,4 +258,5 @@ admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
 admin.site.register(AdhesionCommunaute, AdhesionCommunauteAdmin)
 admin.site.register(AdhesionDomaineRecherche, AdhesionDomaineRechercheAdmin)
+admin.site.register(Message, MessageAdmin)
 

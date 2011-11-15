@@ -32,7 +32,6 @@ class RappelUser(models.Model):
         super(RappelUser, self).save(*args, **kwargs)
 
         # Envoi du courriel...
-        print u"Envoi du courriel à %s" % self.user.email
         from django.template import Context, Template
         from django.core.mail import send_mail
         from django.conf import settings

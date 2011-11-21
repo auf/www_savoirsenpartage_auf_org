@@ -17,7 +17,7 @@ class Rappel(models.Model):
     contenu = models.TextField("contenu")
 
     def __unicode__(self):
-        return self.sujet
+        return "%s - %s" % (self.date_creation, self.sujet)
 
 
 class RappelUser(models.Model):
@@ -25,8 +25,13 @@ class RappelUser(models.Model):
     user = models.ForeignKey(User, verbose_name="utilisateur")
     date_envoi = models.DateTimeField("date de l'envoi", auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Trace d'un rappel"
+        verbose_name_plural = "Traces des rappels"
+        ordering = ['-date_envoi']
+
     def __unicode__(self):
-        return "%s: %s" % (self.rappel.sujet, self.user)
+        return "%s - %s" % (self.rappel.sujet, self.user)
 
     def save(self, *args, **kwargs):
         super(RappelUser, self).save(*args, **kwargs)

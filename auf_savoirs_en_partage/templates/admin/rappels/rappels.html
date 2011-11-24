@@ -23,5 +23,7 @@ Nombre de chercheurs connecté depuis un an: {{ num_chercheurs_lastlog_thisyear 
 </table>
 
 <p><a href="{% url admin:rappels_chercheurrappel_changelist %}" class="button">Envoyer un rappel</a></p>
+<p>&nbsp;</p>
+<p><a href="{% url admin:rappels_rappeluser_changelist %}" class="button">Voir les traces des rappels</a></p>
 
 {% endblock %}

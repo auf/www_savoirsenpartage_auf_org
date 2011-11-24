@@ -1,3 +1,4 @@
+from django.core.exceptions import MultipleObjectsReturned
 from chercheurs.models import Personne, Chercheur
 
 class LazyChercheur(object):
@@ -8,7 +9,7 @@ class LazyChercheur(object):
             if request.user.is_authenticated():
                 try:
                     request._cached_chercheur = Chercheur.objects.get(actif=True, courriel=request.user.email)
-                except (Personne.DoesNotExist, Chercheur.DoesNotExist):
+                except (Personne.DoesNotExist, Chercheur.DoesNotExist, MultipleObjectsReturned):
                     pass
         return request._cached_chercheur
 

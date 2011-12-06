@@ -38,7 +38,7 @@ class RappelUser(models.Model):
 
         # Envoi du courriel...
         from django.template import Context, Template
-        from django.core.mail import send_mail
+        from django.core.mail import EmailMessage
         from django.conf import settings
 
         template = Template(self.rappel.contenu)
@@ -48,7 +48,12 @@ class RappelUser(models.Model):
             'domaine': domaine,
             'date_limite': self.rappel.date_limite
         }))
-        send_mail(self.rappel.sujet, message, None, [self.user.email])
+        email = EmailMessage(self.rappel.sujet,
+                             message,
+                             settings.CONTACT_EMAIL,
+                             [self.user.email],
+                             settings.ADMINS_SEP)
+        email.send()
 
 
 class RappelModele(models.Model):

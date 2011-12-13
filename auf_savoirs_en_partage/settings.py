@@ -8,6 +8,8 @@ ADMINS = (
     ('PA', 'paparent+auf@paparent.me'),
 )
 
+ADMINS_SEP = ('gilles.deggis@auf.org',)
+
 MANAGERS = ADMINS
 
 TIME_ZONE = 'America/Chicago'

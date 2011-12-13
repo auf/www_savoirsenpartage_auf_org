@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from chercheurs.admin import ChercheurAdmin
-from rappels.models import ChercheurRappel, RappelModele
+from rappels.models import ChercheurRappel, RappelModele, RappelUser
 from rappels import actions
 
 
@@ -56,3 +56,10 @@ admin.site.register(ChercheurRappel, ChercheurRappelAdmin)
 class RappelModeleAdmin(admin.ModelAdmin):
     pass
 admin.site.register(RappelModele, RappelModeleAdmin)
+
+
+class RappelUserAdmin(admin.ModelAdmin):
+    readonly_fields = ['date_envoi', 'rappel', 'user']
+    list_display = ['date_envoi', 'rappel', 'user']
+    list_filter = ['rappel']
+admin.site.register(RappelUser, RappelUserAdmin)

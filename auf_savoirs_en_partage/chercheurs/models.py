@@ -15,6 +15,7 @@ from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySe
 
 GENRE_CHOICES = (('m', 'Homme'), ('f', 'Femme'))
 class Personne(models.Model):
+    user = models.OneToOneField(User, related_name="chercheur", verbose_name="utilisateur", null=True, blank=True)
     salutation = models.CharField(max_length=128, null=True, blank=True)
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=128, verbose_name='prénom')
@@ -59,6 +60,10 @@ class Personne(models.Model):
             return 'Mme'
         else:
             return ''
+
+    @property
+    def prenom_nom(self):
+        return u"%s %s" % (self.prenom, self.nom)
 
     def courriel_display(self):
         return self.courriel.replace(u'@', u' (à) ')
@@ -110,6 +115,9 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
 
     def filter_region(self, region):
         return self.filter(region_id=region.id)
+
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_id=discipline.id)
 
     def filter_groupe(self, groupe):
         return self.filter(groupe_ids=groupe.id)
@@ -418,6 +426,7 @@ class Groupe(models.Model):
     domaine_recherche_objects = DomaineRechercheManager()
 
     class Meta:
+        ordering = ['nom']
         verbose_name = 'domaine de recherche'
         verbose_name_plural = 'domaines de recherche'
 

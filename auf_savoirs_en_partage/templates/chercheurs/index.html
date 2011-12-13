@@ -3,6 +3,10 @@
 {% load form_tags %}
 {% load sep %}
 
+{% block sep_menu_droite %}
+{% sep_menu_brique discipline_active region_active %}
+{% endblock %}
+
 {% block contenu %}
 {% autopaginate chercheurs 20 %}
 

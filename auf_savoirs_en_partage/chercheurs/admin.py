@@ -5,12 +5,14 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse as url
 from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
 
 from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
                               GroupeChercheur, DomaineRecherche, \
                               AdhesionGroupe, ChercheurQuerySet, \
                               AdhesionCommunaute, AdhesionDomaineRecherche, \
-                              Groupe
+                              Groupe, Message
+
 from chercheurs.utils import export
 from savoirs.models import Search
 
@@ -176,6 +178,7 @@ class AdhesionDomaineRechercheAdmin(AdhesionGroupeAdmin):
     pass
 
 class BaseGroupeAdmin(admin.ModelAdmin):
+    search_fields = ['nom']
     fieldsets = (
         (('Options générales'), {'fields': ('nom', 'url', 'liste_diffusion',
                                             'bulletin', 'page_accueil')}),
@@ -221,6 +224,11 @@ class BaseGroupeAdmin(admin.ModelAdmin):
         if db_field.name == "recherches" and not request.user.is_superuser:
             kwargs["queryset"] = Search.objects.filter(user=request.user)
             return db_field.formfield(**kwargs)
+
+        if db_field.name == "responsables":
+            kwargs["queryset"] = User.objects.all().order_by('username')
+            return db_field.formfield(**kwargs)
+
         return super(BaseGroupeAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
 
@@ -235,6 +243,11 @@ class DomaineRechercheAdmin(BaseGroupeAdmin):
     def has_change_permission(self, request, obj=None):
         return super(DomaineRechercheAdmin, self).has_change_permission(request, obj, groupe_chercheur=False)
 
+
+class MessageAdmin(admin.ModelAdmin):
+    list_filter = ('groupe',)
+
+
 class PublicationAdmin(admin.ModelAdmin):
     search_fields = ('auteurs', 'titre', 'revue', 'editeur')
 
@@ -245,4 +258,5 @@ admin.site.register(GroupeChercheur, GroupeChercheurAdmin)
 admin.site.register(DomaineRecherche, DomaineRechercheAdmin)
 admin.site.register(AdhesionCommunaute, AdhesionCommunauteAdmin)
 admin.site.register(AdhesionDomaineRecherche, AdhesionDomaineRechercheAdmin)
+admin.site.register(Message, MessageAdmin)
 

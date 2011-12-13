@@ -40,7 +40,13 @@ class SiteSphinxQuerySet(SEPSphinxQuerySet):
         return self._filter_date('date_maj', min=min, max=max)
 
     def filter_pays(self, pays):
-        return self.filter(pays_ids=pays.id)
+        return self.filter(pays_id=pays.id)
+
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_ids=discipline.id)
+
+    def filter_region(self, region):
+        return self.filter(region_ids=region.id)
 
 class SiteManager(SEPManager):
 

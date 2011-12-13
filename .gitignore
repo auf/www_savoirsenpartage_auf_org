@@ -32,8 +32,6 @@ tmp
 # developpement
 src
 
-auf_savoirs_en_partage_django/backend_config.py
-
 # Fichiers écrits par le serveur
 
 /auf_savoirs_en_partage/media/CACHE

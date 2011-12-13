@@ -204,6 +204,12 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
     def filter_type(self, type):
         return self.filter(type=self.TYPE_CODES[type])
 
+    def filter_region(self, region):
+        return self.filter(region_ids=region.id)
+
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_ids=discipline.id)
+
 class ActualiteManager(SEPManager):
     
     def get_query_set(self):
@@ -284,6 +290,12 @@ class EvenementSphinxQuerySet(SEPSphinxQuerySet):
 
     def filter_date_modification(self, min=None, max=None):
         return self._filter_date('date_modification', min=min, max=max)
+
+    def filter_region(self, region):
+        return self.add_to_query('@regions "%s"' % region.nom)
+
+    def filter_discipline(self, discipline):
+        return self.add_to_query('@disciplines "%s"' % discipline.nom)
 
 class EvenementManager(SEPManager):
 
@@ -564,6 +576,13 @@ class RecordSphinxQuerySet(SEPSphinxQuerySet):
     def filter_modified(self, min=None, max=None):
         return self._filter_date('modified', min=min, max=max)
 
+    def filter_region(self, region):
+        return self.filter(region_ids=region.id)
+
+    def filter_discipline(self, discipline):
+        return self.filter(discipline_ids=discipline.id)
+
+
 class RecordManager(SEPManager):
 
     def get_query_set(self):
@@ -733,7 +752,7 @@ class Search(models.Model):
     nom = models.CharField(max_length=100, verbose_name="nom de la recherche")
     alerte_courriel = models.BooleanField(verbose_name="Envoyer une alerte courriel")
     derniere_alerte = models.DateField(verbose_name="Date d'envoi de la dernière alerte courriel", null=True, editable=False)
-    q = models.CharField(max_length=100, blank=True, verbose_name="dans tous les champs")
+    q = models.CharField(max_length=255, blank=True, verbose_name="dans tous les champs")
     discipline = models.ForeignKey(Discipline, blank=True, null=True)
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name='région',
                                help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")

@@ -1,6 +1,10 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
+import base64
+import hashlib
+import os
 import re
+
 from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 
@@ -102,10 +106,15 @@ def export(queryset, type):
     return exportateur(headers, data, type, filename='chercheurs.%s' % type)
 
 def create_ldap_hash(password):
-    import hashlib, struct, random, base64
-
-    salt = struct.pack('L', random.randint(0, 2**32 - 1))
+    salt = os.urandom(4)
     raw_hash = hashlib.sha1(password.encode('utf-8') + salt).digest()
     ldap_hash = '{SSHA}' + base64.b64encode(raw_hash + salt)
 
     return ldap_hash
+
+def check_ldap_hash(ldap_hash, password):
+    hash_salt = base64.b64decode(ldap_hash[6:])
+    hash = hash_salt[:-4]
+    salt = hash_salt[-4:]
+    test = hashlib.sha1(password.encode('utf-8') + salt).digest()
+    return test == hash

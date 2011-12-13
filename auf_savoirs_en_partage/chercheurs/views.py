@@ -1,8 +1,10 @@
 # -*- encoding: utf-8 -*-
+import re
+
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
 from chercheurs.models import Chercheur, Groupe, Message, AdhesionGroupe, AuthLDAP
-from chercheurs.utils import get_django_user_for_email, create_ldap_hash
+from chercheurs.utils import get_django_user_for_email, create_ldap_hash, check_ldap_hash
 from datamaster_modeles.models import Etablissement, Region
 from django.conf import settings
 from django.shortcuts import render_to_response
@@ -120,8 +122,7 @@ def password_change(request, template_name='registration/password_change_form.ht
             username = request.user.email
             authldap, created = AuthLDAP.objects.get_or_create(username=username)
             password = form.cleaned_data.get('new_password1')
-            ldap_hash = create_ldap_hash(password)
-            authldap.ldap_hash = ldap_hash
+            authldap.ldap_hash = create_ldap_hash(password)
             authldap.save()
 
             return HttpResponseRedirect(post_change_redirect)
@@ -217,11 +218,10 @@ def login(request, template_name='registration/login.html', redirect_field_name=
             
             # Mot de passe pour LDAP
             username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
             authldap, created = AuthLDAP.objects.get_or_create(username=username)
-            if created:
-                password = form.cleaned_data.get('password')
-                ldap_hash = create_ldap_hash(password)
-                authldap.ldap_hash = ldap_hash
+            if created or not check_ldap_hash(authldap.ldap_hash, password):
+                authldap.ldap_hash = create_ldap_hash(password)
                 authldap.save()
 
             # Okay, security checks complete. Log the user in.
@@ -265,7 +265,7 @@ def groupe_index(request):
     if request.user.is_authenticated():
         try:
             chercheur = Chercheur.objects.get(courriel=request.user.email)
-            mesgroupes = chercheur.groupes.all().filter(membership__statut='accepte')
+            mesgroupes = chercheur.groupes.filter(membership__statut='accepte').filter(groupe_chercheur=True)
             messages = Message.objects.all().filter(groupe__in=mesgroupes)[:10]
             est_chercheur = True
         except Chercheur.DoesNotExist:

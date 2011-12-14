@@ -91,10 +91,11 @@ def activation(request, id_base36, token):
                 password = form.cleaned_data['password']
                 email = chercheur.courriel
                 chercheur.actif = True
-                chercheur.save()
                 user = get_django_user_for_email(email)
                 user.set_password(password)
                 user.save()
+                chercheur.user = user
+                chercheur.save()
 
                 # Auto-login
                 auth_login(request, authenticate(username=email, password=password))

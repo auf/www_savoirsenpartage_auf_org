@@ -25,6 +25,8 @@ class ChercheurAdmin(admin.ModelAdmin):
     actions = ('remove_from_group', 'export_as_ods', 'export_as_csv')
     search_fields = ('nom', 'prenom')
 
+    exclude = ('user',)
+
     def lookup_allowed(self, lookup, value):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
                           'membre_instance_auf', 'discipline', 'region', 'pays', 

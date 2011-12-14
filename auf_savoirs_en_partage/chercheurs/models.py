@@ -9,6 +9,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.encoding import smart_str
 from django.utils.hashcompat import sha_constructor
+from django.db.models.signals import post_save
 from djangosphinx.models import SphinxSearch
 
 from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet, Search
@@ -67,6 +68,21 @@ class Personne(models.Model):
 
     def courriel_display(self):
         return self.courriel.replace(u'@', u' (à) ')
+
+
+def change_personne_courriel(sender, **kwargs):
+    user = kwargs['instance']
+    try:
+        if user.chercheur:
+            if user.email != user.chercheur.courriel:
+                chercheur = user.chercheur
+                chercheur.courriel = user.email
+                chercheur.save()
+    except:
+        pass
+
+post_save.connect(change_personne_courriel, sender=User)
+
 
 class ChercheurQuerySet(SEPQuerySet):
 

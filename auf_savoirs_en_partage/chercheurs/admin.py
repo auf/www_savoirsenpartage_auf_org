@@ -62,6 +62,8 @@ class ChercheurAdmin(admin.ModelAdmin):
         except Chercheur.DoesNotExist:
             return None
 
+    def has_add_permission(self, request, obj=None):
+        return False
 
     def export_as_csv(self, request, queryset):
         return export(queryset, 'csv')

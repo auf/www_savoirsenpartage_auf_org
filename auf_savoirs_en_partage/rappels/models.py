@@ -87,3 +87,10 @@ class ChercheurRappel(Chercheur):
     def last_login(self):
         return self.user.last_login
     last_login.short_description = "Dernière connexion"
+
+    def dernier_rappel(self):
+        try:
+            return self.user.rappeluser_set.all()[0].date_envoi
+        except:
+            return "Aucun rappel envoyé"
+    dernier_rappel.short_description = 'Dernier rappel'

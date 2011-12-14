@@ -8,7 +8,7 @@ from rappels import actions
 
 
 class ChercheurRappelAdmin(ChercheurAdmin):
-    list_display = ['__unicode__', 'last_login']
+    list_display = ['__unicode__', 'last_login', 'dernier_rappel']
     list_editable = []
 
     actions = [actions.rappel]

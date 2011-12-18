@@ -55,7 +55,7 @@ class ChercheurAdmin(admin.ModelAdmin):
         return actions
 
     def queryset(self, request):
-        return ChercheurAdminQuerySet(Chercheur)
+        return ChercheurAdminQuerySet(Chercheur).filter(actif=True)
 
     def get_object(self, request, object_id):
         """On doit réimplémenter cette méthode à cause de ce qu'on fait avec "initial" dans la méthode queryset()."""
@@ -104,6 +104,9 @@ class ChercheurVoirAdmin(ChercheurAdmin):
 admin.site.register(ChercheurVoir, ChercheurVoirAdmin)
 
 class ChercheurAdminQuerySet(ChercheurQuerySet):
+
+    def delete(self):
+        self.update(actif=False)
 
     def filter(self, *args, **kwargs):
         """Gère des filtres supplémentaires pour l'admin.

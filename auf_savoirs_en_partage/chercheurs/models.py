@@ -53,6 +53,10 @@ class Personne(models.Model):
 
         super(Personne, self).save(*args, **kwargs)
 
+    def delete(self):
+        self.actif = False
+        self.save()
+
     @property
     def civilite(self):
         if self.genre == 'm':

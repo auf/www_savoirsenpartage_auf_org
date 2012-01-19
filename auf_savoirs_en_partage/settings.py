@@ -5,7 +5,6 @@ from conf import *
 
 ADMINS = (
     ('Équipe ARI-SI', 'developpeurs@ca.auf.org'),
-    ('PA', 'paparent+auf@paparent.me'),
 )
 
 ADMINS_SEP = ('gilles.deggis@auf.org',)

@@ -103,6 +103,11 @@ urlpatterns = sep_patterns + patterns(
     (r'^etablissements/autocomplete/$', 'chercheurs.views.etablissements_autocomplete'),
     (r'^etablissements/autocomplete/(?P<pays>.*)/$', 'chercheurs.views.etablissements_autocomplete'),
 
+    # API chercheurs
+    (r'^api/chercheurs/(?P<pays>.*)/$', 'chercheurs.api.api'), # (?P<pays>.*)/$', 'chercheurs.api.api'),
+    (r'^api/chercheurs/(?P<region_id>\d+)/$', 'chercheurs.api.api'),
+
+
     # groupes
     (r'^groupes/$', 'chercheurs.views.groupe_index'),
     url(r'^groupes/(?P<id>\d+)/$', 'chercheurs.views.groupe_retrieve', name='groupe_retrieve'),

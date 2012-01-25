@@ -9,12 +9,12 @@ STATUS_ERROR_PERMISSIONS = 403
 STATUS_ERROR_NOT_FOUND = 404
 STATUS_ERROR_BADMETHOD = 405
 
-def api(request, pays=None, region_id=None, *args, **kwargs):
+def api(request, pays=None, region=None, *args, **kwargs):
     api = API(request)
     # if not hasattr(api, 'api_%s' % method):
     #    return api_return(STATUS_ERROR)
     # if pays is not None:
-    return api.api_chercheurs_liste(pays=pays, region_id=region_id)
+    return api.api_chercheurs_liste(pays=pays, region=region)
     #elif region_id is not None:
     #    return api.api_chercheurs_liste(region_id=region_id)
 
@@ -45,14 +45,14 @@ class API:
     def __init__(self, request):
         self.request = request
 
-    def api_chercheurs_liste(self, pays=None, region_id=None):
-        import pdb;pdb.set_trace()
+    def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
             chercheurs = Chercheur.objects.filter_pays(pays)
-        elif region_id is not None:
-            chercheurs = Chercheur.objects.filter_region(region_id)
+        elif region is not None:
+            chercheurs = Chercheur.objects.filter_region(regio)
         else:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
         data = serializers.serialize('json', chercheurs)
+        import pdb;pdb.set_trace()
         return api_return(STATUS_OK, data)

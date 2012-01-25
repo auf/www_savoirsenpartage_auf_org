@@ -104,8 +104,8 @@ urlpatterns = sep_patterns + patterns(
     (r'^etablissements/autocomplete/(?P<pays>.*)/$', 'chercheurs.views.etablissements_autocomplete'),
 
     # API chercheurs
-    (r'^api/chercheurs/(?P<pays>.*)/$', 'chercheurs.api.api'), # (?P<pays>.*)/$', 'chercheurs.api.api'),
-    (r'^api/chercheurs/(?P<region_id>\d+)/$', 'chercheurs.api.api'),
+    (r'^api/chercheurs/pays/(?P<pays>.*)/$', 'chercheurs.api.api'), # (?P<pays>.*)/$', 'chercheurs.api.api'),
+    (r'^api/chercheurs/region/(?P<region>\d+)/$', 'chercheurs.api.api'),
 
 
     # groupes

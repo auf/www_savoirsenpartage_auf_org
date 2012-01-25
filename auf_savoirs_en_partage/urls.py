@@ -105,7 +105,7 @@ urlpatterns = sep_patterns + patterns(
 
     # API chercheurs
     (r'^api/chercheurs/pays/(?P<pays>.*)/$', 'chercheurs.api.api'), # (?P<pays>.*)/$', 'chercheurs.api.api'),
-    (r'^api/chercheurs/region/(?P<region>\d+)/$', 'chercheurs.api.api'),
+    (r'^api/chercheurs/region/(?P<region>.*)/$', 'chercheurs.api.api'),
 
 
     # groupes

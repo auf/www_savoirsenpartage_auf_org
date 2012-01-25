@@ -49,7 +49,7 @@ class API:
         if pays is not None:
             chercheurs = Chercheur.objects.filter_pays(pays)
         elif region is not None:
-            chercheurs = Chercheur.objects.filter_region(regio)
+            chercheurs = Chercheur.objects.filter_region(region)
         else:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 

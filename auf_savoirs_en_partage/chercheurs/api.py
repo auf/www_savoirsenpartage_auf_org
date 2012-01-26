@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*
 from django.http import HttpResponse
 from django.core import serializers
+from django.shortcuts import get_object_or_404
+
 from chercheurs.models import Chercheur
 
 STATUS_OK = 200
@@ -9,14 +11,12 @@ STATUS_ERROR_PERMISSIONS = 403
 STATUS_ERROR_NOT_FOUND = 404
 STATUS_ERROR_BADMETHOD = 405
 
-def api(request, pays=None, region=None, *args, **kwargs):
+def api(request, pays=None, region=None, id=None):
     api = API(request)
-    # if not hasattr(api, 'api_%s' % method):
-    #    return api_return(STATUS_ERROR)
-    # if pays is not None:
-    return api.api_chercheurs_liste(pays=pays, region=region)
-    #elif region_id is not None:
-    #    return api.api_chercheurs_liste(region_id=region_id)
+    if id is not None:
+        return api.api_chercheur(id)
+    else:
+        return api.api_chercheurs_liste(pays=pays, region=region, id=id)
 
 def api_return(status, text='', json=False):
     content_type = 'text/html'
@@ -45,7 +45,12 @@ class API:
     def __init__(self, request):
         self.request = request
 
-    def api_chercheurs_liste(self, pays=None, region=None):
+    def api_chercheur(self, id):
+        chercheur = get_object_or_404(Chercheur, id=id)
+        data = serializers.serialize('json', [chercheur])
+        return api_return(STATUS_OK, data, True)     
+        
+    def api_chercheurs_liste(self, pays=None, region=None, id=None):
         if pays is not None:
             chercheurs = Chercheur.objects.filter_pays(pays)
         elif region is not None:
@@ -54,5 +59,4 @@ class API:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
         data = serializers.serialize('json', chercheurs)
-        import pdb;pdb.set_trace()
-        return api_return(STATUS_OK, data)
+        return api_return(STATUS_OK, data, True)

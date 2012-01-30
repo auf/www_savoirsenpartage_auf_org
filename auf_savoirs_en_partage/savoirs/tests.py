@@ -53,7 +53,7 @@ class PageLoadTest(TestCase):
 
     def test_evenement(self):
         self.check_status_200('/agenda/evenements/1/')
-        
+
     def test_actualites(self):
         self.check_status_200('/actualites/')
         self.check_status_200('/actualites/', {

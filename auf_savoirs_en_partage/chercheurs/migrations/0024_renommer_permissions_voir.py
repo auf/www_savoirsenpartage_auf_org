@@ -2,25 +2,29 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        ct = orm['contenttypes.ContentType'].objects.get(model='chercheur', app_label='chercheurs', name='chercheur')
+        try:
+            ct = orm['contenttypes.ContentType'].objects.get(model='chercheur', app_label='chercheurs', name='chercheur')
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_chercheurvoir', content_type=ct)
-        p.name = 'Can add chercheur (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_chercheurvoir', content_type=ct)
+            p.name = 'Can add chercheur (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_chercheurvoir', content_type=ct)
-        p.name = 'Can change chercheur (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_chercheurvoir', content_type=ct)
+            p.name = 'Can change chercheur (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_chercheurvoir', content_type=ct)
-        p.name = 'Can delete chercheur (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_chercheurvoir', content_type=ct)
+            p.name = 'Can delete chercheur (visualisation)'
+            p.save()
+        except ObjectDoesNotExist:
+            pass
 
     def backwards(self, orm):
         "Write your backwards methods here."

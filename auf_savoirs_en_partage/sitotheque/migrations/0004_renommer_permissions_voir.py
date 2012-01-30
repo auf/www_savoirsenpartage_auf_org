@@ -2,42 +2,45 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        ct = orm['contenttypes.ContentType'].objects.get(model='site', app_label='sitotheque', name='site')
+        try:
+            ct = orm['contenttypes.ContentType'].objects.get(model='site', app_label='sitotheque', name='site')
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_sitevoir', content_type=ct)
-        p.name = 'Can add site (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_sitevoir', content_type=ct)
+            p.name = 'Can add site (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_sitevoir', content_type=ct)
-        p.name = 'Can change site (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_sitevoir', content_type=ct)
+            p.name = 'Can change site (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_sitevoir', content_type=ct)
-        p.name = 'Can delete site (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_sitevoir', content_type=ct)
+            p.name = 'Can delete site (visualisation)'
+            p.save()
+        except ObjectDoesNotExist:
+            pass
 
-    def backwards(self, orm):
-        "Write your backwards methods here."
-        ct = orm['contenttypes.ContentType'].objects.get(model='site', app_label='sitotheque', name='site')
+        def backwards(self, orm):
+            "Write your backwards methods here."
+            ct = orm['contenttypes.ContentType'].objects.get(model='site', app_label='sitotheque', name='site')
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_sitevoir', content_type=ct)
-        p.name = 'Can add (visualisation) site'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_sitevoir', content_type=ct)
+            p.name = 'Can add (visualisation) site'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_sitevoir', content_type=ct)
-        p.name = 'Can change (visualisation) site'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_sitevoir', content_type=ct)
+            p.name = 'Can change (visualisation) site'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_sitevoir', content_type=ct)
-        p.name = 'Can delete (visualisation) site'
-        p.save()
-
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_sitevoir', content_type=ct)
+            p.name = 'Can delete (visualisation) site'
+            p.save()
 
     models = {
         'auth.group': {

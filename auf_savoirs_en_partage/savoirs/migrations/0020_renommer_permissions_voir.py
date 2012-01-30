@@ -2,39 +2,43 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        ct = orm['contenttypes.ContentType'].objects.get(model='actualite', app_label='savoirs', name='actualite')
+        try:
+            ct = orm['contenttypes.ContentType'].objects.get(model='actualite', app_label='savoirs', name='actualite')
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_actualitevoir', content_type=ct)
-        p.name = 'Can add actualité (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_actualitevoir', content_type=ct)
+            p.name = 'Can add actualité (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_actualitevoir', content_type=ct)
-        p.name = 'Can change actualité (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_actualitevoir', content_type=ct)
+            p.name = 'Can change actualité (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_actualitevoir', content_type=ct)
-        p.name = 'Can delete actualité (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_actualitevoir', content_type=ct)
+            p.name = 'Can delete actualité (visualisation)'
+            p.save()
 
-        ct = orm['contenttypes.ContentType'].objects.get(model='evenement', app_label='savoirs', name='evenement')
+            ct = orm['contenttypes.ContentType'].objects.get(model='evenement', app_label='savoirs', name='evenement')
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_evenementvoir', content_type=ct)
-        p.name = 'Can add événement (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_evenementvoir', content_type=ct)
+            p.name = 'Can add événement (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_evenementvoir', content_type=ct)
-        p.name = 'Can change événement (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_evenementvoir', content_type=ct)
+            p.name = 'Can change événement (visualisation)'
+            p.save()
 
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_evenementvoir', content_type=ct)
-        p.name = 'Can delete événement (visualisation)'
-        p.save()
+            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_evenementvoir', content_type=ct)
+            p.name = 'Can delete événement (visualisation)'
+            p.save()
+        except ObjectDoesNotExist:
+            pass
 
     def backwards(self, orm):
         "Write your backwards methods here."

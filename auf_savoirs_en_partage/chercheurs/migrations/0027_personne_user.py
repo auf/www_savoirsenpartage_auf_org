@@ -11,10 +11,12 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for personne in orm.Personne.objects.filter(actif=1):
-            user = orm['auth.User'].objects.get(email=personne.courriel)
-            personne.user = user
-            personne.save()
-
+            try:
+                user = orm['auth.User'].objects.get(email=personne.courriel)
+                personne.user = user
+                personne.save()
+            except:
+                pass
 
     def backwards(self, orm):
         for personne in orm.Personne.objects.filter(actif=1):

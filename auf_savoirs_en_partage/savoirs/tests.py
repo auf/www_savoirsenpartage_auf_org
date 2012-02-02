@@ -86,10 +86,9 @@ class PageLoadTest(TestCase):
             'q': 'texte texte',
             'nom_chercheur': 'Ted Kennedy',
             'domaine': 1,
-            'equipe_recherche': 'Le groupe',
             'statut': 'expert',
             'discipline': 1,
-            'pays': 'AO',
+            'pays': 1,
             'region': 1,
             'nord_sud': 'Nord',
             'activites_francophonie': 'instance_auf',
@@ -107,7 +106,7 @@ class PageLoadTest(TestCase):
         self.check_status_200('/sites/', {
             'q': 'recherche',
             'discipline': 1,
-            'pays': 'AO',
+            'pays': 1,
             'region': 1
         })
 

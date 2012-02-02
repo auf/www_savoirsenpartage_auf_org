@@ -68,12 +68,13 @@ INSTALLED_APPS = (
     'chercheurs',
     'sitotheque',
     'djangosphinx',
-    'datamaster_modeles',
     'south',
     'auf.django.admingroup',
+    'auf.django.references',
     'alphafilter',
     'interfaces',
     'rappels',
+    'pytz',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

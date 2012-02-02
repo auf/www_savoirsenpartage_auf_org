@@ -9,7 +9,7 @@ from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
 
 from chercheurs.models import Chercheur, GroupeChercheur, DomaineRecherche
-from datamaster_modeles.models import Thematique, Pays, Region
+from auf.django.references.models import Thematique, Pays, Region
 from savoirs.models import Record, Discipline, Actualite, Serveur, RecordCategorie
 from savoirs.forms import CategorieForm, PaysForm, RegionsForm, ThematiquesForm, DisciplinesForm, ConfirmationForm
 

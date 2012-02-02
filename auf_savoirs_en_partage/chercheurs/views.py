@@ -5,7 +5,7 @@ from chercheurs.decorators import chercheur_required
 from chercheurs.forms import ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, AuthenticationForm, GroupeSearchForm, MessageForm
 from chercheurs.models import Chercheur, Groupe, Message, AdhesionGroupe, AuthLDAP
 from chercheurs.utils import get_django_user_for_email, create_ldap_hash, check_ldap_hash
-from datamaster_modeles.models import Etablissement, Region
+from auf.django.references.models import Etablissement, Region
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden, HttpResponseNotFound

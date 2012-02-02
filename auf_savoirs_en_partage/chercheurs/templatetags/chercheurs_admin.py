@@ -4,7 +4,7 @@ from django import template
 from django.utils.encoding import smart_unicode
 
 from chercheurs.models import GroupeChercheur, DomaineRecherche, GENRE_CHOICES, STATUT_CHOICES
-from datamaster_modeles.models import Region, Pays
+from auf.django.references.models import Region, Pays
 from savoirs.models import Discipline
 
 register = template.Library()

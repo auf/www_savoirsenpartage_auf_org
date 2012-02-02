@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import Q
 from djangosphinx.models import SphinxSearch
 
-from datamaster_modeles.models import *
+from auf.django.references.models import *
 from savoirs.models import Discipline, SEPManager, SEPSphinxQuerySet, SEPQuerySet, Search
 
 TYPE_SITE_CHOICES = (

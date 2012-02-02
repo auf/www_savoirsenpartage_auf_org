@@ -2,7 +2,7 @@
 import re
 from chercheurs.models import Personne
 from chercheurs.utils import get_django_user_for_email
-from datamaster_modeles.models import Authentification as AUFUser, Employe
+from auf.django.references.models import Authentification as AUFUser, Employe
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from hashlib import md5

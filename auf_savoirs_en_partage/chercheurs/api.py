@@ -15,11 +15,11 @@ STATUS_ERROR_BADMETHOD = 405
 
 def api(request, pays=None, region=None, chercheur_id=None):
     api = API(request)
-    
     if chercheur_id is not None:
         return api.api_chercheur(chercheur_id)
     else:
-        return api.api_chercheurs_liste(pays=pays, region=region)
+        filter_pays = pays.split(',')
+        return api.api_chercheurs_liste(pays=filter_pays, region=region)
 
 def api_return(status, text='', json=False):
     content_type = 'text/html'
@@ -52,7 +52,7 @@ class API:
         chercheur = get_object_or_404(Chercheur, id=chercheur_id)
         # Domaines de recherche du chercheur
         data = serializers.serialize('json', [chercheur,])
-        return api_return(STATUS_OK, data, False)     
+        #return api_return(STATUS_OK, data, True)     
 
 
         domaines_recherche = []
@@ -90,7 +90,8 @@ class API:
         chercheur_details = [{"id": "%s" % chercheur.id, 
                 "civilite": "%s" % chercheur.civilite, 
                 "prenom": "%s" % chercheur.prenom, 
-                "nom": "%s" % chercheur.nom, 
+                "nom": "%s" % chercheur.nom,
+                "pays": "%s" % chercheur.pays,
                 "etablissement_display": "%s" % chercheur.etablissement_display,
                 "afficher_courriel": "%s" % chercheur.afficher_courriel,
                 "courriel_display": "%s" % chercheur.courriel_display, 
@@ -134,14 +135,13 @@ class API:
             "these_directeur": "%s" % chercheur.these.directeur, 
             })
             chercheur_details.append(details_pop)
-             #"publications":  chercheur.publications,             
-        
-
-        return api_return(STATUS_OK, simplejson.dumps(chercheur_details), False)     
+        return api_return(STATUS_OK, simplejson.dumps(chercheur_details), True)     
         
     def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
-            chercheurs = Chercheur.objects.filter_pays(pays)
+            #chercheurs = Chercheur.objects.filter_pays(pays)
+            chercheurs = Chercheur.objects.filter(etablissement__pays__in=[pays])|Chercheur.objects.filter(etablissement_autre_pays__in=pays)
+
         elif region is not None:
             chercheurs = Chercheur.objects.filter_region(region)
         else:

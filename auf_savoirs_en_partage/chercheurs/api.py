@@ -71,7 +71,7 @@ class API:
             {"nom": "%s" % exp.nom,
                 "date": "%s" % exp.date,
                 "organisme_demandeur": "%s" % exp.organisme_demandeur,
-                "organisme_demandeur_visible": "%s" % exp.organisme_demandeur_visible})
+                "organisme_demandeur_visible": exp.organisme_demandeur_visible})
 
         # Publications
         publications = []
@@ -121,7 +121,7 @@ class API:
                 "membre_reseau_institutionnel_fonction": "%s" % chercheur.membre_reseau_institutionnel_fonction, 
                 "membre_reseau_institionnel_dates": "%s" % chercheur.membre_reseau_institutionnel_dates, 
                 "expertises": expertises, 
-                "expertises_auf": "%s" % chercheur.expertises_auf,
+                "expertises_auf": chercheur.expertises_auf,
                 "publications": publications}] 
         #import pdb;pdb.set_trace() 
         if chercheur.these:

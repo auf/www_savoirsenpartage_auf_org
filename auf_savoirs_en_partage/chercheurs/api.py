@@ -92,13 +92,13 @@ class API:
                 "prenom": "%s" % chercheur.prenom, 
                 "nom": "%s" % chercheur.nom,
                 "pays": "%s" % chercheur.pays,
-                "etablissement_display": "%s" % chercheur.etablissement_display,
+                "etablissement": "%s" % chercheur.etablissement_display,
                 "afficher_courriel": "%s" % chercheur.afficher_courriel,
-                "courriel_display": "%s" % chercheur.courriel_display, 
+                "courriel": "%s" % chercheur.courriel, 
                 "region": "%s" % chercheur.region.nom, 
-                "statut_display": "%s" % chercheur.statut_display, 
+                "statut": "%s" % chercheur.get_statut_display(), 
                 "diplome": "%s" % chercheur.diplome, 
-                "domaines_recherche": "%s" % domaines_recherche,
+                "domaines_recherche": domaines_recherche,
                 "discipline": "%s" % chercheur.discipline,
                 "theme_recherche": "%s" % chercheur.theme_recherche, 
                 "equipe_recherche": "%s" % chercheur.equipe_recherche, 
@@ -106,28 +106,30 @@ class API:
                 "url_site_web": "%s" % chercheur.url_site_web, 
                 "url_blog": "%s" % chercheur.url_blog, 
                 "url_reseau_social": "%s" % chercheur.url_reseau_social, 
-                "membre_instance_auf": "%s" % chercheur.membre_instance_auf, 
-                "expert_oif": "%s" % chercheur.expert_oif, 
-                "membre_association_francophone": "%s" % chercheur.membre_association_francophone, 
-                "membre_reseau_institutionnel": "%s" % chercheur.membre_reseau_institutionnel, 
-                "get_membre_instance_auf_nom_display": "%s" % chercheur.get_membre_instance_auf_nom_display, 
+                "membre_instance_auf": chercheur.membre_instance_auf, 
+                "expert_oif": chercheur.expert_oif, 
+                "membre_association_francophone": chercheur.membre_association_francophone, 
+                "membre_reseau_institutionnel": chercheur.membre_reseau_institutionnel, 
+                "membre_instance_auf_nom": "%s" % chercheur.get_membre_instance_auf_nom_display(), 
                 "membre_instance_auf_fonction": "%s" % chercheur.membre_instance_auf_fonction, 
                 "membre_instance_auf_dates": "%s" % chercheur.membre_instance_auf_dates, 
                 "expert_oif_details": "%s" % chercheur.expert_oif_details, 
                 "expert_oif_dates": "%s" % chercheur.expert_oif_dates, 
                 "membre_association_francophone_details": "%s" % chercheur.membre_association_francophone_details, 
-                "get_membre_reseau_institutionnel_nom_display": "%s" %
-                chercheur.get_membre_reseau_institutionnel_nom_display, 
+                "membre_reseau_institutionnel_nom": "%s" %
+                chercheur.get_membre_reseau_institutionnel_nom_display(), 
                 "membre_reseau_institutionnel_fonction": "%s" % chercheur.membre_reseau_institutionnel_fonction, 
                 "membre_reseau_institionnel_dates": "%s" % chercheur.membre_reseau_institutionnel_dates, 
                 "expertises": expertises, 
                 "expertises_auf": "%s" % chercheur.expertises_auf,
                 "publications": publications}] 
-        
+        #import pdb;pdb.set_trace() 
         if chercheur.these:
+            #import pdb;pdb.set_trace()
             details_pop = chercheur_details.pop(0)
             details_pop.update(
-            {"these_url": "%s" % chercheur.these.url, 
+            {"these" : "%s" % chercheur.these,
+            "these_url": "%s" % chercheur.these.url, 
             "these_titre": "%s" % chercheur.these.titre, 
             "these_etablissement": "%s" % chercheur.these.etablissement, 
             "these_annee": "%s" % chercheur.these.annee, 
@@ -151,6 +153,6 @@ class API:
             [{"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,
-                "etablissement": "%s" % c.etablissement_display,
+                "etablissement": "%s" % c.etablissement,
                 "pays": "%s" % c.pays}
                 for c in chercheurs]), json=True)

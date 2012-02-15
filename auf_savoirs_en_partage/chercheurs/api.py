@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from django.utils import simplejson
 
+from savoirs.models import Region
 from chercheurs.models import Chercheur, Personne
 
 STATUS_OK = 200
@@ -17,9 +18,11 @@ def api(request, pays=None, region=None, chercheur_id=None):
     api = API(request)
     if chercheur_id is not None:
         return api.api_chercheur(chercheur_id)
-    else:
+    elif pays is not None:
         filter_pays = pays.split(',')
-        return api.api_chercheurs_liste(pays=filter_pays, region=region)
+        return api.api_chercheurs_liste(pays=filter_pays)
+    else:
+        return api.api_chercheurs_liste(region=region)
 
 def api_return(status, text='', json=False):
     content_type = 'text/html'
@@ -123,9 +126,8 @@ class API:
                 "expertises": expertises, 
                 "expertises_auf": chercheur.expertises_auf,
                 "publications": publications}] 
-        #import pdb;pdb.set_trace() 
+
         if chercheur.these:
-            #import pdb;pdb.set_trace()
             details_pop = chercheur_details.pop(0)
             details_pop.update(
             {"these" : "%s" % chercheur.these,
@@ -141,9 +143,7 @@ class API:
         
     def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
-            #chercheurs = Chercheur.objects.filter_pays(pays)
             chercheurs = Chercheur.objects.filter(etablissement__pays__in=[pays])|Chercheur.objects.filter(etablissement_autre_pays__in=pays)
-
         elif region is not None:
             chercheurs = Chercheur.objects.filter_region(region)
         else:

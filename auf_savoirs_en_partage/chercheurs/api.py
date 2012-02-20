@@ -71,74 +71,73 @@ class API:
         expertises = []
         for exp in chercheur.expertises.all():
             expertises.append(
-            {"nom": "%s" % exp.nom,
-                "date": "%s" % exp.date,
-                "organisme_demandeur": "%s" % exp.organisme_demandeur,
-                "organisme_demandeur_visible": exp.organisme_demandeur_visible})
+            {'nom': '%s' % exp.nom,
+                'date': '%s' % exp.date,
+                'organisme_demandeur': '%s' % exp.organisme_demandeur,
+                'organisme_demandeur_visible': exp.organisme_demandeur_visible})
 
         # Publications
         publications = []
         for pub in chercheur.publications.all():
             publications.append(
-            {"auteurs": "%s" % pub.auteurs,
-                "titre": "%s" % pub.titre,
-                "revue": "%s" % pub.revue,
-                "annee": "%s" % pub.annee,
-                "editeur": "%s" % pub.editeur,
-                "lieu_edition": "%s" % pub.lieu_edition,
-                "nb_pages": "%s" % pub.nb_pages,
-                "url": "%s" % pub.url,
-                "publication_affichage": "%s" %  pub.publication_affichage})
+            {'auteurs': '%s' % pub.auteurs,
+                'titre': '%s' % pub.titre,
+                'revue': '%s' % pub.revue,
+                'annee': '%s' % pub.annee,
+                'editeur': '%s' % pub.editeur,
+                'lieu_edition': '%s' % pub.lieu_edition,
+                'nb_pages': '%s' % pub.nb_pages,
+                'url': '%s' % pub.url,
+                'publication_affichage': '%s' %  pub.publication_affichage})
 
-        chercheur_details = [{"id": "%s" % chercheur.id, 
-                "civilite": "%s" % chercheur.civilite, 
-                "prenom": "%s" % chercheur.prenom, 
-                "nom": "%s" % chercheur.nom,
-                "pays": "%s" % chercheur.pays,
-                "etablissement": "%s" % chercheur.etablissement_display,
-                "afficher_courriel": "%s" % chercheur.afficher_courriel,
-                "courriel": "%s" % chercheur.courriel, 
-                "region": "%s" % chercheur.region.nom, 
-                "statut": "%s" % chercheur.get_statut_display(), 
-                "diplome": "%s" % chercheur.diplome, 
-                "domaines_recherche": domaines_recherche,
-                "discipline": "%s" % chercheur.discipline,
-                "theme_recherche": "%s" % chercheur.theme_recherche, 
-                "equipe_recherche": "%s" % chercheur.equipe_recherche, 
-                "mots_cles": "%s" % chercheur.mots_cles, 
-                "url_site_web": "%s" % chercheur.url_site_web, 
-                "url_blog": "%s" % chercheur.url_blog, 
-                "url_reseau_social": "%s" % chercheur.url_reseau_social, 
-                "membre_instance_auf": chercheur.membre_instance_auf, 
-                "expert_oif": chercheur.expert_oif, 
-                "membre_association_francophone": chercheur.membre_association_francophone, 
-                "membre_reseau_institutionnel": chercheur.membre_reseau_institutionnel, 
-                "membre_instance_auf_nom": "%s" % chercheur.get_membre_instance_auf_nom_display(), 
-                "membre_instance_auf_fonction": "%s" % chercheur.membre_instance_auf_fonction, 
-                "membre_instance_auf_dates": "%s" % chercheur.membre_instance_auf_dates, 
-                "expert_oif_details": "%s" % chercheur.expert_oif_details, 
-                "expert_oif_dates": "%s" % chercheur.expert_oif_dates, 
-                "membre_association_francophone_details": "%s" % chercheur.membre_association_francophone_details, 
-                "membre_reseau_institutionnel_nom": "%s" %
+        chercheur_details = [{'id': '%s' % chercheur.id, 
+                'civilite': '%s' % chercheur.civilite, 
+                'prenom': '%s' % chercheur.prenom, 
+                'nom': '%s' % chercheur.nom,
+                'pays': '%s' % chercheur.pays,
+                'etablissement': '%s' % chercheur.etablissement_display,
+                'afficher_courriel': '%s' % chercheur.afficher_courriel,
+                'courriel': '%s' % chercheur.courriel, 
+                'region': '%s' % chercheur.region.nom, 
+                'statut': '%s' % chercheur.get_statut_display(), 
+                'diplome': '%s' % chercheur.diplome, 
+                'domaines_recherche': domaines_recherche,
+                'discipline': '%s' % chercheur.discipline,
+                'theme_recherche': '%s' % chercheur.theme_recherche, 
+                'equipe_recherche': '%s' % chercheur.equipe_recherche, 
+                'mots_cles': '%s' % chercheur.mots_cles, 
+                'url_site_web': '%s' % chercheur.url_site_web, 
+                'url_blog': '%s' % chercheur.url_blog, 
+                'url_reseau_social': '%s' % chercheur.url_reseau_social, 
+                'membre_instance_auf': chercheur.membre_instance_auf, 
+                'expert_oif': chercheur.expert_oif, 
+                'membre_association_francophone': chercheur.membre_association_francophone, 
+                'membre_reseau_institutionnel': chercheur.membre_reseau_institutionnel, 
+                'membre_instance_auf_nom': '%s' % chercheur.get_membre_instance_auf_nom_display(), 
+                'membre_instance_auf_fonction': '%s' % chercheur.membre_instance_auf_fonction, 
+                'membre_instance_auf_dates': '%s' % chercheur.membre_instance_auf_dates, 
+                'expert_oif_details': '%s' % chercheur.expert_oif_details, 
+                'expert_oif_dates': '%s' % chercheur.expert_oif_dates, 
+                'membre_association_francophone_details': '%s' % chercheur.membre_association_francophone_details, 
+                'membre_reseau_institutionnel_nom': '%s' %
                 chercheur.get_membre_reseau_institutionnel_nom_display(), 
-                "membre_reseau_institutionnel_fonction": "%s" % chercheur.membre_reseau_institutionnel_fonction, 
-                "membre_reseau_institionnel_dates": "%s" % chercheur.membre_reseau_institutionnel_dates, 
-                "expertises": expertises, 
-                "expertises_auf": chercheur.expertises_auf,
-                "publications": publications}] 
-
-        if chercheur.these:
-            details_pop = chercheur_details.pop(0)
-            details_pop.update(
-            {"these" : "%s" % chercheur.these,
-            "these_url": "%s" % chercheur.these.url, 
-            "these_titre": "%s" % chercheur.these.titre, 
-            "these_etablissement": "%s" % chercheur.these.etablissement, 
-            "these_annee": "%s" % chercheur.these.annee, 
-            "these_nb_pages": "%s" % chercheur.these.nb_pages, 
-            "these_directeur": "%s" % chercheur.these.directeur, 
-            })
-            chercheur_details.append(details_pop)
+                'membre_reseau_institutionnel_fonction': '%s' % chercheur.membre_reseau_institutionnel_fonction, 
+                'membre_reseau_institionnel_dates': '%s' % chercheur.membre_reseau_institutionnel_dates, 
+                'expertises': expertises, 
+                'expertises_auf': chercheur.expertises_auf,
+                'publications': publications}]
+        #if chercheur.these:
+        #    details_pop = chercheur_details.pop(0)
+        #    details_pop.update(
+        #    {'these' : '%s' % chercheur.these,
+        #    'these_url': '%s' % chercheur.these.url, 
+        #    'these_titre': '%s' % chercheur.these.titre, 
+        #    'these_etablissement': '%s' % chercheur.these.etablissement, 
+        #    'these_annee': '%s' % chercheur.these.annee, 
+        #    'these_nb_pages': '%s' % chercheur.these.nb_pages, 
+        #    'these_directeur': '%s' % chercheur.these.directeur, 
+        #    })
+        #    chercheur_details.append(details_pop)
         return api_return(STATUS_OK, simplejson.dumps(chercheur_details), True)     
         
     def api_chercheurs_liste(self, pays=None, region=None):
@@ -153,6 +152,8 @@ class API:
             [{"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,
-                "etablissement": "%s" % c.etablissement,
-                "pays": "%s" % c.pays}
+                "etablissement": "%s" % c.etablissement_display,
+                "etablissement_autre_nom": "%s" % c.etablissement_autre_nom,
+                "pays": "%s" % c.pays.nom,
+                "etablissement_pays_autre_nom": "%s" % c.etablissement_autre_pays.nom}
                 for c in chercheurs]), json=True)

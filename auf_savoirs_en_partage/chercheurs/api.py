@@ -47,6 +47,11 @@ def api_return(status, text='', json=False):
 
     return r
 
+
+def dict_2_json(data):
+    return simplejson.dumps(data, indent=4)
+
+
 class API:
     def __init__(self, request):
         self.request = request
@@ -139,7 +144,7 @@ class API:
             "these_directeur": "%s" % chercheur.these.directeur, 
             })
             chercheur_details.append(details_pop)
-        return api_return(STATUS_OK, simplejson.dumps(chercheur_details), True)     
+        return api_return(STATUS_OK, dict_2_json(chercheur_details), True)     
         
     def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
@@ -149,7 +154,7 @@ class API:
         else:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
-        return api_return(STATUS_OK, simplejson.dumps(
+        return api_return(STATUS_OK, dict_2_json(
             [{"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,

@@ -47,6 +47,11 @@ def api_return(status, text='', json=False):
 
     return r
 
+
+def dict_2_json(data):
+    return simplejson.dumps(data, indent=4)
+
+
 class API:
     def __init__(self, request):
         self.request = request
@@ -121,24 +126,25 @@ class API:
                 'membre_association_francophone_details': '%s' % chercheur.membre_association_francophone_details, 
                 'membre_reseau_institutionnel_nom': '%s' %
                 chercheur.get_membre_reseau_institutionnel_nom_display(), 
-                'membre_reseau_institutionnel_fonction': '%s' % chercheur.membre_reseau_institutionnel_fonction, 
-                'membre_reseau_institionnel_dates': '%s' % chercheur.membre_reseau_institutionnel_dates, 
-                'expertises': expertises, 
-                'expertises_auf': chercheur.expertises_auf,
-                'publications': publications}]
+                "membre_reseau_institutionnel_fonction": "%s" % chercheur.membre_reseau_institutionnel_fonction, 
+                "membre_reseau_institionnel_dates": "%s" % chercheur.membre_reseau_institutionnel_dates, 
+                "expertises": expertises, 
+                "expertises_auf": chercheur.expertises_auf,
+                "publications": publications}] 
+
         #if chercheur.these:
         #    details_pop = chercheur_details.pop(0)
         #    details_pop.update(
-        #    {'these' : '%s' % chercheur.these,
-        #    'these_url': '%s' % chercheur.these.url, 
-        #    'these_titre': '%s' % chercheur.these.titre, 
-        #    'these_etablissement': '%s' % chercheur.these.etablissement, 
-        #    'these_annee': '%s' % chercheur.these.annee, 
-        #    'these_nb_pages': '%s' % chercheur.these.nb_pages, 
-        #    'these_directeur': '%s' % chercheur.these.directeur, 
+        #    {"these" : "%s" % chercheur.these,
+        #    "these_url": "%s" % chercheur.these.url, 
+        #    "these_titre": "%s" % chercheur.these.titre, 
+        #    "these_etablissement": "%s" % chercheur.these.etablissement, 
+        #    "these_annee": "%s" % chercheur.these.annee, 
+        #    "these_nb_pages": "%s" % chercheur.these.nb_pages, 
+        #    "these_directeur": "%s" % chercheur.these.directeur, 
         #    })
         #    chercheur_details.append(details_pop)
-        return api_return(STATUS_OK, simplejson.dumps(chercheur_details), True)     
+        return api_return(STATUS_OK, dict_2_json(chercheur_details), True)     
         
     def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
@@ -148,7 +154,7 @@ class API:
         else:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
-        return api_return(STATUS_OK, simplejson.dumps(
+        return api_return(STATUS_OK, dict_2_json(
             [{"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,

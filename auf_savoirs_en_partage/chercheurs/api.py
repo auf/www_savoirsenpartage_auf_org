@@ -100,6 +100,7 @@ class API:
                 'prenom': '%s' % chercheur.prenom, 
                 'nom': '%s' % chercheur.nom,
                 'pays': '%s' % chercheur.pays,
+                'pays_code': '%s' % chercheur.pays.code,
                 'etablissement': '%s' % chercheur.etablissement_display,
                 'afficher_courriel': '%s' % chercheur.afficher_courriel,
                 'courriel': '%s' % chercheur.courriel, 

@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import simplejson
 
 from savoirs.models import Region
+from savoirs.rss import FilChercheurs
 from chercheurs.models import Chercheur, Personne
 
 STATUS_OK = 200
@@ -13,6 +14,13 @@ STATUS_ERROR = 400
 STATUS_ERROR_PERMISSIONS = 403 
 STATUS_ERROR_NOT_FOUND = 404
 STATUS_ERROR_BADMETHOD = 405
+
+class APIFilChercheurs(FilChercheurs):
+    description = "Pour services tiers"
+
+    def items(self, search):
+        """Pas de limite temporelle"""
+        return search.run().order_by('-date_modification')
 
 def api(request, pays=None, region=None, chercheur_id=None):
     api = API(request)

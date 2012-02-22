@@ -4,7 +4,7 @@ from django.conf.urls.defaults import patterns, include, handler500, handler404,
 from django.conf import settings
 from django.contrib import admin
 from savoirs.rss import FilChercheurs, FilRessources, FilActualites, FilAppels, FilEvenements, FilSites, FilMessages
-
+from chercheurs.api import APIFilChercheurs
 admin.autodiscover()
 
 handler500 = "views.page_500"
@@ -107,6 +107,7 @@ urlpatterns = sep_patterns + patterns(
     (r'^api/chercheurs/(?P<chercheur_id>\d+)/$', 'chercheurs.api.api'),
     (r'^api/chercheurs/pays/(?P<pays>.*)/$', 'chercheurs.api.api'),
     (r'^api/chercheurs/region/(?P<region>.*)/$', 'chercheurs.api.api'),
+    (r'^api/chercheurs/rss$', APIFilChercheurs(), {}, ),
 
 
     # groupes

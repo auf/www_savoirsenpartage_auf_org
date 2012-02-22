@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import simplejson
 
 from savoirs.models import Region
+from savoirs.rss import FilChercheurs
 from chercheurs.models import Chercheur, Personne
 
 STATUS_OK = 200
@@ -13,6 +14,13 @@ STATUS_ERROR = 400
 STATUS_ERROR_PERMISSIONS = 403 
 STATUS_ERROR_NOT_FOUND = 404
 STATUS_ERROR_BADMETHOD = 405
+
+class APIFilChercheurs(FilChercheurs):
+    description = "Pour services tiers"
+
+    def items(self, search):
+        """Pas de limite temporelle"""
+        return search.run().order_by('-date_modification')
 
 def api(request, pays=None, region=None, chercheur_id=None):
     api = API(request)
@@ -152,20 +160,30 @@ class API:
 
         return api_return(STATUS_OK, dict_2_json(chercheur_details), True)     
         
+
     def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
-            chercheurs = Chercheur.objects.filter(etablissement__pays__in=[pays])|Chercheur.objects.filter(etablissement_autre_pays__in=pays)
+            chercheurs = Chercheur.objects.filter(etablissement__pays__in=pays) | Chercheur.objects.filter(etablissement_autre_pays__in=pays)
         elif region is not None:
             chercheurs = Chercheur.objects.filter_region(region)
         else:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
-        return api_return(STATUS_OK, dict_2_json(
-            [{"id": "%s" % c.id,
+        results = []
+        for c in chercheurs:
+            if c.etablissement_autre_pays is not None:
+                etablissement_autre_pays_nom = c.etablissement_autre_pays.nom
+            else:
+                etablissement_autre_pays_nom = None
+
+            data = {"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,
                 "etablissement": "%s" % c.etablissement_display,
                 "etablissement_autre_nom": "%s" % c.etablissement_autre_nom,
                 "pays": "%s" % c.pays.nom,
-                "etablissement_pays_autre_nom": "%s" % c.etablissement_autre_pays.nom}
-                for c in chercheurs]), json=True)
+                "etablissement_pays_autre_nom": "%s" % etablissement_autre_pays_nom}
+            results.append(data)
+
+        return api_return(STATUS_OK, dict_2_json(results), json=True)
+

@@ -160,20 +160,30 @@ class API:
 
         return api_return(STATUS_OK, dict_2_json(chercheur_details), True)     
         
+
     def api_chercheurs_liste(self, pays=None, region=None):
         if pays is not None:
-            chercheurs = Chercheur.objects.filter(etablissement__pays__in=[pays])|Chercheur.objects.filter(etablissement_autre_pays__in=pays)
+            chercheurs = Chercheur.objects.filter(etablissement__pays__in=pays) | Chercheur.objects.filter(etablissement_autre_pays__in=pays)
         elif region is not None:
             chercheurs = Chercheur.objects.filter_region(region)
         else:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
-        return api_return(STATUS_OK, dict_2_json(
-            [{"id": "%s" % c.id,
+        results = []
+        for c in chercheurs:
+            if c.etablissement_autre_pays is not None:
+                etablissement_autre_pays_nom = c.etablissement_autre_pays.nom
+            else:
+                etablissement_autre_pays_nom = None
+
+            data = {"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,
                 "etablissement": "%s" % c.etablissement_display,
                 "etablissement_autre_nom": "%s" % c.etablissement_autre_nom,
                 "pays": "%s" % c.pays.nom,
-                "etablissement_pays_autre_nom": "%s" % c.etablissement_autre_pays.nom}
-                for c in chercheurs]), json=True)
+                "etablissement_pays_autre_nom": "%s" % etablissement_autre_pays_nom}
+            results.append(data)
+
+        return api_return(STATUS_OK, dict_2_json(results), json=True)
+

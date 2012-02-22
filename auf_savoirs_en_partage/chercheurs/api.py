@@ -132,19 +132,22 @@ class API:
                 "expertises": expertises, 
                 "expertises_auf": chercheur.expertises_auf,
                 "publications": publications}] 
-
-        #if chercheur.these:
-        #    details_pop = chercheur_details.pop(0)
-        #    details_pop.update(
-        #    {"these" : "%s" % chercheur.these,
-        #    "these_url": "%s" % chercheur.these.url, 
-        #    "these_titre": "%s" % chercheur.these.titre, 
-        #    "these_etablissement": "%s" % chercheur.these.etablissement, 
-        #    "these_annee": "%s" % chercheur.these.annee, 
-        #    "these_nb_pages": "%s" % chercheur.these.nb_pages, 
-        #    "these_directeur": "%s" % chercheur.these.directeur, 
-        #    })
-        #    chercheur_details.append(details_pop)
+        try:
+            if chercheur.these:
+                details_pop = chercheur_details.pop(0)
+                details_pop.update(
+                    {"these" : "%s" % chercheur.these,
+                    "these_url": "%s" % chercheur.these.url, 
+                    "these_titre": "%s" % chercheur.these.titre, 
+                    "these_etablissement": "%s" % chercheur.these.etablissement, 
+                    "these_annee": "%s" % chercheur.these.annee, 
+                    "these_nb_pages": "%s" % chercheur.these.nb_pages, 
+                    "these_directeur": "%s" % chercheur.these.directeur, 
+                    })
+            chercheur_details.append(details_pop)
+        except:
+            print "Le chercheur n'a pas de thèse"
+            
         return api_return(STATUS_OK, dict_2_json(chercheur_details), True)     
         
     def api_chercheurs_liste(self, pays=None, region=None):

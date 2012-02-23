@@ -131,7 +131,9 @@ class API:
                 "membre_reseau_institionnel_dates": "%s" % chercheur.membre_reseau_institutionnel_dates, 
                 "expertises": expertises, 
                 "expertises_auf": chercheur.expertises_auf,
-                "publications": publications}] 
+                "publications": publications}]
+
+        # devrait faire le lookup 
         try:
             if chercheur.these:
                 details_pop = chercheur_details.pop(0)
@@ -146,8 +148,8 @@ class API:
                     })
             chercheur_details.append(details_pop)
         except:
-            print "Le chercheur n'a pas de thèse"
-            
+            pass
+
         return api_return(STATUS_OK, dict_2_json(chercheur_details), True)     
         
     def api_chercheurs_liste(self, pays=None, region=None):

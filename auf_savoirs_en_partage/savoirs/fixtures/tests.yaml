@@ -9,25 +9,6 @@
     uri: "http://www.ours.ca"
     validated: 1
 
-- model: datamaster_modeles.Region
-  pk: 1
-  fields:
-    code: AC
-    nom: Afrique centrale
-    implantation_bureau: 1
-    actif: 1
-
-- model: datamaster_modeles.Pays
-  pk: AO
-  fields:
-    id: 1
-    code_iso3: AGO
-    code_bureau: BAC
-    nom: Angola
-    region: 1
-    nord_sud: Sud
-    actif: 1
-
 - model: savoirs.Discipline
   pk: 1
   fields:

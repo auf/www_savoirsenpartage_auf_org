@@ -26,7 +26,7 @@ from django.utils.encoding import smart_unicode, smart_str
 from djangosphinx.models import SphinxQuerySet, SearchError
 from markdown2 import markdown
 
-from datamaster_modeles.models import Region, Pays, Thematique
+from auf.django.references.models import Region, Pays, Thematique
 from savoirs.globals import META
 from settings import CALENDRIER_URL, SITE_ROOT_URL, CONTACT_EMAIL
 

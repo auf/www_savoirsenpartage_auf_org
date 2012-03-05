@@ -1,81 +1,27 @@
 # encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import DataMigration
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from south.v2 import SchemaMigration
+from django.db import models, connection
 
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        try:
-            ct = orm['contenttypes.ContentType'].objects.get(model='actualite', app_label='savoirs', name='actualite')
-
-            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_actualitevoir', content_type=ct)
-            p.name = 'Can add actualité (visualisation)'
-            p.save()
-
-            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_actualitevoir', content_type=ct)
-            p.name = 'Can change actualité (visualisation)'
-            p.save()
-
-            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_actualitevoir', content_type=ct)
-            p.name = 'Can delete actualité (visualisation)'
-            p.save()
-
-            ct = orm['contenttypes.ContentType'].objects.get(model='evenement', app_label='savoirs', name='evenement')
-
-            p, created = orm['auth.Permission'].objects.get_or_create(codename='add_evenementvoir', content_type=ct)
-            p.name = 'Can add événement (visualisation)'
-            p.save()
-
-            p, created = orm['auth.Permission'].objects.get_or_create(codename='change_evenementvoir', content_type=ct)
-            p.name = 'Can change événement (visualisation)'
-            p.save()
-
-            p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_evenementvoir', content_type=ct)
-            p.name = 'Can delete événement (visualisation)'
-            p.save()
-        except ObjectDoesNotExist:
-            pass
+        cursor = connection.cursor()
+        cursor.execute("SHOW FULL TABLES lIKE 'ref_%%'")
+        for name, type in cursor:
+            if type == 'BASE TABLE':
+                db.execute('DROP TABLE %s' % name)
 
     def backwards(self, orm):
-        "Write your backwards methods here."
-        ct = orm['contenttypes.ContentType'].objects.get(model='actualite', app_label='savoirs', name='actualite')
-
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_actualitevoir', content_type=ct)
-        p.name = 'Can add (visualisation) actualité'
-        p.save()
-
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_actualitevoir', content_type=ct)
-        p.name = 'Can change (visualisation) actualité'
-        p.save()
-
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_actualitevoir', content_type=ct)
-        p.name = 'Can delete (visualisation) actualité'
-        p.save()
-
-        ct = orm['contenttypes.ContentType'].objects.get(model='evenement', app_label='savoirs', name='evenement')
-
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='add_evenementvoir', content_type=ct)
-        p.name = 'Can add (visualisation) événement'
-        p.save()
-
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='change_evenementvoir', content_type=ct)
-        p.name = 'Can change (visualisation) événement'
-        p.save()
-
-        p, created = orm['auth.Permission'].objects.get_or_create(codename='delete_evenementvoir', content_type=ct)
-        p.name = 'Can delete (visualisation) événement'
-        p.save()
+        pass
 
 
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'unique': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
             'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
         },
         'auth.permission': {
@@ -99,7 +45,7 @@ class Migration(DataMigration):
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'max_length': '30', 'unique': 'True'})
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -108,43 +54,43 @@ class Migration(DataMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'datamaster_modeles.bureau': {
-            'Meta': {'object_name': 'Bureau', 'db_table': "u'ref_bureau'"},
+        'references.bureau': {
+            'Meta': {'ordering': "['nom']", 'object_name': 'Bureau', 'db_table': "u'ref_bureau'", 'managed': 'False'},
             'actif': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True'}),
+            'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'}),
-            'implantation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Implantation']", 'db_column': "'implantation'"}),
+            'implantation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Implantation']", 'db_column': "'implantation'"}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'nom_court': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'nom_long': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Region']", 'db_column': "'region'"})
+            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Region']", 'db_column': "'region'"})
         },
-        'datamaster_modeles.implantation': {
-            'Meta': {'ordering': "('nom',)", 'object_name': 'Implantation', 'db_table': "u'ref_implantation'"},
+        'references.implantation': {
+            'Meta': {'ordering': "['nom']", 'object_name': 'Implantation', 'db_table': "u'ref_implantation'", 'managed': 'False'},
             'actif': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'adresse_physique_bureau': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'adresse_physique_code_postal': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'adresse_physique_code_postal_avant_ville': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'adresse_physique_no': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'adresse_physique_pays': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'impl_adresse_physique'", 'db_column': "'adresse_physique_pays'", 'to': "orm['datamaster_modeles.Pays']"}),
+            'adresse_physique_pays': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'impl_adresse_physique'", 'to_field': "'code'", 'db_column': "'adresse_physique_pays'", 'to': "orm['references.Pays']"}),
             'adresse_physique_precision': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'adresse_physique_precision_avant': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'adresse_physique_region': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'adresse_physique_rue': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'adresse_physique_ville': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'adresse_postale_boite_postale': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'adresse_postale_bureau': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'adresse_postale_code_postal': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'adresse_postale_boite_postale': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'adresse_postale_bureau': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'adresse_postale_code_postal': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'adresse_postale_code_postal_avant_ville': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'adresse_postale_no': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'adresse_postale_pays': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'impl_adresse_postale'", 'db_column': "'adresse_postale_pays'", 'to': "orm['datamaster_modeles.Pays']"}),
-            'adresse_postale_precision': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'adresse_postale_precision_avant': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'adresse_postale_region': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'adresse_postale_rue': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'adresse_postale_no': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
+            'adresse_postale_pays': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'impl_adresse_postale'", 'to_field': "'code'", 'db_column': "'adresse_postale_pays'", 'to': "orm['references.Pays']"}),
+            'adresse_postale_precision': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'adresse_postale_precision_avant': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'adresse_postale_region': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'adresse_postale_rue': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'adresse_postale_ville': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'bureau_rattachement': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Implantation']", 'db_column': "'bureau_rattachement'"}),
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True'}),
+            'bureau_rattachement': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Implantation']", 'db_column': "'bureau_rattachement'"}),
+            'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'code_meteo': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'commentaire': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'courriel': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
@@ -164,7 +110,7 @@ class Migration(DataMigration):
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'nom_court': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'nom_long': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Region']", 'db_column': "'region'"}),
+            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Region']", 'db_column': "'region'"}),
             'remarque': ('django.db.models.fields.TextField', [], {}),
             'responsable_implantation': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'statut': ('django.db.models.fields.IntegerField', [], {}),
@@ -173,29 +119,29 @@ class Migration(DataMigration):
             'type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '255', 'blank': 'True'})
         },
-        'datamaster_modeles.pays': {
-            'Meta': {'ordering': "('nom',)", 'object_name': 'Pays', 'db_table': "u'ref_pays'"},
+        'references.pays': {
+            'Meta': {'ordering': "['nom']", 'object_name': 'Pays', 'db_table': "u'ref_pays'", 'managed': 'False'},
             'actif': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '2', 'primary_key': 'True'}),
-            'code_bureau': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Bureau']", 'to_field': "'code'", 'db_column': "'code_bureau'"}),
-            'code_iso3': ('django.db.models.fields.CharField', [], {'max_length': '3', 'unique': 'True', 'blank': 'True'}),
+            'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2'}),
+            'code_bureau': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Bureau']", 'to_field': "'code'", 'db_column': "'code_bureau'"}),
+            'code_iso3': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '3', 'blank': 'True'}),
             'developpement': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.IntegerField', [], {}),
+            'id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'}),
             'monnaie': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'nord_sud': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Region']", 'db_column': "'region'"})
+            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Region']", 'db_column': "'region'"})
         },
-        'datamaster_modeles.region': {
-            'Meta': {'object_name': 'Region', 'db_table': "u'ref_region'"},
+        'references.region': {
+            'Meta': {'ordering': "['nom']", 'object_name': 'Region', 'db_table': "u'ref_region'", 'managed': 'False'},
             'actif': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True'}),
+            'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'}),
-            'implantation_bureau': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gere_region'", 'db_column': "'implantation_bureau'", 'to': "orm['datamaster_modeles.Implantation']"}),
+            'implantation_bureau': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gere_region'", 'db_column': "'implantation_bureau'", 'to': "orm['references.Implantation']"}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
-        'datamaster_modeles.thematique': {
-            'Meta': {'object_name': 'Thematique', 'db_table': "u'ref_thematique'"},
+        'references.thematique': {
+            'Meta': {'ordering': "['nom']", 'object_name': 'Thematique', 'db_table': "u'ref_thematique'", 'managed': 'False'},
             'actif': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '255'})
@@ -206,7 +152,7 @@ class Migration(DataMigration):
             'date': ('django.db.models.fields.DateField', [], {'db_column': "'date_actualite'"}),
             'disciplines': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'actualites'", 'blank': 'True', 'to': "orm['savoirs.Discipline']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True', 'db_column': "'id_actualite'"}),
-            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'actualites'", 'blank': 'True', 'to': "orm['datamaster_modeles.Region']"}),
+            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'actualites'", 'blank': 'True', 'to': "orm['references.Region']"}),
             'source': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'actualites'", 'to': "orm['savoirs.SourceActualite']"}),
             'texte': ('django.db.models.fields.TextField', [], {'db_column': "'texte_actualite'"}),
             'titre': ('django.db.models.fields.CharField', [], {'max_length': '765', 'db_column': "'titre_actualite'"}),
@@ -239,20 +185,20 @@ class Migration(DataMigration):
             'date_modification': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'blank': 'True'}),
             'debut': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'description': ('django.db.models.fields.TextField', [], {}),
-            'discipline': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'discipline'", 'blank': 'True', 'null': 'True', 'to': "orm['savoirs.Discipline']"}),
-            'discipline_secondaire': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'discipline_secondaire'", 'blank': 'True', 'null': 'True', 'to': "orm['savoirs.Discipline']"}),
+            'discipline': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'discipline'", 'null': 'True', 'to': "orm['savoirs.Discipline']"}),
+            'discipline_secondaire': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'discipline_secondaire'", 'null': 'True', 'to': "orm['savoirs.Discipline']"}),
             'fin': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'fuseau': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mots_cles': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'pays': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'evenements'", 'null': 'True', 'to': "orm['datamaster_modeles.Pays']"}),
+            'pays': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'evenements'", 'null': 'True', 'to': "orm['references.Pays']"}),
             'piece_jointe': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
             'prenom': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'evenements'", 'blank': 'True', 'to': "orm['datamaster_modeles.Region']"}),
+            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'evenements'", 'blank': 'True', 'to': "orm['references.Region']"}),
             'titre': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'e6103fec-d8a4-11e0-be63-001bfca72efc'", 'max_length': '255'}),
+            'uid': ('django.db.models.fields.CharField', [], {'default': "'de348410-4b7a-11e1-8641-64315033ce5f'", 'max_length': '255'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'ville': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
@@ -291,7 +237,7 @@ class Migration(DataMigration):
         'savoirs.profile': {
             'Meta': {'object_name': 'Profile'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'serveurs': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['savoirs.Serveur']", 'symmetrical': 'False', 'null': 'True', 'blank': 'True'}),
+            'serveurs': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['savoirs.Serveur']", 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
         },
         'savoirs.record': {
@@ -312,16 +258,16 @@ class Migration(DataMigration):
             'language': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'last_checksum': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'last_update': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'listsets': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['savoirs.ListSet']", 'symmetrical': 'False', 'null': 'True', 'blank': 'True'}),
+            'listsets': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['savoirs.ListSet']", 'null': 'True', 'blank': 'True'}),
             'modified': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'orig_lang': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'pays': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['datamaster_modeles.Pays']", 'symmetrical': 'False', 'blank': 'True'}),
+            'pays': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['references.Pays']", 'symmetrical': 'False', 'blank': 'True'}),
             'publisher': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['datamaster_modeles.Region']", 'symmetrical': 'False', 'blank': 'True'}),
+            'regions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['references.Region']", 'symmetrical': 'False', 'blank': 'True'}),
             'server': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'source': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'subject': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'thematiques': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['datamaster_modeles.Thematique']", 'symmetrical': 'False', 'blank': 'True'}),
+            'thematiques': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['references.Thematique']", 'symmetrical': 'False', 'blank': 'True'}),
             'title': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'type': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'uri': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
@@ -349,8 +295,8 @@ class Migration(DataMigration):
             'discipline': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['savoirs.Discipline']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nom': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'q': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['datamaster_modeles.Region']", 'null': 'True', 'blank': 'True'}),
+            'q': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'region': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['references.Region']", 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'savoirs.serveur': {

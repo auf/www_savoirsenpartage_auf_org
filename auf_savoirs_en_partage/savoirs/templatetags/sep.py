@@ -6,7 +6,7 @@ from django.conf import settings
 from django.template.defaultfilters import stringfilter
 from django.utils.encoding import smart_str
 from django.utils.safestring import mark_safe
-from datamaster_modeles.models import Region
+from auf.django.references.models import Region
 from savoirs.models import Discipline
 
 register = template.Library()

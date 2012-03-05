@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from datamaster_modeles.models import Discipline, Region
+from auf.django.references.models import Discipline, Region
 from django import forms
 from sitotheque.models import *
 from savoirs.lib.recherche import build_search_regexp

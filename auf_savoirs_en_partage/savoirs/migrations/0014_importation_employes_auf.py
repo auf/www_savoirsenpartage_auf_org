@@ -6,7 +6,7 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from datamaster_modeles.models import Authentification as RemoteUser, Employe
+from auf.django.references.models import Authentification as RemoteUser, Employe
 
 class Migration(DataMigration):
 

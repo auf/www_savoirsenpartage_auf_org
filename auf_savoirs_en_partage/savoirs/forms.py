@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.db import models
 from django.contrib.admin import widgets
 from django.utils.safestring import mark_safe
-from datamaster_modeles.models import Thematique, Pays, Region
+from auf.django.references.models import Thematique, Pays, Region
 from savoirs.models import Evenement, Discipline, Record, Actualite, RessourceSearch, ActualiteSearch, \
                            AppelSearch, EvenementSearch, Search, RecordCategorie
 from savoirs.lib.recherche import build_search_regexp

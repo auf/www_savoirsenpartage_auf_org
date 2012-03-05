@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 
-from datamaster_modeles.models import *
+from auf.django.references.models import *
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse as url

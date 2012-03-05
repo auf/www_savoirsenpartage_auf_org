@@ -111,7 +111,7 @@ class API:
                 'pays_code': '%s' % chercheur.pays.code,
                 'etablissement': '%s' % chercheur.etablissement_display,
                 'afficher_courriel': '%s' % chercheur.afficher_courriel,
-                'courriel': '%s' % chercheur.courriel, 
+                'courriel': '%s' % chercheur.courriel_display(), 
                 'region': '%s' % chercheur.region.nom, 
                 'statut': '%s' % chercheur.get_statut_display(), 
                 'diplome': '%s' % chercheur.diplome, 

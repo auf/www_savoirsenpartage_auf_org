@@ -135,6 +135,13 @@ class ChercheurForm(forms.ModelForm):
         existing = Chercheur.objects.filter(courriel=courriel, actif=True)
         if self.instance and self.instance.id:
             existing = existing.exclude(id=self.instance.id)
+
+        else:
+            # Nouveau chercheur
+            user = User.objects.filter(is_active=True, email=courriel)
+            if user.count():
+                raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
+
         if existing.count():
             raise forms.ValidationError('Il existe déjà une fiche pour cette adresse électronique')
         return courriel

@@ -23,7 +23,8 @@ class Rappel(models.Model):
 class RappelUser(models.Model):
     rappel = models.ForeignKey(Rappel, verbose_name="rappel")
     user = models.ForeignKey(User, verbose_name="utilisateur")
-    date_envoi = models.DateTimeField("date de l'envoi", auto_now_add=True)
+    date_demande_envoi = models.DateTimeField("date de la demande de l'envoi", null=True, auto_now_add=True)
+    date_envoi = models.DateTimeField("date de l'envoi", null=True)
 
     class Meta:
         verbose_name = "Trace d'un rappel"
@@ -33,27 +34,11 @@ class RappelUser(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.rappel.sujet, self.user)
 
-    def save(self, *args, **kwargs):
-        super(RappelUser, self).save(*args, **kwargs)
+    def date_demande_envoi_clean(self):
+        return self.date_demande_envoi or ''
 
-        # Envoi du courriel...
-        from django.template import Context, Template
-        from django.core.mail import EmailMessage
-        from django.conf import settings
-
-        template = Template(self.rappel.contenu)
-        domaine = settings.SITE_DOMAIN
-        message = template.render(Context({
-            'chercheur': self.user.chercheur.prenom_nom,
-            'domaine': domaine,
-            'date_limite': self.rappel.date_limite
-        }))
-        email = EmailMessage(self.rappel.sujet,
-                             message,
-                             settings.CONTACT_EMAIL,
-                             [self.user.email],
-                             settings.ADMINS_SEP)
-        email.send()
+    def date_envoi_clean(self):
+        return self.date_envoi or 'Pas envoyé'
 
 
 class RappelModele(models.Model):
@@ -87,3 +72,10 @@ class ChercheurRappel(Chercheur):
     def last_login(self):
         return self.user.last_login
     last_login.short_description = "Dernière connexion"
+
+    def dernier_rappel(self):
+        try:
+            return self.user.rappeluser_set.all()[0].date_envoi
+        except:
+            return "Aucun rappel envoyé"
+    dernier_rappel.short_description = 'Dernier rappel'

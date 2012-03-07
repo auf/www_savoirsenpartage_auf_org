@@ -849,7 +849,7 @@ class Search(models.Model):
             actualites=actualites.order_by('-date').filter_type('actu'),
             appels=actualites.order_by('-date').filter_type('appels'),
             evenements=evenements.order_by('-debut'),
-            ressources=ressources.order_by('-id'),
+            ressources=ressources.order_by('-modified'),
             chercheurs=chercheurs.order_by('-date_modification'),
             groupes=groupes.order_by('nom'),
             sites=sites.order_by('-date_maj'),

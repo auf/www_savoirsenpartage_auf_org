@@ -25,6 +25,8 @@ class ChercheurAdmin(admin.ModelAdmin):
     actions = ('remove_from_group', 'export_as_ods', 'export_as_csv')
     search_fields = ('nom', 'prenom')
 
+    exclude = ('user',)
+
     def lookup_allowed(self, lookup, value):
         return lookup in ['genre', 'statut', 'membre_reseau_institutionnel', 
                           'membre_instance_auf', 'discipline', 'region', 'pays', 
@@ -53,7 +55,7 @@ class ChercheurAdmin(admin.ModelAdmin):
         return actions
 
     def queryset(self, request):
-        return ChercheurAdminQuerySet(Chercheur)
+        return ChercheurAdminQuerySet(Chercheur).filter(actif=True)
 
     def get_object(self, request, object_id):
         """On doit réimplémenter cette méthode à cause de ce qu'on fait avec "initial" dans la méthode queryset()."""
@@ -62,6 +64,8 @@ class ChercheurAdmin(admin.ModelAdmin):
         except Chercheur.DoesNotExist:
             return None
 
+    def has_add_permission(self, request, obj=None):
+        return False
 
     def export_as_csv(self, request, queryset):
         return export(queryset, 'csv')
@@ -100,6 +104,9 @@ class ChercheurVoirAdmin(ChercheurAdmin):
 admin.site.register(ChercheurVoir, ChercheurVoirAdmin)
 
 class ChercheurAdminQuerySet(ChercheurQuerySet):
+
+    def delete(self):
+        self.update(actif=False)
 
     def filter(self, *args, **kwargs):
         """Gère des filtres supplémentaires pour l'admin.

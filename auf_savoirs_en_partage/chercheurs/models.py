@@ -94,7 +94,15 @@ class ChercheurQuerySet(SEPQuerySet):
         return self.filter(groupes=groupe)
 
     def filter_pays(self, pays):
-        return self.filter(Q(etablissement__pays=pays) | Q(etablissement_autre_pays=pays))
+        """
+        Filtre sur un ou plusieurs pays.
+        """
+        if hasattr(pays, "__getitem__") or hasattr(pays, "__iter__"):
+            pays_ids = [p.id for p in pays]
+            return self.filter(Q(etablissement__pays__id__in=pays_ids) |
+                    Q(etablissement_autre_pays__id__in=pays_ids))
+        else:
+            return self.filter(Q(etablissement__pays=pays) | Q(etablissement_autre_pays=pays))
 
     def filter_region(self, region):
         return self.filter(Q(etablissement__pays__region=region) | Q(etablissement_autre_pays__region=region))
@@ -143,7 +151,13 @@ class ChercheurSphinxQuerySet(SEPSphinxQuerySet):
         return self.filter(groupe_ids=groupe.id)
 
     def filter_pays(self, pays):
-        return self.filter(pays_id=pays.id)
+        """
+        Filtre sur un ou plusieurs pays.
+        """
+        if hasattr(pays, "__getitem__") or hasattr(pays, "__iter__"):
+            return self.filter(pays_id__in=[p.id for p in pays])
+        else:
+            return self.filter(pays_id=pays.id)
 
     NORD_SUD_CODES = {'Nord': 1, 'Sud': 2}
     def filter_nord_sud(self, nord_sud):

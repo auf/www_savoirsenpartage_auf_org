@@ -68,8 +68,6 @@ class API:
         chercheur = get_object_or_404(Chercheur, id=chercheur_id)
         # Domaines de recherche du chercheur
         data = serializers.serialize('json', [chercheur,])
-        #return api_return(STATUS_OK, data, True)     
-
 
         domaines_recherche = []
         for dr in chercheur.domaines_recherche:
@@ -170,16 +168,21 @@ class API:
             return api_return(STATUS_ERROR, "Erreur dans la requete de recherche de chercheurs")
 
         results = []
-        for c in chercheurs:
+        for c in chercheurs:            
             if c.etablissement_autre_pays is not None:
                 etablissement_autre_pays_nom = c.etablissement_autre_pays.nom
             else:
                 etablissement_autre_pays_nom = None
+            
+            if c.etablissement is not None:
+                    etablissement = c.etablissement.nom
+            else:
+                etablissement = c.etablissement_autre_nom
 
             data = {"id": "%s" % c.id,
                 "nom": "%s" % c.nom,
                 "prenom": "%s" % c.prenom,
-                "etablissement": "%s" % c.etablissement_display,
+                "etablissement": "%s" % etablissement,
                 "etablissement_autre_nom": "%s" % c.etablissement_autre_nom,
                 "pays": "%s" % c.pays.nom,
                 "etablissement_pays_autre_nom": "%s" % etablissement_autre_pays_nom}

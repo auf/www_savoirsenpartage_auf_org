@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
+
 import caldav
 import datetime
 import feedparser
-import operator
 import os
 import pytz
 import random
@@ -20,21 +20,23 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Q, Max
+from django.db.models import Q
 from django.db.models.signals import pre_delete
 from django.utils.encoding import smart_unicode, smart_str
 from djangosphinx.models import SphinxQuerySet, SearchError
 from markdown2 import markdown
 
 from auf.django.references.models import Region, Pays, Thematique
-from savoirs.globals import META
 from settings import CALENDRIER_URL, SITE_ROOT_URL, CONTACT_EMAIL
+from lib.calendrier import combine
+from lib.recherche import google_search
+
 
 # Fonctionnalités communes à tous les query sets
 
 class RandomQuerySetMixin(object):
     """Mixin pour les modèles.
-       
+
     ORDER BY RAND() est très lent sous MySQL. On a besoin d'une autre
     méthode pour récupérer des objets au hasard.
     """
@@ -45,6 +47,7 @@ class RandomQuerySetMixin(object):
         positions = random.sample(xrange(count), min(n, count))
         return [self[p] for p in positions]
 
+
 class SEPQuerySet(models.query.QuerySet, RandomQuerySetMixin):
 
     def _filter_date(self, field, min=None, max=None):
@@ -54,8 +57,11 @@ class SEPQuerySet(models.query.QuerySet, RandomQuerySetMixin):
         if min:
             qs = qs.filter(**{field + '__gte': min})
         if max:
-            qs = qs.filter(**{field + '__lt': max + datetime.timedelta(days=1)})
+            qs = qs.filter(**{
+                field + '__lt': max + datetime.timedelta(days=1)
+            })
         return qs
+
 
 class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
     """Fonctionnalités communes aux query sets de Sphinx."""
@@ -73,9 +79,10 @@ class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
         if query.count('"') % 2 != 0:
             # Sinon, on enlève le dernier (faut choisir...)
             i = query.rindex('"')
-            query = query[:i] + query[i+1:]
+            query = query[:i] + query[i + 1:]
 
-        new_query = smart_unicode(self._query) + ' ' + query if self._query else query
+        new_query = smart_unicode(self._query) + ' ' + query \
+                if self._query else query
         return self.query(new_query)
 
     def search(self, text):
@@ -97,9 +104,9 @@ class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
            les dates ``min`` et ``max``."""
         qs = self
         if min:
-            qs = qs.filter(**{field + '__gte': min.toordinal()+365})
+            qs = qs.filter(**{field + '__gte': min.toordinal() + 365})
         if max:
-            qs = qs.filter(**{field + '__lte': max.toordinal()+365})
+            qs = qs.filter(**{field + '__lte': max.toordinal() + 365})
         return qs
 
     def _get_sphinx_results(self):
@@ -117,6 +124,7 @@ class SEPSphinxQuerySet(SphinxQuerySet, RandomQuerySetMixin):
                 for c in '"-':
                     self._query = self._query.replace(c, ' ')
                 return SphinxQuerySet._get_sphinx_results(self)
+
 
 class SEPManager(models.Manager):
     """Lorsque les méthodes ``search``, ``filter_region`` et
@@ -138,18 +146,20 @@ class SEPManager(models.Manager):
     def filter_discipline(self, discipline):
         return self.get_sphinx_query_set().filter_discipline(discipline)
 
+
 # Disciplines
 
 class Discipline(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id_discipline')
     nom = models.CharField(max_length=765, db_column='nom_discipline')
 
-    def __unicode__ (self):
+    def __unicode__(self):
         return self.nom
 
     class Meta:
         db_table = u'discipline'
-        ordering = ["nom",]
+        ordering = ["nom"]
+
 
 # Actualités
 
@@ -161,8 +171,10 @@ class SourceActualite(models.Model):
 
     nom = models.CharField(max_length=255)
     url = models.CharField(max_length=255, verbose_name='URL', blank=True)
-    type = models.CharField(max_length=10, default='actu', choices=TYPE_CHOICES)
-    
+    type = models.CharField(
+        max_length=10, default='actu', choices=TYPE_CHOICES
+    )
+
     class Meta:
         verbose_name = u'fil RSS syndiqué'
         verbose_name_plural = u'fils RSS syndiqués'
@@ -179,9 +191,11 @@ class SourceActualite(models.Model):
             if Actualite.all_objects.filter(url=entry.link).count() == 0:
                 ts = entry.updated_parsed
                 date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday)
-                a = self.actualites.create(titre=entry.title,
-                                           texte=entry.summary_detail.value,
-                                           url=entry.link, date=date)
+                self.actualites.create(
+                    titre=entry.title, texte=entry.summary_detail.value,
+                    url=entry.link, date=date
+                )
+
 
 class ActualiteQuerySet(SEPQuerySet):
 
@@ -191,16 +205,19 @@ class ActualiteQuerySet(SEPQuerySet):
     def filter_type(self, type):
         return self.filter(source__type=type)
 
+
 class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
+    TYPE_CODES = {'actu': 1, 'appels': 2}
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_actualites',
-                                   weights=dict(titre=3))
+        SEPSphinxQuerySet.__init__(
+            self, model=model, index='savoirsenpartage_actualites',
+            weights=dict(titre=3)
+        )
 
     def filter_date(self, min=None, max=None):
         return self._filter_date('date', min=min, max=max)
 
-    TYPE_CODES = {'actu': 1, 'appels': 2}
     def filter_type(self, type):
         return self.filter(type=self.TYPE_CODES[type])
 
@@ -210,8 +227,9 @@ class ActualiteSphinxQuerySet(SEPSphinxQuerySet):
     def filter_discipline(self, discipline):
         return self.filter(discipline_ids=discipline.id)
 
+
 class ActualiteManager(SEPManager):
-    
+
     def get_query_set(self):
         return ActualiteQuerySet(self.model).filter(visible=True)
 
@@ -224,6 +242,7 @@ class ActualiteManager(SEPManager):
     def filter_type(self, type):
         return self.get_query_set().filter_type(type)
 
+
 class Actualite(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_actualite')
     titre = models.CharField(max_length=765, db_column='titre_actualite')
@@ -231,10 +250,17 @@ class Actualite(models.Model):
     url = models.CharField(max_length=765, db_column='url_actualite')
     date = models.DateField(db_column='date_actualite')
     visible = models.BooleanField(db_column='visible_actualite', default=False)
-    ancienid = models.IntegerField(db_column='ancienId_actualite', blank=True, null=True)
+    ancienid = models.IntegerField(
+        db_column='ancienId_actualite', blank=True, null=True
+    )
     source = models.ForeignKey(SourceActualite, related_name='actualites')
-    disciplines = models.ManyToManyField(Discipline, blank=True, related_name="actualites")
-    regions = models.ManyToManyField(Region, blank=True, related_name="actualites", verbose_name='régions')
+    disciplines = models.ManyToManyField(
+        Discipline, blank=True, related_name="actualites"
+    )
+    regions = models.ManyToManyField(
+        Region, blank=True, related_name="actualites",
+        verbose_name='régions'
+    )
 
     objects = ActualiteManager()
     all_objects = models.Manager()
@@ -243,7 +269,7 @@ class Actualite(models.Model):
         db_table = u'actualite'
         ordering = ["-date"]
 
-    def __unicode__ (self):
+    def __unicode__(self):
         return "%s" % (self.titre)
 
     def get_absolute_url(self):
@@ -263,6 +289,7 @@ class ActualiteVoir(Actualite):
         verbose_name = 'actualité (visualisation)'
         verbose_name_plural = 'actualités (visualisation)'
 
+
 # Agenda
 
 class EvenementQuerySet(SEPQuerySet):
@@ -276,15 +303,18 @@ class EvenementQuerySet(SEPQuerySet):
     def filter_date_modification(self, min=None, max=None):
         return self._filter_date('date_modification', min=min, max=max)
 
+
 class EvenementSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_evenements',
-                                   weights=dict(titre=3))
+        SEPSphinxQuerySet.__init__(
+            self, model=model, index='savoirsenpartage_evenements',
+            weights=dict(titre=3)
+        )
 
     def filter_type(self, type):
         return self.add_to_query('@type "%s"' % type)
-    
+
     def filter_debut(self, min=None, max=None):
         return self._filter_date('debut', min=min, max=max)
 
@@ -296,6 +326,7 @@ class EvenementSphinxQuerySet(SEPSphinxQuerySet):
 
     def filter_discipline(self, discipline):
         return self.add_to_query('@disciplines "%s"' % discipline.nom)
+
 
 class EvenementManager(SEPManager):
 
@@ -314,6 +345,7 @@ class EvenementManager(SEPManager):
     def filter_date_modification(self, min=None, max=None):
         return self.get_query_set().filter_date_modification(min=min, max=max)
 
+
 def build_time_zone_choices(pays=None):
     timezones = pytz.country_timezones[pays] if pays else pytz.common_timezones
     result = []
@@ -329,10 +361,12 @@ def build_time_zone_choices(pays=None):
             offset = tz.utcoffset(now + datetime.timedelta(days=1))
         seconds = offset.seconds + offset.days * 86400
         (hours, minutes) = divmod(seconds // 60, 60)
-        offset_str = 'UTC%+d:%d' % (hours, minutes) if minutes else 'UTC%+d' % hours
+        offset_str = 'UTC%+d:%d' % (hours, minutes) \
+                if minutes else 'UTC%+d' % hours
         result.append((seconds, tzname, '%s - %s' % (offset_str, fr_name)))
     result.sort()
     return [(x[1], x[2]) for x in result]
+
 
 class Evenement(models.Model):
     TYPE_CHOICES = ((u'Colloque', u'Colloque'),
@@ -345,11 +379,14 @@ class Evenement(models.Model):
     uid = models.CharField(max_length=255, default=str(uuid.uuid1()))
     approuve = models.BooleanField(default=False, verbose_name=u'approuvé')
     titre = models.CharField(max_length=255)
-    discipline = models.ForeignKey('Discipline', related_name = "discipline", 
-                                   blank = True, null = True)
-    discipline_secondaire = models.ForeignKey('Discipline', related_name="discipline_secondaire", 
-                                              verbose_name=u"discipline secondaire", 
-                                              blank=True, null=True)
+    discipline = models.ForeignKey(
+        'Discipline', related_name="discipline",
+        blank=True, null=True
+    )
+    discipline_secondaire = models.ForeignKey(
+        'Discipline', related_name="discipline_secondaire",
+        verbose_name=u"discipline secondaire", blank=True, null=True
+    )
     mots_cles = models.TextField('Mots-Clés', blank=True, null=True)
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
     adresse = models.TextField()
@@ -357,19 +394,29 @@ class Evenement(models.Model):
     pays = models.ForeignKey(Pays, null=True, related_name='evenements')
     debut = models.DateTimeField(default=datetime.datetime.now)
     fin = models.DateTimeField(default=datetime.datetime.now)
-    fuseau = models.CharField(max_length=100, choices=TIME_ZONE_CHOICES, verbose_name='fuseau horaire')
+    fuseau = models.CharField(
+        max_length=100, choices=TIME_ZONE_CHOICES,
+        verbose_name='fuseau horaire'
+    )
     description = models.TextField()
     contact = models.TextField(null=True)   # champ obsolète
     prenom = models.CharField('prénom', max_length=100)
     nom = models.CharField(max_length=100)
     courriel = models.EmailField()
     url = models.CharField(max_length=255, blank=True, null=True)
-    piece_jointe = models.FileField(upload_to='agenda/pj', blank=True, verbose_name='pièce jointe')
-    regions = models.ManyToManyField(Region, blank=True, related_name="evenements", verbose_name='régions additionnelles',
-                                     help_text="On considère d'emblée que l'évènement se déroule dans la région "
-                                               "dans laquelle se trouve le pays indiqué plus haut. Il est possible "
-                                               "de désigner ici des régions additionnelles.")
-    date_modification = models.DateTimeField(editable=False, auto_now=True, null=True)
+    piece_jointe = models.FileField(
+        upload_to='agenda/pj', blank=True, verbose_name='pièce jointe'
+    )
+    regions = models.ManyToManyField(
+        Region, blank=True, related_name="evenements",
+        verbose_name='régions additionnelles',
+        help_text="On considère d'emblée que l'évènement se déroule dans la "
+        "région dans laquelle se trouve le pays indiqué plus haut. Il est "
+        "possible de désigner ici des régions additionnelles."
+    )
+    date_modification = models.DateTimeField(
+        editable=False, auto_now=True, null=True
+    )
 
     objects = EvenementManager()
     all_objects = models.Manager()
@@ -425,12 +472,16 @@ class Evenement(models.Model):
     def clean(self):
         from django.core.exceptions import ValidationError
         if self.debut > self.fin:
-            raise ValidationError('La date de fin ne doit pas être antérieure à la date de début')
+            raise ValidationError(
+                'La date de fin ne doit pas être antérieure à la date de début'
+            )
 
     def save(self, *args, **kwargs):
-        """Sauvegarde l'objet dans django et le synchronise avec caldav s'il a été
-        approuvé"""
-        self.contact = ''    # Vider ce champ obsolète à la première occasion...
+        """
+        Sauvegarde l'objet dans django et le synchronise avec caldav s'il a
+        été approuvé.
+        """
+        self.contact = ''  # Vider ce champ obsolète à la première occasion...
         self.clean()
         super(Evenement, self).save(*args, **kwargs)
         self.update_vevent()
@@ -446,9 +497,9 @@ class Evenement(models.Model):
             self.uid = str(uuid.uuid1())
 
         cal.vevent.add('uid').value = self.uid
-        
+
         cal.vevent.add('summary').value = self.titre
-        
+
         if self.mots_cles is None:
             kw = []
         else:
@@ -458,7 +509,8 @@ class Evenement(models.Model):
             kw.append(self.discipline.nom)
             kw.append(self.discipline_secondaire.nom)
             kw.append(self.type)
-        except: pass
+        except:
+            pass
 
         kw = [x.strip() for x in kw if len(x.strip()) > 0 and x is not None]
         for k in kw:
@@ -470,17 +522,23 @@ class Evenement(models.Model):
                 description += "\n"
             description += u"Mots-clés: " + ", ".join(kw)
 
-        cal.vevent.add('dtstart').value = combine(self.debut, pytz.timezone(self.fuseau))
-        cal.vevent.add('dtend').value = combine(self.fin, pytz.timezone(self.fuseau))
-        cal.vevent.add('created').value = combine(datetime.datetime.now(), "UTC")
-        cal.vevent.add('dtstamp').value = combine(datetime.datetime.now(), "UTC")
+        cal.vevent.add('dtstart').value = \
+                combine(self.debut, pytz.timezone(self.fuseau))
+        cal.vevent.add('dtend').value = \
+                combine(self.fin, pytz.timezone(self.fuseau))
+        cal.vevent.add('created').value = \
+                combine(datetime.datetime.now(), "UTC")
+        cal.vevent.add('dtstamp').value = \
+                combine(datetime.datetime.now(), "UTC")
         if len(description) > 0:
             cal.vevent.add('description').value = description
         if len(self.contact) > 0:
             cal.vevent.add('contact').value = self.contact
         if len(self.url) > 0:
             cal.vevent.add('url').value = self.url
-        cal.vevent.add('location').value = ', '.join([x for x in [self.adresse, self.ville, self.pays.nom] if x])
+        cal.vevent.add('location').value = ', '.join(
+            x for x in [self.adresse, self.ville, self.pays.nom] if x
+        )
         if self.piece_jointe:
             url = self.piece_jointe.url
             if not url.startswith('http://'):
@@ -495,8 +553,10 @@ class Evenement(models.Model):
             if self.approuve:
                 event = self.as_ical()
                 client = caldav.DAVClient(CALENDRIER_URL)
-                cal = caldav.Calendar(client, url = CALENDRIER_URL)
-                e = caldav.Event(client, parent = cal, data = event.serialize(), id=self.uid)
+                cal = caldav.Calendar(client, url=CALENDRIER_URL)
+                e = caldav.Event(
+                    client, parent=cal, data=event.serialize(), id=self.uid
+                )
                 e.save()
         except:
             self.approuve = False
@@ -505,9 +565,8 @@ class Evenement(models.Model):
         """Supprime l'evenement sur le serveur caldav"""
         try:
             if self.approuve:
-                event = self.as_ical()
                 client = caldav.DAVClient(CALENDRIER_URL)
-                cal = caldav.Calendar(client, url = CALENDRIER_URL)
+                cal = caldav.Calendar(client, url=CALENDRIER_URL)
                 e = cal.event(self.uid)
                 e.delete()
         except error.NotFoundError:
@@ -526,12 +585,15 @@ class Evenement(models.Model):
             self.discipline = disciplines[0]
             self.discipline_secondaire = disciplines[1]
 
+
 def delete_vevent(sender, instance, *args, **kwargs):
     # Surcharge du comportement de suppression
-    # La méthode de connexion par signals est préférable à surcharger la méthode delete()
-    # car dans le cas de la suppression par lots, cell-ci n'est pas invoquée
+    # La méthode de connexion par signals est préférable à surcharger la
+    # méthode delete() car dans le cas de la suppression par lots, cell-ci
+    # n'est pas invoquée
     instance.delete_vevent()
-pre_delete.connect(delete_vevent, sender=Evenement) 
+pre_delete.connect(delete_vevent, sender=Evenement)
+
 
 class EvenementVoir(Evenement):
 
@@ -540,16 +602,18 @@ class EvenementVoir(Evenement):
         verbose_name = 'événement (visualisation)'
         verbose_name_plural = 'événement (visualisation)'
 
+
 # Ressources
 
 class ListSet(models.Model):
-    spec = models.CharField(primary_key = True, max_length = 255)
-    name = models.CharField(max_length = 255)
-    server = models.CharField(max_length = 255)
-    validated = models.BooleanField(default = True)
+    spec = models.CharField(primary_key=True, max_length=255)
+    name = models.CharField(max_length=255)
+    server = models.CharField(max_length=255)
+    validated = models.BooleanField(default=True)
 
     def __unicode__(self,):
         return self.name
+
 
 class RecordCategorie(models.Model):
     nom = models.CharField(max_length=255)
@@ -567,11 +631,14 @@ class RecordQuerySet(SEPQuerySet):
     def filter_modified(self, min=None, max=None):
         return self._filter_date('modified', min=min, max=max)
 
+
 class RecordSphinxQuerySet(SEPSphinxQuerySet):
 
     def __init__(self, model=None):
-        SEPSphinxQuerySet.__init__(self, model=model, index='savoirsenpartage_ressources',
-                                   weights=dict(title=3))
+        SEPSphinxQuerySet.__init__(
+            self, model=model, index='savoirsenpartage_ressources',
+            weights=dict(title=3)
+        )
 
     def filter_modified(self, min=None, max=None):
         return self._filter_date('modified', min=min, max=max)
@@ -599,13 +666,14 @@ class RecordManager(SEPManager):
     def filter_modified(self, min=None, max=None):
         return self.get_query_set().filter_modified(min=min, max=max)
 
+
 class Record(models.Model):
-    
+
     #fonctionnement interne
-    id = models.AutoField(primary_key = True)
-    server = models.CharField(max_length = 255, verbose_name=u'serveur')
-    last_update = models.CharField(max_length = 255)
-    last_checksum = models.CharField(max_length = 255)
+    id = models.AutoField(primary_key=True)
+    server = models.CharField(max_length=255, verbose_name=u'serveur')
+    last_update = models.CharField(max_length=255)
+    last_checksum = models.CharField(max_length=255)
     validated = models.BooleanField(default=True, verbose_name=u'validé')
 
     #OAI
@@ -613,33 +681,41 @@ class Record(models.Model):
     creator = models.TextField(null=True, blank=True, verbose_name=u'auteur')
     description = models.TextField(null=True, blank=True)
     modified = models.CharField(max_length=255, null=True, blank=True)
-    identifier = models.CharField(max_length = 255, null = True, blank = True, unique = True)
-    uri = models.CharField(max_length = 255, null = True, blank = True, unique = True)
-    source = models.TextField(null = True, blank = True)
-    contributor = models.TextField(null = True, blank = True)
+    identifier = models.CharField(
+        max_length=255, null=True, blank=True, unique=True
+    )
+    uri = models.CharField(max_length=255, null=True, blank=True, unique=True)
+    source = models.TextField(null=True, blank=True)
+    contributor = models.TextField(null=True, blank=True)
     subject = models.TextField(null=True, blank=True, verbose_name='sujet')
-    publisher = models.TextField(null = True, blank = True)
-    type = models.TextField(null = True, blank = True)
-    format = models.TextField(null = True, blank = True)
-    language = models.TextField(null = True, blank = True)
+    publisher = models.TextField(null=True, blank=True)
+    type = models.TextField(null=True, blank=True)
+    format = models.TextField(null=True, blank=True)
+    language = models.TextField(null=True, blank=True)
 
-    listsets = models.ManyToManyField(ListSet, null = True, blank = True)
+    listsets = models.ManyToManyField(ListSet, null=True, blank=True)
 
     #SEP 2 (aucune données récoltées)
-    alt_title = models.TextField(null = True, blank = True)
-    abstract = models.TextField(null = True, blank = True)
-    creation = models.CharField(max_length = 255, null = True, blank = True)
-    issued = models.CharField(max_length = 255, null = True, blank = True)
-    isbn = models.TextField(null = True, blank = True)
-    orig_lang = models.TextField(null = True, blank = True)
+    alt_title = models.TextField(null=True, blank=True)
+    abstract = models.TextField(null=True, blank=True)
+    creation = models.CharField(max_length=255, null=True, blank=True)
+    issued = models.CharField(max_length=255, null=True, blank=True)
+    isbn = models.TextField(null=True, blank=True)
+    orig_lang = models.TextField(null=True, blank=True)
 
-    categorie = models.ForeignKey(RecordCategorie, blank=True, null=True, verbose_name='catégorie')
+    categorie = models.ForeignKey(
+        RecordCategorie, blank=True, null=True, verbose_name='catégorie'
+    )
 
     # Metadata AUF multivaluées
     disciplines = models.ManyToManyField(Discipline, blank=True)
-    thematiques = models.ManyToManyField(Thematique, blank=True, verbose_name='thématiques')
+    thematiques = models.ManyToManyField(
+        Thematique, blank=True, verbose_name='thématiques'
+    )
     pays = models.ManyToManyField(Pays, blank=True)
-    regions = models.ManyToManyField(Region, blank=True, verbose_name='régions')
+    regions = models.ManyToManyField(
+        Region, blank=True, verbose_name='régions'
+    )
 
     # Managers
     objects = RecordManager()
@@ -670,7 +746,8 @@ class Record(models.Model):
 
     def assigner_disciplines(self, disciplines):
         self.disciplines.add(*disciplines)
-    
+
+
 class RecordEdit(Record):
 
     class Meta:
@@ -678,9 +755,10 @@ class RecordEdit(Record):
         verbose_name = 'ressource (édition)'
         verbose_name_plural = 'ressources (édition)'
 
+
 class Serveur(models.Model):
     """Identification d'un serveur d'ou proviennent les références"""
-    nom = models.CharField(primary_key = True, max_length = 255)
+    nom = models.CharField(primary_key=True, max_length=255)
 
     def __unicode__(self,):
         return self.nom
@@ -691,29 +769,32 @@ class Serveur(models.Model):
             s.nom = k
             s.save()
 
+
 class Profile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    serveurs = models.ManyToManyField(Serveur, null = True, blank = True)
+    serveurs = models.ManyToManyField(Serveur, null=True, blank=True)
+
 
 class HarvestLog(models.Model):
-    context = models.CharField(max_length = 255)
-    name = models.CharField(max_length = 255)
-    date = models.DateTimeField(auto_now = True)
-    added = models.IntegerField(null = True, blank = True)
-    updated = models.IntegerField(null = True, blank = True)
-    processed = models.IntegerField(null = True, blank = True)
-    record = models.ForeignKey(Record, null = True, blank = True)
+    context = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now=True)
+    added = models.IntegerField(null=True, blank=True)
+    updated = models.IntegerField(null=True, blank=True)
+    processed = models.IntegerField(null=True, blank=True)
+    record = models.ForeignKey(Record, null=True, blank=True)
 
     @staticmethod
     def add(message):
         logger = HarvestLog()
-        if message.has_key('record_id'):
+        if 'record_id' in message:
             message['record'] = Record.all_objects.get(id=message['record_id'])
             del(message['record_id'])
 
-        for k,v in message.items():
+        for k, v in message.items():
             setattr(logger, k, v)
         logger.save()
+
 
 # Pages statiques
 
@@ -725,11 +806,12 @@ class PageStatique(models.Model):
     class Meta:
         verbose_name_plural = 'pages statiques'
 
+
 # Recherches
 
 class GlobalSearchResults(object):
 
-    def __init__(self, actualites=None, appels=None, evenements=None, 
+    def __init__(self, actualites=None, appels=None, evenements=None,
                  ressources=None, chercheurs=None, groupes=None,
                  sites=None, sites_auf=None):
         self.actualites = actualites
@@ -742,25 +824,37 @@ class GlobalSearchResults(object):
         self.sites_auf = sites_auf
 
     def __nonzero__(self):
-        return bool(self.actualites or self.appels or self.evenements or 
+        return bool(self.actualites or self.appels or self.evenements or
                     self.ressources or self.chercheurs or self.groupes or
                     self.sites or self.sites_auf)
+
 
 class Search(models.Model):
     user = models.ForeignKey(User, editable=False)
     content_type = models.ForeignKey(ContentType, editable=False)
     nom = models.CharField(max_length=100, verbose_name="nom de la recherche")
-    alerte_courriel = models.BooleanField(verbose_name="Envoyer une alerte courriel")
-    derniere_alerte = models.DateField(verbose_name="Date d'envoi de la dernière alerte courriel", null=True, editable=False)
-    q = models.CharField(max_length=255, blank=True, verbose_name="dans tous les champs")
+    alerte_courriel = models.BooleanField(
+        verbose_name="Envoyer une alerte courriel"
+    )
+    derniere_alerte = models.DateField(
+        verbose_name="Date d'envoi de la dernière alerte courriel",
+        null=True, editable=False
+    )
+    q = models.CharField(
+        max_length=255, blank=True, verbose_name="dans tous les champs"
+    )
     discipline = models.ForeignKey(Discipline, blank=True, null=True)
-    region = models.ForeignKey(Region, blank=True, null=True, verbose_name='région',
-                               help_text="La région est ici définie au sens, non strictement géographique, du Bureau régional de l'AUF de référence.")
+    region = models.ForeignKey(
+        Region, blank=True, null=True, verbose_name='région',
+        help_text="La région est ici définie au sens, non strictement "
+        "géographique, du Bureau régional de l'AUF de référence."
+    )
 
     def query_string(self):
         params = dict()
         for field in self._meta.fields:
-            if field.name in ['id', 'user', 'nom', 'search_ptr', 'content_type']:
+            if field.name in ['id', 'user', 'nom', 'search_ptr',
+                              'content_type']:
                 continue
             value = getattr(self, field.column)
             if value:
@@ -769,7 +863,7 @@ class Search(models.Model):
                 else:
                     params[field.name] = smart_str(value)
         return urlencode(params)
-    
+
     class Meta:
         verbose_name = 'recherche transversale'
         verbose_name_plural = "recherches transversales"
@@ -784,11 +878,15 @@ class Search(models.Model):
                 if not original_search.alerte_courriel:
                     # On a nouvellement activé l'alerte courriel. Notons la
                     # date.
-                    self.derniere_alerte = datetime.date.today() - datetime.timedelta(days=1)
+                    self.derniere_alerte = \
+                            datetime.date.today() - datetime.timedelta(days=1)
             except Search.DoesNotExist:
-                self.derniere_alerte = datetime.date.today() - datetime.timedelta(days=1)
+                self.derniere_alerte = \
+                        datetime.date.today() - datetime.timedelta(days=1)
         if (not self.content_type_id):
-            self.content_type = ContentType.objects.get_for_model(self.__class__)
+            self.content_type = ContentType.objects.get_for_model(
+                self.__class__
+            )
         super(Search, self).save()
 
     def as_leaf_class(self):
@@ -797,7 +895,7 @@ class Search(models.Model):
         if(model == Search):
             return self
         return model.objects.get(id=self.id)
-                
+
     def run(self, min_date=None, max_date=None):
         from chercheurs.models import Chercheur, Groupe
         from sitotheque.models import Site
@@ -879,19 +977,29 @@ class Search(models.Model):
         """Envoie une alerte courriel correspondant à cette recherche"""
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         if self.derniere_alerte is not None:
-            results = self.as_leaf_class().run(min_date=self.derniere_alerte, max_date=yesterday)
+            results = self.as_leaf_class().run(
+                min_date=self.derniere_alerte, max_date=yesterday
+            )
             if results:
                 subject = 'Savoirs en partage - ' + self.nom
                 from_email = CONTACT_EMAIL
                 to_email = self.user.email
-                text_content = u'Voici les derniers résultats correspondant à votre recherche sauvegardée.\n\n'
-                text_content += self.as_leaf_class().get_email_alert_content(results)
+                text_content = u'Voici les derniers résultats ' \
+                        u'correspondant à votre recherche sauvegardée.\n\n'
+                text_content += self.as_leaf_class() \
+                        .get_email_alert_content(results)
                 text_content += u'''
-                
+
 Pour modifier votre abonnement aux alertes courriel de Savoirs en partage,
-rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_ROOT_URL, reverse('recherches'))
-                html_content = '<div style="font-family: Arial, sans-serif">\n' + markdown(smart_str(text_content)) + '</div>\n'
-                msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (
+                    SITE_ROOT_URL, reverse('recherches')
+                )
+                html_content = \
+                        '<div style="font-family: Arial, sans-serif">\n' + \
+                        markdown(smart_str(text_content)) + '</div>\n'
+                msg = EmailMultiAlternatives(
+                    subject, text_content, from_email, [to_email]
+                )
                 msg.attach_alternative(html_content, "text/html")
                 msg.send()
         self.derniere_alerte = yesterday
@@ -902,31 +1010,39 @@ rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_R
         if results.chercheurs:
             content += u'\n### Nouveaux chercheurs\n\n'
             for chercheur in results.chercheurs:
-                content += u'-   [%s %s](%s%s)  \n' % (chercheur.nom.upper(),
-                                                       chercheur.prenom,
-                                                       SITE_ROOT_URL,
-                                                       chercheur.get_absolute_url())
+                content += u'-   [%s %s](%s%s)  \n' % (
+                    chercheur.nom.upper(), chercheur.prenom, SITE_ROOT_URL,
+                    chercheur.get_absolute_url()
+                )
                 content += u'    %s\n\n' % chercheur.etablissement_display
         if results.ressources:
             content += u'\n### Nouvelles ressources\n\n'
             for ressource in results.ressources:
-                content += u'-   [%s](%s%s)\n\n' % (ressource.title,
-                                                    SITE_ROOT_URL,
-                                                    ressource.get_absolute_url())
+                content += u'-   [%s](%s%s)\n\n' % (
+                    ressource.title, SITE_ROOT_URL,
+                    ressource.get_absolute_url()
+                )
                 if ressource.description:
                     content += '\n'
-                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(ressource.description)])
+                    content += ''.join(
+                        '    %s\n' % line
+                        for line in textwrap.wrap(ressource.description)
+                    )
                     content += '\n'
 
         if results.actualites:
             content += u'\n### Nouvelles actualités\n\n'
             for actualite in results.actualites:
-                content += u'-  [%s](%s%s)\n\n' % (actualite.titre,
-                                                   SITE_ROOT_URL,
-                                                   actualite.get_absolute_url())
+                content += u'-  [%s](%s%s)\n\n' % (
+                    actualite.titre, SITE_ROOT_URL,
+                    actualite.get_absolute_url()
+                )
                 if actualite.texte:
                     content += '\n'
-                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(actualite.texte)])
+                    content += ''.join(
+                        '    %s\n' % line
+                        for line in textwrap.wrap(actualite.texte)
+                    )
                     content += '\n'
         if results.appels:
             content += u"\n### Nouveaux appels d'offres\n\n"
@@ -936,19 +1052,28 @@ rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_R
                                                     appel.get_absolute_url())
                 if appel.texte:
                     content += '\n'
-                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(appel.texte)])
+                    content += ''.join(
+                        '    %s\n' % line
+                        for line in textwrap.wrap(appel.texte)
+                    )
                     content += '\n'
         if results.evenements:
             content += u"\n### Nouveaux évènements\n\n"
             for evenement in results.evenements:
-                content += u'-   [%s](%s%s)  \n' % (evenement.titre,
-                                                    SITE_ROOT_URL,
-                                                    evenement.get_absolute_url())
+                content += u'-   [%s](%s%s)  \n' % (
+                    evenement.titre, SITE_ROOT_URL,
+                    evenement.get_absolute_url()
+                )
                 content += u'    où ? : %s  \n' % evenement.lieu
-                content += evenement.debut.strftime('    quand ? : %d/%m/%Y %H:%M  \n')
-                content += u'    durée ? : %s\n\n' % evenement.duration_display()
+                content += evenement.debut.strftime(
+                    '    quand ? : %d/%m/%Y %H:%M  \n'
+                )
+                content += u'    durée ? : %s\n\n' % \
+                        evenement.duration_display()
                 content += u'    quoi ? : '
-                content += '\n             '.join(textwrap.wrap(evenement.description))
+                content += '\n             '.join(
+                    textwrap.wrap(evenement.description)
+                )
                 content += '\n\n'
         if results.sites:
             content += u"\n### Nouveaux sites\n\n"
@@ -958,16 +1083,26 @@ rendez-vous sur le [gestionnaire de recherches sauvegardées](%s%s)''' % (SITE_R
                                                     site.get_absolute_url())
                 if site.description:
                     content += '\n'
-                    content += ''.join(['    %s\n' % line for line in textwrap.wrap(site.description)])
+                    content += ''.join(
+                        '    %s\n' % line
+                        for line in textwrap.wrap(site.description)
+                    )
                     content += '\n'
         return content
 
+
 class RessourceSearch(Search):
-    auteur = models.CharField(max_length=100, blank=True, verbose_name="auteur ou contributeur")
+    auteur = models.CharField(
+        max_length=100, blank=True, verbose_name="auteur ou contributeur"
+    )
     titre = models.CharField(max_length=100, blank=True)
     sujet = models.CharField(max_length=100, blank=True)
-    publisher = models.CharField(max_length=100, blank=True, verbose_name="éditeur")
-    categorie = models.ForeignKey(RecordCategorie, blank=True, null=True, verbose_name='catégorie')
+    publisher = models.CharField(
+        max_length=100, blank=True, verbose_name="éditeur"
+    )
+    categorie = models.ForeignKey(
+        RecordCategorie, blank=True, null=True, verbose_name='catégorie'
+    )
 
     class Meta:
         verbose_name = 'recherche de ressources'
@@ -978,7 +1113,9 @@ class RessourceSearch(Search):
         if self.q:
             results = results.search(self.q)
         if self.auteur:
-            results = results.add_to_query('@(creator,contributor) ' + self.auteur)
+            results = results.add_to_query(
+                '@(creator,contributor) ' + self.auteur
+            )
         if self.titre:
             results = results.add_to_query('@title ' + self.titre)
         if self.sujet:
@@ -1017,13 +1154,21 @@ class RessourceSearch(Search):
                                                 ressource.get_absolute_url())
             if ressource.description:
                 content += '\n'
-                content += ''.join(['    %s\n' % line for line in textwrap.wrap(ressource.description)])
+                content += ''.join(
+                    '    %s\n' % line
+                    for line in textwrap.wrap(ressource.description)
+                )
                 content += '\n'
         return content
 
+
 class ActualiteSearchBase(Search):
-    date_min = models.DateField(blank=True, null=True, verbose_name="depuis le")
-    date_max = models.DateField(blank=True, null=True, verbose_name="jusqu'au")
+    date_min = models.DateField(
+        blank=True, null=True, verbose_name="depuis le"
+    )
+    date_max = models.DateField(
+        blank=True, null=True, verbose_name="jusqu'au"
+    )
 
     class Meta:
         abstract = True
@@ -1054,18 +1199,24 @@ class ActualiteSearchBase(Search):
                                                actualite.get_absolute_url())
             if actualite.texte:
                 content += '\n'
-                content += ''.join(['    %s\n' % line for line in textwrap.wrap(actualite.texte)])
+                content += ''.join(
+                    '    %s\n' % line
+                    for line in textwrap.wrap(actualite.texte)
+                )
                 content += '\n'
         return content
+
 
 class ActualiteSearch(ActualiteSearchBase):
 
     class Meta:
         verbose_name = "recherche d'actualités"
         verbose_name_plural = "recherches d'actualités"
-        
+
     def run(self, min_date=None, max_date=None):
-        return super(ActualiteSearch, self).run(min_date=min_date, max_date=max_date).filter_type('actu')
+        return super(ActualiteSearch, self) \
+                .run(min_date=min_date, max_date=max_date) \
+                .filter_type('actu')
 
     def url(self):
         qs = self.query_string()
@@ -1074,7 +1225,8 @@ class ActualiteSearch(ActualiteSearchBase):
     def rss_url(self):
         qs = self.query_string()
         return reverse('rss_actualites') + ('?' + qs if qs else '')
- 
+
+
 class AppelSearch(ActualiteSearchBase):
 
     class Meta:
@@ -1082,7 +1234,9 @@ class AppelSearch(ActualiteSearchBase):
         verbose_name_plural = "recherches d'appels d'offres"
 
     def run(self, min_date=None, max_date=None):
-        return super(AppelSearch, self).run(min_date=min_date, max_date=max_date).filter_type('appels')
+        return super(AppelSearch, self) \
+                .run(min_date=min_date, max_date=max_date) \
+                .filter_type('appels')
 
     def url(self):
         qs = self.query_string()
@@ -1092,11 +1246,20 @@ class AppelSearch(ActualiteSearchBase):
         qs = self.query_string()
         return reverse('rss_appels') + ('?' + qs if qs else '')
 
+
 class EvenementSearch(Search):
-    titre = models.CharField(max_length=100, blank=True, verbose_name="Intitulé")
-    type = models.CharField(max_length=100, blank=True, choices=Evenement.TYPE_CHOICES)
-    date_min = models.DateField(blank=True, null=True, verbose_name="depuis le")
-    date_max = models.DateField(blank=True, null=True, verbose_name="jusqu'au")
+    titre = models.CharField(
+        max_length=100, blank=True, verbose_name="Intitulé"
+    )
+    type = models.CharField(
+        max_length=100, blank=True, choices=Evenement.TYPE_CHOICES
+    )
+    date_min = models.DateField(
+        blank=True, null=True, verbose_name="depuis le"
+    )
+    date_max = models.DateField(
+        blank=True, null=True, verbose_name="jusqu'au"
+    )
 
     class Meta:
         verbose_name = "recherche d'évènements"
@@ -1139,9 +1302,13 @@ class EvenementSearch(Search):
                                                 SITE_ROOT_URL,
                                                 evenement.get_absolute_url())
             content += u'    où ? : %s  \n' % evenement.lieu
-            content += evenement.debut.strftime('    quand ? : %d/%m/%Y %H:%M  \n')
+            content += evenement.debut.strftime(
+                '    quand ? : %d/%m/%Y %H:%M  \n'
+            )
             content += u'    durée ? : %s\n\n' % evenement.duration_display()
             content += u'    quoi ? : '
-            content += '\n             '.join(textwrap.wrap(evenement.description))
+            content += '\n             '.join(
+                textwrap.wrap(evenement.description)
+            )
             content += '\n\n'
         return content

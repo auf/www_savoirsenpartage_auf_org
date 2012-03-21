@@ -189,8 +189,9 @@ class SourceActualite(models.Model):
         feed = feedparser.parse(self.url)
         for entry in feed.entries:
             if Actualite.all_objects.filter(url=entry.link).count() == 0:
-                ts = entry.updated_parsed
-                date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday)
+                ts = entry.get('updated_parsed')
+                date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday) \
+                        if ts else datetime.date.today()
                 self.actualites.create(
                     titre=entry.title, texte=entry.summary_detail.value,
                     url=entry.link, date=date

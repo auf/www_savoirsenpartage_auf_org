@@ -119,6 +119,11 @@ RESOURCES = {
         'acces': 'html',
         'url': 'http://www.frantice.net/',
     },
+    u'FAUN': {
+        'type': 'lodel',
+        'acces': 'html09',
+        'url': 'http://www.bulletin.auf.org/',
+    }
     #'Exchorésis': {
     #    'type': 'lodel',
     #    'acces': 'html',

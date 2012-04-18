@@ -1,4 +1,5 @@
 {% extends "container_base.html" %}
+{% load url from future %}
 
 {% block contenu %}
 
@@ -23,8 +24,8 @@
             </ul>
         </td>
         <td>
-            <a href="{% url savoirs.views.evenement_accepter e.pk %}">Accepter</a><br />
-            <a href="{% url savoirs.views.evenement_refuser e.pk %}">Refuser</a>
+            <a href="{% url "savoirs.views.evenement_accepter" e.pk %}">Accepter</a><br />
+            <a href="{% url "savoirs.views.evenement_refuser" e.pk %}">Refuser</a>
         </td>
     </tr>
     {% endfor %}

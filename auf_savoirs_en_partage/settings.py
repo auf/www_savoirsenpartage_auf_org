@@ -1,7 +1,10 @@
 # -*- encoding: utf-8 -*-
 
 import os
-from conf import *
+from conf import *  # NOQA
+
+PROJECT_HOME = os.path.dirname(__file__)
+HOME = os.path.dirname(PROJECT_HOME)
 
 ADMINS = (
     ('Équipe ARI-SI', 'developpeurs@ca.auf.org'),
@@ -11,23 +14,18 @@ ADMINS_SEP = ('gilles.deggis@auf.org',)
 
 MANAGERS = ADMINS
 
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/Montreal'
 
 LANGUAGE_CODE = 'fr-ca'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
+MEDIA_ROOT = os.path.join(PROJECT_HOME, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/media/'
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -51,7 +49,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'auf_savoirs_en_partage.urls'
 
-
 INSTALLED_APPS = (
     'admin_tools',
     'admin_tools.theming',
@@ -61,6 +58,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.admin',
+    'django.contrib.staticfiles',
     'pagination',
     'compressor',
     'django_roa',
@@ -78,8 +76,7 @@ INSTALLED_APPS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    # default : http://docs.djangoproject.com/en/dev/ref/settings/?from=olddocs#template-context-processors
-    "django.core.context_processors.auth",
+    "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
@@ -89,16 +86,16 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), "templates"),
+    os.path.join(PROJECT_HOME, "templates"),
 )
 
 AUTHENTICATION_BACKENDS = (
-    'auf.django.auth.backends.CascadeBackend', #'authentification.AUFBackend', 
+    'auf.django.auth.backends.CascadeBackend',
     'authentification.PersonneBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -107,17 +104,37 @@ AUTH_PROFILE_MODULE = 'savoirs.Profile'
 LOGIN_URL = '/chercheurs/connexion/'
 LOGIN_REDIRECT_URL = '/chercheurs/perso/'
 
-CACHE_BACKEND = 'memcached://localhost:11211'
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'localhost:11211'
+    }
+}
 
-ROA_CUSTOM_ARGS = {'api-key': ROA_API_KEY}
-
-ADMIN_TOOLS_INDEX_DASHBOARD = 'auf_savoirs_en_partage.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_INDEX_DASHBOARD = \
+        'auf_savoirs_en_partage.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_MENU = 'auf_savoirs_en_partage.menu.CustomMenu'
 
 CONTACT_EMAIL = 'contact-savoirsenpartage@auf.org'
 
+LOCALE_PATHS = (
+    os.path.join(PROJECT_HOME, 'locale'),
+)
+
+# djangosphinx
+
 SPHINX_API_VERSION = 0x116
 SPHINX_PORT = 9312
 
-from auf_references_client.settings import *
+# django.contrib.staticfiles
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_HOME, 'static'),
+)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(HOME, 'sitestatic')
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+)

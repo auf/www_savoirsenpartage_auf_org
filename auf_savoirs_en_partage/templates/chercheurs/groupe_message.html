@@ -1,13 +1,14 @@
 {% extends "container_base.html" %}
 {% load pagination_tags %}
+{% load url from future %}
 
 {% block contenu %}
 {% autopaginate messages 20 %}
 
-<a class="rss-icon" href="{% url rss_messages groupe.pk %}"><img src="/media/img/feed.png" /></a>
+<a class="rss-icon" href="{% url "rss_messages" groupe.pk %}"><img src="/media/img/feed.png" /></a>
 
 <h1>{{ groupe }}</h1>
-<p><a href="{% url groupe_retrieve groupe.pk %}">Retour à la page du groupe</a></p>
+<p><a href="{% url "groupe_retrieve" groupe.pk %}">Retour à la page du groupe</a></p>
 
 <h2>Messages</h2>
 {% if messages %}

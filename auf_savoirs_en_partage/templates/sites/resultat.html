@@ -1,7 +1,8 @@
 {% load sep %}
+{% load url from future %}
 
 <div class="resultatRecherche">
-  <div class="titre"><a href="{% url sitotheque.views.retrieve site.id %}">{{ site.titre|apply:excerpt }}</a></div>
+  <div class="titre"><a href="{% url "sitotheque.views.retrieve" site.id %}">{{ site.titre|apply:excerpt }}</a></div>
   <div>{{ site.description|apply:excerpt }}</div>
   <div><span class="label">URL:</span> <a href="{{ site.url }}">{{ site.url }}</a></div>
 </div>

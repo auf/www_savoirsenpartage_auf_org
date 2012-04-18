@@ -215,7 +215,11 @@ def excerpt_function(manager, words):
     """Construit une fonction qui extrait la partie pertinente d'un texte
        suite à une recherche textuelle."""
     if not words:
-        return lambda x: truncate_words(x, 50)
+        def excerpt_simple(text):
+            return truncate_words(text, 50)
+        excerpt_simple.do_not_call_in_templates = True
+        return excerpt_simple
+
     qs = manager.get_sphinx_query_set()
     client = qs._get_sphinx_client()
     index = qs._index
@@ -239,4 +243,5 @@ def excerpt_function(manager, words):
             )[0]
         return mark_safe(excerpt)
 
+    excerpt.do_not_call_in_templates = True
     return excerpt

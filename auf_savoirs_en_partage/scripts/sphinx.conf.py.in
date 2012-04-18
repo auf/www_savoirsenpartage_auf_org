@@ -23,10 +23,10 @@ for d in glob.glob("%(directory)s/parts/*"):
 
 from django.conf import settings
 
-SQL_HOST = settings.DATABASE_HOST
-SQL_USER = settings.DATABASE_USER
-SQL_PASS = settings.DATABASE_PASSWORD
-SQL_DB = settings.DATABASE_NAME
+SQL_HOST = settings.DATABASES['default']['HOST']
+SQL_USER = settings.DATABASES['default']['USER']
+SQL_PASS = settings.DATABASES['default']['PASSWORD']
+SQL_DB = settings.DATABASES['default']['NAME']
 DATA_DIR = '/var/lib/sphinxsearch/data'
 
 def multiline(s):

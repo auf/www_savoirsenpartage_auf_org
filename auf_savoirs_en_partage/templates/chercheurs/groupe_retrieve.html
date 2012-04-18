@@ -1,4 +1,5 @@
 {% extends "container_base.html" %}
+{% load url from future %}
 
 {% block contenu %}
 
@@ -9,14 +10,14 @@
 	<p>{{ groupe.page_accueil|safe }}</p>
 
 	{% if not est_chercheur  %}
-		<p class="cadre" style="margin:10px auto;"><em>Pour rejoindre cette communauté, vous devez vous <a href="{% url chercheurs.views.login %}">connecter en tant que chercheur</a>.</em></p>
+		<p class="cadre" style="margin:10px auto;"><em>Pour rejoindre cette communauté, vous devez vous <a href="{% url "chercheurs.views.login" %}">connecter en tant que chercheur</a>.</em></p>
 	{% else %}{% if not est_membre %}
-		<p class="cadre" style="margin:10px auto;"><em><a href="{% url chercheurs.views.groupe_adhesion groupe.pk %}">Cliquer ici pour devenir membre</a>. Votre demande doit être approuvée par le gestionnaire de communauté.</em></p>
+		<p class="cadre" style="margin:10px auto;"><em><a href="{% url "chercheurs.views.groupe_adhesion" groupe.pk %}">Cliquer ici pour devenir membre</a>. Votre demande doit être approuvée par le gestionnaire de communauté.</em></p>
 	{% else %}{% if not est_membre_actif %}
 		<p class="cadre" style="margin:10px auto;"><em>Votre demande d'adhésion n'a pas encore été approuvée par le gestionnaire de communauté.</em></p>
 	{% endif %}{% endif %}{% endif %}
 
-	<h2>Derniers messages <a href="{% url rss_messages groupe.pk %}"><img src="/media/img/feed.png" /></a></h2>
+	<h2>Derniers messages <a href="{% url "rss_messages" groupe.pk %}"><img src="/media/img/feed.png" /></a></h2>
 	{% if messages %}
 		{% for message in messages.all %}
 			{% include 'chercheurs/groupe_message_display.html' %}
@@ -27,9 +28,9 @@
 	{% endif %}
 	<p>
 	{% if est_membre_actif %}
-	<a href="{% url groupe_messages groupe.pk %}#ajout">Ajouter un message</a> | 
+	<a href="{% url "groupe_messages" groupe.pk %}#ajout">Ajouter un message</a> | 
 	{% endif %}
-	<a href="{% url groupe_messages groupe.pk %}">Voir tous les messages</a>
+	<a href="{% url "groupe_messages" groupe.pk %}">Voir tous les messages</a>
 	</p>
 </div>
 
@@ -38,11 +39,11 @@
 		<h2>Membres</h2>
 		<ul>
 			{% for membre in membres.all %}
-			<li><a href="{% url chercheurs.views.retrieve membre.chercheur.pk %}">{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</a></li>
+			<li><a href="{% url "chercheurs.views.retrieve" membre.chercheur.pk %}">{{ membre.chercheur.prenom }} {{ membre.chercheur.nom|upper }}</a></li>
 			{% endfor %}
 		</ul>
 		{% if plus_que_20 %}
-			<a href="{% url groupe_membres groupe.pk %}">Voir tous les chercheurs de cette communauté</a>
+			<a href="{% url "groupe_membres" groupe.pk %}">Voir tous les chercheurs de cette communauté</a>
 		{% endif %}
 	{% endif %}
 	{% if groupe.recherches.count %}

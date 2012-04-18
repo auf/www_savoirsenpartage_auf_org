@@ -1,7 +1,8 @@
 {% load sep %}
+{% load url from future %}
 
 <div class="resultatRecherche">
   <div>{{ evenement.debut|date:"d/m/Y H\hi" }}</div>
-  <div class="titre"><a href="{% url savoirs.views.evenement evenement.pk %}">{{ evenement.titre|apply:excerpt }}</a></div>
+  <div class="titre"><a href="{% url "savoirs.views.evenement" evenement.pk %}">{{ evenement.titre|apply:excerpt }}</a></div>
   <div>{{ evenement.description|apply:excerpt }}</div>
 </div>

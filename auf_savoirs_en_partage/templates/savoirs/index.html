@@ -1,15 +1,16 @@
 {% extends "container_base.html" %}
+{% load url from future %}
 
 {% block contenu %}
 <div class="demi-gauche">
     <div id="chercheurs" class="box">
         <h1>
-            <a href="{% url chercheurs.views.index %}">Répertoire</a>
-            <a class="rss-icon" href="{% url rss_chercheurs %}"><img src="/media/img/feed.png" /></a>
+            <a href="{% url "chercheurs.views.index" %}">Répertoire</a>
+            <a class="rss-icon" href="{% url "rss_chercheurs" %}"><img src="/media/img/feed.png" /></a>
         </h1>
         
         <ul class="actions-accueil">
-            <li><a href="{% url chercheurs.views.index %}">Tous les chercheurs</a></li>
+            <li><a href="{% url "chercheurs.views.index" %}">Tous les chercheurs</a></li>
             {% include "chercheurs/actions.html" %}
         </ul>
         
@@ -18,7 +19,7 @@
         <ul class="liste-de-l-accueil">
             {% for chercheur in chercheurs %}
             <li>
-                <div class="titre"><a href="{% url chercheurs.views.retrieve chercheur.id %}">{{ chercheur }}</a></div>
+                <div class="titre"><a href="{% url "chercheurs.views.retrieve" chercheur.id %}">{{ chercheur }}</a></div>
                 {% if chercheur.discipline %}
                 <div>Discipline : {{ chercheur.discipline }}</div>
                 {% endif %}
@@ -29,11 +30,11 @@
     </div>
     <div id="actualites" class="box">
         <h1>
-            <a href="{% url actualites %}">Actualités</a>
-            <a class="rss-icon" href="{% url rss_actualites %}"><img src="/media/img/feed.png" /></a>
+            <a href="{% url "actualites" %}">Actualités</a>
+            <a class="rss-icon" href="{% url "rss_actualites" %}"><img src="/media/img/feed.png" /></a>
         </h1> 
         <ul class="actions-accueil">
-            <li><a href="{% url actualites %}">Toutes les actualités</a></li>
+            <li><a href="{% url "actualites" %}">Toutes les actualités</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
@@ -41,7 +42,7 @@
             <li>
                 <div>{{ actualite.date|date:"d F Y" }}</div>
                 <div class="titre">
-                    <a href="{% url actualite actualite.id %}">{{ actualite.titre|truncatewords:20 }}</a>
+                    <a href="{% url "actualite" actualite.id %}">{{ actualite.titre|truncatewords:20 }}</a>
                 </div>
                 {% if actualite.source %}
                 <div>source: {{ actualite.source.nom }}</div>
@@ -52,11 +53,11 @@
     </div>
     <div id="appels" class="box">
         <h1>
-            <a href="{% url appels %}">Appels d'offres scientifiques</a>
-            <a class="rss-icon" href="{% url rss_appels %}"><img src="/media/img/feed.png" /></a>
+            <a href="{% url "appels" %}">Appels d'offres scientifiques</a>
+            <a class="rss-icon" href="{% url "rss_appels" %}"><img src="/media/img/feed.png" /></a>
         </h1> 
         <ul class="actions-accueil">
-            <li><a href="{% url appels %}">Tous les appels d'offres</a></li>
+            <li><a href="{% url "appels" %}">Tous les appels d'offres</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
@@ -64,7 +65,7 @@
             <li>
                 <div>{{ appel.date|date:"d F Y" }}</div>
                 <div class="titre">
-                    <a href="{% url actualite appel.id %}">{{ appel.titre|truncatewords:20 }}</a>
+                    <a href="{% url "actualite" appel.id %}">{{ appel.titre|truncatewords:20 }}</a>
                 </div>
                 {% if appel.source %}
                 <div>source: {{ appel.source.nom }}</div>
@@ -77,19 +78,19 @@
 <div class="demi-droite">
     <div  id="ressources" class="box">
         <h1>
-            <a href="{% url savoirs.views.ressource_index %}">Ressources</a>
-            <a class="rss-icon" href="{% url rss_ressources %}"><img src="/media/img/feed.png" /></a>
+            <a href="{% url "savoirs.views.ressource_index" %}">Ressources</a>
+            <a class="rss-icon" href="{% url "rss_ressources" %}"><img src="/media/img/feed.png" /></a>
         </h1>
         
         <ul class="actions-accueil">
-            <li><a href="{% url savoirs.views.ressource_index %}">Toutes les ressources</a></li>
+            <li><a href="{% url "savoirs.views.ressource_index" %}">Toutes les ressources</a></li>
         </ul>
         
         <ul class="liste-de-l-accueil">
         {% for ressource in ressources %}
             <li>
                 <div class="titre">
-                    <a href="{% url savoirs.views.ressource_retrieve ressource.id %}"
+                    <a href="{% url "savoirs.views.ressource_retrieve" ressource.id %}"
                         >{{ ressource.title|safe|truncatewords:20 }}</a>
                 </div>
                 {% if resssource.creator %}
@@ -105,11 +106,11 @@
     </div>
     <div id="agenda" class="box">
         <h1>
-            <a href="{% url savoirs.views.evenement_index %}">Agenda</a>
-            <a class="rss-icon" href="{% url rss_agenda %}"><img src="/media/img/feed.png" /></a>
+            <a href="{% url "savoirs.views.evenement_index" %}">Agenda</a>
+            <a class="rss-icon" href="{% url "rss_agenda" %}"><img src="/media/img/feed.png" /></a>
         </h1>
         <ul class="actions-accueil">
-            <li><a href="{% url savoirs.views.evenement_index %}">Tous les évènements</a></li>
+            <li><a href="{% url "savoirs.views.evenement_index" %}">Tous les évènements</a></li>
             {% include "savoirs/evenement_actions.html" %}
         </ul>
 
@@ -118,7 +119,7 @@
             <li>
                 <div>{{ evenement.debut|date:"d/m/Y H\hi" }}</div>
                 <div class="titre">
-                    <a href="{% url savoirs.views.evenement evenement.id %}"
+                    <a href="{% url "savoirs.views.evenement" evenement.id %}"
                         >{{ evenement.titre|truncatewords:20 }}</a>
                 </div>
                 <div>{{ evenement.description|truncatewords:20 }}</div>
@@ -128,12 +129,12 @@
     </div>
     <div  id="sites" class="box">
         <h1>
-            <a href="{% url sitotheque.views.index %}">Sites</a>
-            <a class="rss-icon" href="{% url rss_sites %}"><img src="/media/img/feed.png" /></a>
+            <a href="{% url "sitotheque.views.index" %}">Sites</a>
+            <a class="rss-icon" href="{% url "rss_sites" %}"><img src="/media/img/feed.png" /></a>
         </h1>
         
         <ul class="actions-accueil">
-            <li><a href="{% url sitotheque.views.index %}">Sitothèque</a></li>
+            <li><a href="{% url "sitotheque.views.index" %}">Sitothèque</a></li>
             {% include "sites/actions.html" %}
         </ul>
         
@@ -141,7 +142,7 @@
             {% for site in sites %}
             <li>
                 <div class="titre">
-                    <a href="{% url sitotheque.views.retrieve site.id %}"
+                    <a href="{% url "sitotheque.views.retrieve" site.id %}"
                         >{{ site|truncatewords:20 }}</a>
                 </div>
                 <div><a href="{{ site.url }}">{{ site.url }}</a></div>

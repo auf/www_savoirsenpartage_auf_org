@@ -1,16 +1,16 @@
 {% extends "container_base.html" %}
-{% load form_tags %}
+{% load form_tags staticfiles %}
 
 {% block extra-script %}
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.formset.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/chercheur_edit.js"></script>
+<script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+<script type="text/javascript" src="{% static "js/chercheur_edit.js" %}"></script>
 {% endblock %}
 
 {% block contenu %}
 <h1>Inscription au répertoire de chercheurs</h1>
 
 <form method="post">
-    {% include "chercheurs/chercheur_form.html" %}   
+    {% include "chercheurs/chercheur_form.html" %}
     <input type="submit" name="Submit" value="Enregistrer l'inscription" class="bouton" />
 </form>
 {% endblock %}

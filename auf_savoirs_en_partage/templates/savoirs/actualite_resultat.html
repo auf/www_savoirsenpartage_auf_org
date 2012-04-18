@@ -1,9 +1,10 @@
 {% load sep %}
+{% load url from future %}
 
 <div class="resultatRecherche">
   <div>{{ actualite.date|date:"d F Y" }}</div>
   <div class="titre">
-      <a href="{% url actualite actualite.id %}">{{ actualite.titre|apply:excerpt }}</a>
+      <a href="{% url "actualite" actualite.id %}">{{ actualite.titre|apply:excerpt }}</a>
   </div>
   <div>{{ actualite.texte|apply:excerpt|safe }}</div>
   {% if actualite.source %}

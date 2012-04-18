@@ -1,33 +1,33 @@
-{% load compress %}
-{% load sep %}
+{% load compress sep staticfiles %}
+{% load url from future %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Savoirs en partage - Agence universitaire de la Francophonie</title>
-        <link rel="icon" type="image/png" href="{{ MEDIA_URL }}img/favicon.ico" />
+        <link rel="icon" type="image/png" href="{% static "img/favicon.ico" %}" />
         {% compress css %}
-        <link href="{{ MEDIA_URL }}css/global.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery-ui/jquery-ui.css" type="text/css" />
-        <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery.timepicker.css" type="text/css" />
+        <link href="{% static "css/global.css" %}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{% static "css/jquery-ui/jquery-ui.css" %}" type="text/css" />
+        <link rel="stylesheet" href="{% static "css/jquery.timepicker.css" %}" type="text/css" />
         {% endcompress %}
         <!--[if lt IE 7]>
-        <link href="{{ MEDIA_URL }}css/ie6.css" rel="stylesheet" type="text/css" media="screen" />
+        <link href="{% static "css/ie6.css" %}" rel="stylesheet" type="text/css" media="screen" />
         <![endif]-->
         {% block extra-style %}{% endblock %}
 
         {% compress js %}
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.timepicker.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/pagination.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/sep.js"></script>
+        <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/jquery-ui.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/jquery.ui.datepicker-fr.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/jquery.timepicker.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/pagination.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/sep.js" %}"></script>
         {% endcompress %}
         {% block extra-script %}{% endblock %}
 
         <!--[if lt IE 7]>
-        <script src="{{ MEDIA_URL }}js/DD_belatedPNG.js"></script>
+        <script src="{% static "js/DD_belatedPNG.js" %}"></script>
         <script>
             DD_belatedPNG.fix('.top, .bottom, #col-droite, #contenu');
         </script>
@@ -52,31 +52,31 @@
             <div id="enrobage">
                 <div id="nav-gauche">
                     <div>
-                        <a href="{% url savoirs.views.index %}">Accueil</a> |
-                        <a href="{% url chercheurs.views.index %}">Répertoire</a> |
-                        <a href="{% url savoirs.views.ressource_index %}">Ressources</a> |
-                        <a href="{% url actualites %}">Actualités</a> |
-                        <a href="{% url appels %}">Appels d'offres</a> |
-                        <a href="{% url savoirs.views.evenement_index %}">Agenda</a> |
-                        <a href="{% url sitotheque.views.index %}">Sites</a>
+                        <a href="{% url "savoirs.views.index" %}">Accueil</a> |
+                        <a href="{% url "chercheurs.views.index" %}">Répertoire</a> |
+                        <a href="{% url "savoirs.views.ressource_index" %}">Ressources</a> |
+                        <a href="{% url "actualites" %}">Actualités</a> |
+                        <a href="{% url "appels" %}">Appels d'offres</a> |
+                        <a href="{% url "savoirs.views.evenement_index" %}">Agenda</a> |
+                        <a href="{% url "sitotheque.views.index" %}">Sites</a>
                     </div>
                 </div>
                 <div id="nav-droite">
                     <div>
-                        <a href="{% url a-propos %}">À propos</a> |
-                        <a href="{% url aide %}">Aide</a> |
-                        <a href="{% url contact %}">Contact</a> |
-                        <a href="{% url legal %}">Légal</a> |
+                        <a href="{% url "a-propos" %}">À propos</a> |
+                        <a href="{% url "aide" %}">Aide</a> |
+                        <a href="{% url "contact" %}">Contact</a> |
+                        <a href="{% url "legal" %}">Légal</a> |
                         {% if user.is_authenticated %}
-                        <a href="{% url chercheurs-logout %}">Déconnexion</a>
+                        <a href="{% url "chercheurs-logout" %}">Déconnexion</a>
                         {% else %}
-                        <a href="{% url chercheurs-login %}">Connexion</a>
+                        <a href="{% url "chercheurs-login" %}">Connexion</a>
                         {% endif %}
                     </div>
                 </div>
                 <div id="entete">
                     <a id="logo" href="http://www.auf.org"
-                        ><img src="{{ MEDIA_URL}}img/logo-agence-universitaire-de-la-francophonie.gif"
+                        ><img src="{% static "img/logo-agence-universitaire-de-la-francophonie.gif" %}"
                               alt="Agence universitaire de la Francophonie" /></a>
                     <h1>Savoirs en partage</h1>
                     Le portail des ressources scientifiques<br />et pédagogiques de l'AUF
@@ -88,7 +88,7 @@
                 </div>
 
                 <div id="boite-principale">
-                    <img src="{{ MEDIA_URL }}img/contenu-bkg-top.png" width="744" height="10" class="top-border" />
+                    <img src="{% static "img/contenu-bkg-top.png" %}" width="744" height="10" class="top-border" />
                     {% if flash.message %}
                     <div id="flash-message">{{ flash.message }}</div>
                     {% endif %}
@@ -96,7 +96,7 @@
                         {% block contenu %}
                         {% endblock %}
                     </div>
-                    <img src="{{ MEDIA_URL }}img/contenu-bkg-bottom.png" width="744" height="10" class="bottom-border" />
+                    <img src="{% static "img/contenu-bkg-bottom.png" %}" width="744" height="10" class="bottom-border" />
                 </div>
 
                 <div id="regions_disciplines">

@@ -1,7 +1,8 @@
+{% load url from future %}
 {% if request.chercheur %}
-<li><a href="{% url chercheurs.views.perso %}">Espace chercheur</a></li>
+<li><a href="{% url "chercheurs.views.perso" %}">Espace chercheur</a></li>
 {% else %}
-<li><a href="{% url chercheurs-login %}">Se connecter</a></li>
-<li><a href="{% url chercheurs.views.inscription %}">S'inscrire</a></li>
+<li><a href="{% url "chercheurs-login" %}">Se connecter</a></li>
+<li><a href="{% url "chercheurs.views.inscription" %}">S'inscrire</a></li>
 {% endif %}
-<li><a href="{% url chercheurs.views.groupe_index %}">Communautés&nbsp;de&nbsp;chercheurs</a></li>
+<li><a href="{% url "chercheurs.views.groupe_index" %}">Communautés&nbsp;de&nbsp;chercheurs</a></li>

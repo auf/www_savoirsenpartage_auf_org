@@ -1,6 +1,6 @@
 {% extends "container_base.html" %}
-{% load sep %}
-{% load pagination_tags %}
+{% load sep pagination_tags %}
+{% load url from future %}
 
 {% block sep_menu_droite %}
 {% sep_menu_brique discipline_active region_active %}
@@ -9,7 +9,7 @@
 {% block contenu %}
 {% autopaginate evenements 10 %}
 <ul class="actions">
-    <li><a href="{% url aide %}#agenda">Aide</a></li>
+    <li><a href="{% url "aide" %}#agenda">Aide</a></li>
     {% include "savoirs/evenement_actions.html" %}
 </ul>
 
@@ -29,13 +29,13 @@
 <h2>Résultats</h2>
 <div class="sous-titre">
     {{ nb_resultats }} évènements correspondant à votre recherche
-    (<a href="{% url rss_agenda %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
+    (<a href="{% url "rss_agenda" %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
     {% if user.is_authenticated %}
-    (<a href="{% url sauvegarder_recherche "evenements" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
+    (<a href="{% url "sauvegarder_recherche" "evenements" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
     {% endif %}
 	<p>
 	{% if ordre != 'soumission' %}
-	<a href="{% url savoirs.views.evenement_index %}?sort=soumission">
+	<a href="{% url "savoirs.views.evenement_index" %}?sort=soumission">
 	{% endif %}
 	Trier par ordre de soumission
 	{% if ordre != 'soumission' %}
@@ -43,7 +43,7 @@
 	{% endif %}
 	/
 	{% if ordre != 'chronologique' %}
-	<a href="{% url savoirs.views.evenement_index %}?sort=chronologique">
+	<a href="{% url "savoirs.views.evenement_index" %}?sort=chronologique">
 	{% endif %}
 	Trier par ordre chronologique
 	</p>

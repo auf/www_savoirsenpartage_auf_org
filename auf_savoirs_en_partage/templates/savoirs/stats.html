@@ -1,5 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load sep %}
+{% load url from future %}
 
 {% block breadcrumbs %}{% endblock %}
 {% block content %}
@@ -20,9 +21,9 @@
             <td>
                 Nombre de chercheurs
             </td>
-            <td><a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m">{{ nb_hommes }}</a></td>
-            <td><a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f">{{ nb_femmes }}</a></td>
-            <td><a href="{% url admin:chercheurs_chercheur_changelist %}">{{ nb_chercheurs }}</a></td>
+            <td><a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=m">{{ nb_hommes }}</a></td>
+            <td><a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=f">{{ nb_femmes }}</a></td>
+            <td><a href="{% url "admin:chercheurs_chercheur_changelist" %}">{{ nb_chercheurs }}</a></td>
         </tr>
         <tr>
             <td>
@@ -52,15 +53,15 @@
             <tr>
                 <td>{{ region.nom }}</td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&region={{ region.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=m&region={{ region.id }}"
                         >{{ hommes_par_region|getitem:region.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&region={{ region.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=f&region={{ region.id }}"
                         >{{ femmes_par_region|getitem:region.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?region={{ region.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?region={{ region.id }}"
                         >{{ chercheurs_par_region|getitem:region.id }}</a>
                 </td>
             </tr>
@@ -81,15 +82,15 @@
             <tr>
                 <td>{{ hemisphere }}</td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&nord_sud={{ hemisphere }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=m&nord_sud={{ hemisphere }}"
                         >{{ hommes_par_hemisphere|getitem:hemisphere }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&nord_sud={{ hemisphere }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=f&nord_sud={{ hemisphere }}"
                         >{{ femmes_par_hemisphere|getitem:hemisphere }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?nord_sud={{ hemisphere }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?nord_sud={{ hemisphere }}"
                         >{{ chercheurs_par_hemisphere|getitem:hemisphere }}</a>
                 </td>
             </tr>
@@ -113,15 +114,15 @@
             <tr>
                 <td>{{ domaine.nom }}</td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&groupes={{ domaine.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=m&groupes={{ domaine.id }}"
                         >{{ hommes_par_domaine|getitem:domaine.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&groupes={{ domaine.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=f&groupes={{ domaine.id }}"
                         >{{ femmes_par_domaine|getitem:domaine.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?groupes={{ domaine.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?groupes={{ domaine.id }}"
                         >{{ chercheurs_par_domaine|getitem:domaine.id }}</a>
                 </td>
             </tr>
@@ -145,15 +146,15 @@
             <tr>
                 <td>{{ groupe.nom }}</td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&groupes={{ groupe.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=m&groupes={{ groupe.id }}"
                         >{{ hommes_par_groupe|getitem:groupe.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&groupes={{ groupe.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=f&groupes={{ groupe.id }}"
                         >{{ femmes_par_groupe|getitem:groupe.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?groupes={{ groupe.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?groupes={{ groupe.id }}"
                         >{{ chercheurs_par_groupe|getitem:groupe.id }}</a>
                 </td>
             </tr>
@@ -179,15 +180,15 @@
             <tr>
                 <td>{{ discipline.nom }}</td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=m&discipline={{ discipline.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=m&discipline={{ discipline.id }}"
                         >{{ hommes_par_discipline|getitem:discipline.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?genre=f&discipline={{ discipline.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?genre=f&discipline={{ discipline.id }}"
                         >{{ femmes_par_discipline|getitem:discipline.id }}</a>
                 </td>
                 <td>
-                    <a href="{% url admin:chercheurs_chercheur_changelist %}?discipline={{ discipline.id }}"
+                    <a href="{% url "admin:chercheurs_chercheur_changelist" %}?discipline={{ discipline.id }}"
                         >{{ chercheurs_par_discipline|getitem:discipline.id }}</a>
                 </td>
             </tr>

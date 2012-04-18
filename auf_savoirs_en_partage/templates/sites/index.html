@@ -1,6 +1,6 @@
 {% extends "container_base.html" %}
-{% load sep %}
-{% load pagination_tags %}
+{% load sep pagination_tags %}
+{% load url from future %}
 
 {% block sep_menu_droite %}
 {% sep_menu_brique discipline_active region_active %}
@@ -10,7 +10,7 @@
 {% autopaginate sites 10 %}
 
 <ul class="actions">
-    <li><a href="{% url aide %}#sitotheque">Aide</a></li>
+    <li><a href="{% url "aide" %}#sitotheque">Aide</a></li>
     {% include "sites/actions.html" %}
 </ul>
 <h1>Sites &#8212; Sitothèque</h1>
@@ -29,9 +29,9 @@
 <h2>Résultats</h2>
 <div class="sous-titre">
     {{nb_sites}} site{{ nb_sites|pluralize }} correspondant à votre recherche
-    (<a href="{% url rss_sites %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
+    (<a href="{% url "rss_sites" %}?{{ request.META.QUERY_STRING }}">Fil RSS</a>)
     {% if user.is_authenticated %}
-    (<a href="{% url sauvegarder_recherche "sites" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
+    (<a href="{% url "sauvegarder_recherche" "sites" %}?{{ request.META.QUERY_STRING }}">Sauvegarder cette recherche</a>)
     {% endif %}
 </div>
 

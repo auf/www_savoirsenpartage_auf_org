@@ -1,13 +1,12 @@
 {% extends "container_base.html" %}
-{% load pagination_tags %}
-{% load form_tags %}
-{% load sep %}
+{% load pagination_tags form_tags sep %}
+{% load url from future %}
 
 {% block contenu %}
 {% autopaginate groupes 20 %}
 
 <ul class="actions">
-    <li><a href="{% url aide %}#repertoire">Aide</a></li>
+    <li><a href="{% url "aide" %}#repertoire">Aide</a></li>
     {% include "chercheurs/actions.html" %}
 </ul>
 
@@ -41,7 +40,7 @@
 {% if groupes %}
 <ul>
 {% for groupe in groupes %}
-<li><a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a></li>
+<li><a href="{% url "chercheurs.views.groupe_retrieve" groupe.id %}">{{ groupe.nom }}</a></li>
 {% endfor %}
 </ul>
 {% else %}
@@ -58,7 +57,7 @@
 <h2>Mes communautés</h2>
 <ul>
 {% for groupe in mesgroupes %}
-<li><a href="{% url chercheurs.views.groupe_retrieve groupe.id %}">{{ groupe.nom }}</a></li>
+<li><a href="{% url "chercheurs.views.groupe_retrieve" groupe.id %}">{{ groupe.nom }}</a></li>
 {% endfor %}
 </ul>
 </div>

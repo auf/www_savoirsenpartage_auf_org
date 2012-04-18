@@ -9,7 +9,6 @@ from django.views.generic import TemplateView
 from savoirs.rss import \
         FilChercheurs, FilRessources, FilActualites, \
         FilAppels, FilEvenements, FilSites, FilMessages
-from chercheurs.api import APIFilChercheurs
 
 admin.autodiscover()
 
@@ -143,7 +142,7 @@ urlpatterns = sep_patterns + patterns(
     url(r'^api/chercheurs/(?P<chercheur_id>\d+)/$', 'chercheurs.api.api'),
     url(r'^api/chercheurs/pays/(?P<pays>.*)/$', 'chercheurs.api.api'),
     url(r'^api/chercheurs/region/(?P<region>.*)/$', 'chercheurs.api.api'),
-    url(r'^api/chercheurs/rss$', APIFilChercheurs()),
+    url(r'^api/chercheurs/recherche', 'chercheurs.api.recherche'),
 
 
     # groupes

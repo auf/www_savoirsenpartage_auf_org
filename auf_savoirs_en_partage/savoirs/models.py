@@ -392,7 +392,9 @@ class Evenement(models.Model):
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
     adresse = models.TextField()
     ville = models.CharField(max_length=100)
-    pays = models.ForeignKey(Pays, null=True, related_name='evenements')
+    pays = models.ForeignKey(
+        Pays, to_field='code', null=True, related_name='evenements'
+    )
     debut = models.DateTimeField(default=datetime.datetime.now)
     fin = models.DateTimeField(default=datetime.datetime.now)
     fuseau = models.CharField(

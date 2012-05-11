@@ -16,7 +16,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Profiling
 
 MIDDLEWARE_CLASSES = ('savoirs.middleware.ProfileMiddleware',) + MIDDLEWARE_CLASSES
-
-# css/js compression
-
-# COMPRESS = True

@@ -1,4 +1,4 @@
-{% load compress sep staticfiles %}
+{% load sep staticfiles %}
 {% load url from future %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -6,24 +6,20 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Savoirs en partage - Agence universitaire de la Francophonie</title>
         <link rel="icon" type="image/png" href="{% static "img/favicon.ico" %}" />
-        {% compress css %}
         <link href="{% static "css/global.css" %}" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="{% static "css/jquery-ui/jquery-ui.css" %}" type="text/css" />
         <link rel="stylesheet" href="{% static "css/jquery.timepicker.css" %}" type="text/css" />
-        {% endcompress %}
         <!--[if lt IE 7]>
         <link href="{% static "css/ie6.css" %}" rel="stylesheet" type="text/css" media="screen" />
         <![endif]-->
         {% block extra-style %}{% endblock %}
 
-        {% compress js %}
         <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
         <script type="text/javascript" src="{% static "js/jquery-ui.js" %}"></script>
         <script type="text/javascript" src="{% static "js/jquery.ui.datepicker-fr.js" %}"></script>
         <script type="text/javascript" src="{% static "js/jquery.timepicker.js" %}"></script>
         <script type="text/javascript" src="{% static "js/pagination.js" %}"></script>
         <script type="text/javascript" src="{% static "js/sep.js" %}"></script>
-        {% endcompress %}
         {% block extra-script %}{% endblock %}
 
         <!--[if lt IE 7]>

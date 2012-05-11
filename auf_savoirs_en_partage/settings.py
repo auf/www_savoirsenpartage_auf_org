@@ -60,7 +60,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'pagination',
-    'compressor',
     'django_roa',
     'savoirs',
     'chercheurs',
@@ -136,5 +135,6 @@ STATIC_ROOT = os.path.join(HOME, 'sitestatic')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
 )
+STATICFILES_STORAGE = \
+        'django.contrib.staticfiles.storage.CachedStaticFilesStorage'

@@ -40,6 +40,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'chercheurs.middleware.ChercheurMiddleware',
     'djangoflash.middleware.FlashMiddleware',
@@ -54,10 +55,11 @@ INSTALLED_APPS = (
     'admin_tools.theming',
     'admin_tools.menu',
     'admin_tools.dashboard',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.messages',
     'django.contrib.sessions',
-    'django.contrib.admin',
     'django.contrib.staticfiles',
     'pagination',
     'django_roa',
@@ -81,7 +83,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.request",
     "context_processors.discipline_region",
-    "djangoflash.context_processors.flash"
+    "djangoflash.context_processors.flash",
+    'django.contrib.messages.context_processors.messages',
 )
 
 TEMPLATE_LOADERS = (

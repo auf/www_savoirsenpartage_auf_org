@@ -1,21 +1,21 @@
 # -*- encoding: utf-8 -*-
 import operator
 
+from auf.django.references import models as ref
 from django import forms
 from django.core.urlresolvers import reverse as url
-from django.db.models import Q
-from django.db.models.query import QuerySet
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.db.models import Q
+from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 
-from models import \
+from auf_savoirs_en_partage.savoirs.globals import META
+from auf_savoirs_en_partage.savoirs.models import \
         SourceActualite, Actualite, ActualiteVoir, \
         Evenement, EvenementVoir, Record, RecordEdit, \
         RecordCategorie, ListSet, HarvestLog, Profile, PageStatique
-
-from savoirs.globals import META
 
 
 class ListSetListFilter(admin.RelatedFieldListFilter):
@@ -32,6 +32,20 @@ class ListSetListFilter(admin.RelatedFieldListFilter):
 
     def has_output(self):
         return self.server_name is not None
+
+
+class AllRegionsListFilter(admin.SimpleListFilter):
+    """
+    Filtre qui offre aussi les régions inactives dans ses choix.
+    """
+    title = u'région'
+    parameter_name = 'regions'
+
+    def lookups(self, request, model_admin):
+        return [(r.id, r.nom) for r in ref.Region.avec_inactifs.all()]
+
+    def queryset(self, request, queryset):
+        return queryset.filter(regions=self.value())
 
 
 class RecordAdminQuerySet(QuerySet):
@@ -81,7 +95,7 @@ class RecordAdmin(admin.ModelAdmin):
 
     list_filter = (
         'validated', 'server', ('listsets', ListSetListFilter), 'pays',
-        'regions', 'disciplines', 'thematiques', 'categorie'
+        AllRegionsListFilter, 'disciplines', 'thematiques', 'categorie'
     )
     list_display = (
         'title', 'subject', 'uri_display', 'creator', 'categorie',
@@ -248,7 +262,7 @@ admin.site.register(User, UserProfileAdmin)
 
 
 class ActualiteAdmin(admin.ModelAdmin):
-    list_filter = ('visible', 'disciplines', 'regions')
+    list_filter = ('visible', 'disciplines', AllRegionsListFilter)
     list_display = ('titre', 'source', 'date', 'visible')
     list_editable = ('visible',)
     actions = (
@@ -347,7 +361,7 @@ class EvenementAdminForm(forms.ModelForm):
 class EvenementAdmin(admin.ModelAdmin):
     form = EvenementAdminForm
     list_filter = (
-        'approuve', 'regions', 'discipline', 'discipline_secondaire'
+        'approuve', AllRegionsListFilter, 'discipline', 'discipline_secondaire'
     )
     list_display = ('titre', 'debut', 'fin', 'ville', 'pays', 'approuve')
     fields = ('titre', 'discipline', 'discipline_secondaire', 'mots_cles',

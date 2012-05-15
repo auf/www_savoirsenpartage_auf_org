@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
-from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse as url
 from django.contrib.auth.decorators import login_required
-
-from django.template import Context, RequestContext
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.template import Context, RequestContext
 
 from chercheurs.models import AdhesionGroupe, Groupe
 from chercheurs.forms import CGStatutForm
@@ -28,8 +28,10 @@ def assigner_cgstatut(request):
                 r.save()
 
             # retouner un status à l'utilisateur sur la liste des références
-            succes = u"Le statut a été assigné à %s références" % (len(ids),)
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"Le statut a été assigné à %s références" % (len(ids),)
+            )
             return HttpResponseRedirect('/admin/chercheurs/')
     else:
         cgstatut_form = CGStatutForm()

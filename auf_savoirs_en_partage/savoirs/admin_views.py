@@ -1,12 +1,11 @@
 # -*- encoding: utf-8 -*-
-from django import forms
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
+from django.core.urlresolvers import reverse as url
 from django.db.models import get_model, Count
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse as url
-from django.contrib.auth.decorators import login_required, permission_required
-
-from django.template import Context, RequestContext
 from django.shortcuts import render_to_response
+from django.template import Context, RequestContext
 
 from chercheurs.models import Chercheur, GroupeChercheur, DomaineRecherche
 from auf.django.references.models import Thematique, Pays, Region
@@ -77,8 +76,10 @@ def assigner_categorie(request):
                 r.save()
             
             # retouner un status à l'utilisateur sur la liste des références
-            succes = u"La catégorie %s a été assigné à %s références" % (categorie.nom, len(ids))
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"La catégorie %s a été assigné à %s références" % (categorie.nom, len(ids))
+            )
             return HttpResponseRedirect('/admin/savoirs/record')
     else:
         categorie_form = CategorieForm()
@@ -113,8 +114,10 @@ def assigner_pays(request):
             
             # retouner un status à l'utilisateur sur la liste des références
             pays_noms = u", ".join([p.nom for p in pays])
-            succes = u"Les pays %s ont été assignés à %s références" % (pays_noms, len(ids))
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"Les pays %s ont été assignés à %s références" % (pays_noms, len(ids))
+            )
             return HttpResponseRedirect('/admin/savoirs/record')
     else:
         pays_form = PaysForm()
@@ -143,8 +146,11 @@ def assigner_regions(request, app_name, model_name):
 
             # retouner un status à l'utilisateur sur la liste des références
             regions_noms = u", ".join([p.nom for p in regions])
-            succes = u"Les regions %s ont été assignées à %s objets" % (regions_noms, len(ids))
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"Les regions %s ont été assignées à %s objets" %
+                (regions_noms, len(ids))
+            )
             return HttpResponseRedirect(url('admin:%s_%s_changelist' % (app_name, model_name)))
     else:
         regions_form = RegionsForm()
@@ -173,8 +179,11 @@ def assigner_disciplines(request, app_name, model_name):
             
             # retouner un status à l'utilisateur sur la liste des références
             disciplines_noms = u", ".join([p.nom for p in disciplines])
-            succes = u"Les disciplines %s ont été assignées à %s objets" % (disciplines_noms, len(ids))
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"Les disciplines %s ont été assignées à %s objets" %
+                (disciplines_noms, len(ids))
+            )
             return HttpResponseRedirect(url('admin:%s_%s_changelist' % (app_name, model_name)))
     else:
         disciplines_form = DisciplinesForm()
@@ -210,8 +219,11 @@ def assigner_thematiques(request):
             
             # retouner un status à l'utilisateur sur la liste des références
             thematiques_noms = u", ".join([p.nom for p in thematiques])
-            succes = u"Les thématiques %s ont été assignées à %s références" % (thematiques_noms, len(ids))
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"Les thématiques %s ont été assignées à %s références" %
+                (thematiques_noms, len(ids))
+            )
             return HttpResponseRedirect('/admin/savoirs/record')
     else:
         thematiques_form = ThematiquesForm()
@@ -265,8 +277,10 @@ def confirmation(request, action):
                 setattr(o, action[0], action[1])
                 o.save()
 
-            succes = u""u"Les références ont été %s" % desc
-            request.user.message_set.create(message=succes)
+            messages.success(
+                request,
+                u"Les références ont été %s" % desc
+            )
             return HttpResponseRedirect('/admin/savoirs/%s' % type)
     else:
         confirmation_form = ConfirmationForm()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from auf.django.references import models as ref
 from django.db.models import Q
 from django.contrib import admin
 from django.core.urlresolvers import reverse as url
@@ -10,13 +11,143 @@ from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
                               AdhesionGroupe, ChercheurQuerySet, \
                               AdhesionCommunaute, AdhesionDomaineRecherche, \
                               Groupe, Message
-
 from chercheurs.utils import export
 from savoirs.models import Search
 
 
+class PaysListFilter(admin.SimpleListFilter):
+    title = 'pays'
+    parameter_name = 'pays'
+
+    def lookups(self, request, model_admin):
+        region = request.GET.get('region')
+        nord_sud = request.GET.get('nord_sud')
+        pays = ref.Pays.objects.all()
+        if region is not None:
+            pays = pays.filter(region=region)
+        if nord_sud is not None:
+            pays = pays.filter(nord_sud=nord_sud)
+        return pays.values_list('code', 'nom')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(
+                Q(etablissement__pays=self.value()) |
+                Q(etablissement=None,
+                  etablissement_autre_pays=self.value())
+            )
+
+
+class ParamRemovingListFilter(admin.SimpleListFilter):
+    remove_params = []
+
+    def choices(self, cl):
+        yield {
+            'selected': self.value() is None,
+            'query_string': cl.get_query_string(
+                {}, [self.parameter_name] + self.remove_params
+            ),
+            'display': 'Tout',
+        }
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, self.remove_params),
+                'display': title,
+            }
+
+
+class RegionListFilter(ParamRemovingListFilter):
+    title = 'région'
+    parameter_name = 'region'
+    remove_params = ['pays']
+
+    def lookups(self, request, model_admin):
+        return (
+            (str(id), nom)
+            for id, nom in ref.Region.objects.values_list('id', 'nom')
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(
+                Q(etablissement__pays__region=self.value()) |
+                Q(etablissement=None,
+                  etablissement_autre_pays__region=self.value())
+            )
+
+
+class NordSudListFilter(ParamRemovingListFilter):
+    title = 'nord/sud'
+    parameter_name = 'nord_sud'
+    remove_params = ['pays']
+
+    def lookups(self, request, model_admin):
+        return ref.Pays.NORD_SUD_CHOICES
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(
+                Q(etablissement__pays__nord_sud=self.value()) |
+                Q(etablissement=None,
+                  etablissement_autre_pays__nord_sud=self.value())
+            )
+
+
+class ExpertListFilter(admin.SimpleListFilter):
+    title = 'expert'
+    parameter_name = 'expert'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('1', 'Oui'),
+            ('0', 'Non'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() in ['1', 1, True]:
+            return queryset.exclude(expertises=None)
+        elif self.value() in ['0', 0, False]:
+            return queryset.filter(expertises=None)
+
+
+class GroupeChercheursListFilter(admin.SimpleListFilter):
+    title = 'groupe de chercheurs'
+    parameter_name = 'groupe_chercheurs'
+
+    def lookups(self, request, model_admin):
+        return (
+            (str(id), nom)
+            for id, nom in GroupeChercheur.objects.values_list('id', 'nom')
+        )
+
+    def queryset(self, request, queryset):
+        return queryset.filter(groupes=self.value())
+
+
+class DomaineRechercheListFilter(admin.SimpleListFilter):
+    title = 'domaine de recherche'
+    parameter_name = 'domaine_recherche'
+
+    def lookups(self, request, model_admin):
+        return (
+            (str(id), nom)
+            for id, nom in DomaineRecherche.objects.values_list('id', 'nom')
+        )
+
+    def queryset(self, request, queryset):
+        return queryset.filter(groupes=self.value())
+
+
 class ChercheurAdmin(admin.ModelAdmin):
-    list_filter = ['genre']
+    list_filter = (
+        'genre', 'statut', 'membre_reseau_institutionnel',
+        'membre_instance_auf', 'discipline', RegionListFilter,
+        NordSudListFilter, PaysListFilter, GroupeChercheursListFilter,
+        DomaineRechercheListFilter, ExpertListFilter
+    )
     alphabet_filter = 'nom'
     alphabet_filter_table = 'chercheurs_personne'
     DEFAULT_ALPHABET = ''
@@ -120,41 +251,6 @@ class ChercheurAdminQuerySet(ChercheurQuerySet):
 
     def delete(self):
         self.update(actif=False)
-
-    def filter(self, *args, **kwargs):
-        """Gère des filtres supplémentaires pour l'admin.
-
-        C'est la seule façon que j'ai trouvée de contourner les mécanismes
-        de recherche de l'admin."""
-        pays = kwargs.pop('pays', None)
-        region = kwargs.pop('region', None)
-        nord_sud = kwargs.pop('nord_sud', None)
-        expert = kwargs.pop('expert', None)
-        qs = self
-        if pays is not None:
-            qs = qs.filter(
-                Q(etablissement__pays=pays) |
-                (Q(etablissement=None) & Q(etablissement_autre_pays=pays))
-            )
-        elif region is not None:
-            qs = qs.filter(
-                Q(etablissement__pays__region=region) |
-                (Q(etablissement=None) &
-                 Q(etablissement_autre_pays__region=region))
-            )
-        elif nord_sud is not None:
-            qs = qs.filter(
-                Q(etablissement__pays__nord_sud=nord_sud) |
-                (Q(etablissement=None) &
-                 Q(etablissement_autre_pays__nord_sud=nord_sud))
-            )
-        if expert is not None:
-            if expert in ['1', 1, True]:
-                qs = qs.exclude(expertises=None)
-            else:
-                qs = qs.filter(expertises=None)
-
-        return super(ChercheurAdminQuerySet, qs).filter(*args, **kwargs)
 
 
 class AdhesionGroupeAdmin(admin.ModelAdmin):

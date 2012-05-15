@@ -7,21 +7,3 @@
 ul.alphabetfilter li.first,.change-list ul.alphabetfilter li.first{width:2em!important;}
 </style>
 {% endblock %}
-
-{% block filters %}
-<div id="changelist-filter">
-    <h2>{% trans 'Filter' %}</h2>
-    {% filter_genre %}
-    {% filter_statut %}
-    {% filter_membre_reseau_institutionnel %}
-    {% filter_membre_instance_auf %}
-    {% filter_discipline %}
-    {% filter_region %}
-    {% filter_nord_sud %}
-    {% filter_pays %}
-    {% filter_groupe_chercheurs %}
-    {% filter_domaine_recherche %}
-    {% filter_expert %}
-</div>
-{% endblock %}
-

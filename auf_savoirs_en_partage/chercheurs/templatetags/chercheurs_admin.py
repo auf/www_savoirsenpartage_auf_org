@@ -47,19 +47,6 @@ def filter_nord_sud(context):
             'choices': prepare_choices([('Nord', 'Nord'), ('Sud', 'Sud')], 'nord_sud', context, remove=['pays', 'region'])}
 
 @register.inclusion_tag('admin/filter.html', takes_context=True)
-def filter_pays(context):
-    request = context['request']
-    region = request.GET.get('region')
-    nord_sud = request.GET.get('nord_sud')
-    choices = Pays.objects
-    if region is not None:
-        choices = choices.filter(region=region)
-    elif nord_sud is not None:
-        choices = choices.filter(nord_sud=nord_sud)
-    return {'title': u"pays",
-            'choices': prepare_choices(choices.values_list('code', 'nom'), 'pays', context)}
-
-@register.inclusion_tag('admin/filter.html', takes_context=True)
 def filter_groupe_chercheurs(context):
     return {'title': u"communautés de chercheurs",
             'choices': prepare_choices(GroupeChercheur.objects.values_list('id', 'nom'), 'groupes', context)}

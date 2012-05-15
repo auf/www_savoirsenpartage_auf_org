@@ -34,7 +34,6 @@ src
 
 # Fichiers écrits par le serveur
 
-/auf_savoirs_en_partage/media/agenda
+/auf_savoirs_en_partage/data
+/auf_savoirs_en_partage/media
 /sitestatic
-/media
-/data

@@ -3,6 +3,7 @@ import copy
 import datetime
 import simplejson
 
+from auf.django.references import models as ref
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -292,7 +293,8 @@ def evenement_ajout(request):
 
 
 def options_fuseau_horaire(request):
-    choices = build_time_zone_choices(request.GET.get('pays'))
+    pays = get_object_or_404(ref.Pays, id=request.GET.get('pays'))
+    choices = build_time_zone_choices(pays.code)
     if len(choices) > 1:
         choices = [('', '---------')] + choices
     return render(request, 'savoirs/options_fuseau_horaire.html', {

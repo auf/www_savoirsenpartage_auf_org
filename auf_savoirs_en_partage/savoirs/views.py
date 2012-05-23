@@ -250,7 +250,7 @@ def evenement_index(request):
 
     else:
         today = datetime.date.today()
-        search_form = EvenementSearchForm(initial={'date_min': today})
+        search_form = EvenementSearchForm({'date_min': today})
         if search_form.is_valid():
             search = search_form.save(commit=False)
         else:

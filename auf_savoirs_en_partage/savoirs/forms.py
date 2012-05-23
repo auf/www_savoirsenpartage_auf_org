@@ -23,6 +23,7 @@ class SEPDateField(forms.DateField):
         format = '%d/%m/%Y'
         self.widget = forms.DateInput(attrs={'class': 'date'}, format=format)
         self.input_formats = [format]
+        self.help_text = 'format: jj/mm/aaaa'
 
 
 class SEPSplitDateTimeWidget(forms.MultiWidget):
@@ -52,7 +53,8 @@ class SEPDateTimeField(forms.DateTimeField):
 
     def __init__(self, *args, **kwargs):
         super(SEPDateTimeField, self).__init__(
-            input_formats=['%d/%m/%Y %H:%M']
+            input_formats=['%d/%m/%Y %H:%M'],
+            help_text='format: jj/mm/aaaa'
         )
 
 

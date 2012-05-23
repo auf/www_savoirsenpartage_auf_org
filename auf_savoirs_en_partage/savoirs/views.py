@@ -305,8 +305,12 @@ def evenement_ajout(request):
 
 
 def options_fuseau_horaire(request):
-    pays = get_object_or_404(ref.Pays, id=request.GET.get('pays'))
-    choices = build_time_zone_choices(pays.code)
+    try:
+        pays = ref.Pays.objects.get(id=request.GET.get('pays'))
+    except ValueError, ref.Pays.DoesNotExist:
+        choices = build_time_zone_choices()
+    else:
+        choices = build_time_zone_choices(pays.code)
     if len(choices) > 1:
         choices = [('', '---------')] + choices
     return render(request, 'savoirs/options_fuseau_horaire.html', {

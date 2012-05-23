@@ -124,7 +124,8 @@ class GroupeChercheursListFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        return queryset.filter(groupes=self.value())
+        if self.value():
+            return queryset.filter(groupes=self.value())
 
 
 class DomaineRechercheListFilter(admin.SimpleListFilter):
@@ -138,7 +139,8 @@ class DomaineRechercheListFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        return queryset.filter(groupes=self.value())
+        if self.value():
+            return queryset.filter(groupes=self.value())
 
 
 class ChercheurAdmin(admin.ModelAdmin):

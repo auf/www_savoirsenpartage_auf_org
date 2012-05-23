@@ -11,7 +11,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.sites.models import RequestSite, Site
 from django.core.urlresolvers import reverse as url
 from django.core.mail import send_mail
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context
 from django.template.loader import get_template
@@ -36,7 +36,10 @@ def index(request):
     Répertoire des chercheurs
     """
     search_form = ChercheurSearchForm(request.GET)
-    search = search_form.save(commit=False)
+    if search_form.is_valid():
+        search = search_form.save(commit=False)
+    else:
+        raise Http404
     chercheurs = search.run().select_related('etablissement')
     sort = request.GET.get('tri')
     if sort is not None and sort.endswith('_desc'):

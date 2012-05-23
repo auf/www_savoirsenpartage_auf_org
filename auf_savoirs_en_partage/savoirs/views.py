@@ -5,7 +5,7 @@ import simplejson
 
 from auf.django.references import models as ref
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.utils.safestring import mark_safe
@@ -143,7 +143,10 @@ def sites_auf(request):
 # ressources
 def ressource_index(request):
     search_form = RessourceSearchForm(request.GET)
-    search = search_form.save(commit=False)
+    if search_form.is_valid():
+        search = search_form.save(commit=False)
+    else:
+        raise Http404
     ressources = search.run()
     nb_resultats = ressources.count()
     excerpt = excerpt_function(Record.objects, search_form.cleaned_data['q'])
@@ -207,7 +210,10 @@ def actualite_index(request, type='actu'):
         except PageStatique.DoesNotExist:
             entete = '<h1>Actualités</h1>'
 
-    search = search_form.save(commit=False)
+    if search_form.is_valid():
+        search = search_form.save(commit=False)
+    else:
+        raise Http404
     actualites = search.run()
     excerpt = excerpt_function(
         Actualite.objects, search_form.cleaned_data['q']
@@ -236,13 +242,19 @@ def evenement_index(request):
        or request.GET.get('discipline', False) \
        or request.GET.get('region', False):
         search_form = EvenementSearchForm(request.GET)
-        search = search_form.save(commit=False)
+        if search_form.is_valid():
+            search = search_form.save(commit=False)
+        else:
+            raise Http404
         q = search_form.cleaned_data.get('q', '')
 
     else:
         today = datetime.date.today()
         search_form = EvenementSearchForm(initial={'date_min': today})
-        search = search_form.save(commit=False)
+        if search_form.is_valid():
+            search = search_form.save(commit=False)
+        else:
+            raise Http404
         search.date_min = today
         q = ''
 

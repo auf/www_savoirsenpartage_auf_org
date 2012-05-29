@@ -6,6 +6,7 @@ from dateutil.tz import tzlocal, tzutc
 
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from auf_savoirs_en_partage.chercheurs.forms import ChercheurSearchForm
@@ -24,7 +25,10 @@ class FilChercheurs(Feed):
 
     def get_object(self, request):
         search_form = ChercheurSearchForm(request.GET)
-        return search_form.save(commit=False)
+        if search_form.is_valid():
+            return search_form.save(commit=False)
+        else:
+            raise Http404
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)
@@ -51,6 +55,10 @@ class FilRessources(Feed):
 
     def get_object(self, request):
         search_form = RessourceSearchForm(request.GET)
+        if search_form.is_valid():
+            return search_form.save(commit=False)
+        else:
+            raise Http404
         return search_form.save(commit=False)
 
     def items(self, search):
@@ -80,7 +88,10 @@ class FilActualitesBase(Feed):
 
     def get_object(self, request):
         search_form = ActualiteSearchForm(request.GET)
-        return search_form.save(commit=False)
+        if search_form.is_valid():
+            return search_form.save(commit=False)
+        else:
+            raise Http404
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)
@@ -126,7 +137,10 @@ class FilEvenements(Feed):
 
     def get_object(self, request):
         search_form = EvenementSearchForm(request.GET)
-        return search_form.save(commit=False)
+        if search_form.is_valid():
+            return search_form.save(commit=False)
+        else:
+            raise Http404
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)
@@ -149,7 +163,10 @@ class FilSites(Feed):
 
     def get_object(self, request):
         search_form = SiteSearchForm(request.GET)
-        return search_form.save(commit=False)
+        if search_form.is_valid():
+            return search_form.save(commit=False)
+        else:
+            raise Http404
 
     def items(self, search):
         min_date = date.today() - timedelta(days=30)

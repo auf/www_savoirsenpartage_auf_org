@@ -1,23 +1,26 @@
 # -*- encoding: utf-8 -*-
+
 from datetime import datetime, date, timedelta
 from dateutil.parser import parse as parse_date
 from dateutil.tz import tzlocal, tzutc
 
-from django.core.urlresolvers import reverse
 from django.contrib.syndication.views import Feed
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 
+from auf_savoirs_en_partage.chercheurs.forms import ChercheurSearchForm
+from auf_savoirs_en_partage.chercheurs.models import Groupe, Message
+from auf_savoirs_en_partage.savoirs.forms import \
+        RessourceSearchForm, ActualiteSearchForm, EvenementSearchForm
+from auf_savoirs_en_partage.sitotheque.forms import SiteSearchForm
 
-from chercheurs.forms import ChercheurSearchForm
-from savoirs.forms import RessourceSearchForm, ActualiteSearchForm, EvenementSearchForm
-from sitotheque.forms import SiteSearchForm
-
-from chercheurs.models import Groupe, Message
 
 class FilChercheurs(Feed):
     title = "Savoirs en partage - chercheurs"
     link = "/chercheurs/"
-    description = "Fiches de chercheurs mises à jour récemment sur Savoirs en partage"
+    description = \
+            "Fiches de chercheurs mises à jour récemment sur " \
+            "Savoirs en partage"
 
     def get_object(self, request):
         search_form = ChercheurSearchForm(request.GET)
@@ -32,13 +35,14 @@ class FilChercheurs(Feed):
 
     def item_description(self, chercheur):
         return chercheur.etablissement_display
-    
+
     def item_link(self, chercheur):
         return reverse('chercheur', kwargs=dict(id=chercheur.id))
 
     def item_pubdate(self, chercheur):
         d = chercheur.date_modification
         return datetime(d.year, d.month, d.day, tzinfo=tzlocal())
+
 
 class FilRessources(Feed):
     title = "Savoirs en partage - ressources"
@@ -71,6 +75,7 @@ class FilRessources(Feed):
             modified.tzinfo = tzutc()
         return modified
 
+
 class FilActualitesBase(Feed):
 
     def get_object(self, request):
@@ -94,6 +99,7 @@ class FilActualitesBase(Feed):
         d = actualite.date
         return datetime(d.year, d.month, d.day, tzinfo=tzutc())
 
+
 class FilActualites(FilActualitesBase):
     title = "Savoirs en partage - actualités"
     link = "/actualites/"
@@ -102,6 +108,7 @@ class FilActualites(FilActualitesBase):
     def items(self, search):
         return FilActualitesBase.items(self, search).filter_type('actu')
 
+
 class FilAppels(FilActualitesBase):
     title = "Savoirs en partage - appels d'offres"
     link = "/appels/"
@@ -109,6 +116,7 @@ class FilAppels(FilActualitesBase):
 
     def items(self, search):
         return FilActualitesBase.items(self, search).filter_type('appels')
+
 
 class FilEvenements(Feed):
     title = "Savoirs en partage - agenda"
@@ -133,6 +141,7 @@ class FilEvenements(Feed):
     def item_author_email(self, evenement):
         return evenement.courriel
 
+
 class FilSites(Feed):
     title = "Savoirs en partage - sites"
     link = "/sites/"
@@ -154,6 +163,7 @@ class FilSites(Feed):
 
     def item_author_name(self, site):
         return site.auteur
+
 
 class FilMessages(Feed):
 

@@ -1,8 +1,7 @@
 # encoding: utf-8
 
-from itertools import chain
 from urllib import urlopen
-from urlparse import urljoin
+from urlparse import urlsplit, urlunsplit
 
 from BeautifulSoup import BeautifulSoup
 
@@ -13,7 +12,7 @@ META_MAP = {
     'dc.description': 'description',
     'dc.type': 'type',
     'dc.format': 'format',
-    'dc.identifier': 'uri',
+    'dc.identifier': 'identifier',
     'dc.language': 'language',
     'dc.creator': 'creator',
     'dc.contributor': 'contributor',
@@ -25,20 +24,28 @@ def harvest(options):
     """
     Moisonneur pour les systèmes Lodel 0.9.
     """
+    # Boucle sur toutes les pages du site
+    base_url = urlsplit(options['url'])
+    pending_urls = set([options['url']])
+    seen_urls = set()
+    nodes = {}
+    while pending_urls:
 
-    BASE_URL = options['url']
-
-    def get_soup(path):
-        url = urljoin(BASE_URL, path)
-        f = urlopen(url)
+        # Lecture du contenu de la page
+        current_url = pending_urls.pop()
+        seen_urls.add(current_url)
+        f = urlopen(current_url)
+        if f.info().gettype() != 'text/html':
+            f.close()
+            continue
         html = f.read()
         f.close()
-        return BeautifulSoup(html)
+        soup = BeautifulSoup(html)
+        if not soup.head:
+            continue
 
-    def get_node(path):
-        soup = get_soup(path)
-        uri = urljoin(BASE_URL, path)
-        node = {'identifier': uri, 'uri': uri}
+        # Recherche de métadonnées
+        node = {}
         for meta in soup.head('meta'):
             name = meta.get('name')
             content = meta.get('content')
@@ -48,36 +55,22 @@ def harvest(options):
             if not field:
                 continue
             meta_set(node, field, content)
-        return node
+        if 'identifier' in node and 'title' in node:
+            node['uri'] = node['identifier']
+            nodes[node['identifier']] = node
 
-    index_soup = get_soup('/')
-    auteur_index_uris = (
-        a['href'] for a in chain.from_iterable(
-            ul('a', href=True) for ul in index_soup('ul', 'typepersonne')
+        # Recherche de liens vers d'autres pages du site
+        new_urls = (
+            urlunsplit((base_url.scheme, base_url.netloc, path, query, ''))
+            for scheme, netloc, path, query, fragment in (
+                urlsplit(a['href'].encode('utf8'))
+                for a in soup('a', href=True)
+            )
+            if scheme in ('', base_url.scheme)
+            and netloc in ('', base_url.netloc)
         )
-    )
-    auteur_uris = (
-        a['href'] for a in chain.from_iterable(
-            get_soup(uri)('a', 'auteur', href=True) for uri in auteur_index_uris
-        ) if a.has_key('href')
-    )
-    numero_uris = (
-        a['href'] for a in chain.from_iterable(
-            ul('a', href=True) for ul in index_soup('ul', 'issues')
-        ) if a.has_key('href')
-    )
-    article_uris = set(chain(
-        numero_uris,
-        (a['href'] for a in chain.from_iterable(
-            dl('a', href=True) for dl in chain.from_iterable(
-                get_soup(uri)('dl', 'listArticles') for uri in auteur_uris
-            )
-        ) if a.has_key('href')),
-        (a['href'] for a in chain.from_iterable(
-            ul('a', href=True) for ul in chain.from_iterable(
-                get_soup(uri)('ul', 'summary') for uri in numero_uris
-            )
-        ) if a.has_key('href'))
-    ))
-    nodes = [get_node(uri) for uri in article_uris]
-    return nodes
+        for url in new_urls:
+            if url not in pending_urls and url not in seen_urls:
+                pending_urls.add(url)
+
+    return nodes.values()

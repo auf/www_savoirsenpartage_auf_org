@@ -8,6 +8,7 @@ from BeautifulSoup import BeautifulSoup
 from savoirs.lib.utils import meta_set
 
 META_MAP = {
+    'author': 'creator',
     'dc.title': 'title',
     'dc.description': 'description',
     'dc.type': 'type',

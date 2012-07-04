@@ -6,7 +6,7 @@
 RESOURCES = {
 
     #OAI
-    
+
     u'aide-en-ligne': {
         'type': 'oai',
         'acces': 'generic',
@@ -52,7 +52,8 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://revues.temp.bj.refer.org/index.php/BM/',
     },
-    u'Annales des l\'Université de Parakou : Série sciences naturelles et agronomie': {
+    u'Annales des l\'Université de Parakou : '
+    u'Série sciences naturelles et agronomie': {
         'type': 'oai',
         'acces': 'generic',
         'url': 'http://revues.temp.bj.refer.org/index.php/A-UPAR-SNA/',
@@ -119,11 +120,18 @@ RESOURCES = {
         'acces': 'html',
         'url': 'http://www.frantice.net/',
     },
+
+    # Lodel 0.9
     u'FAUN': {
         'type': 'lodel',
         'acces': 'html09',
         'url': 'http://www.bulletin.auf.org/',
-    }
+    },
+    u'Religec': {
+        'type': 'lodel',
+        'acces': 'html09',
+        'url': 'http://www.religec.org/',
+    },
     #'Exchorésis': {
     #    'type': 'lodel',
     #    'acces': 'html',
@@ -132,7 +140,7 @@ RESOURCES = {
 
     # SPIP
     #'Annales des sciences agronomiques du Bénin': {
-    #    'type': 'lodel', 
+    #    'type': 'lodel',
     #    'acces': 'html',
     #    'url': 'http://www.annales-fsa.bj.refer.org/',
     #},

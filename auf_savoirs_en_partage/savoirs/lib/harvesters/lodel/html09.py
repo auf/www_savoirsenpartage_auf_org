@@ -55,6 +55,15 @@ def harvest(options):
             field = META_MAP.get(name.lower())
             if not field:
                 continue
+
+            # Heurisitique pour déterminer si on a du contenu mal encodé
+            # (encodé en utf-8, mais transmis comme du latin-1)
+            if u'Ã' in content:
+                try:
+                    content = content.encode('latin-1').decode('utf-8')
+                except UnicodeDecodeError:
+                    pass
+
             meta_set(node, field, content)
         if 'identifier' in node and 'title' in node:
             node['uri'] = node['identifier']

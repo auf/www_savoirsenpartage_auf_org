@@ -60,7 +60,9 @@ class SEPEncoder:
         for r in Record.all_objects.all():
             for k in META.keys():
                 v = getattr(r, k)
-                setattr(r, k, self.propre(v))
+                if k not in ['uri', 'identifier']:
+                    v = self.encoder.propre(v)
+                setattr(r, k, v)
             r.save()
 
 
@@ -110,7 +112,9 @@ class SEP:
         # des données moissonnées
         for k in META.keys():
             v = getattr(r, k)
-            setattr(r, k, self.encoder.propre(v))
+            if k not in ['uri', 'identifier']:
+                v = self.encoder.propre(v)
+            setattr(r, k, v)
 
         r.save()
 

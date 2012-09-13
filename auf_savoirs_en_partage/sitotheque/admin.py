@@ -7,7 +7,7 @@ from models import Site, SiteVoir
 class SiteAdmin(admin.ModelAdmin):
     list_display = ['titre', 'recherche_google']
     list_editable = ['recherche_google']
-    list_filter = ('discipline', 'regions')
+    list_filter = ('discipline', 'regions', 'site_auf')
     search_fields = ('titre', 'description')
     actions = ('assigner_regions', 'assigner_disciplines')
 

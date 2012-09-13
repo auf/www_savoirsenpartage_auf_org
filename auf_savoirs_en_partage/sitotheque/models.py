@@ -88,6 +88,7 @@ class Site(models.Model):
     actif = models.BooleanField(default=True)
     date_maj = models.DateField(auto_now=True)
     recherche_google = models.BooleanField('Inclure dans la recherche Google', default=False)
+    site_auf = models.BooleanField('soutenu par l\'AUF', default=False)
 
     # Manager
     objects = SiteManager()

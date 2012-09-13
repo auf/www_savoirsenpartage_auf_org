@@ -174,6 +174,7 @@ class SourceActualite(models.Model):
     type = models.CharField(
         max_length=10, default='actu', choices=TYPE_CHOICES
     )
+    region = models.ForeignKey(Region, null=True, blank=True, verbose_name='région')
 
     class Meta:
         verbose_name = u'fil RSS syndiqué'
@@ -192,10 +193,12 @@ class SourceActualite(models.Model):
                 ts = entry.get('updated_parsed')
                 date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday) \
                         if ts else datetime.date.today()
-                self.actualites.create(
+                actualite = self.actualites.create(
                     titre=entry.title, texte=entry.summary_detail.value,
                     url=entry.link, date=date
                 )
+                if self.region:
+                    actualite.regions.add(self.region)
 
 
 class ActualiteQuerySet(SEPQuerySet):

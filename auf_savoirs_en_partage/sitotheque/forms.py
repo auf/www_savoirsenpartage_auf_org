@@ -8,7 +8,7 @@ class SiteSearchForm(forms.ModelForm):
 
     class Meta:
         model = SiteSearch
-        fields = ['q', 'discipline', 'pays', 'region']
+        fields = ['q', 'discipline', 'pays', 'region', 'site_auf']
 
 class SiteSearchEditForm(SiteSearchForm):
 

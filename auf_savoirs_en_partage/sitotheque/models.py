@@ -121,6 +121,7 @@ class SiteVoir(Site):
 
 class SiteSearch(Search):
     pays = models.ForeignKey(Pays, blank=True, null=True)
+    site_auf = models.BooleanField('soutenu par l\'AUF', default=False)
 
     class Meta:
         verbose_name = "recherche de sites"
@@ -128,6 +129,8 @@ class SiteSearch(Search):
 
     def run(self, min_date=None, max_date=None):
         results = Site.objects
+        if self.site_auf:
+            results = results.filter(site_auf=True)
         if self.q:
             results = results.search(self.q)
         if self.discipline:

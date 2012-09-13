@@ -265,6 +265,7 @@ class ActualiteAdmin(admin.ModelAdmin):
     list_filter = ('visible', 'disciplines', AllRegionsListFilter)
     list_display = ('titre', 'source', 'date', 'visible')
     list_editable = ('visible',)
+    search_fields = ('titre', 'texte')
     actions = (
         'rendre_visible', 'rendre_invisible', 'assigner_regions',
         'assigner_disciplines'
@@ -368,6 +369,7 @@ class EvenementAdmin(admin.ModelAdmin):
               'type', 'adresse', 'ville', 'pays', 'fuseau', 'debut', 'fin',
               'piece_jointe', 'regions', 'description', 'prenom', 'nom',
               'courriel', 'url', 'approuve')
+    search_fields = ('titre', 'description')
     actions = ('assigner_regions', 'assigner_disciplines')
 
     def queryset(self, request):

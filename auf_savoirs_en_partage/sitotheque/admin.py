@@ -7,8 +7,9 @@ from models import Site, SiteVoir
 class SiteAdmin(admin.ModelAdmin):
     list_display = ['titre', 'recherche_google']
     list_editable = ['recherche_google']
-    actions = ('assigner_regions', 'assigner_disciplines')
     list_filter = ('discipline', 'regions')
+    search_fields = ('titre', 'description')
+    actions = ('assigner_regions', 'assigner_disciplines')
 
     def queryset(self, request):
         return Site.all_objects.all()

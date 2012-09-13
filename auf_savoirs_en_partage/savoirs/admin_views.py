@@ -103,8 +103,8 @@ def assigner_pays(request):
 
             # charger tous les objets pays
             pays = []
-            for pays_code in request.POST.getlist("pays"):
-                pays.append(Pays.objects.get(code=pays_code))
+            for pays_id in request.POST.getlist("pays"):
+                pays.append(Pays.objects.get(pk=pays_id))
 
             # assigner chaque pays à chaque référence
             for r in records.values():

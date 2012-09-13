@@ -231,4 +231,8 @@ urlpatterns = sep_patterns + patterns(
 
     # Django-selectable
     (r'^djselectable/', include('selectable.urls')),
+
+    # Page statique ?
+    url(r'^(?P<id>.*)/$', 'savoirs.views.page_statique'),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -345,7 +345,7 @@ class Chercheur(Personne):
 
     @property
     def region(self):
-        return self.pays.region
+        return self.etablissement.region if self.etablissement else self.etablissement_autre_pays.region
 
     @property
     def domaines_recherche(self):

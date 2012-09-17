@@ -17,3 +17,7 @@ AUTH_PASSWORD_REQUIRED = True
 EMAIL_SUBJECT_PREFIX = '[savoirsenpartage - TEST] '
 
 SITE_DOMAIN = 'test.savoirsenpartage.auf.org'
+
+RAVEN_CONFIG = {
+    'dsn': '',
+}

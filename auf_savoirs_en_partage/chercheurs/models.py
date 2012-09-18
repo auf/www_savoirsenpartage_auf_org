@@ -228,6 +228,12 @@ class ChercheurManager(SEPManager):
     def order_by_pays(self, direction=''):
         return self.get_query_set().order_by_pays(self, direction=direction)
 
+class ChercheurInactifManager(SEPManager):
+
+    def get_query_set(self):
+        return ChercheurQuerySet(self.model).filter(actif=False)
+
+
 STATUT_CHOICES = (
     ('enseignant', 'Enseignant-chercheur dans un établissement'), 
     ('etudiant', 'Étudiant-chercheur doctorant'), 
@@ -374,6 +380,14 @@ class ChercheurVoir(Chercheur):
         proxy = True
         verbose_name = 'chercheur (visualisation)'
         verbose_name_plural = 'chercheur (visualisation)'
+
+class ChercheurInactif(Chercheur):
+    objects = ChercheurInactifManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'chercheur (inactif)'
+        verbose_name_plural = 'chercheur (inactif)'
 
 class Publication(models.Model):
     chercheur = models.ForeignKey(Chercheur, related_name='publications')

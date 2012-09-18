@@ -6,8 +6,8 @@ from django.core.urlresolvers import reverse as url
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 
-from chercheurs.models import Chercheur, ChercheurVoir, Publication, \
-                              GroupeChercheur, DomaineRecherche, \
+from chercheurs.models import Chercheur, ChercheurVoir, ChercheurInactif, \
+                              Publication, GroupeChercheur, DomaineRecherche, \
                               AdhesionGroupe, ChercheurQuerySet, \
                               AdhesionCommunaute, AdhesionDomaineRecherche, \
                               Groupe, Message
@@ -247,6 +247,25 @@ class ChercheurVoirAdmin(ChercheurAdmin):
         self.readonly_fields = self.fields
 
 admin.site.register(ChercheurVoir, ChercheurVoirAdmin)
+
+class ChercheurInactifAdmin(ChercheurAdmin):
+
+    list_editable = []
+
+    def queryset(self, request):
+        return self.model.objects.get_query_set().filter(actif=False)
+
+    def get_object(self, request, object_id):
+        """
+        On doit réimplémenter cette méthode à cause de ce qu'on fait avec
+        ``initial`` dans la méthode queryset().
+        """
+        try:
+            return ChercheurInactif.objects.get(id=object_id)
+        except ChercheurInactif.DoesNotExist:
+            return None
+
+admin.site.register(ChercheurInactif, ChercheurInactifAdmin)
 
 
 class ChercheurAdminQuerySet(ChercheurQuerySet):

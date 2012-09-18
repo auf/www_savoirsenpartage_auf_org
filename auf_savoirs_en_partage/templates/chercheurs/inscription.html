@@ -9,6 +9,8 @@
 {% block contenu %}
 <h1>Inscription au répertoire de chercheurs</h1>
 
+<p><a href="{% url chercheurs-reactiver %}">Réactiver votre fiche</a></p>
+
 <form method="post">
     {% include "chercheurs/chercheur_form.html" %}
     <input type="submit" name="Submit" value="Enregistrer l'inscription" class="bouton" />

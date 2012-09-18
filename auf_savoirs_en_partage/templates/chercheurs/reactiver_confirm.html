@@ -1,0 +1,19 @@
+{% extends "container_base.html" %}
+{% load url from future %}
+
+{% block contenu %}
+<div class="cadre">
+    <h1>Réactiver votre fiche</h1>
+    {% if validlink %}
+    <form method="post">
+        <p>Veuillez choisir un nouveau mot de passe.</p>
+        {% include "table_form.html" %}
+        <input type="submit" name="Submit" value="Envoyer" />
+    </form>
+    {% else %}
+    <p>Cette clé est invalide. Assurez-vous de bien copier le lien qui vous a
+    été envoyé par courriel.</p>
+    <p>Vous pouvez aussi essayer d'<a href="{% url "chercheurs-reactiver" %}">obtenir une nouvelle clé</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

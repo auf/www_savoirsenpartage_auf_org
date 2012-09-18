@@ -1,0 +1,21 @@
+{% extends "container_base.html" %}
+
+{% block contenu %}
+<div class="cadre">
+    <h1>Réactiver votre riche</h1>
+
+    <p>Si vous avez déjà procédé à une inscription dans Savoirs en Partage, mais que votre fiche n'apparait plus sur le portail publique, il se peut qu'elle ait été désactivée : en effet, pour assurer la qualité et l'actualité des informations du Répertoire des chercheurs, les fiches des chercheurs qui ne se sont pas connectés à leur "Espace chercheur" depuis plus d'un an ne sont plus visibles dans la partie publique du site. Ces fiches restent cependant archivées dans notre système (sauf demande de votre part) et vous pouvez les réactiver en renseignant le formulaire ci-dessous.</p>
+    <form method="post">
+        {% csrf_token %}
+        <p>Veuillez entrer l'adresse électronique avec laquelle vous aviez completé votre inscription.</p>
+        <p>
+            {{ form.email }}
+            {% if form.email.errors %}{{ form.email.errors }}{% endif %}
+        </p>
+        <input type="submit" name="Submit" value="Envoyer" class="bouton" />
+    </form>
+
+    <p>En cas de problème, merci de contacter directement le webmestre du site en ecrivant à <a href="mailto:contact-savoirsenpartage@auf.org">contact-savoirsenpartage@auf.org</a> et en indiquant vos noms et prénoms.</p>
+</div>
+{% endblock %}
+

@@ -1,0 +1,9 @@
+{% extends "container_base.html" %}
+{% load url from future %}
+
+{% block contenu %}
+<div class="cadre">
+    <p>Votre ficher a été réactivé.</p>
+    <p>Vous pouvez maintenant vous <a href="{% url "chercheurs-login" %}">connecter au répertoire</a>.</p>
+</div>
+{% endblock %}

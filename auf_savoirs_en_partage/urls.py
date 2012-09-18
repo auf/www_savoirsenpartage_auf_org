@@ -10,6 +10,9 @@ from savoirs.rss import \
         FilChercheurs, FilRessources, FilActualites, \
         FilAppels, FilEvenements, FilSites, FilMessages
 
+from chercheurs.forms import ReactiverForm
+
+
 admin.autodiscover()
 
 handler500 = "views.page_500"
@@ -99,12 +102,14 @@ urlpatterns = sep_patterns + patterns(
     url(r'^chercheurs/edit/$', 'chercheurs.views.edit'),
     url(r'^chercheurs/conversion$', 'savoirs.views.page_statique',
         kwargs={'id': 'table-de-passage'}, name='conversion'),
+
     url(r'^chercheurs/connexion/$', 'chercheurs.views.login',
         kwargs={'template_name': 'chercheurs/login.html'},
         name='chercheurs-login'),
     url(r'^chercheurs/deconnexion/$', 'django.contrib.auth.views.logout',
         kwargs={'template_name': 'chercheurs/logged_out.html'},
         name='chercheurs-logout'),
+
     url(r'^chercheurs/changement-mdp/$', 'chercheurs.views.password_change',
         kwargs={
             'template_name': 'chercheurs/password_change_form.html',
@@ -115,6 +120,8 @@ urlpatterns = sep_patterns + patterns(
         'django.contrib.auth.views.password_change_done',
         kwargs={'template_name': 'chercheurs/password_change_done.html'},
         name='chercheurs-password-change-done'),
+
+    # Oublié mot de passe
     url(r'^chercheurs/oubli-mdp/$', 'django.contrib.auth.views.password_reset',
         kwargs={
             'template_name': 'chercheurs/password_reset_form.html',
@@ -133,6 +140,29 @@ urlpatterns = sep_patterns + patterns(
     url(r'^chercheurs/oubli-mdp-fini/$',
         'django.contrib.auth.views.password_reset_complete',
         kwargs={'template_name': 'chercheurs/password_reset_complete.html'}),
+
+    # Réactiver fiche
+    url(r'^chercheurs/reactiver/$', 'django.contrib.auth.views.password_reset',
+        kwargs={
+            'template_name': 'chercheurs/reactiver_form.html',
+            'email_template_name': 'chercheurs/reactiver_email.txt',
+            'post_reset_redirect': '/chercheurs/reactiver-envoye/'
+        },
+        name='chercheurs-reactiver'),
+    url(r'^chercheurs/reactiver-envoye/$',
+        'django.contrib.auth.views.password_reset_done',
+        kwargs={'template_name': 'chercheurs/reactiver_done.html'},
+        name='chercheurs-reactiver-done'),
+    url(r'^chercheurs/reactiver-retour/(?P<uidb36>.*)/(?P<token>.*)/$',
+        'django.contrib.auth.views.password_reset_confirm',
+        kwargs={'template_name': 'chercheurs/reactiver_confirm.html',
+                'set_password_form': ReactiverForm},
+        name='chercheurs-reactiver-confirm'),
+    url(r'^chercheurs/reactiver-fini/$',
+        'django.contrib.auth.views.password_reset_complete',
+        kwargs={'template_name': 'chercheurs/reactiver_complete.html'}),
+
+    # auto complete
     url(r'^etablissements/autocomplete/$',
         'chercheurs.views.etablissements_autocomplete'),
     url(r'^etablissements/autocomplete/(?P<pays>.*)/$',

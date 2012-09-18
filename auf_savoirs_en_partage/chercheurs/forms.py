@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import hashlib
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm, SetPasswordForm as DjangoSetPasswordForm
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
 from itertools import chain
@@ -405,6 +405,16 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         exclude = ('chercheur', 'groupe')
+
+
+class ReactiverForm(DjangoSetPasswordForm):
+    def save(self, commit=True):
+        self.user = super(ReactiverForm, self).save(commit=False)
+        self.user.chercheur.actif = True
+        self.user.chercheur.save()
+        if commit:
+            self.user.save()
+        return self.user
 
 # Admin views
 

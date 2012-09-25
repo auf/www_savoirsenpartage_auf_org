@@ -6,9 +6,49 @@ from conf import *  # NOQA
 PROJECT_HOME = os.path.dirname(__file__)
 HOME = os.path.dirname(PROJECT_HOME)
 
-ADMINS = (
-    ('Équipe ARI-SI', 'developpeurs@ca.auf.org'),
-)
+ADMINS = ()
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['sentry'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.handlers.SentryHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}
 
 ADMINS_SEP = ('gilles.deggis@auf.org',)
 
@@ -40,6 +80,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'auf.django.piwik.middleware.TrackMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'chercheurs.middleware.ChercheurMiddleware',
@@ -68,6 +109,7 @@ INSTALLED_APPS = (
     'sitotheque',
     'djangosphinx',
     'south',
+    'raven.contrib.django',
     'auf.django.admingroup',
     'auf.django.references',
     'alphafilter',

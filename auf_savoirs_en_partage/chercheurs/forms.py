@@ -48,7 +48,7 @@ class ChercheurForm(forms.ModelForm):
     membre_reseau_institutionnel_fonction = forms.CharField(required=False, label="Préciser votre fonction")
     membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
 
-    pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), required=True)
+    pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), to_field_name='code', required=True)
     etablissement = forms.CharField(
         label="Nom de l'établissement", required=True,
         help_text="Après avoir sélectionné un pays, une liste d'établissement apparaît dès la saisie partielle du nom de l'établissement."
@@ -104,10 +104,10 @@ class ChercheurForm(forms.ModelForm):
             initial = {}
             if instance.etablissement:
                 initial['etablissement'] = instance.etablissement.nom
-                initial['pays_etablissement'] = instance.etablissement.pays_id
+                initial['pays_etablissement'] = instance.etablissement.pays
             else:
                 initial['etablissement'] = instance.etablissement_autre_nom
-                initial['pays_etablissement'] = instance.etablissement_autre_pays_id
+                initial['pays_etablissement'] = instance.etablissement_autre_pays
             initial['pas_de_sollicitation_expertises'] = not instance.expertises_auf
         else:
             initial = None

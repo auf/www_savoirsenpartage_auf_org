@@ -195,33 +195,17 @@ class RecordEditAdmin(RecordAdmin):
 
     def __init__(self, model, admin_site):
         super(RecordEditAdmin, self).__init__(model, admin_site)
-        self.readonly_fields = self.fields
+        self.readonly_fields = ()
 
     def get_actions(self, request):
         actions = super(RecordEditAdmin, self).get_actions(request)
         del actions['assigner_pays']
+        del actions['assigner_regions']
+        del actions['assigner_disciplines']
         del actions['assigner_thematiques']
         del actions['assigner_categorie']
 
         return actions
-
-    def assigner_disciplines(self, request, queryset):
-        selected = queryset.values_list('id', flat=True)
-        selected = ",".join("%s" % val for val in selected)
-        return HttpResponseRedirect(url(
-            'assigner_disciplines',
-            kwargs={'app_name': 'savoirs', 'model_name': 'recordedit'}
-        ) + '?ids=' + selected)
-    assigner_disciplines.short_description = u'Assigner des disciplines'
-
-    def assigner_regions(self, request, queryset):
-        selected = queryset.values_list('id', flat=True)
-        selected = ",".join("%s" % val for val in selected)
-        return HttpResponseRedirect(url(
-            'assigner_regions',
-            kwargs={'app_name': 'savoirs', 'model_name': 'recordedit'}
-        ) + '?ids=' + selected)
-    assigner_regions.short_description = u'Assigner des régions'
 
 admin.site.register(RecordEdit, RecordEditAdmin)
 

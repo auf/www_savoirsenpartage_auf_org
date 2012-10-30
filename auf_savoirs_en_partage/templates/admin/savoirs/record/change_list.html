@@ -1,11 +1,11 @@
 {% extends "admin/change_list.html" %}
-{% load adminmedia %}
+{% load admin_static %}
 {% load i18n %}
 
 {% block search %}
 <div id="toolbar"><form id="changelist-search" action="" method="get">
 <div><!-- DIV needed for valid HTML -->
-<label for="searchbar"><img src="{% admin_media_prefix %}img/admin/icon_searchbox.png" alt="Recherche" /></label>
+<label for="searchbar"><img src="{% static "admin/img/icon_searchbox.png" %}" alt="Recherche" /></label>
 <input type="text" size="40" name="admin_search" value="{{ request.GET.admin_search }}" id="searchbar" />
 <label>
 <input type="checkbox" name="admin_search_titre" value="1" {% if request.GET.admin_search_titre %}checked="checked"{% endif %} />

@@ -123,7 +123,7 @@ class RecordAdmin(admin.ModelAdmin):
 
     def est_complet(self, obj):
         v = obj.est_complet()
-        return '<img src="/admin_media/img/admin/icon-%s.gif" alt="%d"/>' % (
+        return '<img src="/static/admin/img/icon-%s.gif" alt="%d"/>' % (
             ('no', 'yes')[v], v
         )
     est_complet.allow_tags = True

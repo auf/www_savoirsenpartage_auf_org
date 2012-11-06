@@ -225,12 +225,15 @@ def conversion(request):
 
 def etablissements_autocomplete(request, pays=None):
     term = request.GET.get('term')
-    noms = Etablissement.objects.all().filter(membre=True, actif=True)
-    for word in term.split():
-        noms = noms.filter(nom__icontains=word)
-    if pays:
-        noms = noms.filter(pays=pays)
-    noms = list(noms.values_list('nom', flat=True)[:20])
+    if term:
+        noms = Etablissement.objects.all().filter(membre=True, actif=True)
+        for word in term.split():
+            noms = noms.filter(nom__icontains=word)
+        if pays:
+            noms = noms.filter(pays=pays)
+        noms = list(noms.values_list('nom', flat=True)[:20])
+    else:
+        noms = []
     json = simplejson.dumps(noms)
     return HttpResponse(json, mimetype='application/json')
 

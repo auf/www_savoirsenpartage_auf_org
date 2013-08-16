@@ -165,6 +165,8 @@ LOCALE_PATHS = (
     os.path.join(PROJECT_HOME, 'locale'),
 )
 
+SOUTH_TESTS_MIGRATE = False
+
 # djangosphinx
 
 SPHINX_API_VERSION = 0x116

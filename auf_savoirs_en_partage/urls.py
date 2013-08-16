@@ -174,6 +174,9 @@ urlpatterns = sep_patterns + patterns(
     url(r'^api/chercheurs/region/(?P<region>.*)/$', 'chercheurs.api.api'),
     url(r'^api/chercheurs/recherche', 'chercheurs.api.recherche'),
 
+    # API Pong
+    url(r'^api/pong/', include('auf.django.pong.urls')),
+
 
     # groupes
     url(r'^groupes/$', 'chercheurs.views.groupe_index'),

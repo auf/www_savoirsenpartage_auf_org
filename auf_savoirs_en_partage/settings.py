@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'raven.contrib.django',
     'auf.django.admingroup',
     'auf.django.references',
+    'auf.django.pong',
     'alphafilter',
     'interfaces',
     'rappels',

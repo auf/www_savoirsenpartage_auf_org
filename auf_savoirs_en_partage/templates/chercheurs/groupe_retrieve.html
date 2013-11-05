@@ -1,4 +1,5 @@
 {% extends "container_base.html" %}
+{% load staticfiles %}
 {% load url from future %}
 
 {% block contenu %}
@@ -17,7 +18,7 @@
 		<p class="cadre" style="margin:10px auto;"><em>Votre demande d'adhésion n'a pas encore été approuvée par le gestionnaire de communauté.</em></p>
 	{% endif %}{% endif %}{% endif %}
 
-	<h2>Derniers messages <a href="{% url "rss_messages" groupe.pk %}"><img src="/media/img/feed.png" /></a></h2>
+	<h2>Derniers messages <a href="{% url "rss_messages" groupe.pk %}"><img src="{% static 'img/feed.png' %}" /></a></h2>
 	{% if messages %}
 		{% for message in messages.all %}
 			{% include 'chercheurs/groupe_message_display.html' %}

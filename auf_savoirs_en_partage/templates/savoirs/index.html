@@ -1,4 +1,5 @@
 {% extends "container_base.html" %}
+{% load staticfiles %}
 {% load url from future %}
 
 {% block contenu %}
@@ -6,7 +7,7 @@
     <div id="chercheurs" class="box">
         <h1>
             <a href="{% url "chercheurs.views.index" %}">Répertoire</a>
-            <a class="rss-icon" href="{% url "rss_chercheurs" %}"><img src="/media/img/feed.png" /></a>
+            <a class="rss-icon" href="{% url "rss_chercheurs" %}"><img src="{% static 'img/feed.png' %} " /></a>
         </h1>
         
         <ul class="actions-accueil">
@@ -31,7 +32,7 @@
     <div id="actualites" class="box">
         <h1>
             <a href="{% url "actualites" %}">Actualités</a>
-            <a class="rss-icon" href="{% url "rss_actualites" %}"><img src="/media/img/feed.png" /></a>
+            <a class="rss-icon" href="{% url "rss_actualites" %}"><img src="{% static 'img/feed.png' %}" /></a>
         </h1> 
         <ul class="actions-accueil">
             <li><a href="{% url "actualites" %}">Toutes les actualités</a></li>
@@ -54,7 +55,7 @@
     <div id="appels" class="box">
         <h1>
             <a href="{% url "appels" %}">Appels d'offres scientifiques</a>
-            <a class="rss-icon" href="{% url "rss_appels" %}"><img src="/media/img/feed.png" /></a>
+            <a class="rss-icon" href="{% url "rss_appels" %}"><img src="{% static 'img/feed.png' %}" /></a>
         </h1> 
         <ul class="actions-accueil">
             <li><a href="{% url "appels" %}">Tous les appels d'offres</a></li>
@@ -79,7 +80,7 @@
     <div  id="ressources" class="box">
         <h1>
             <a href="{% url "savoirs.views.ressource_index" %}">Ressources</a>
-            <a class="rss-icon" href="{% url "rss_ressources" %}"><img src="/media/img/feed.png" /></a>
+            <a class="rss-icon" href="{% url "rss_ressources" %}"><img src="{% static 'img/feed.png' %}" /></a>
         </h1>
         
         <ul class="actions-accueil">
@@ -107,7 +108,7 @@
     <div id="agenda" class="box">
         <h1>
             <a href="{% url "savoirs.views.evenement_index" %}">Agenda</a>
-            <a class="rss-icon" href="{% url "rss_agenda" %}"><img src="/media/img/feed.png" /></a>
+            <a class="rss-icon" href="{% url "rss_agenda" %}"><img src="{% static 'img/feed.png' %}" /></a>
         </h1>
         <ul class="actions-accueil">
             <li><a href="{% url "savoirs.views.evenement_index" %}">Tous les évènements</a></li>
@@ -130,7 +131,7 @@
     <div  id="sites" class="box">
         <h1>
             <a href="{% url "sitotheque.views.index" %}">Sites</a>
-            <a class="rss-icon" href="{% url "rss_sites" %}"><img src="/media/img/feed.png" /></a>
+            <a class="rss-icon" href="{% url "rss_sites" %}"><img src="{% static 'img/feed.png' %}" /></a>
         </h1>
         
         <ul class="actions-accueil">

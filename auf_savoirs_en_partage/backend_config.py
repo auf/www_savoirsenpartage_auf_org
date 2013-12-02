@@ -63,6 +63,11 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://archives.auf.org/',
     },
+    u'Archives ouvertes': {
+        'type': 'oai',
+        'acces': 'generic',
+        'url': 'http://hal-auf.archives-ouvertes.fr/oai/oai.php',
+    },
 
     #LODEL
     u'Revue-signes': {

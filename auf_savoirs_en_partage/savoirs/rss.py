@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 from dateutil.parser import parse as parse_date
 from dateutil.tz import tzlocal, tzutc
 
+import pytz
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -80,7 +81,7 @@ class FilRessources(Feed):
         except ValueError:
             modified = datetime.now()
         if modified.tzinfo is None:
-            modified.tzinfo = tzutc()
+            modified.tzinfo = modified.replace(tzinfo=pytz.UTC)
         return modified
 
 

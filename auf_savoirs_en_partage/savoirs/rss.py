@@ -81,7 +81,7 @@ class FilRessources(Feed):
         except ValueError:
             modified = datetime.now()
         if modified.tzinfo is None:
-            modified.tzinfo = modified.replace(tzinfo=pytz.UTC)
+            modified = modified.replace(tzinfo=pytz.UTC)
         return modified
 
 

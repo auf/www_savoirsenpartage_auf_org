@@ -189,13 +189,19 @@ class SourceActualite(models.Model):
             return
         feed = feedparser.parse(self.url)
         for entry in feed.entries:
+            if not all(
+                x in entry for x in ('link', 'published_parsed', 'title')
+            ):
+                continue
             if Actualite.all_objects.filter(url=entry.link).count() == 0:
                 ts = entry.get('published_parsed')
                 date = datetime.date(ts.tm_year, ts.tm_mon, ts.tm_mday) \
                         if ts else datetime.date.today()
+                texte = entry.summary_detail.value \
+                    if 'summary_detail' in entry else ''
                 actualite = self.actualites.create(
-                    titre=entry.title, texte=entry.summary_detail.value,
-                    url=entry.link, date=date
+                    titre=entry.title, texte=texte, url=entry.link,
+                    date=date
                 )
                 if self.region:
                     actualite.regions.add(self.region)

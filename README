@@ -1,3 +1,21 @@
+Installation
+============
+
+1.  Installer les paquets listés dans requirements.apt
+
+2.  Lancer le buildout:
+
+    python bootstrap.py
+    bin/buildout
+
+3.  Installer ou mettre à jour la base de données:
+
+    bin/django syncdb --migrate
+
+4.  Créer les fichiers statiques
+
+    bin/django collectstatic
+
 Mise en place de l'environnement de développement
 =================================================
 

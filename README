@@ -1,0 +1,30 @@
+Mise en place de l'environnement de développement
+=================================================
+
+1.  Créer un environnement virtuel
+
+    virtualenv env
+    . env/bin/activate
+
+2.  Installer les paquets qui seront installés en production
+
+    pip install -r requirements.wheezy
+
+3.  Lancer le buildout:
+
+    python bootstrap.py
+    bin/buildout -c devel.cfg
+
+4.  Éditer le fichier datamaster/conf.py
+
+5.  Installer la base de données:
+
+    bin/django syncdb --migrate
+
+Tests
+=====
+
+Pour tester cette application, mieux vaut choisir un sous-ensemble des
+applications:
+
+    bin/django test datamaster_modeles chercheurs savoirs sitotheque

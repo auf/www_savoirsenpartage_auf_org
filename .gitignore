@@ -1,39 +1,16 @@
-# binaires
-*.pyc
-*.pyo
-
-# Fichier temporaires:
-.*.swp
-.*.swo
-*~
-\#*#
-
-# DB de dev
-*.db
-
-# restants de merge
-*.orig
-*.rej
-
-# Configuration du projet - par environnement
-conf.py
-django.wsgi
-
-# buildout
-.installed.cfg
-bin
-develop-eggs
-downloads
-eggs
-log
-parts
-tmp
-
-# developpement
-src
-
-# Fichiers écrits par le serveur
-
+/.installed.cfg
+/auf_savoirs_en_partage/conf.py
 /auf_savoirs_en_partage/data
 /auf_savoirs_en_partage/media
+/bin
+/develop-eggs
+/downloads
+/eggs
+/env
+/log
+/parts
 /sitestatic
+/tmp
+
+*.pyc
+*.pyo

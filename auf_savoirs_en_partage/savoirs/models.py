@@ -744,7 +744,8 @@ class Record(models.Model):
 
     def getServeurURL(self):
         """Retourne l'URL du serveur de provenance"""
-        return RESOURCES[self.server]['url']
+        return RESOURCES[self.server]['url'] \
+            if self.server in RESOURCES else ''
 
     def est_complet(self):
         """teste si le record à toutes les données obligatoires"""

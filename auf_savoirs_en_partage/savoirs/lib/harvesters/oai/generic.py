@@ -41,7 +41,7 @@ def connect(url):
 def find_location (url_str):
     url = urlparse(url_str)
 
-    possible = ("perl/oai2", "cgi/oai2", "cgi-bin/oaiserver", "oai/oai.php",
+    possible = ("", "perl/oai2", "cgi/oai2", "cgi-bin/oaiserver", "oai/oai.php",
                 "oai/oai2.php", "oai/")
     for test in possible:
         path = url.path + test
@@ -60,7 +60,7 @@ def load_xml (url):
     ud.close ()
     
     encoding = chardet.detect(original)['encoding']
-    content = original.decode(encoding)
+    content = original.decode(encoding or 'utf-8')
 
     # Greenstone crap
     content = content.replace ("\"http://www.openarchives.com/OAI/2.0\"",

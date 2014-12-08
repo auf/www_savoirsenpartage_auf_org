@@ -12,11 +12,6 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://eprints.aidenligne-francais-universite.auf.org/',
     },
-    u'Centredoc-Org': {
-        'type': 'oai',
-        'acces': 'generic',
-        'url': 'http://doc.refer.org/',
-    },
     u'Bibliothèque Numérique de Ouagadougou': {
         'type': 'oai',
         'acces': 'generic',
@@ -32,31 +27,10 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://biblio.critaoi.auf.org/'
     },
-    u'Archives ouvertes du Moyen-Orient': {
-        'type': 'oai',
-        'acces': 'generic',
-        'url': 'http://hal-confremo.archives-ouvertes.fr/'
-    },
     u'CECA': {
         'type': 'oai',
         'acces': 'generic',
         'url': 'http://ceca.auf.org/',
-    },
-    u'Journal de la Société de biologie clinique': {
-        'type': 'oai',
-        'acces': 'generic',
-        'url': 'http://revues.temp.bj.refer.org/index.php/JSBC/',
-    },
-    u'Le Bénin Médical': {
-        'type': 'oai',
-        'acces': 'generic',
-        'url': 'http://revues.temp.bj.refer.org/index.php/BM/',
-    },
-    u'Annales des l\'Université de Parakou : '
-    u'Série sciences naturelles et agronomie': {
-        'type': 'oai',
-        'acces': 'generic',
-        'url': 'http://revues.temp.bj.refer.org/index.php/A-UPAR-SNA/',
     },
     u'Archives de l\'Agence universitaire de la Francophonie': {
         'type': 'oai',
@@ -132,28 +106,4 @@ RESOURCES = {
         'acces': 'html09',
         'url': 'http://www.bulletin.auf.org/',
     },
-    u'Religec': {
-        'type': 'lodel',
-        'acces': 'html09',
-        'url': 'http://www.religec.org/',
-    },
-    #'Exchorésis': {
-    #    'type': 'lodel',
-    #    'acces': 'html',
-    #    'url': 'http://exchoresis.refer.ga/',
-    #},
-
-    # SPIP
-    #'Annales des sciences agronomiques du Bénin': {
-    #    'type': 'lodel',
-    #    'acces': 'html',
-    #    'url': 'http://www.annales-fsa.bj.refer.org/',
-    #},
-
-    # SPIP
-    #'Bulletin des OSCB': {
-    #    'type': 'lodel',
-    #    'acces': 'html',
-    #    'url': 'http://www.osc.bj.refer.org/',
-    #},
 }

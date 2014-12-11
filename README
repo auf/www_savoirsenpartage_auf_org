@@ -8,11 +8,15 @@ Installation
     python bootstrap.py
     bin/buildout
 
-3.  Installer ou mettre à jour la base de données:
+3.  Parfois, certains eggs sont installés avec des permissions trop restreintes:
+
+    chmod -R a+rX eggs
+
+4.  Installer ou mettre à jour la base de données:
 
     bin/django syncdb --migrate
 
-4.  Créer les fichiers statiques
+5.  Créer les fichiers statiques
 
     bin/django collectstatic
 

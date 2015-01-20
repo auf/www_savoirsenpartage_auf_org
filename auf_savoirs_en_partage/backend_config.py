@@ -12,11 +12,6 @@ RESOURCES = {
         'acces': 'generic',
         'url': 'http://eprints.aidenligne-francais-universite.auf.org/',
     },
-    u'Bibliothèque Numérique de Ouagadougou': {
-        'type': 'oai',
-        'acces': 'generic',
-        'url': 'http://greenstone.bf.refer.org/'
-    },
     u'Centredoc-Fr': {
         'type': 'oai',
         'acces': 'generic',

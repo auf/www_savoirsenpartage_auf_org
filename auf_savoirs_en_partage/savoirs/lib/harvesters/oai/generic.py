@@ -41,8 +41,8 @@ def connect(url):
 def find_location (url_str):
     url = urlparse(url_str)
 
-    possible = ("", "perl/oai2", "cgi/oai2", "cgi-bin/oaiserver", "oai/oai.php",
-                "oai/oai2.php", "oai/")
+    possible = ("perl/oai2", "cgi/oai2", "cgi-bin/oaiserver", "oai/oai.php",
+                "oai/oai2.php", "oai/", "")
     for test in possible:
         path = url.path + test
         handle = connect(url)

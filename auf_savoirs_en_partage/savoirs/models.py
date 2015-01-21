@@ -667,10 +667,14 @@ class RecordManager(SEPManager):
     def get_query_set(self):
         """Ne garder que les ressources validées et qui sont soit dans aucun
            listset ou au moins dans un listset validé."""
+        ids_valides = ListSet.objects.filter(validated=True) \
+            .values('record__id')
+        ids_invalides = ListSet.objects.filter(validated=False) \
+            .values('record__id')
         qs = RecordQuerySet(self.model)
         qs = qs.filter(validated=True)
-        qs = qs.filter(Q(listsets__isnull=True) | Q(listsets__validated=True))
-        return qs.distinct()
+        qs = qs.filter(Q(id__in=ids_valides) | ~Q(id__in=ids_invalides))
+        return qs
 
     def get_sphinx_query_set(self):
         return RecordSphinxQuerySet(self.model)

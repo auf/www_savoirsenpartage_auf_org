@@ -234,6 +234,13 @@ class ChercheurInactifManager(SEPManager):
         return ChercheurQuerySet(self.model).filter(actif=False)
 
 
+GRADE_CHOICES = (
+    ('professeur', 'Professeur des universités'), 
+    ('maitre', 'Maître des conférences'), 
+    ('charge_de_cours', 'Chargé de cours'),
+    ('etudiant', 'Étudiant inscrit en thèse')
+)
+
 STATUT_CHOICES = (
     ('enseignant', 'Enseignant-chercheur dans un établissement'), 
     ('etudiant', 'Étudiant-chercheur doctorant'), 
@@ -266,6 +273,11 @@ class Chercheur(Personne):
 
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
+    grade_universitaire = models.CharField(max_length=36, choices=GRADE_CHOICES,
+                                           blank=True)
+    habilite_recherches = \
+        models.BooleanField(verbose_name="Habilité de diriger des recherches",
+                            default=False)
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
     diplome = models.CharField(max_length=255, null=True, verbose_name = 'diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)

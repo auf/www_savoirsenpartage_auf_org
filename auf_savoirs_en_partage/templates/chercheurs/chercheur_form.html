@@ -36,6 +36,7 @@
 <fieldset>
     <legend>Informations académiques</legend>
     <table>
+        {% form_field forms.chercheur.grade_universitaire %}
         {% form_field forms.chercheur.statut %}
         {% form_field forms.chercheur.diplome %}
         {% with forms.groupes.domaines_recherche as field %}
@@ -49,6 +50,9 @@
             </td>
         </tr>
         {% endwith %}
+
+        {% form_field forms.chercheur.habilite_recherches %}
+
         {% with forms.groupes.groupes_chercheur as field %}
         <tr>
             <th style="width: 150px;">

@@ -330,7 +330,9 @@ class Chercheur(Personne):
     )
 
     # Expertises
-    expertises_auf = models.NullBooleanField(verbose_name="est disposé à réaliser des expertises pour l'AUF")
+    expertises_auf = models.BooleanField(verbose_name="est disposé à "
+                                         "réaliser des expertises pour "
+                                         "l'AUF")
 
     #meta
     date_creation = models.DateField(auto_now_add=True, db_column='date_creation')

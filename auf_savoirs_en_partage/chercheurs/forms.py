@@ -47,6 +47,11 @@ class ChercheurForm(forms.ModelForm):
     )
     membre_reseau_institutionnel_fonction = forms.CharField(required=False, label="Préciser votre fonction")
     membre_reseau_institutionnel_dates = forms.CharField(required=False, label="Préciser les dates")
+    expertises_auf = forms.ChoiceField(required=True,
+                                       label="Souhaitez-vous être sollicité "
+                                           "pour des expertises par l'AUF",
+                                       choices=OUI_NON_CHOICES,
+                                       widget=forms.RadioSelect())
 
     pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), to_field_name='code', required=True)
     etablissement = forms.CharField(

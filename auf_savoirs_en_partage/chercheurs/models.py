@@ -273,11 +273,11 @@ class Chercheur(Personne):
 
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
-    grade_universitaire = models.CharField(max_length=36, choices=GRADE_CHOICES,
-                                           blank=True)
+    grade_universitaire = models.CharField(max_length=36,
+                                           choices=GRADE_CHOICES,
+                                           blank=False)
     habilite_recherches = \
-        models.BooleanField(verbose_name="Habilité de diriger des recherches",
-                            default=False)
+        models.BooleanField(verbose_name="Habilité de diriger des recherches")
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
     diplome = models.CharField(max_length=255, null=True, verbose_name = 'diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)

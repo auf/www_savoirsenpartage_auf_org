@@ -5,6 +5,10 @@
     <div>{{ chercheur.etablissement_display }}</div>
     {% if chercheur.afficher_courriel %}
     <div>{{ chercheur.courriel_display }}</div>
+    {% else %}
+    <a href="/chercheurs/{{ chercheur.id }}/envoie_courrier"}}>
+        Envoyer un courrier
+    </a>
     {% endif %}
     <div><span class="label">Région: </span>{{ chercheur.region.nom }}</div>
 
@@ -203,4 +207,11 @@
         {% endfor %}
     </ul>
     {% endif %}
+    <h2>Divers</h2>
+    <table>
+      <tr>
+        <td class="label">Date de la dernière modification:</td>
+        <td>{{ chercheur.date_modification }}</td>
+      </tr>
+    </table>
 </div>

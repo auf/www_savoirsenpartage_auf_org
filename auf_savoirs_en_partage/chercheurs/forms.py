@@ -368,7 +368,8 @@ class ChercheurSearchForm(forms.ModelForm):
     class Meta:
         model = ChercheurSearch
         fields = ['q', 'nom_chercheur', 'domaine',
-                  'statut', 'discipline', 'pays', 'region', 'nord_sud',
+                  'statut', 'discipline', 'pays', 'etablissement', 
+                  'region', 'nord_sud',
                   'activites_francophonie', 'genre']
 
 class ChercheurSearchEditForm(ChercheurSearchForm):
@@ -421,6 +422,18 @@ class ReactiverForm(DjangoSetPasswordForm):
         if commit:
             self.user.save()
         return self.user
+
+
+class EnvoieCourrierForm(forms.Form):
+    """Formulaire d'envoie de courrier à un chercheur."""
+    sujet = forms.CharField(label="Sujet", required=True)
+    message = forms.CharField(widget= forms.Textarea,
+                              label="Message", required=True)
+
+    def __init__(self, data=None, chercheur=None):
+        super(EnvoieCourrierForm, self).__init__(data=data)
+        self.chercheur = chercheur
+
 
 # Admin views
 

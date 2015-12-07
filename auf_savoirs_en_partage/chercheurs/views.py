@@ -23,7 +23,8 @@ from django.views.decorators.csrf import csrf_protect
 from chercheurs.decorators import chercheur_required
 from chercheurs.forms import \
         ChercheurSearchForm, SetPasswordForm, ChercheurFormGroup, \
-        AuthenticationForm, GroupeSearchForm, MessageForm
+        AuthenticationForm, GroupeSearchForm, MessageForm, \
+        EnvoieCourrierForm
 from chercheurs.models import \
         Chercheur, Groupe, Message, AdhesionGroupe, AuthLDAP
 from chercheurs.utils import \
@@ -70,6 +71,34 @@ def index(request):
         'search_form': search_form,
         'entete': entete
     })
+
+
+
+@chercheur_required
+def envoie_courrier(request, id):
+    chercheur = Chercheur.objects.get(id=id)
+    if request.method == 'POST':
+        form = EnvoieCourrierForm(request.POST, chercheur=chercheur)
+        if form.is_valid():
+            data = form.cleaned_data
+            import pdb; pdb.set_trace()
+            emeteur = Chercheur.objects.get(courriel=request.user.email)
+            nom_emeteur = '{} {}'.format(emeteur.prenom, emeteur.nom.upper())
+            template = get_template('chercheurs/user_email.txt')
+            message_chercheur = template.render(Context({
+                'chercheur': chercheur,
+                'nom_emeteur': nom_emeteur,
+                'email_emeteur': emeteur.courriel,
+                'message': data['message'] }))
+            send_mail(
+                '[SeP] ' + data['sujet'],
+                # message_chercheur, None, [chercheur.courriel])
+                message_chercheur, None, ('andrei@novatus.bg', ))
+            return redirect('chercheurs-courrier-envoye')
+    else:
+        form = EnvoieCourrierForm(chercheur=chercheur)
+    return render(request, "chercheurs/envoie_courrier.html", {
+        'form': form, 'chercheur': chercheur, })
 
 
 def inscription(request):

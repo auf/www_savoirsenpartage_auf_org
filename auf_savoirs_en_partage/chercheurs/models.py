@@ -273,7 +273,7 @@ class Chercheur(Personne):
 
     nationalite = models.ForeignKey(Pays, null = True, db_column='nationalite', to_field='code', 
                                     verbose_name = 'nationalité', related_name='nationalite')
-    grade_universitaire = models.CharField(max_length=36,
+    grade_universitaire = models.CharField(max_length=36, default='',
                                            choices=GRADE_CHOICES,
                                            blank=False)
     habilite_recherches = \
@@ -597,7 +597,12 @@ class ChercheurSearch(Search):
                                         verbose_name='Équipe de recherche',
                                         help_text='ou Laboratoire, ou Groupement inter-universitaire')
     statut = models.CharField(max_length=100, blank=True, choices=STATUT_CHOICES + (('expert', 'Expert'),))
-    pays = models.ForeignKey(Pays, blank=True, null=True)
+    etablissement = models.ForeignKey(Etablissement,
+                                      db_column='etablissement',
+                                      null=True,
+                                      blank=True)
+    pays = models.ForeignKey(Pays, blank=True, null=True,
+                             verbose_name='Pays de l’établissement de rattachement')
     nord_sud = models.CharField(max_length=4, blank=True, choices=(('Nord', 'Nord'), ('Sud', 'Sud')),
                                 verbose_name='Nord/Sud',
                                 help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays développés, par Sud les pays en développement (pays les moins avancés, pays émergents et pays à économies en transition)")

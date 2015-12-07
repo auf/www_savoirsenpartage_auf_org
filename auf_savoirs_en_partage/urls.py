@@ -87,6 +87,9 @@ urlpatterns = sep_patterns + patterns(
     url(r'^chercheurs/$', 'chercheurs.views.index', name='chercheurs'),
     url(r'^chercheurs/(?P<id>\d+)/$', 'chercheurs.views.retrieve',
         name='chercheur'),
+    url(r'^chercheurs/(?P<id>\d+)/envoie_courrier/$',
+        'chercheurs.views.envoie_courrier',
+        name='envoie_courrier'),
     url(r'^chercheurs/inscription/$', 'chercheurs.views.inscription',
         name='inscription'),
     url(r'^chercheurs/inscription_faite/$',
@@ -94,6 +97,11 @@ urlpatterns = sep_patterns + patterns(
             template_name='chercheurs/inscription_faite.html'
         ),
         name='chercheurs-inscription-faite'),
+    url(r'^chercheurs/courrier_envoye/$',
+        TemplateView.as_view(
+            template_name='chercheurs/courrier_envoye.html'
+        ),
+        name='chercheurs-courrier-envoye'),
     url(r'^chercheurs/activation/(?P<id_base36>.*)/(?P<token>.*)/$',
         'chercheurs.views.activation',
         name='chercheurs-activation'),

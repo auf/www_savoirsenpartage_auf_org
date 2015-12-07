@@ -1,0 +1,24 @@
+{% extends "container_base.html" %}
+{% load form_tags staticfiles %}
+
+{% block extra-script %}
+<script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+<script type="text/javascript" src="{% static "js/chercheur_edit.js" %}"></script>
+{% endblock %}
+
+{% block contenu %}
+<h1>Envoyer un courrier à
+    {{ chercheur.civilite }}
+    {{ chercheur.prenom }}
+    {{ chercheur.nom|upper }}</h1>
+
+<form method="post">
+  <fieldset class="horizontal-radio-buttons">
+    <legend>Message électronique</legend>
+    <table>
+      {{ form.as_table }}
+    </table>
+</fieldset>
+    <input type="submit" name="Submit" value="Envoyer" class="bouton" />
+</form>
+{% endblock %}

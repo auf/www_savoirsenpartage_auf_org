@@ -1,0 +1,9 @@
+{% extends "container_base.html" %}
+{% load url from future %}
+
+{% block contenu %}
+<div class="cadre">
+    <p>Un courriel de votre nom a été envoyé.</p>
+    <p><a href="{% url "savoirs.views.index" %}">Retour à l'accueil</a></p>
+</div>
+{% endblock %}

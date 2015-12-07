@@ -1,0 +1,12 @@
+Bonjour {{ chercheur.civilite }} {{ chercheur.prenom }} {{ chercheur.nom|upper }},
+
+{{ nom_emeteur }} <{{ email_emeteur }}> vient de vous envoyer un message à partir de la plate-forme SavoirsEnPartage.auf.org
+
+Voici le message:
+
+{{ message }}
+
+-- 
+Savoirs en partage
+http://{{ domain }}
+contact-savoirsenpartage@auf.org

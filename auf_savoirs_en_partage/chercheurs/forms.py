@@ -384,7 +384,8 @@ class ChercheurSearchForm(forms.ModelForm):
         fields = ['q', 'nom_chercheur', 'domaine',
                   'statut', 'discipline', 'pays', 'etablissement', 
                   'region', 'nord_sud',
-                  'activites_francophonie', 'genre']
+                  'activites_francophonie', 'genre',
+                  'expertises_auf', 'habilite_recherches']
 
     def __init__(self, data=None, prefix=None, instance=None):
         initial = {}

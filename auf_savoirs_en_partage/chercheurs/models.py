@@ -107,6 +107,12 @@ class ChercheurQuerySet(SEPQuerySet):
     def filter_etablissement(self, etablissement):
         return self.filter(Q(etablissement=etablissement))
 
+    def filter_expertises_auf(self, expert):
+        return self.filter(Q(expertises_auf=expert))
+
+    def filter_habilite_recherches(self, habilite):
+        return self.filter(Q(habilite_recherches=habilite))
+
     def filter_region(self, region):
         return self.filter(Q(etablissement__pays__region=region) | Q(etablissement_autre_pays__region=region))
 
@@ -218,6 +224,12 @@ class ChercheurManager(SEPManager):
 
     def filter_expert(self):
         return self.get_query_set().filter_expert()
+
+    def filter_expertises_auf(self, expert):
+        return self.get_query_set().filter_expertises_auf(expert)
+
+    def filter_habilite_recherches(self, habilite):
+        return self.get_query_set().filter_habilite_recherches(habilite)
 
     def filter_date_modification(self, min=None, max=None):
         return self.get_query_set().filter_date_modification(min=min, max=max)
@@ -605,18 +617,36 @@ class ChercheurSearch(Search):
                                       null=True,
                                       blank=True)
     pays = models.ForeignKey(Pays, blank=True, null=True,
-                             verbose_name='Pays de l’établissement de rattachement')
-    nord_sud = models.CharField(max_length=4, blank=True, choices=(('Nord', 'Nord'), ('Sud', 'Sud')),
-                                verbose_name='Nord/Sud',
-                                help_text="Distinction d'ordre géopolitique et économique, non géographique, qui conditionne souvent l'attribution de soutiens par les agences internationales: on entend par Nord les pays développés, par Sud les pays en développement (pays les moins avancés, pays émergents et pays à économies en transition)")
+        verbose_name='Pays de l’établissement de rattachement')
+    nord_sud = models.CharField(max_length=4, blank=True,
+        choices=(('Nord', 'Nord'), ('Sud', 'Sud')),
+        verbose_name='Nord/Sud',
+        help_text="Distinction d'ordre géopolitique et économique, "
+                  "non géographique, qui conditionne souvent l'attribution "
+                  "de soutiens par les agences internationales: on entend "
+                  "par Nord les pays développés, par Sud les pays en "
+                  "développement (pays les moins avancés, pays émergents "
+                  "et pays à économies en transition)")
     activites_francophonie = models.CharField(
         max_length=25, blank=True, verbose_name='activités en Francophonie',
         choices=(('instance_auf', "Membre d'une instance de l'AUF"),
                  ('expert_oif', "Sollicité par l'OIF"),
-                 ('association_francophone', "Membre d'une association ou d'une société savante francophone"),
-                 ('reseau_institutionnel', "Membre des instances d'un réseau institutionnel de l'AUF"))
+                 ('association_francophone',
+                  "Membre d'une association ou d'une société "
+                  "savante francophone"),
+                 ('reseau_institutionnel',
+                  "Membre des instances d'un réseau institutionnel "
+                  "de l'AUF"))
     ) 
     genre = models.CharField(max_length=1, blank=True, choices=GENRE_CHOICES)
+
+    expertises_auf = models.BooleanField(verbose_name="est disposé à "
+                                         "réaliser des expertises pour "
+                                         "l'AUF")
+
+    habilite_recherches = \
+        models.BooleanField(verbose_name="Habilité de diriger des recherches")
+
 
     class Meta:
         verbose_name = 'recherche de chercheurs'
@@ -649,6 +679,11 @@ class ChercheurSearch(Search):
             results = results.filter_nord_sud(self.nord_sud)
         if self.genre:
             results = results.filter_genre(self.genre)
+        if self.expertises_auf:
+            results = results.filter_expertises_auf(self.expertises_auf)
+        if self.habilite_recherches:
+            results = \
+                results.filter_habilite_recherches(self.habilite_recherches)
         if self.activites_francophonie == 'instance_auf':
             results = results.filter(membre_instance_auf=True)
         elif self.activites_francophonie == 'expert_oif':

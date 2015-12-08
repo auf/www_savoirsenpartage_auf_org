@@ -73,7 +73,6 @@ def index(request):
     })
 
 
-
 @chercheur_required
 def envoie_courrier(request, id):
     chercheur = Chercheur.objects.get(id=id)
@@ -81,7 +80,6 @@ def envoie_courrier(request, id):
         form = EnvoieCourrierForm(request.POST, chercheur=chercheur)
         if form.is_valid():
             data = form.cleaned_data
-            import pdb; pdb.set_trace()
             emeteur = Chercheur.objects.get(courriel=request.user.email)
             nom_emeteur = '{} {}'.format(emeteur.prenom, emeteur.nom.upper())
             template = get_template('chercheurs/user_email.txt')
@@ -89,7 +87,7 @@ def envoie_courrier(request, id):
                 'chercheur': chercheur,
                 'nom_emeteur': nom_emeteur,
                 'email_emeteur': emeteur.courriel,
-                'message': data['message'] }))
+                'message': data['message'], }))
             send_mail(
                 '[SeP] ' + data['sujet'],
                 # message_chercheur, None, [chercheur.courriel])

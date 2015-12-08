@@ -1,6 +1,12 @@
 {% extends "container_base.html" %}
 {% load pagination_tags form_tags sep %}
 {% load url from future %}
+{% load staticfiles %}
+
+{% block extra-script %}
+<script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+<script type="text/javascript" src="{% static "js/chercheur_search.js" %}"></script>
+{% endblock %}
 
 {% block sep_menu_droite %}
 {% sep_menu_brique discipline_active region_active %}

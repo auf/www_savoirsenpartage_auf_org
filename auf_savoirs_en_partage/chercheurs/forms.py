@@ -53,10 +53,14 @@ class ChercheurForm(forms.ModelForm):
                                        choices=OUI_NON_CHOICES,
                                        widget=forms.RadioSelect())
 
-    pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement", queryset=Pays.objects.all(), to_field_name='code', required=True)
+    pays_etablissement = forms.ModelChoiceField(label="Pays de l'établissement",
+                                                queryset=Pays.objects.all(),
+                                                to_field_name='code',
+                                                required=True)
     etablissement = forms.CharField(
         label="Nom de l'établissement", required=True,
-        help_text="Après avoir sélectionné un pays, une liste d'établissement apparaît dès la saisie partielle du nom de l'établissement."
+        help_text="Après avoir sélectionné un pays, une liste d'établissement "
+                  "apparaît dès la saisie partielle du nom de l'établissement."
     )
 
     pas_de_sollicitation_expertises = forms.BooleanField(
@@ -89,7 +93,8 @@ class ChercheurForm(forms.ModelForm):
 
     class Meta:
         model = Chercheur
-        fields = ('nom', 'prenom', 'genre', 'courriel', 'afficher_courriel', 'adresse_postale', 'telephone',
+        fields = ('nom', 'prenom', 'genre', 'courriel', 'afficher_courriel',
+                  'adresse_postale', 'telephone',
                   'statut', 'grade_universitaire', 'habilite_recherches',
                   'diplome',
                   'discipline', 'theme_recherche', 'equipe_recherche',
@@ -365,12 +370,48 @@ class GroupeSearchForm(forms.ModelForm):
 class ChercheurSearchForm(forms.ModelForm):
     """Formulaire de recherche pour les chercheurs."""
 
+    pays = forms.ModelChoiceField(label="Pays de l'établissement",
+                                  queryset=Pays.objects.all(),
+                                  to_field_name='code',
+                                  required=False)
+    etablissement = forms.CharField(
+        label="Nom de l'établissement", required=False,
+        help_text="Après avoir sélectionné un pays, une liste d'établissement "
+                  "apparaît dès la saisie partielle du nom de l'établissement.")
+
     class Meta:
         model = ChercheurSearch
         fields = ['q', 'nom_chercheur', 'domaine',
                   'statut', 'discipline', 'pays', 'etablissement', 
                   'region', 'nord_sud',
                   'activites_francophonie', 'genre']
+
+    def __init__(self, data=None, prefix=None, instance=None):
+        initial = {}
+        if instance and instance.etablissement:
+            initial['etablissement'] = instance.etablissement.nom
+            initial['pays'] = instance.etablissement.pays
+        else:
+            initial['etablissement'] = None
+            initial['pays'] = None
+        super(ChercheurSearchForm, self).__init__(data=data,
+                                                  prefix=prefix,
+                                                  instance=instance,
+                                                  initial=initial)
+
+    def save(self, commit=True):
+        return super(ChercheurSearchForm, self).save(commit=commit)
+
+    def clean_etablissement(self):
+        nom_etablissement = self.cleaned_data['etablissement']
+        pays = self.cleaned_data['pays']
+        etablissements = Etablissement.objects.filter(nom=nom_etablissement,
+                                                      pays=pays, actif=True)
+        if etablissements.count() > 0:
+            etablissement = etablissements[0]
+        else:
+            etablissement = None
+        return etablissement
 
 class ChercheurSearchEditForm(ChercheurSearchForm):
     """Formulaire d'édition d'une recherche sauvegardée."""

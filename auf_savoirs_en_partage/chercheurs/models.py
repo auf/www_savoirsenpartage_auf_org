@@ -104,6 +104,9 @@ class ChercheurQuerySet(SEPQuerySet):
         else:
             return self.filter(Q(etablissement__pays=pays) | Q(etablissement_autre_pays=pays))
 
+    def filter_etablissement(self, etablissement):
+        return self.filter(Q(etablissement=etablissement))
+
     def filter_region(self, region):
         return self.filter(Q(etablissement__pays__region=region) | Q(etablissement_autre_pays__region=region))
 
@@ -640,6 +643,8 @@ class ChercheurSearch(Search):
             results = results.filter_groupe(self.domaine)
         if self.pays:
             results = results.filter_pays(self.pays)
+        if self.pays:
+            results = results.filter_etablissement(self.etablissement)
         if self.nord_sud:
             results = results.filter_nord_sud(self.nord_sud)
         if self.genre:

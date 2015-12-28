@@ -6,6 +6,8 @@ from conf import *  # NOQA
 PROJECT_HOME = os.path.dirname(__file__)
 HOME = os.path.dirname(PROJECT_HOME)
 
+DATE_FORMAT = "d b Y"
+
 ADMINS = ()
 
 LOGGING = {

@@ -90,6 +90,10 @@ class ChercheurForm(forms.ModelForm):
         label='Adresse site Internet', required=False,
         help_text="Si vous le souhaitez, vous pouvez y indiquer le lien qui renvoie vers une page personnelle (sur le site de votre établissement par exemple) plus complète."
     )
+    habilite_recherches = forms.ChoiceField(
+        label="Habilité à diriger des recherches",
+        choices=OUI_NON_CHOICES, widget=forms.RadioSelect()
+    )
 
     class Meta:
         model = Chercheur

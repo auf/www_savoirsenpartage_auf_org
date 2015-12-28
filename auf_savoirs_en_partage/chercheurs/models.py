@@ -292,7 +292,7 @@ class Chercheur(Personne):
                                            choices=GRADE_CHOICES,
                                            blank=False)
     habilite_recherches = \
-        models.BooleanField(verbose_name="Habilité de diriger des recherches")
+        models.BooleanField(verbose_name="Habilité à diriger des recherches")
     statut = models.CharField(max_length=36, choices=STATUT_CHOICES)
     diplome = models.CharField(max_length=255, null=True, verbose_name = 'diplôme le plus élevé')
     etablissement = models.ForeignKey(Etablissement, db_column='etablissement', null=True, blank=True)
@@ -645,7 +645,7 @@ class ChercheurSearch(Search):
                                          "l'AUF")
 
     habilite_recherches = \
-        models.BooleanField(verbose_name="Habilité de diriger des recherches")
+        models.BooleanField(verbose_name="Habilité à diriger des recherches")
 
 
     class Meta:

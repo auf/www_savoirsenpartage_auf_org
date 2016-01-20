@@ -3,7 +3,8 @@
 from django.contrib import admin
 
 from chercheurs.admin import ChercheurAdmin
-from rappels.models import ChercheurRappel, RappelModele, RappelUser
+from rappels.models import (ChercheurRappel, RappelModele, RappelUser,
+                            RappelAutomatique)
 from rappels import actions
 
 
@@ -59,11 +60,18 @@ admin.site.register(RappelModele, RappelModeleAdmin)
 
 
 class RappelUserAdmin(admin.ModelAdmin):
-    readonly_fields = ['date_envoi', 'date_demande_envoi', 'rappel', 'user']
-    list_display = ['date_envoi_clean', 'date_demande_envoi_clean', 'rappel', 'user']
+    readonly_fields = ['date_limite', 'date_envoi', 'date_demande_envoi',
+                       'rappel', 'user']
+    list_display = ['date_limite', 'date_envoi_clean',
+                    'date_demande_envoi_clean', 'rappel', 'user']
     list_filter = ['rappel']
 
     def has_add_permission(self, obj):
         return False
 
 admin.site.register(RappelUser, RappelUserAdmin)
+
+
+class RappelAutomatiqueAdmin(admin.ModelAdmin):
+    readonly_fields = ['date_dernier_envoi', ]
+admin.site.register(RappelAutomatique, RappelAutomatiqueAdmin)

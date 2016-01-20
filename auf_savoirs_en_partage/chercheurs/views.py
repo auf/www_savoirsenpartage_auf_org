@@ -90,8 +90,7 @@ def envoie_courrier(request, id):
                 'message': data['message'], }))
             send_mail(
                 '[SeP] ' + data['sujet'],
-                # message_chercheur, None, [chercheur.courriel])
-                message_chercheur, None, ('andrei@novatus.bg', ))
+                message_chercheur, None, [chercheur.courriel])
             return redirect('chercheurs-courrier-envoye')
     else:
         form = EnvoieCourrierForm(chercheur=chercheur)

@@ -15,7 +15,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'RappelAutomatique.delai_entre_rappels'
         db.add_column('rappels_rappelautomatique', 'delai_entre_rappels',
-                      self.gf('django.db.models.fields.IntegerField')(default=3),
+                      self.gf('django.db.models.fields.IntegerField')(default=90),
                       keep_default=False)
 
 

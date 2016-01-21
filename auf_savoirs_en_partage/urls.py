@@ -209,6 +209,8 @@ urlpatterns = sep_patterns + patterns(
     # Rappels
     url(r'^admin/rappels/$', 'rappels.views.admin_rappels',
         name='admin-rappels'),
+    url(r'^rappels/edit/(?P<userid>.*)/(?P<cle>.*)/$',
+        'rappels.views.edit_chercheur'),
 
     # Admin
     url(r'^admin_tools/', include('admin_tools.urls')),

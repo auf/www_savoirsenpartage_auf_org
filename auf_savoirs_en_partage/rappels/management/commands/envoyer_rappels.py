@@ -15,17 +15,19 @@ class Command(BaseCommand):
            "Traite d'abbord les rappels configurer manuellement " \
            "et après cela - les rappels automatiques." \
 
-    def email_chercheur(self, contenu, sujet, chercheur, date_limite):
-        template = Template(contenu)
+    def email_chercheur(self, rappel):
+        template = Template(rappel.rappel.contenu)
         domaine = settings.SITE_DOMAIN
         message = template.render(Context({
-            'chercheur': chercheur.prenom_nom,
+            'chercheur': rappel.user.chercheur.prenom_nom,
             'domaine': domaine,
-            'date_limite': date_limite
+            'date_limite': rappel.date_limite or rappel.rappel.date_limite,
+            'nomutilisateur': rappel.user.username,
+            'cle_modification': rappel.cle_modification
         }))
-        email = EmailMessage(sujet, message,
+        email = EmailMessage(rappel.rappel.sujet, message,
                              settings.CONTACT_EMAIL,
-                             [chercheur.user.email])
+                             [rappel.user.email])
         email.send()
 
     def generate_rappels_automatiques(self):
@@ -63,13 +65,10 @@ class Command(BaseCommand):
                 order_by('date_demande_envoi')[0:300]
         if not logs:
             self.generate_rappels_automatiques()
-            import pdb; pdb.set_trace()
             logs = RappelUser.objects.filter(date_envoi=None).\
                         order_by('date_demande_envoi')[0:300]
 
         for log in logs:
-            self.email_chercheur(log.rappel.contenu, log.rappel.sujet,
-                                 log.user.chercheur,
-                                 log.date_limite or log.rappel.date_limite)
+            self.email_chercheur(log)
             log.date_envoi = datetime.datetime.today()
             log.save()

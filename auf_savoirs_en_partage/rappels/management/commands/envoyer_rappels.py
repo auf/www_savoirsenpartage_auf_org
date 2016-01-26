@@ -30,10 +30,25 @@ class Command(BaseCommand):
                              [rappel.user.email])
         email.send()
 
+    def rappeler_chercheurs(self, rappel_automatique, rappel, limit=300):
+        rappels_ajoutes = 0
+        for chercheur in rappel_automatique.chercheurs_a_rappeler():
+            rappeluser = RappelUser()
+            rappeluser.rappel = rappel
+            rappeluser.user = chercheur.user
+            rappeluser.date_limite = chercheur.date_modification \
+                + datetime.timedelta(rappel_automatique.delai_desactivation)
+            rappeluser.save()
+            rappels_ajoutes += 1
+            if rappels_ajoutes >= 300:
+                break
+        return rappels_ajoutes
+
     def generate_rappels_automatiques(self):
         rappels = RappelAutomatique.objects.filter(actif=True)
         rappels_ajoutes = 0
         today = datetime.datetime.today()
+
         for rappel_automatique in rappels:
             rappel = Rappel()
             rappel.user_creation = None
@@ -45,20 +60,20 @@ class Command(BaseCommand):
             rappel.contenu = rappel_automatique.modele.contenu
             rappel.save()
 
-            for chercheur in rappel_automatique.chercheurs_a_rappeler():
-                rappeluser = RappelUser()
-                rappeluser.rappel = rappel
-                rappeluser.user = chercheur.user
-                rappeluser.date_limite = chercheur.date_modification \
-                            + datetime.timedelta(rappel_automatique.delai_desactivation)
-                rappeluser.save()
-                rappels_ajoutes += 1
-                if rappels_ajoutes >= 300:
-                    rappel.date_dernier_envoie = datetime.datetime.today()
-                    rappel.save()
-                    return
+            rappels_ajoutes += self.rappeler_chercheurs(rappel_automatique,
+                                                        rappel)
             rappel.date_dernier_envoie = datetime.datetime.today()
             rappel.save()
+            if rappels_ajoutes >= 300:
+                break
+
+    def desactiver_chercheurs(self):
+        rappels = RappelAutomatique.objects.filter(actif=True)
+        for rappel in rappels:
+            for chercheur in rappel.chercheurs_a_desactiver():
+                chercheur.actif = False
+                chercheur.save()
+
 
     def handle(self, *args, **kwargs):
         logs = RappelUser.objects.filter(date_envoi=None).\
@@ -72,3 +87,5 @@ class Command(BaseCommand):
             self.email_chercheur(log)
             log.date_envoi = datetime.datetime.today()
             log.save()
+
+        self.desactiver_chercheurs()

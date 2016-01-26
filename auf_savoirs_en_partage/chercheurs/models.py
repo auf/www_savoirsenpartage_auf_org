@@ -673,7 +673,7 @@ class ChercheurSearch(Search):
             results = results.filter_groupe(self.domaine)
         if self.pays:
             results = results.filter_pays(self.pays)
-        if self.pays:
+        if self.etablissement:
             results = results.filter_etablissement(self.etablissement)
         if self.nord_sud:
             results = results.filter_nord_sud(self.nord_sud)
